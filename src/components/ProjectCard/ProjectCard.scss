@@ -1,0 +1,46 @@
+@import '../../assets/styles/variables';
+
+.project-card {
+    background-color: slategray;
+    height: 215px;
+    width: 305px;
+    margin-bottom: 30px;
+    margin-right: auto;
+
+    p {
+        color: white;
+    }
+
+    .lot-number {
+        padding-top: 10px;
+    }
+
+    .address { 
+        margin-top: 25px;
+    }
+
+    .bottom-title {
+        margin-bottom: -1px;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: -0.15px;
+        line-height: 20px;
+    }
+
+    .bottom-text {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: -0.13px;
+        line-height: 15px;
+    }
+
+    .bottom-section {
+        text-align: center;
+        padding-top: 2em;
+    }
+
+    .date-col {
+        width: 33.33%;
+    }
+
+}

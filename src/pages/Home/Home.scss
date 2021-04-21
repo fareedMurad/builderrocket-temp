@@ -1,0 +1,41 @@
+@import '../../assets/styles/variables';
+
+.home {   
+    .title-container {
+        margin-top: 18px;
+             
+        #home-title {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            line-height: 30px;
+        }
+
+        .btn {
+            color: #2D4DA6;
+        }
+    }
+
+    .link-btn {
+        margin-left: .2em;
+        font-size: 12px;
+        letter-spacing: -0.27px;
+        line-height: 17px;
+    }
+
+    #splitter {
+        margin-top: 1px;
+        padding-left: .5em;
+        padding-right: .5em;
+    }
+
+    .project-tabs {
+        margin-bottom: 24px;
+        margin-top: 16px;
+    }
+
+    .cards {
+        margin-bottom: 30px;
+        margin-right: 35px; 
+    }
+}

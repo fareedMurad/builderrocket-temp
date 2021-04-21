@@ -1,0 +1,19 @@
+@import '../../assets/styles/variables';
+
+.nav-bar {
+    height: 29px;
+    background-color: $gray;
+    padding-top: 7px;
+
+    .header-item {
+        margin-right: 1rem;
+        color: #fff;
+        font-size: 14px;
+        text-decoration: none;
+        letter-spacing: -0.17px;
+    }
+
+    .tab-icon {
+        margin-right: 8px;
+    }
+}

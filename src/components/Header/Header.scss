@@ -1,0 +1,17 @@
+@import '../../assets/styles/variables';
+
+.header {
+
+    background-color: $black;
+    opacity: .8;
+    color: white;
+    height: 46px;
+
+    .brand {
+        color: white;
+    }
+
+    .icons {
+        color: white;
+    }
+}
