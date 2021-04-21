@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Row } from 'react-bootstrap';
+import { Button, Container, Row, Col, Form, FormControl } from 'react-bootstrap';
 import { getProperties } from '../../data.js';
 import './Home.scss';
 
@@ -25,15 +25,26 @@ const Home = () => {
                     <div id='home-title'>Projects</div>
                     <Button variant='link' className='link-btn'>+ Add Project</Button>
                 </div>
-                <div className='d-flex project-tabs'>
-                    <div>
-                        <a className='link-btn' href='/'>Active Projects</a>
-                    </div>
-                    <div id='splitter'>{' | '}</div>
-                    <div>
-                        <a className='link-btn' href='/'>Closed Projects</a>
-                    </div>
-                </div>
+                <Row className='project-tabs' noGutters={true}>
+                    <Col xs={8} sm={8} md={6} lg={6} xl={9}>
+                        <Row noGutters={true}>
+                            <div>
+                                <a className='link-btn' href='/'>Active Projects</a>
+                            </div>
+                            <div id='splitter'>{' | '}</div>
+                            <div>
+                                <a className='link-btn' href='/'>Closed Projects</a>
+                            </div>
+                        </Row>
+                    </Col>
+                    <Col xs={8} sm={8} md={6} lg={6} xl={3}>
+                        <Form inline className='search-container'>
+                            <FormControl type='text' placeholder='Search' />
+                            &nbsp;&nbsp;&nbsp;
+                            <Button variant='secondary'>Search</Button>
+                        </Form>
+                    </Col>
+                </Row>
 
                 <Row className='cards' noGutters={true}>
                     {properties?.map((project, index) => (
