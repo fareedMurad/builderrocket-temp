@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Button, Container, Row, Col, Form, FormControl } from 'react-bootstrap';
+import { login } from '../../actions/authActions';
 import { getProperties } from '../../data.js';
 import './Home.scss';
 
@@ -7,6 +9,7 @@ import './Home.scss';
 import ProjectCard from '../../components/ProjectCard';
 
 const Home = () => {
+    const dispatch = useDispatch();
     
     const [properties, setProperties] = useState();
 
@@ -15,7 +18,10 @@ const Home = () => {
             .then((response) => {
                 setProperties(response);
             });
-    })
+
+        
+        dispatch(login('ronbibb@gmail.com', 'A123b!'))
+    }, [dispatch])
 
     console.log('properties', properties);
 
