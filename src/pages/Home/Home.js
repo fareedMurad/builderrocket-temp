@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Button, Container, Row, Col, Form, FormControl } from 'react-bootstrap';
-import { login } from '../../actions/authActions';
+// import { login } from '../../actions/authActions';
 import { getProperties } from '../../data.js';
+import { Link } from 'react-router-dom';
 import './Home.scss';
 
 // components 
@@ -19,8 +20,6 @@ const Home = () => {
                 setProperties(response);
             });
 
-        
-        dispatch(login('ronbibb@gmail.com', 'A123b!'))
     }, [dispatch])
 
     console.log('properties', properties);
@@ -29,7 +28,7 @@ const Home = () => {
         <Container className='home'>
                 <div className='d-flex title-container'>
                     <div id='home-title'>Projects</div>
-                    <Button variant='link' className='link-btn'>+ Add Project</Button>
+                    <Link to='/project' className='link-btn'>+ Add Project</Link>
                 </div>
                 <Row className='project-tabs' noGutters={true}>
                     <Col xs={8} sm={8} md={6} lg={6} xl={9}>

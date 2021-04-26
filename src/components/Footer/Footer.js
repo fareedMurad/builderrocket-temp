@@ -7,7 +7,7 @@ import './Footer.scss';
 const Footer = () => {
 
     return (
-        <Navbar fixed='bottom' className='footer justify-content-center'>  
+        <Navbar className='footer justify-content-center'>  
             <Nav>
                 <Link className='footer-item'>Copyright</Link>
                 <Link className='footer-item'>Social Media</Link>

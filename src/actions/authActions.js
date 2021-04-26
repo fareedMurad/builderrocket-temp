@@ -9,14 +9,17 @@ export const login = (email, password) => dispatch => {
     const loginResponse = axios({
         method: 'POST', 
         url: URL,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json' 
+        },
         data: {
-            Email: email, 
-            Password: password
+            'Email': email, 
+            'Password': password
         }
     })
     .then((response) => {
-        console.log('RESPONSE', response);
+        if (response?.status === 200)
+            console.log('RESPONSE', response.data);
     })
     .catch((error) => {
         console.log('ERROR', error);
