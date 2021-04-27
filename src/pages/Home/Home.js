@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Container, Row, Col, Form, FormControl } from 'react-bootstrap';
 // import { login } from '../../actions/authActions';
-import { getProperties } from '../../data.js';
+import { getProjects } from '../../actions/projectActions.js';
 import { Link } from 'react-router-dom';
 import './Home.scss';
 
@@ -11,18 +11,22 @@ import ProjectCard from '../../components/ProjectCard';
 
 const Home = () => {
     const dispatch = useDispatch();
-    
-    const [properties, setProperties] = useState();
+
+    const projects = useSelector(state => state.project.projects);
+
+    console.log('PROJECT', projects);
 
     useEffect(() => {
-        getProperties()
-            .then((response) => {
-                setProperties(response);
-            });
+        // getProperties()
+        //     .then((response) => {
+        //         setProperties(response);
+        //     });
 
-    }, [dispatch])
-
-    console.log('properties', properties);
+        dispatch(getProjects())
+            .then((data) => {
+                console.log('DATA', data);
+            })
+    }, [dispatch]);
 
     return (
         <Container className='home'>
@@ -52,7 +56,7 @@ const Home = () => {
                 </Row>
 
                 <Row className='cards' noGutters={true}>
-                    {properties?.map((project, index) => (
+                    {projects?.map((project, index) => (
                         <ProjectCard key={index} project={project} />
                     ))}
                 </Row>

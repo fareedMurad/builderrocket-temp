@@ -9,15 +9,15 @@ const ProjectHeader = () => {
             {/* <Container> */}
                 <div className='d-flex ml-3'>
                     <Col lg={4}>
-                        <div className='d-flex'>
+                        <div className='d-flex pt-2'>
                             <Col>   
-                                <div className='project-image'>
+                                <div className='project-image d-flex'>
                                     <img alt='project' height='119' width='167' />
                                 </div>
                             </Col>
                             <Col>
                                 <div className='text'>Project #</div>
-                                <div className='pt-3 project-name'>Project Name</div>
+                                <div className='pt-2 project-name'>Project Name</div>
                                 <div>Address</div>
 
                                 <div className='pt-2'>

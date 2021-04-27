@@ -1,12 +1,18 @@
-import {  } from '../actions/types';
+import { GET_PROJECTS } from '../actions/types';
 
 const intialState = {
-    project: {}
+    project: {},
+    projects: []
 };
 
 const projectReducer = (state = intialState, action) => {
     switch (action.type) {
-     
+        case GET_PROJECTS: {
+            return {
+                ...state, 
+                projects: action.payload
+            }
+        }
         default:
             return state;
     }
