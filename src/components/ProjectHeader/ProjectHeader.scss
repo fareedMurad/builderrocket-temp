@@ -4,5 +4,47 @@
     height: 144px;
     background-color: $lightgray;
     box-sizing: border-box;
-    border: 1px solid #979797;
+    border: 1px solid $bordergray;
+
+
+    .project-image {
+        box-sizing: border-box;
+        border: 1px solid $bordergray;
+    }
+
+    .bold-text {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .project-name {
+        font-size: 21px;
+        font-weight: 600;
+        letter-spacing: -0.95px;
+        line-height: 28px;
+    }
+
+    .text {
+        font-size: 14px;
+        letter-spacing: -0.32px;
+    }
+
+    .total {
+        margin-top: 5em;
+    }
+
+    .left { 
+        text-align: left;
+    }
+
+    .snapshot-btn {
+        height: 23px;
+        width: 150px;
+        color: white;
+        font-size: 14px;
+        letter-spacing: -0.17px;
+        line-height: 19px;
+        border-radius: 3px;
+        background-color: #888888;
+    }
 }
