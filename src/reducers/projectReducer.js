@@ -1,4 +1,4 @@
-import { GET_PROJECTS } from '../actions/types';
+import { GET_PROJECTS, SET_SELECTED_PROJECT } from '../actions/types';
 
 const intialState = {
     project: {},
@@ -11,6 +11,12 @@ const projectReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 projects: action.payload
+            }
+        }
+        case SET_SELECTED_PROJECT: {
+            return {
+                ...state, 
+                project: action.payload
             }
         }
         default:

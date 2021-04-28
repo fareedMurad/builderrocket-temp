@@ -1,8 +1,11 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import './ProjectHeader.scss';
 
 const ProjectHeader = () => {
+
+    const project = useSelector(state => state.project.project);
 
     return (
         <div className='project-header'>
@@ -12,12 +15,22 @@ const ProjectHeader = () => {
                         <div className='d-flex pt-2'>
                             <Col>   
                                 <div className='project-image d-flex'>
-                                    <img alt='project' height='119' width='167' />
+                                    <img 
+                                        alt='project' 
+                                        height='119' 
+                                        width='167' 
+                                        src={project?.thumbnailURL}
+                                    />
                                 </div>
                             </Col>
-                            <Col>
-                                <div className='text'>Project #</div>
-                                <div className='pt-2 project-name'>Project Name</div>
+                            <Col md={8}>
+                                <div className='text'>Project # {project?.projectNumber} </div>
+
+                                <div className='pt-2 d-flex'>
+                                    <div className='project-name'>Project Name</div>   
+                                    <div className='text pl-2 pt-1'>{project?.projectName}</div>
+                                </div>
+
                                 <div>Address</div>
 
                                 <div className='pt-2'>

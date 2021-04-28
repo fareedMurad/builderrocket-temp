@@ -1,12 +1,23 @@
 import React from 'react';
 import { } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { setSelectedProject } from '../../actions/projectActions';
 import './ProjectCard.scss';
 
 const ProjectCard = (props) => {
-    const { project } = props;
-    console.log('project', project)
+    const { project, history } = props;
+    const dispatch = useDispatch();
+    
+    const goToProject = () => {
+        dispatch(setSelectedProject(project))
+        .then(() => {
+            history.push(`/project/${project?.projectNumber}`)
+        })
+        console.log('project', project);
+    }
+
     return (
-        <div className='project-card mr-5'>
+        <div className='project-card mr-5' onClick={goToProject}>
             <div>
                 <p className='lot-number'>{project?.projectNumber}</p>
             </div>

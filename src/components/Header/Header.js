@@ -9,7 +9,7 @@ const Header = () => {
     return (
         <>
             <Navbar expand='lg' bg='dark' className='header'>
-                <Navbar.Brand className='brand'>
+                <Navbar.Brand href='/' className='brand'>
                     <b>BuilderRocket</b>
                 </Navbar.Brand>
 

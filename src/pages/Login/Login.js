@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import { loginEmailPassword } from '../../actions/authActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty } from 'lodash'
 
-const Login = () => {
+const Login = (props) => {
+    const { history } = props;
+
     const dispatch = useDispatch();
 
-    const [login, setLogin] = useState();
+    const token = useSelector(state => state.auth.token);
+
+    const [login, setLogin] = useState({});
 
     const handleLogin = () => {
-        dispatch(loginEmailPassword(login.email, login.password))
+        if (!isEmpty(login))
+            dispatch(loginEmailPassword(login.email, login.password));
     }
 
-    console.log('LOGIN', login);
+    useEffect(() => {
+        if (token) 
+            history.push('/');
+    })
 
     return (
         <Row className='justify-content-center pt-5'>

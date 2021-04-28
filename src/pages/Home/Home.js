@@ -9,24 +9,23 @@ import './Home.scss';
 // components 
 import ProjectCard from '../../components/ProjectCard';
 
-const Home = () => {
+const Home = (props) => {
+    const { history } = props;
     const dispatch = useDispatch();
 
     const projects = useSelector(state => state.project.projects);
-
-    console.log('PROJECT', projects);
+    const token = useSelector(state => state.auth.token);
 
     useEffect(() => {
-        // getProperties()
-        //     .then((response) => {
-        //         setProperties(response);
-        //     });
+        if (!token) 
+            history.push('/login');
+    
 
-        dispatch(getProjects())
+        dispatch(getProjects(token))
             .then((data) => {
                 console.log('DATA', data);
             })
-    }, [dispatch]);
+    }, [dispatch, token, history]);
 
     return (
         <Container className='home'>
@@ -36,7 +35,7 @@ const Home = () => {
                 </div>
                 <Row className='project-tabs' noGutters={true}>
                     <Col xs={8} sm={8} md={6} lg={6} xl={9}>
-                        <Row noGutters={true}>
+                        <div className='d-flex'>
                             <div>
                                 <a className='link-btn' href='/'>Active Projects</a>
                             </div>
@@ -44,7 +43,7 @@ const Home = () => {
                             <div>
                                 <a className='link-btn' href='/'>Closed Projects</a>
                             </div>
-                        </Row>
+                        </div>
                     </Col>
                     <Col xs={8} sm={8} md={6} lg={6} xl={3}>
                         <Form inline className='search-container'>
@@ -57,7 +56,7 @@ const Home = () => {
 
                 <Row className='cards' noGutters={true}>
                     {projects?.map((project, index) => (
-                        <ProjectCard key={index} project={project} />
+                        <ProjectCard key={index} project={project} history={history} />
                     ))}
                 </Row>
         </Container>

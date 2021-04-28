@@ -1,4 +1,3 @@
-// import { LOGIN } from './types';
 import axios from 'axios';
 import { SET_USER } from './types';
 
@@ -22,12 +21,12 @@ export const loginEmailPassword = (email, password) => dispatch => {
         if (response?.status === 200) {
             console.log('RESPONSE', response.data);
 
+            dispatch(setUser(response?.data));
         }
     })
     .catch((error) => {
         console.log('Login Error', error);
     });
-       
 }
 
 export const setUser = (token) => dispatch => {
