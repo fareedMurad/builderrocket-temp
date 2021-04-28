@@ -1,12 +1,13 @@
 // import { LOGIN } from './types';
 import axios from 'axios';
+import { SET_USER } from './types';
 
 const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
 
-export const login = (email, password) => dispatch => {
+export const loginEmailPassword = (email, password) => dispatch => {
     let URL = `${baseURL}/Login`;
 
-    const loginResponse = axios({
+    return axios({
         method: 'POST', 
         url: URL,
         headers: { 
@@ -18,13 +19,17 @@ export const login = (email, password) => dispatch => {
         }
     })
     .then((response) => {
-        if (response?.status === 200)
+        if (response?.status === 200) {
             console.log('RESPONSE', response.data);
+
+        }
     })
     .catch((error) => {
-        console.log('ERROR', error);
+        console.log('Login Error', error);
     });
-
-    return loginResponse;
        
+}
+
+export const setUser = (token) => dispatch => {
+    dispatch({ type: SET_USER, payload: token });
 }
