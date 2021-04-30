@@ -1,0 +1,17 @@
+@import '../../assets/styles/variables';
+
+.project-subheader {
+
+    .nav-item {
+        font-size: 14px;
+        letter-spacing: -0.32px;
+        line-height: 19px;
+        margin-right: 3.1em;
+    }
+
+    .active {
+        color: $activegray;
+        font-weight: bold;
+        border-bottom: 5px solid $activegray;
+    }
+}

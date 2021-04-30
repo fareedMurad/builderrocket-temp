@@ -19,8 +19,6 @@ export const loginEmailPassword = (email, password) => dispatch => {
     })
     .then((response) => {
         if (response?.status === 200) {
-            console.log('RESPONSE', response.data);
-
             dispatch(setUser(response?.data));
         }
     })

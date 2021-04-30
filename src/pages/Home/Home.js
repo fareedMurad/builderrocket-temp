@@ -21,10 +21,12 @@ const Home = (props) => {
             history.push('/login');
     
 
-        dispatch(getProjects(token))
-            .then((data) => {
-                console.log('DATA', data);
-            })
+        if (token) {
+            dispatch(getProjects(token))
+                .then((data) => {
+                    console.log('DATA', data);
+                });
+        }
     }, [dispatch, token, history]);
 
     return (
