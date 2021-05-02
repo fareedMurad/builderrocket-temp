@@ -23,7 +23,7 @@ const Project = () => {
 
                 <Col md={8}>
                     <div className='tab-container'>
-                        <ProjectInformation />
+                        <ProjectInformation project={project} />
                     </div>
                 </Col>
 

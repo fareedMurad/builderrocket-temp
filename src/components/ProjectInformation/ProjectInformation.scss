@@ -2,7 +2,7 @@
 
 .project-information {
     background-color: white;
-    padding-bottom: 4.3em;
+    padding-bottom: 2.3em;
 
     #title {
         padding-top: 1em;
@@ -11,6 +11,24 @@
         font-weight: 600;
         letter-spacing: -0.41px;
         line-height: 24px;
+    }
+
+    .next-btn {
+        font-size: 14px;
+        letter-spacing: -0.17px;
+        line-height: 19px;
+        font-weight: normal;
+        text-align: center;
+        padding-bottom: .3rem;
+        padding-top: -.2rem;
+    }
+
+    .cancel {
+        font-size: 14px;
+        letter-spacing: -0.32px;
+        line-height: 16px;
+        padding-top: .3rem;
+        color: $cancelblue;
     }
 
 }

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Container, Form, Col, Row } from 'react-bootstrap';
+import Utils from '../../utils';
 import './ProjectInformation.scss';
 
-const ProjectInformation = () => {
-    
+// import FileUpload from '../FileUpload';
+
+const ProjectInformation = (props) => {
+    const { project } = props;
 
     return (
         <Container className='project-information'> 
@@ -16,6 +19,7 @@ const ProjectInformation = () => {
                         <Form.Control
                             type='email'
                             className='input-gray'
+                            defaultValue={project?.projectName}
                         />
                     </div>
                     <div className='pb-4'>
@@ -44,6 +48,7 @@ const ProjectInformation = () => {
                         <Form.Control
                             type='email'
                             className='input-gray'
+                            defaultValue={project?.streetAddress1}
                         />
                     </div>
                     <div className='pb-2'>
@@ -58,6 +63,7 @@ const ProjectInformation = () => {
                         <Form.Control
                             type='email'
                             className='input-gray'
+                            defaultValue={project?.zip}
                         />
                     </div>
                     <div>
@@ -65,6 +71,7 @@ const ProjectInformation = () => {
                         <Form.Control
                             type='email'
                             className='input-gray'
+                            defaultValue={Utils.formatDateDashes(project?.closeCreated)}
                         />
                     </div>
                 </Col>
@@ -72,12 +79,17 @@ const ProjectInformation = () => {
                 <Col md={6}>
                     <div className='pb-4'>
                         <Form.Label className='input-label'>Project Image</Form.Label>
-                        <Form.File 
-                            id="custom-file"
-                            label=""
+                        <Form.Control
+                            type='email'
                             className='input-gray'
-                            custom
                         />
+                        {/* <Form.File 
+                            id='custom-file'
+                            label=''
+                            className='file-input'
+                            custom
+                        /> */}
+                        {/* <FileUpload /> */}
                     </div>
                     <div className='pb-4'>
                         <Form.Label className='input-label'>Customer Email</Form.Label>
@@ -99,6 +111,7 @@ const ProjectInformation = () => {
                         <Form.Control
                             type='email'
                             className='input-gray'
+                            defaultValue={project?.streetAddress2}
                         />
                     </div>
 
@@ -107,10 +120,16 @@ const ProjectInformation = () => {
                         <Form.Control
                             type='email'
                             className='input-gray'
+                            defaultValue={project?.state}
                         />
                     </div>
                 </Col>
             </Row>
+
+            <div className='d-flex justify-content-center pt-5'>
+                <a href='/' className='cancel'>Cancel</a>
+                <button className='primary-gray-btn next-btn ml-3'>Next</button>
+            </div>
         </Container>
     )
 }
