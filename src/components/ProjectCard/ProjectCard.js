@@ -7,6 +7,7 @@ import './ProjectCard.scss';
 
 const ProjectCard = (props) => {
     const { project, history } = props;
+
     const dispatch = useDispatch();
     
     const goToProject = () => {
@@ -14,17 +15,29 @@ const ProjectCard = (props) => {
         .then(() => {
             history.push(`/project/${project?.projectNumber}`)
         })
-        console.log('project', project);
     }
 
     return (
-        <div className='project-card mr-5' onClick={goToProject}>
-            <div className='lot-number'>{project?.projectNumber}</div>
-            <div className='project-name'>{project?.projectName}</div>
+        <div 
+            className='project-card mr-5' 
+            onClick={goToProject}
+            style={{ 
+                backgroundImage: `url(${project?.thumbnailURL})`,
+                backgroundPosition: 'top',
+                // backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat'
+            }}
+        >
+            <div className='top-section'>
+                <div className='lot-number'>{project?.projectNumber}</div>
+                <div className='project-name'>{project?.projectName}</div>
+            </div>
             
-            <div className='address'>
-                {`${project?.streetAddress1} ${project?.city}`}
-                {/* <p className='address'>{`${project?.state} ${project?.zip}`}</p> */}
+            <div className='address-section'>
+                <div>
+                    {`${project?.streetAddress1} ${project?.city}`}
+                </div>
+                <div>{`${project?.state} ${project?.zip}`}</div>
             </div>
 
             <div className='d-flex justify-content-center align-items-end bottom-section'>
@@ -34,11 +47,11 @@ const ProjectCard = (props) => {
                 </div>
                 <div className='date-col'>
                     <div className='bottom-title'>C.O. Date</div>
-                    <div className='bottom-text'>{Utils.formatDateDashes(project?.closedCreated)}</div>
+                    <div className='bottom-text'>{Utils.formatDateDashes(project?.occupencyCreated)}</div>
                 </div>
                 <div className='date-col'>
                     <div className='bottom-title'>Closed On</div>
-                    <div className='bottom-text'>{project?.closedDate}</div>
+                    <div className='bottom-text'>{Utils.formatDateDashes(project?.closeCreated)}</div>
                 </div>
             </div>
         </div>

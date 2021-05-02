@@ -28,3 +28,20 @@
     background-color: $lightgray;
     color: $lightgray;
 }
+
+.primary-gray-btn {
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 3px;
+    letter-spacing: -0.15px;
+    line-height: 17px;
+    padding: .2rem 1rem;
+    background-color: $btngray;
+    border: none;
+    color: white;
+}
+
+.search-container {
+    height: 30px;
+    border: none;
+}

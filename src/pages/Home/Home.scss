@@ -1,8 +1,10 @@
 @import '../../assets/styles/variables';
 
 .home {   
+    padding-top: 18px;
+    background-color: $lightgray;
+
     .title-container {
-        margin-top: 18px;
              
         #home-title {
             font-size: 22px;

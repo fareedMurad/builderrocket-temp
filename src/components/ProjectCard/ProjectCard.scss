@@ -13,6 +13,10 @@
         color: white;
     }
 
+    .top-section {
+        height: 3.85rem;
+    }
+
     .lot-number {
         padding-top: 10px;
         font-size: 11px;
@@ -29,8 +33,12 @@
         line-height: 24px;
     }
 
-    .address { 
-        margin-top: 25px;
+    .address-section { 
+        height: 3.25rem;
+        margin-top: 1.5rem;
+        font-size: 14px;
+        letter-spacing: -0.08px;
+        line-height: 16px;
     }
 
     .bottom-title {
@@ -51,7 +59,7 @@
     .bottom-section {
         text-align: center;
         padding-top: 2em;
-        margin-left: -.75em;
+        padding-right: .65rem;
     }
 
     .date-col {

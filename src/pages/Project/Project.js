@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { } from 'react';
 import { Col } from 'react-bootstrap';
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import './Project.scss';
 
 // components
@@ -10,8 +10,10 @@ import ProjectInformation from '../../components/ProjectInformation';
 
 const Project = () => {
 
-    // const project = useSelector(state => state.project.project);
+    const project = useSelector(state => state.project.project);
     
+    console.log('PROJECT', project);
+
     return (
         <>
             <ProjectHeader />
