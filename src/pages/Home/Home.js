@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Container, Row, Col, Form, FormControl } from 'react-bootstrap';
-// import { login } from '../../actions/authActions';
 import { getProjects } from '../../actions/projectActions.js';
 import { Link } from 'react-router-dom';
+import { isEmpty } from 'lodash';
 import './Home.scss';
 
 // components 
@@ -21,13 +21,13 @@ const Home = (props) => {
             history.push('/login');
     
 
-        if (token) {
+        if (token && isEmpty(projects)) {
             dispatch(getProjects(token))
                 .then((data) => {
                     console.log('DATA', data);
                 });
         }
-    }, [dispatch, token, history]);
+    }, [dispatch, token, history, projects]);
 
     return (
         <Container className='home'>
@@ -49,7 +49,7 @@ const Home = (props) => {
                     </Col>
                     <Col xs={8} sm={8} md={6} lg={6} xl={3}>
                         <Form inline className='search-container'>
-                            <FormControl type='text' placeholder='Search' />
+                            <FormControl type='text' />
                             &nbsp;&nbsp;&nbsp;
                             <Button variant='secondary'>Search</Button>
                         </Form>

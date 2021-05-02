@@ -2,6 +2,7 @@ import React from 'react';
 import { } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { setSelectedProject } from '../../actions/projectActions';
+import Utils from '../../utils';
 import './ProjectCard.scss';
 
 const ProjectCard = (props) => {
@@ -18,29 +19,26 @@ const ProjectCard = (props) => {
 
     return (
         <div className='project-card mr-5' onClick={goToProject}>
-            <div>
-                <p className='lot-number'>{project?.projectNumber}</p>
-            </div>
-            <div>
-                <p>{project?.projectName}</p>
-            </div>
-            <div>
-                <p className='address'>{`${project?.streetAddress1} ${project?.city}`}</p>
+            <div className='lot-number'>{project?.projectNumber}</div>
+            <div className='project-name'>{project?.projectName}</div>
+            
+            <div className='address'>
+                {`${project?.streetAddress1} ${project?.city}`}
                 {/* <p className='address'>{`${project?.state} ${project?.zip}`}</p> */}
             </div>
 
-            <div className='d-flex justify-content-center bottom-section'>
+            <div className='d-flex justify-content-center align-items-end bottom-section'>
                 <div className='date-col'>
-                    <p className='bottom-title'>Permit Date</p>
-                    <p className='bottom-text'>{project?.permitDate}</p>
+                    <div className='bottom-title'>Permit Date</div>
+                    <div className='bottom-text'>{Utils.formatDateDashes(project?.permitDate)}</div>
                 </div>
                 <div className='date-col'>
-                    <p className='bottom-title'>C.O. Date</p>
-                    <p className='bottom-text'>{project?.coDate}</p>
+                    <div className='bottom-title'>C.O. Date</div>
+                    <div className='bottom-text'>{Utils.formatDateDashes(project?.closedCreated)}</div>
                 </div>
                 <div className='date-col'>
-                    <p className='bottom-title'>Closed On</p>
-                    <p className='bottom-text'>{project?.closedDate}</p>
+                    <div className='bottom-title'>Closed On</div>
+                    <div className='bottom-text'>{project?.closedDate}</div>
                 </div>
             </div>
         </div>

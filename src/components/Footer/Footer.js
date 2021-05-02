@@ -9,9 +9,9 @@ const Footer = () => {
     return (
         <Navbar className='footer justify-content-center'>  
             <Nav>
-                <Link className='footer-item'>Copyright</Link>
-                <Link className='footer-item'>Social Media</Link>
-                <Link className='footer-item'>Contact Us</Link>
+                <Link className='footer-item' to='/'>Copyright</Link>
+                <Link className='footer-item' to='/'>Social Media</Link>
+                <Link className='footer-item' to='/'>Contact Us</Link>
             </Nav>
         </Navbar>
     )

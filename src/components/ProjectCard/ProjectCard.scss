@@ -4,15 +4,29 @@
     background-color: slategray;
     height: 215px;
     width: 305px;
+    opacity: 0.9;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
     margin-bottom: 30px;
-    padding-left: .5em;
+    padding-left: .75em;
 
-    p {
+    div {
         color: white;
     }
 
     .lot-number {
         padding-top: 10px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: -0.13px;
+        line-height: 15px;
+    }
+
+    .project-name { 
+        margin-top: 1em;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.82px;
+        line-height: 24px;
     }
 
     .address { 
@@ -37,10 +51,12 @@
     .bottom-section {
         text-align: center;
         padding-top: 2em;
+        margin-left: -.75em;
     }
 
     .date-col {
         width: 33.33%;
+        height: 2em;
     }
 
 }

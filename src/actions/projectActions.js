@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_PROJECTS, SET_SELECTED_PROJECT } from './types';
+import { GET_PROJECTS, SET_SELECTED_PROJECT, RESET_PROJECT } from './types';
 
 const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
 
@@ -35,5 +35,18 @@ export const setSelectedProject = (selectedProject) => dispatch => {
             console.log('Error Setting Project', error);
             reject(error);
         }
-    })
+    });
+}
+
+export const resetProject = () => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: RESET_PROJECT });
+
+            resolve();
+        } catch (error) {
+            console.log('Error Project Reset', error);
+            reject(error);
+        }
+    });
 }
