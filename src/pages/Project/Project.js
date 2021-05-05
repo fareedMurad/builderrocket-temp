@@ -5,6 +5,7 @@ import './Project.scss';
 
 // components
 import ProjectHeader from '../../components/ProjectHeader';
+import MarketingBlock from '../../components/MarketingBlock';
 import ProjectSubheader from '../../components/ProjectSubheader';
 import ProjectInformation from '../../components/ProjectInformation';
 
@@ -27,7 +28,9 @@ const Project = () => {
                     </div>
                 </Col>
 
-                <Col></Col>
+                <Col md={4}>
+                    <MarketingBlock />
+                </Col>
             </div>   
         </> 
     );

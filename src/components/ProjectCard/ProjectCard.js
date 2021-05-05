@@ -19,13 +19,13 @@ const ProjectCard = (props) => {
 
     return (
         <div 
-            className='project-card mr-5' 
+            className='project-card' 
             onClick={goToProject}
             style={{ 
                 backgroundImage: `url(${project?.thumbnailURL})`,
-                backgroundPosition: 'top',
-                // backgroundSize: 'contain',
-                backgroundRepeat: 'no-repeat'
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
             }}
         >
             <div className='top-section'>
@@ -35,9 +35,11 @@ const ProjectCard = (props) => {
             
             <div className='address-section'>
                 <div>
-                    {`${project?.streetAddress1} ${project?.city}`}
+                    {project?.streetAddress1} {project?.city}
                 </div>
-                <div>{`${project?.state} ${project?.zip}`}</div>
+                <div>
+                    {project?.state} {project?.zip}
+                </div>
             </div>
 
             <div className='d-flex justify-content-center align-items-end bottom-section'>

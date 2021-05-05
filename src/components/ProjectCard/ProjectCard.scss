@@ -1,13 +1,13 @@
 @import '../../assets/styles/variables';
 
 .project-card {
-    background-color: slategray;
+    background-color: rgba(0, 0, 0, 0.7);
     height: 215px;
     width: 305px;
-    opacity: 0.9;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
     margin-bottom: 30px;
     padding-left: .75em;
+    margin-right: 2rem;
 
     div {
         color: white;

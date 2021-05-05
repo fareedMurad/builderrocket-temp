@@ -8,6 +8,7 @@ import './Home.scss';
 
 // components 
 import ProjectCard from '../../components/ProjectCard';
+import MarketingBlock from '../../components/MarketingBlock';
 
 const Home = (props) => {
     const { history } = props;
@@ -35,38 +36,44 @@ const Home = (props) => {
 
     return (
         <div className='home'>
-        <Container>
+            <Container>
                 <div className='d-flex title-container'>
                     <div id='home-title'>Projects</div>
                     <Link onClick={goToAddProject} to='/project' className='link-btn'>+ Add Project</Link>
                 </div>
-                <Row className='project-tabs' noGutters={true}>
-                    <Col xs={8} sm={8} md={6} lg={6} xl={9}>
-                        <div className='d-flex'>
-                            <div>
-                                <a className='link-btn' href='/'>Active Projects</a>
-                            </div>
-                            <div id='splitter'>{' | '}</div>
-                            <div>
-                                <a className='link-btn' href='/'>Closed Projects</a>
-                            </div>
+                <div className='d-flex project-tabs'>
+                    <div className='d-flex'> 
+                        <div>
+                            <a className='link-btn' href='/'>Active Projects</a>
                         </div>
-                    </Col>
-                    <Col xs={8} sm={8} md={6} lg={6} xl={3}>
+                        <div id='splitter'>{' | '}</div>
+                        <div>
+                            <a className='link-btn' href='/'>Closed Projects</a>
+                        </div>
+                    </div>
+                    <div className='d-flex search-bar'> 
                         <Form inline>
                             <FormControl className='search-container' type='text' />
                             &nbsp;&nbsp;&nbsp;
                             <button className='primary-gray-btn'>Search</button>
                         </Form>
+                    </div>
+                </div>
+
+                <Row className='cards' noGutters>
+                    <Col md={8} xl={9}>
+                        <div className='d-flex flex-wrap'>
+                            {projects?.map((project, index) => (
+                                <ProjectCard key={index} project={project} history={history} />
+                            ))}
+                        </div>
+                    </Col>
+                    
+                    <Col md={2} xl={3}>
+                        <MarketingBlock />
                     </Col>
                 </Row>
-
-                <Row className='cards' noGutters={true}>
-                    {projects?.map((project, index) => (
-                        <ProjectCard key={index} project={project} history={history} />
-                    ))}
-                </Row>
-        </Container>
+            </Container>
         </div>
     );
 }

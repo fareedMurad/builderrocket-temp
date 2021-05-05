@@ -1,7 +1,7 @@
 @import '../../assets/styles/variables';
 
 .home {   
-    padding-top: 18px;
+    padding: 1rem 0;
     background-color: $lightgray;
 
     .title-container {
@@ -40,6 +40,9 @@
 
     .cards {
         margin-bottom: 30px;
-        margin-right: 35px; 
+    }
+
+    .search-bar {
+        margin-left: 37%;
     }
 }
