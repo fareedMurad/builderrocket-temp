@@ -1,5 +1,4 @@
 import React, { } from 'react';
-import { Col } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import './Project.scss';
 
@@ -20,17 +19,14 @@ const Project = () => {
             <ProjectHeader />
             <ProjectSubheader />
 
-            <div className='project'>
+            <div className='d-flex justify-content-center project'>
+                <div className='tab-container'>
+                    <ProjectInformation project={project} />
+                </div>
 
-                <Col md={8}>
-                    <div className='tab-container'>
-                        <ProjectInformation project={project} />
-                    </div>
-                </Col>
-
-                <Col md={4}>
+                <div>
                     <MarketingBlock />
-                </Col>
+                </div>
             </div>   
         </> 
     );

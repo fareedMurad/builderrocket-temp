@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { GET_PROJECTS, SET_SELECTED_PROJECT, RESET_PROJECT } from './types';
+import { 
+    GET_PROJECTS, 
+    GET_PROJECT, 
+    SET_SELECTED_PROJECT, 
+    RESET_PROJECT 
+} from './types';
 
 const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
 
@@ -22,6 +27,25 @@ export const getProjects = (token) => dispatch => {
     })
     .catch((error) => {
         console.log('Getting Projects', error);
+    })
+}
+
+export const getProjectByProjectNumber = (projectNumber, token) => dispatch => {
+    let URL = `${baseURL}/Project/${projectNumber}`;
+
+    return axios({
+        method: 'GET', 
+        url: URL,
+        headers: { 
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_PROJECT, payload: response?.data });
+
+            return response?.data;
+        }
     })
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { setSelectedProject } from '../../actions/projectActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProjectByProjectNumber } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectCard.scss';
 
@@ -9,12 +9,14 @@ const ProjectCard = (props) => {
     const { project, history } = props;
 
     const dispatch = useDispatch();
+
+    const token = useSelector(state => state.auth.token);
     
     const goToProject = () => {
-        dispatch(setSelectedProject(project))
-        .then(() => {
-            history.push(`/project/${project?.projectNumber}`)
-        })
+        dispatch(getProjectByProjectNumber(project?.projectNumber, token))
+            .then(() => {
+                history.push(`/project/${project?.projectNumber}`)
+            });
     }
 
     return (
