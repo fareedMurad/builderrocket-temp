@@ -1,10 +1,22 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Navbar, Nav } from 'react-bootstrap';
+import { logout } from '../../actions/authActions';
 import './Header.scss';
 
 import NavSubheader from '../NavSubheader';
 
 const Header = () => {
+    const history = useHistory();
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        dispatch(logout())  
+            .then(() => {
+                history.push('/login');
+            });
+    }
 
     return (
         <>
@@ -24,7 +36,7 @@ const Header = () => {
                     <Navbar.Text className='item'>
                         South Chase Custom Homes (Contractor)
                     </Navbar.Text>
-                    <Nav.Link className='item'>
+                    <Nav.Link className='item' onClick={handleLogout}>
                         <i className='far fa-sign-out-alt'></i>
                     </Nav.Link>
                 </Navbar.Collapse>

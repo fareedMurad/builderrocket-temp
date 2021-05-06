@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SET_USER } from './types';
+import { SET_USER, LOGOUT } from './types';
 
 const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
 
@@ -29,4 +29,17 @@ export const loginEmailPassword = (email, password) => dispatch => {
 
 export const setUser = (token) => dispatch => {
     dispatch({ type: SET_USER, payload: token });
+}
+
+export const logout = () => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: LOGOUT });
+
+            resolve();
+        } catch (error) {
+            console.log('Error Logging User Out', error);
+            reject(error);
+        }
+    });
 }
