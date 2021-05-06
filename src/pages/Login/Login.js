@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Form } from 'react-bootstrap';
+import { Row, Col, Button, Form, Spinner } from 'react-bootstrap';
 import { loginEmailPassword } from '../../actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash'
@@ -12,10 +12,18 @@ const Login = (props) => {
     const token = useSelector(state => state.auth.token);
 
     const [login, setLogin] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = () => {
+        setIsLoading(true);
+
         if (!isEmpty(login))
-            dispatch(loginEmailPassword(login.email, login.password));
+            dispatch(loginEmailPassword(login.email, login.password))
+                .then(() => {
+                    setIsLoading(false);
+
+                    history.push('/');
+                });
     }
 
     useEffect(() => {
@@ -34,9 +42,7 @@ const Login = (props) => {
                     type='email'
                     onChange={(e) => setLogin({ ...login, email: e.target.value })}
                 />
-
                 <br />
-
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                     placeholder='Password'
@@ -44,7 +50,16 @@ const Login = (props) => {
                     onChange={(e) => setLogin({ ...login, password: e.target.value })}
                 />
                 <div className='pt-4'> 
-                    <Button onClick={handleLogin}>Login</Button>
+                    {isLoading ? 
+                        <div className='d-flex justify-content-center'>
+                            <Spinner 
+                                animation='border'
+                                variant='primary' 
+                            />
+                        </div>
+                    :
+                        <Button onClick={handleLogin}>Login</Button>
+                    }
                 </div>
             </Col>
         </Row>

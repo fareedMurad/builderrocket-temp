@@ -20,6 +20,8 @@ export const loginEmailPassword = (email, password) => dispatch => {
     .then((response) => {
         if (response?.status === 200) {
             dispatch(setUser(response?.data));
+
+            return response?.data;
         }
     })
     .catch((error) => {
