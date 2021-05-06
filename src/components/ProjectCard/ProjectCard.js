@@ -30,32 +30,34 @@ const ProjectCard = (props) => {
                 backgroundRepeat: 'no-repeat',
             }}
         >
-            <div className='top-section'>
-                <div className='lot-number'>{project?.projectNumber}</div>
-                <div className='project-name'>{project?.projectName}</div>
-            </div>
-            
-            <div className='address-section'>
-                <div>
-                    {project?.streetAddress1} {project?.city}
+            <div className='card-container'>
+                <div className='top-section'>
+                    <div className='lot-number'>{project?.projectNumber}</div>
+                    <div className='project-name'>{project?.projectName}</div>
                 </div>
-                <div>
-                    {project?.state} {project?.zip}
+                
+                <div className='address-section'>
+                    <div>
+                        {project?.streetAddress1} {project?.city}
+                    </div>
+                    <div>
+                        {project?.state} {project?.zip}
+                    </div>
                 </div>
-            </div>
 
-            <div className='d-flex justify-content-center align-items-end bottom-section'>
-                <div className='date-col'>
-                    <div className='bottom-title'>Permit Date</div>
-                    <div className='bottom-text'>{Utils.formatDateDashes(project?.permitDate)}</div>
-                </div>
-                <div className='date-col'>
-                    <div className='bottom-title'>C.O. Date</div>
-                    <div className='bottom-text'>{Utils.formatDateDashes(project?.occupencyCreated)}</div>
-                </div>
-                <div className='date-col'>
-                    <div className='bottom-title'>Closed On</div>
-                    <div className='bottom-text'>{Utils.formatDateDashes(project?.closeCreated)}</div>
+                <div className='d-flex justify-content-center align-items-end bottom-section'>
+                    <div className='date-col'>
+                        <div className='bottom-title'>Permit Date</div>
+                        <div className='bottom-text'>{Utils.formatDateDashes(project?.permitDate)}</div>
+                    </div>
+                    <div className='date-col'>
+                        <div className='bottom-title'>C.O. Date</div>
+                        <div className='bottom-text'>{Utils.formatDateDashes(project?.occupencyCreated)}</div>
+                    </div>
+                    <div className='date-col'>
+                        <div className='bottom-title'>Closed On</div>
+                        <div className='bottom-text'>{Utils.formatDateDashes(project?.closeCreated)}</div>
+                    </div>
                 </div>
             </div>
         </div>

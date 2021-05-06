@@ -1,20 +1,14 @@
 @import '../../assets/styles/variables';
 
 .header {
-
-    background-color: $black;
-    opacity: .8;
+    background-color: rgba(0,0,0,0.85);
     color: white;
     height: 46px;
 
-    .brand {
-        color: white;
-    }
-
     .item {
         color: white;
-    
     }
+    
     .navbar-text {
         padding-right: 10px;
         padding-left: 10px;

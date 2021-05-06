@@ -7,6 +7,8 @@ import './Header.scss';
 
 import NavSubheader from '../NavSubheader';
 
+import Logo from '../../assets/images/builder-rocket-logo.png';
+
 const Header = () => {
     const history = useHistory();
     const dispatch = useDispatch();
@@ -22,7 +24,7 @@ const Header = () => {
         <>
             <Navbar expand='lg' bg='dark' className='header'>
                 <Navbar.Brand href='/' className='brand'>
-                    <b>BuilderRocket</b>
+                    <img src={Logo} alt='builder rocket' height='45' width='100' />
                 </Navbar.Brand>
 
                 <Navbar.Toggle />

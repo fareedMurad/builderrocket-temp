@@ -1,14 +1,19 @@
 @import '../../assets/styles/variables';
 
 .project-card {
-    background-color: rgba(0, 0, 0, 0.7);
     height: 215px;
     width: 305px;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
     margin-bottom: 30px;
-    padding-left: .75em;
     margin-right: 2rem;
 
+    .card-container {
+        padding-left: .75em;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    
     div {
         color: white;
     }
