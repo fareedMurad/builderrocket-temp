@@ -11,7 +11,7 @@ const Login = (props) => {
 
     const token = useSelector(state => state.auth.token);
 
-    const [login, setLogin] = useState({});
+    const [login, setLogin] = useState({ email: 'ronbibb@gmail.com' });
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = () => {
@@ -38,6 +38,7 @@ const Login = (props) => {
                 <br/>
                 <Form.Label>Email</Form.Label>
                 <Form.Control
+                    value={login?.email}
                     placeholder='Email'
                     type='email'
                     onChange={(e) => setLogin({ ...login, email: e.target.value })}
