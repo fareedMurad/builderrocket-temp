@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col, Form, FormControl } from 'react-bootstrap';
 import { getProjects, resetProject } from '../../actions/projectActions.js';
@@ -12,10 +12,13 @@ import MarketingBlock from '../../components/MarketingBlock';
 
 const Home = (props) => {
     const { history } = props;
+
     const dispatch = useDispatch();
 
     const projects = useSelector(state => state.project.projects);
     const token = useSelector(state => state.auth.token);
+
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         if (!token) 
@@ -34,12 +37,26 @@ const Home = (props) => {
         dispatch(resetProject());
     }
 
+    const filterProjects = () => {
+        if (searchTerm === '') {
+            return projects;
+        } else {
+            return projects?.filter((project) => project?.projectName?.toLowerCase().includes(searchTerm?.toLowerCase()));
+        }
+    }
+
     return (
         <div className='home'>
             <Container>
                 <div className='d-flex title-container'>
                     <div id='home-title'>Projects</div>
-                    <Link onClick={goToAddProject} to='/project' className='link-btn'>+ Add Project</Link>
+                    <Link 
+                        onClick={goToAddProject} 
+                        to='/project' 
+                        className='link-btn'
+                    >
+                        + Add Project
+                    </Link>
                 </div>
                 <div className='d-flex project-tabs'>
                     <div className='d-flex'> 
@@ -53,7 +70,11 @@ const Home = (props) => {
                     </div>
                     <div className='d-flex search-bar'> 
                         <Form inline>
-                            <FormControl className='search-container' type='text' />
+                            <FormControl 
+                                className='search-container' 
+                                type='text'
+                                onChange={(e) => setSearchTerm(e.target.value)}    
+                            />
                             &nbsp;&nbsp;&nbsp;
                             <button className='primary-gray-btn'>Search</button>
                         </Form>
@@ -63,7 +84,7 @@ const Home = (props) => {
                 <Row className='cards' noGutters>
                     <Col md={8} xl={9}>
                         <div className='d-flex flex-wrap'>
-                            {projects?.map((project, index) => (
+                            {filterProjects()?.map((project, index) => (
                                 <ProjectCard key={index} project={project} history={history} />
                             ))}
                         </div>
