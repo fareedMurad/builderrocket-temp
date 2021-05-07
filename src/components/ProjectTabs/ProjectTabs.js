@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import './ProjectTabs.scss';
 
 // components 
@@ -7,11 +8,14 @@ import ProjectInformation from '../ProjectInformation';
 
 const ProjectTabs = () => {
 
+    const project = useSelector(state => state.project.project);
+    console.log('Project', project);
+
     return (
         <div className='project-tabs'>
             <Tabs defaultActiveKey='projectInformation' >
                 <Tab eventKey='projectInformation' title='Project Information'>
-                    <ProjectInformation />
+                    <ProjectInformation project={project} />
                 </Tab>
                 <Tab eventKey='documents' title='Documents'>
                     <div>Hello</div>

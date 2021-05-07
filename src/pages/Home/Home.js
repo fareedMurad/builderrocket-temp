@@ -32,10 +32,16 @@ const Home = (props) => {
     }, [dispatch, token, history, projects]);
 
     useEffect(() => {
+        /* Filter projects on project name, project #, lot #, street address, or customer first name.
+        Filter delayed by 1 second */
         const timer = setTimeout(() => {
-            const filter = projects?.filter(project => {
-                return project?.projectName.toLowerCase().includes(searchTerm?.toLowerCase());
-            });
+            const filter = projects?.filter(project => 
+                project?.projectName?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.projectNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                project?.lotNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                project?.streetAddress1?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.customers?.find(customer => customer?.firstName?.toLowerCase().includes(searchTerm?.toLowerCase()))
+        );
 
             setFilteredProjects(filter);
         }, 1000);
@@ -74,11 +80,12 @@ const Home = (props) => {
                         <Form inline>
                             <FormControl 
                                 className='search-container' 
+                                placeholder='Search'
                                 type='text'
                                 onChange={(e) => setSearchTerm(e.target.value)}    
                             />
-                            &nbsp;&nbsp;&nbsp;
-                            <button className='primary-gray-btn'>Search</button>
+                            {/* &nbsp;&nbsp;&nbsp; */}
+                            {/* <button className='primary-gray-btn'>Search</button> */}
                         </Form>
                     </div>
                 </div>
