@@ -1,13 +1,27 @@
 @import '../../assets/styles/variables';
 
 .project-information {
-    background-color: white;
-    padding-bottom: 2.3em;
-    width: 981px;
+
+    .information-form-container {
+        width: 981px;
+        background-color: white;
+        margin-right: 3rem;
+        padding-bottom: 2rem;
+    }
+
+    .information-form {
+        justify-content: space-evenly;
+        padding: 0 2rem;
+
+        .col {
+            padding: 0 3rem;
+        }
+    }
 
     #title {
-        padding-top: 1em;
-        padding-bottom: 1.3em;
+        padding-top: 1rem;
+        padding-bottom: 1.3rem;
+        padding-left: 2rem;
         font-size: 18px;
         font-weight: 600;
         letter-spacing: -0.41px;

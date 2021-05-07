@@ -1,12 +1,10 @@
-import React, { } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import './Project.scss';
 
 // components
 import ProjectHeader from '../../components/ProjectHeader';
-import MarketingBlock from '../../components/MarketingBlock';
-import ProjectSubheader from '../../components/ProjectSubheader';
-import ProjectInformation from '../../components/ProjectInformation';
+import ProjectTabs from '../../components/ProjectTabs';
 
 const Project = () => {
 
@@ -17,17 +15,7 @@ const Project = () => {
     return (
         <>
             <ProjectHeader />
-            <ProjectSubheader />
-
-            <div className='d-flex justify-content-center project'>
-                <div className='tab-container'>
-                    <ProjectInformation project={project} />
-                </div>
-
-                <div>
-                    <MarketingBlock />
-                </div>
-            </div>   
+            <ProjectTabs />
         </> 
     );
 }
