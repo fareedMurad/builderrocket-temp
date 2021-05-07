@@ -19,6 +19,7 @@ const Home = (props) => {
     const token = useSelector(state => state.auth.token);
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProjects, setFilteredProjects] = useState(projects);
 
     useEffect(() => {
         if (!token) 
@@ -26,23 +27,24 @@ const Home = (props) => {
     
 
         if (token && isEmpty(projects)) {
-            dispatch(getProjects(token))
-                .then((data) => {
-                    console.log('DATA', data);
-                });
+            dispatch(getProjects(token));
         }
     }, [dispatch, token, history, projects]);
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const filter = projects?.filter(project => {
+                return project?.projectName.toLowerCase().includes(searchTerm?.toLowerCase());
+            });
+
+            setFilteredProjects(filter);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm, projects]);
+
     const goToAddProject = () => {
         dispatch(resetProject());
-    }
-
-    const filterProjects = () => {
-        if (searchTerm === '') {
-            return projects;
-        } else {
-            return projects?.filter((project) => project?.projectName?.toLowerCase().includes(searchTerm?.toLowerCase()));
-        }
     }
 
     return (
@@ -84,7 +86,7 @@ const Home = (props) => {
                 <Row className='cards' noGutters>
                     <Col md={8} xl={9}>
                         <div className='d-flex flex-wrap'>
-                            {filterProjects()?.map((project, index) => (
+                            {filteredProjects?.map((project, index) => (
                                 <ProjectCard key={index} project={project} history={history} />
                             ))}
                         </div>
