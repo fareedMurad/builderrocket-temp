@@ -1,4 +1,5 @@
 import React from 'react';
+import { Form } from 'react-bootstrap';
 import './FileUpload.scss';
 
 
@@ -6,8 +7,13 @@ const FileUpload = (props) => {
 
     return (
         <div className='file-upload'>
-            <input type='file' hidden className='input-gray' />
-            <button className='primary-gray-btn button'>Browse</button>
+            <Form.Label className='input-label'>Project Image</Form.Label>
+            
+            <Form.File
+                type='file'
+                className='custom-file-label'
+                custom
+            />
         </div>
     )
 }

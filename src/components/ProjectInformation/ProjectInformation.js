@@ -5,7 +5,7 @@ import './ProjectInformation.scss';
 
 // components
 import MarketingBlock from '../MarketingBlock';
-// import FileUpload from '../FileUpload';
+import FileUpload from '../FileUpload';
 
 const ProjectInformation = (props) => {
     const { project } = props;
@@ -81,18 +81,17 @@ const ProjectInformation = (props) => {
 
                     <Col>
                         <div className='pb-4'>
-                            <Form.Label className='input-label'>Project Image</Form.Label>
-                            <Form.Control
+                            {/* <Form.Control
                                 type='email'
                                 className='input-gray'
-                            />
+                            /> */}
                             {/* <Form.File 
                                 id='custom-file'
                                 label=''
                                 className='file-input'
                                 custom
                             /> */}
-                            {/* <FileUpload /> */}
+                            <FileUpload />
                         </div>
                         <div className='pb-4'>
                             <Form.Label className='input-label'>Customer Email</Form.Label>

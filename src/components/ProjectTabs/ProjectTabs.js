@@ -5,6 +5,13 @@ import './ProjectTabs.scss';
 
 // components 
 import ProjectInformation from '../ProjectInformation';
+import Documents from '../Documents';
+import Utilities from '../Utilities';
+import Contractors from '../Contractors';
+import Drawings from '../Drawings';
+import RoomAreaLayout from '../RoomAreaLayout';
+import Products from '../Products';
+
 
 const ProjectTabs = () => {
 
@@ -18,22 +25,22 @@ const ProjectTabs = () => {
                     <ProjectInformation project={project} />
                 </Tab>
                 <Tab eventKey='documents' title='Documents'>
-                    <div>Hello</div>
+                    <Documents />
                 </Tab>
                 <Tab eventKey='utilities' title='Utilities'>
-                    <div>Hello</div>
+                    <Utilities />
                 </Tab>
                 <Tab eventKey='contractors' title='Contractors'>
-                    <div>Hello</div>
+                    <Contractors />
                 </Tab>
                 <Tab eventKey='drawings' title='Drawings'>
-                    <div>Hello</div>
+                    <Drawings />
                 </Tab>
                 <Tab eventKey='roomAreaLayout' title='Room/Area Layout'>
-                    <div>Hello</div>
+                    <RoomAreaLayout />
                 </Tab>
                 <Tab eventKey='products' title='Products'>
-                    <div>Hello</div>
+                    <Products />
                 </Tab>
             </Tabs>
         </div>
