@@ -4,10 +4,11 @@ import './FileUpload.scss';
 
 
 const FileUpload = (props) => {
+    const { label } = props;
 
     return (
         <div className='file-upload'>
-            <Form.Label className='input-label'>Project Image</Form.Label>
+            <Form.Label className='input-label'>{label}</Form.Label>
             
             <Form.File
                 type='file'

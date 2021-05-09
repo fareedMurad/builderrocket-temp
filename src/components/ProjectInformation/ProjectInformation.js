@@ -13,7 +13,7 @@ const ProjectInformation = (props) => {
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 
-                <div id='title'>Project Information</div>
+                <div className='tab-item-title'>Project Information</div>
 
                 <div className='d-flex information-form'>
                     <Col>
@@ -84,14 +84,14 @@ const ProjectInformation = (props) => {
 
                     <Col>
                         <div className='pb-4'>
-                            <FileUpload />
+                            <FileUpload label='Project Image' />
                         </div>
                         <div className='pb-4'>
                             <Form.Label className='input-label'>Customer Email</Form.Label>
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                value={project?.customers?.[0]?.email}
+                                defaultValue={project?.customers?.[0]?.email}
                             />
                         </div>
                         <div className='pb-4'>

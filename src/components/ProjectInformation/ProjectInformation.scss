@@ -11,39 +11,11 @@
 
     .information-form {
         justify-content: space-evenly;
-        padding: 0 2rem;
+        padding: 0 1.5rem;
 
         .col {
             padding: 0 3rem;
         }
-    }
-
-    #title {
-        padding-top: 1rem;
-        padding-bottom: 1.3rem;
-        padding-left: 2rem;
-        font-size: 18px;
-        font-weight: 600;
-        letter-spacing: -0.41px;
-        line-height: 24px;
-    }
-
-    .next-btn {
-        font-size: 14px;
-        letter-spacing: -0.17px;
-        line-height: 19px;
-        font-weight: normal;
-        text-align: center;
-        padding-bottom: .3rem;
-        padding-top: -.2rem;
-    }
-
-    .cancel {
-        font-size: 14px;
-        letter-spacing: -0.32px;
-        line-height: 16px;
-        padding-top: .3rem;
-        color: $cancelblue;
     }
 
 }
