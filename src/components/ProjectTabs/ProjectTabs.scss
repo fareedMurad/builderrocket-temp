@@ -1,9 +1,13 @@
 @import '../../assets/styles/variables';
 
-.project-tabs {    
+.project-tabs {  
     .tab-pane {
         background-color: $lightgray;
         padding: 2rem 3rem;
+        
+        .active {
+            height: 100% !important;
+        }
     }
 
     .nav {
