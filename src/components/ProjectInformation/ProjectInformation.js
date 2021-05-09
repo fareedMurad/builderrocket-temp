@@ -30,6 +30,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
+                                defaultValue={project?.customers?.[0]?.firstName}
                             />
                         </div>
                         <div className='pb-4'>
@@ -37,6 +38,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
+                                defaultValue={project?.planName}
                             />
                         </div>
                         <div className='pb-2'>
@@ -59,6 +61,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
+                                defaultValue={project?.city}
                             />
                         </div>
                         <div className='pb-4'>
@@ -74,23 +77,13 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={Utils.formatDateDashes(project?.closeCreated)}
+                                defaultValue={Utils.formatDateDashes(project?.closeDate)}
                             />
                         </div>
                     </Col>
 
                     <Col>
                         <div className='pb-4'>
-                            {/* <Form.Control
-                                type='email'
-                                className='input-gray'
-                            /> */}
-                            {/* <Form.File 
-                                id='custom-file'
-                                label=''
-                                className='file-input'
-                                custom
-                            /> */}
                             <FileUpload />
                         </div>
                         <div className='pb-4'>
@@ -98,6 +91,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
+                                value={project?.customers?.[0]?.email}
                             />
                         </div>
                         <div className='pb-4'>

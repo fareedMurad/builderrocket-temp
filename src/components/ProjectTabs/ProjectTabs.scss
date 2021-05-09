@@ -4,11 +4,9 @@
     .tab-pane {
         background-color: $lightgray;
         padding: 2rem 3rem;
-        
-        .active {
-            height: 100% !important;
-        }
+        min-height: 100vh;
     }
+
 
     .nav {
         padding: 0 3rem;

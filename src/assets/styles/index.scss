@@ -9,6 +9,13 @@
     }
 }
 
+@include media-breakpoint-down(lg) {
+    .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
 .input-gray {
     height: 28px;
     border-radius: 2px;

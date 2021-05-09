@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Row, Col, Form, FormControl } from 'react-bootstrap';
+import { Container, Form, FormControl } from 'react-bootstrap';
 import { getProjects, resetProject } from '../../actions/projectActions.js';
 import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
@@ -90,19 +90,17 @@ const Home = (props) => {
                     </div>
                 </div>
 
-                <Row className='cards' noGutters>
-                    <Col md={8} xl={9}>
-                        <div className='d-flex flex-wrap'>
-                            {filteredProjects?.map((project, index) => (
-                                <ProjectCard key={index} project={project} history={history} />
-                            ))}
-                        </div>
-                    </Col>
+                <div className='d-flex'>
+                    <div className='d-flex flex-wrap cards'>
+                        {filteredProjects?.map((project, index) => (
+                            <ProjectCard key={index} project={project} history={history} />
+                        ))}
+                    </div>
                     
-                    <Col md={2} xl={3}>
+                    <div className='d-flex justify-content-end'>
                         <MarketingBlock />
-                    </Col>
-                </Row>
+                    </div>
+                </div>
             </Container>
         </div>
     );
