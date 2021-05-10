@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-// import Utils from '../../utils';
+import Utils from '../../utils';
 import './ProjectHeader.scss';
 
 const ProjectHeader = () => {
@@ -11,8 +11,7 @@ const ProjectHeader = () => {
     return (
         <div className='project-header'>
             {/* <Container> */}
-                <div className='d-flex ml-3'>
-                    <Col lg={4}>
+                <div className='d-flex flex-wrap justify-content-around'>
                         <div className='d-flex pt-2'>
                             <Col>   
                                 <div className='project-image d-flex'>
@@ -32,26 +31,35 @@ const ProjectHeader = () => {
                                     <div className='text pl-2 pt-1'>{project?.projectName}</div>
                                 </div>
 
-                                <div>Address</div>
+                                <div className='d-flex'>
+                                    Address
+                                    {'    '}
+                                    {project?.streetAddress1}
+                                </div>
 
                                 <div className='pt-2'>
                                     <a href='/' className='text'>Save as New Project</a>
                                 </div>
                             </Col>
                         </div>
-                    </Col>
-                    <Col lg={{ offset: 1, span: 3 }}>
+
+                    <div>
                         <div className='bold-text pt-5'>Customer Name</div>
                         <div className='d-flex'>
                             <div className='pr-2 text'>Phone</div>
-                            <div className='text'>Email Address</div>
+                            <div className='text'>Email Address {project?.customers?.[0]?.email}</div>
                         </div>
                         <div className='d-flex pt-3'>
-                            <div className='bold-text pr-5'>Closed On</div>
-                            <div className='bold-text pl-5'>Build Time</div>
+                            <div className='bold-text pr-3'>
+                                Closed On 
+                                {'    '}
+                                {Utils.formatDateDashes (project?.closeDate)}</div>
+                            <div className='bold-text pl-3'>Build Time</div>
                         </div>
-                    </Col>
-                    <Col lg={4}>
+                    </div>
+
+
+                    <div>
                         <div className='d-flex pt-3 justify-content-end'>
                             <div className='pr-3 text'>Status: <span className='bold-text'>Open Project</span></div>
                             <button className='snapshot-btn'>Project Snapshot</button>
@@ -60,7 +68,7 @@ const ProjectHeader = () => {
                         <div className='d-flex total justify-content-end text'>
                             Project Total: $0.00 Margin: $0.00
                         </div>
-                    </Col>
+                    </div>
                 </div>
             {/* </Container> */}
         </div>

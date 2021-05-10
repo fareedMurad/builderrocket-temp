@@ -15,7 +15,7 @@ const Contractors = () => {
                     Contractor  
                     <div className='ml-3'>
                         <Link to='/project' className='link-btn'>
-                            + Add Project
+                            + Add Contractor
                         </Link>
                     </div>
                 </div>
