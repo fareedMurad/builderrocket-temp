@@ -1,0 +1,20 @@
+@import '../../assets/styles/variables';
+
+.contractors {
+    
+    .contractors-container {
+        width: 981px;
+        background-color: white;
+        margin-right: 3rem;
+        padding-bottom: 2rem;
+    }
+
+    .contractors-form {
+        justify-content: space-evenly;
+        padding: 0 1.5rem;
+
+        .col {
+            padding: 0 3rem;
+        }
+    }
+}

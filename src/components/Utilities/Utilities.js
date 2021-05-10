@@ -44,7 +44,7 @@ const Utilities = () => {
                     </Col>
                 </div>
 
-                <div className='d-flex justify-content-center  pt-5'>
+                <div className='d-flex justify-content-center pt-5'>
                     <a href='/' className='cancel'>Cancel</a>
                     <button className='primary-gray-btn next-btn ml-3'>Next</button>
                 </div>

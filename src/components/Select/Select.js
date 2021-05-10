@@ -10,7 +10,7 @@ const Select = (props) => {
         <div className='select'> 
             <Form.Label className='input-label'>{label}</Form.Label>
             <Form.Control as='select'>
-              <option>1</option>
+              <option></option>
             </Form.Control>
         </div>
     );
