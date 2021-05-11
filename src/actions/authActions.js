@@ -25,7 +25,7 @@ export const loginEmailPassword = (email, password) => dispatch => {
         }
     })
     .catch((error) => {
-        console.log('Login Error', error);
+        console.log('Login', error);
     });
 }
 
@@ -40,7 +40,7 @@ export const logout = () => dispatch => {
 
             resolve();
         } catch (error) {
-            console.log('Error Logging User Out', error);
+            console.log('Logging User Out', error);
             reject(error);
         }
     });

@@ -1,10 +1,12 @@
 import { combineReducers  } from 'redux';
 import { LOGOUT } from '../actions/types';
 import authReducer from './authReducer';
+import userReducer from './userReducer';
 import projectReducer from './projectReducer';
 
 const appReducer = combineReducers({
     auth: authReducer,
+    user: userReducer,
     project: projectReducer
 })
 

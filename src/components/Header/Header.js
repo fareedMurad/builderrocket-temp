@@ -1,7 +1,7 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Image } from 'react-bootstrap';
 import { logout } from '../../actions/authActions';
 import './Header.scss';
 
@@ -13,13 +13,15 @@ const Header = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
+    const user = useSelector(state => state.user.user);
+
     const handleLogout = () => {
         dispatch(logout())  
             .then(() => {
                 history.push('/login');
             });
     }
-
+    
     return (
         <>
             <Navbar expand='lg' bg='dark' className='header'>
@@ -30,14 +32,20 @@ const Header = () => {
                 <Navbar.Toggle />
                 <Navbar.Collapse className='justify-content-end'>
                     <Nav.Link className='item'>
-                        <i className='far fa-user-circle'></i>
+                        {user?.avatarURL ?
+                            <Image src={user?.avatarURL} roundedCircle />
+                        :
+                            <i className='far fa-user-circle'></i>
+                        }
                     </Nav.Link>
                     <Nav.Link className='item'>
                         <i className='far fa-cog'></i>
                     </Nav.Link>
-                    <Navbar.Text className='item'>
-                        South Chase Custom Homes (Contractor)
-                    </Navbar.Text>
+                    {user?.firstName &&
+                        <Navbar.Text className='item'>
+                            {user?.firstName}
+                        </Navbar.Text>
+                    }
                     <Nav.Link className='item' onClick={handleLogout}>
                         <i className='far fa-sign-out-alt'></i>
                     </Nav.Link>

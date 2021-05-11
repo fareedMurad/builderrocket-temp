@@ -47,6 +47,9 @@ export const getProjectByProjectNumber = (projectNumber, token) => dispatch => {
             return response?.data;
         }
     })
+    .catch((error) => {
+        console.log('Get Project By Number', error);
+    });
 }
 
 export const setSelectedProject = (selectedProject) => dispatch => {

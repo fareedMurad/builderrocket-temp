@@ -3,6 +3,7 @@ import { Row, Col, Button, Form, Spinner } from 'react-bootstrap';
 import { loginEmailPassword } from '../../actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash'
+import { getUserProfile } from '../../actions/userActions';
 
 const Login = (props) => {
     const { history } = props;
@@ -19,7 +20,10 @@ const Login = (props) => {
 
         if (!isEmpty(login))
             dispatch(loginEmailPassword(login.email, login.password))
-                .then(() => {
+                .then((token) => {
+                    if (token)
+                        dispatch(getUserProfile(token));
+
                     setIsLoading(false);
 
                     history.push('/');
