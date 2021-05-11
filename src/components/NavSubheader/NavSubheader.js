@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './NavSubheader.scss';
 
@@ -8,8 +8,8 @@ const NavSubheader = () => {
     return (
         <Navbar expand='lg' className='nav-bar'>
             <Container>
-                <Nav className='mr-auto'>
-                    <Link className='header-item' to='/home'>
+                <Nav className='ml-4 pl-2 mr-auto'>
+                    <Link className='header-item' to='/'>
                         <i className='far fa-images fa-sm tab-icon'></i>
                         Projects
                     </Link>
