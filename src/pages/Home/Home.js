@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Form, FormControl } from 'react-bootstrap';
+import { Button, Container, Form, FormControl } from 'react-bootstrap';
 import { getProjects, resetProject } from '../../actions/projectActions.js';
 import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
@@ -15,16 +15,16 @@ const Home = (props) => {
 
     const dispatch = useDispatch();
 
-    const projects = useSelector(state => state.project.projects);
     const token = useSelector(state => state.auth.token);
+    const projects = useSelector(state => state.project.projects);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredProjects, setFilteredProjects] = useState(projects);
+    const [filteredProjects, setFilteredProjects] = useState([]);
+    const [projectsStatus, setProjectsStatus] = useState('Active');
 
     useEffect(() => {
         if (!token) 
             history.push('/login');
-    
 
         if (token && isEmpty(projects)) {
             dispatch(getProjects(token));
@@ -53,6 +53,12 @@ const Home = (props) => {
         dispatch(resetProject());
     }
 
+    const filterProjects = () => {
+        return filteredProjects.filter(project => projectsStatus === 'Active' 
+            ? parseInt(project?.statusID) !== 3 
+            : parseInt(project?.statusID) === 3);
+    }
+
     return (
         <div className='home'>
             <Container>
@@ -69,11 +75,23 @@ const Home = (props) => {
                 <div className='d-flex project-tabs'>
                     <div className='d-flex'> 
                         <div>
-                            <a className='link-btn' href='/'>Active Projects</a>
+                            <Button     
+                                variant='link' 
+                                className={`link-btn ${projectsStatus === 'Active' ? 'active' : 'closed'}`} 
+                                onClick={() => setProjectsStatus('Active')}
+                            >
+                                Active Projects
+                            </Button>
                         </div>
                         <div id='splitter'>{' | '}</div>
                         <div>
-                            <a className='link-btn' href='/'>Closed Projects</a>
+                            <Button 
+                                variant='link' 
+                                className={`link-btn ${projectsStatus === 'Closed' ? 'active' : 'closed'}`} 
+                                onClick={() => setProjectsStatus('Closed')}
+                            >
+                                Closed Projects
+                            </Button>
                         </div>
                     </div>
                     <div className='d-flex search-bar'> 
@@ -84,20 +102,22 @@ const Home = (props) => {
                                 type='text'
                                 onChange={(e) => setSearchTerm(e.target.value)}    
                             />
-                            {/* &nbsp;&nbsp;&nbsp; */}
-                            {/* <button className='primary-gray-btn'>Search</button> */}
                         </Form>
                     </div>
                 </div>
 
-                <div className='d-flex'>
+                <div className='d-flex justify-content-between'>
                     <div className='d-flex flex-wrap cards'>
-                        {filteredProjects?.map((project, index) => (
-                            <ProjectCard key={index} project={project} history={history} />
+                        {filterProjects()?.map((project, index) => (
+                            <ProjectCard 
+                                key={index} 
+                                project={project} 
+                                history={history} 
+                            />
                         ))}
                     </div>
                     
-                    <div className='d-flex justify-content-end'>
+                    <div className='d-flex'>
                         <MarketingBlock />
                     </div>
                 </div>
