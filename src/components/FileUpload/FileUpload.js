@@ -9,7 +9,7 @@ const FileUpload = (props) => {
         <div className='file-upload'>
             <Form.Label className='input-label'>{label}</Form.Label>
 
-            <label class='custom-file-label'>
+            <label className='custom-file-label'>
                 <input type='file' />
             </label>
         </div>

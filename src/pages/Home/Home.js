@@ -19,17 +19,19 @@ const Home = (props) => {
     const projects = useSelector(state => state.project.projects);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredProjects, setFilteredProjects] = useState([]);
+    const [filteredProjects, setFilteredProjects] = useState(projects);
     const [projectsStatus, setProjectsStatus] = useState('Active');
 
     useEffect(() => {
         if (!token) 
             history.push('/login');
-
-        if (token) {
+    });
+    
+    useEffect(() => {
+        if (token)
             dispatch(getProjects(token));
-        }
-    }, [dispatch, token, history, projects]);
+
+    }, [dispatch, token]);
 
     useEffect(() => {
         /* Filter projects on project name, project #, lot #, street address, or customer first name.
