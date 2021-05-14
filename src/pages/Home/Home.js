@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Container, Form, FormControl } from 'react-bootstrap';
 import { getProjects, resetProject } from '../../actions/projectActions.js';
 import { Link } from 'react-router-dom';
-import { isEmpty } from 'lodash';
+// import { isEmpty } from 'lodash';
 import './Home.scss';
 
 // components 
@@ -26,7 +26,7 @@ const Home = (props) => {
         if (!token) 
             history.push('/login');
 
-        if (token && isEmpty(projects)) {
+        if (token) {
             dispatch(getProjects(token));
         }
     }, [dispatch, token, history, projects]);

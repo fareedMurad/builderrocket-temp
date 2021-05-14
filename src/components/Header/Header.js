@@ -41,9 +41,13 @@ const Header = () => {
                     <Nav.Link className='item'>
                         <i className='far fa-cog'></i>
                     </Nav.Link>
-                    {user?.firstName &&
+                    {user?.firstName ?
                         <Navbar.Text className='item'>
-                            {user?.firstName}
+                            {user?.firstName} {user?.lastName}
+                        </Navbar.Text>
+                    : 
+                        <Navbar.Text className='item'>
+                            {user?.company}
                         </Navbar.Text>
                     }
                     <Nav.Link className='item' onClick={handleLogout}>

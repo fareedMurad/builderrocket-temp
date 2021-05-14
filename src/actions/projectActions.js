@@ -3,7 +3,8 @@ import {
     GET_PROJECTS, 
     GET_PROJECT, 
     SET_SELECTED_PROJECT, 
-    RESET_PROJECT 
+    RESET_PROJECT, 
+    LOGOUT
 } from './types';
 
 const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
@@ -24,8 +25,12 @@ export const getProjects = (token) => dispatch => {
 
             return response?.data;
         }
+        console.log('yoo', response);
     })
     .catch((error) => {
+        if (error.response.status === 401) 
+            dispatch({ type: LOGOUT });
+
         console.log('Getting Projects', error);
     })
 }
@@ -48,6 +53,9 @@ export const getProjectByProjectNumber = (projectNumber, token) => dispatch => {
         }
     })
     .catch((error) => {
+        if (error.response.status === 401) 
+            dispatch({ type: LOGOUT });
+
         console.log('Get Project By Number', error);
     });
 }
