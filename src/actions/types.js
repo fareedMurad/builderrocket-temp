@@ -11,3 +11,6 @@ export const RESET_PROJECT = 'RESET_PROJECT';
 
 // user
 export const GET_USER_PROFILE = 'GET_USER_PROFILE';
+
+// subdivision
+export const GET_SUBDIVISIONS = 'GET_SUBDIVISIONS';

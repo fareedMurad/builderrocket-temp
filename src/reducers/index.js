@@ -3,11 +3,13 @@ import { LOGOUT } from '../actions/types';
 import authReducer from './authReducer';
 import userReducer from './userReducer';
 import projectReducer from './projectReducer';
+import subdivisionReducer from './subdivisionReducer';
 
 const appReducer = combineReducers({
     auth: authReducer,
     user: userReducer,
-    project: projectReducer
+    project: projectReducer,
+    subdivision: subdivisionReducer
 })
 
 const rootReducer = (state, action) => {

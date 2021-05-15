@@ -2,7 +2,6 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import './Select.scss';
 
-
 const Select = (props) => {
     const { label } = props;
 

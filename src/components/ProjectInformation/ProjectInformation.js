@@ -6,6 +6,7 @@ import './ProjectInformation.scss';
 // components
 import MarketingBlock from '../MarketingBlock';
 import FileUpload from '../FileUpload';
+import Select from '../Select';
 
 const ProjectInformation = (props) => {
     const { project } = props;
@@ -42,11 +43,7 @@ const ProjectInformation = (props) => {
                             />
                         </div>
                         <div className='pb-2'>
-                            <Form.Label className='input-label'>Subdivision</Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                            />
+                            <Select label='Subdivision' />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Street Address 1</Form.Label>
