@@ -8,7 +8,6 @@ import Utils from '../../utils';
 // components
 import MarketingBlock from '../MarketingBlock';
 import FileUpload from '../FileUpload';
-import Select from '../Select';
 
 const ProjectInformation = (props) => {
     const { project } = props;
@@ -53,8 +52,14 @@ const ProjectInformation = (props) => {
                                 defaultValue={project?.planName}
                             />
                         </div>
-                        <div className='pb-2'>
-                            <Select label='Subdivision' />
+                        <div className='pb-2 select'>
+                            <Form.Label className='input-label'>Subdivision</Form.Label>
+                            <Form.Control as='select'>
+                                <option></option>
+                                {subdivisions?.map((subdivision, index) => (
+                                    <option key={index}>{subdivision.subdivisionName}</option>
+                                ))}
+                            </Form.Control>
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Street Address 1</Form.Label>

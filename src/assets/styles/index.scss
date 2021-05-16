@@ -88,3 +88,12 @@
     line-height: 17px;
     color: $tabblue;
 }
+
+.select {
+    .form-control {
+        background-color: $lightgray;
+        border-radius: 2px;
+        height: 28px;
+        border: none;
+    }
+}
