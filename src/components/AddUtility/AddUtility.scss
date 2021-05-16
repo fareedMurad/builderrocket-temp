@@ -1,0 +1,13 @@
+@import '../../assets/styles/variables';
+
+.add-utility {
+
+    .add-utility-form {
+        justify-content: space-evenly;
+        padding: 0 1.5rem;
+
+        .col {
+            padding: 0 3rem;
+        }
+    }
+}

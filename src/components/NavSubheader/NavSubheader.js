@@ -1,34 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import './NavSubheader.scss';
 
+// components
+import AddUtility from '../AddUtility';
+
 const NavSubheader = () => {
+    const [showUtility, setShowUtility] = useState(false);
+
+    const handleCloseUtilityModal = () => {
+        console.log('YUH', showUtility);
+
+        setShowUtility(false);
+    }
+    
 
     return (
         <Navbar expand='lg' className='nav-bar'>
             <Container>
                 <Nav className='ml-4 pl-2 mr-auto'>
-                    <Link className='header-item' to='/'>
+                    <div className='header-item'>
                         <i className='far fa-images fa-sm tab-icon'></i>
                         Projects
-                    </Link>
-                    <Link className='header-item' to='home'>
+                    </div>
+                    <div className='header-item'>
                         <i className='far fa-border-none fa-sm tab-icon'></i>
                         Rooms Management
-                    </Link>
-                    <Link className='header-item' to='/features'>
+                    </div>
+                    <div 
+                        className='header-item' 
+                        onClick={() => setShowUtility(true)}
+                    >
                         <i className='far fa-lightbulb fa-sm tab-icon'></i>
                         Utility Management
-                    </Link>
-                    <Link className='header-item' to='/pricing'>
+
+                        <AddUtility 
+                            show={showUtility} 
+                            handleClose={handleCloseUtilityModal} 
+                        />
+                    </div>
+                    <div className='header-item'>
                         <i className='far fa-bookmark fa-sm tab-icon'></i>
                         Vendor Management
-                    </Link>
-                    <Link className='header-item' to='/home'>
+                    </div>
+                    <div className='header-item'>
                         <i className='far fa-user-hard-hat fa-sm tab-icon'></i>
                         Contractor Management
-                    </Link>
+                    </div>
                 </Nav>
             </Container>
         </Navbar>

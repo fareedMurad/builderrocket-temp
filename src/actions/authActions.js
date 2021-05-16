@@ -44,7 +44,7 @@ export const logout = () => dispatch => {
         try {
             dispatch({ type: LOGOUT });
 
-            delete axios.defaults.headers.common['Authorization'];
+            // delete axios.defaults.headers.common['Authorization'];
 
             resolve();
         } catch (error) {
