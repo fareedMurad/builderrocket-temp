@@ -25,4 +25,16 @@
         background-color: $btngray;
         height: 24px;
     }
+
+    .upload-btn {
+        label {
+            background-color: $btngray;
+            color: white;
+            height: 24px;
+            font-size: 12px;
+            padding: .150rem .5rem;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+    }
 }

@@ -30,6 +30,12 @@ export const loginEmailPassword = (email, password) => dispatch => {
 }
 
 export const setUser = (token) => dispatch => {
+
+    if (token) {
+        // Add Authorization header to all axios requests
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
     dispatch({ type: SET_USER, payload: token });
 }
 
@@ -37,6 +43,8 @@ export const logout = () => dispatch => {
     return new Promise((resolve, reject) => {
         try {
             dispatch({ type: LOGOUT });
+
+            delete axios.defaults.headers.common['Authorization'];
 
             resolve();
         } catch (error) {

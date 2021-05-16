@@ -11,10 +11,7 @@ export const getUserProfile = (token) => dispatch => {
 
     return axios({
         method: 'GET', 
-        url: URL, 
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
+        url: URL
     })
     .then((response) => {
         if (response?.status === 200) {

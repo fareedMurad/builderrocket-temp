@@ -18,7 +18,7 @@ const Documents = (props) => {
                 <div className='d-flex documents-form'>
                     <Col>
                         <div className='pb-2'>
-                            <FileUpload label='Neighborhood Restrictions' />
+                            <FileUpload label='Neighborhood Restrictions' short />
                         </div>
                         <div className='pb-2'>
                             <FileUpload label='Plot of Lot' />

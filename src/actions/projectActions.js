@@ -14,10 +14,7 @@ export const getProjects = (token) => dispatch => {
 
     return axios({
         method: 'GET', 
-        url: URL,
-        headers: { 
-            Authorization: `Bearer ${token}`
-        }
+        url: URL
     })
     .then((response) => {
         if (response?.status === 200) {
@@ -40,10 +37,7 @@ export const getProjectByProjectNumber = (projectNumber, token) => dispatch => {
 
     return axios({
         method: 'GET', 
-        url: URL,
-        headers: { 
-            Authorization: `Bearer ${token}`
-        }
+        url: URL
     })
     .then((response) => {
         if (response?.status === 200) {
