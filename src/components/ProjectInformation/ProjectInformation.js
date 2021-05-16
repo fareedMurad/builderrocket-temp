@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Col } from 'react-bootstrap';
-import Utils from '../../utils';
+import { getSubdivisions } from '../../actions/subdivisionActions';
+import { useDispatch, useSelector } from 'react-redux';
 import './ProjectInformation.scss';
+import Utils from '../../utils';
 
 // components
 import MarketingBlock from '../MarketingBlock';
@@ -10,6 +12,15 @@ import Select from '../Select';
 
 const ProjectInformation = (props) => {
     const { project } = props;
+
+    const dispatch = useDispatch();
+
+    const subdivisions = useSelector(state => state.subdivision.subdivisions);
+    console.log('SUBS', subdivisions);
+
+    useEffect(() => {
+        dispatch(getSubdivisions());
+    }, [dispatch]);
 
     return (
         <div className='d-flex project-information'> 
