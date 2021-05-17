@@ -24,7 +24,7 @@ const ProjectInformation = (props) => {
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 
-                <div className='tab-item-title'>Project Information</div>
+                <div className='page-title'>Project Information</div>
 
                 <div className='d-flex information-form'>
                     <Col>

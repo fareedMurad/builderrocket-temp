@@ -11,7 +11,7 @@ const Contractors = () => {
     return (
         <div className='d-flex contractors'>
             <div className='contractors-container'>
-                <div className='d-flex tab-item-title'>
+                <div className='d-flex page-title'>
                     Contractor  
                     <div className='ml-3'>
                         <Link to='/project' className='link-btn'>

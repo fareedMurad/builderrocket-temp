@@ -10,7 +10,7 @@ const Drawings = () => {
     return (
         <div className='d-flex drawings'>
             <div className='drawings-container'>
-                <div className='d-flex tab-item-title'>
+                <div className='d-flex page-title'>
                     Drawings
                     <div className='ml-3'>
                         <Link to='/project' className='link-btn'>

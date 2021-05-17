@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Col, Button } from 'react-bootstrap';
-import { getUtilities } from '../../actions/utilityActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { getUtilityTypes } from '../../actions/utilityActions';
 import './AddUtility.scss';
 
 const AddUtility = (props) => {
@@ -9,12 +9,11 @@ const AddUtility = (props) => {
 
     const dispatch = useDispatch();
 
-    const utilities = useSelector(state => state.utility.utilities);
-
-    console.log('Utilities', utilities);
+    const utilityTypes = useSelector(state => state.utility.utilityTypes);
+    console.log('Utility Types', utilityTypes);
 
     useEffect(() => {
-        dispatch(getUtilities());
+        dispatch(getUtilityTypes());
     }, [dispatch]);
 
     return (
@@ -26,7 +25,7 @@ const AddUtility = (props) => {
             size='xl'
         >
             <Modal.Body>
-                <div className='tab-item-title'>Add Utility</div>
+                <div className='page-title'>Add Utility</div>
                 
                 <div className='d-flex add-utility-form'>
                     <Col>
@@ -51,8 +50,8 @@ const AddUtility = (props) => {
                             <Form.Label className='input-label'>Utility Type</Form.Label>
                             <Form.Control as='select'>
                                 <option></option>
-                                {utilities?.map((utility, index) => (
-                                    <option key={index}>{utility.utilityType.name}</option>
+                                {utilityTypes?.map((utilityType, index) => (
+                                    <option key={index}>{utilityType.name}</option>
                                 ))}
                             </Form.Control>
                         </div>

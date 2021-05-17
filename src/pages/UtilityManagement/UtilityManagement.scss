@@ -1,0 +1,45 @@
+@import '../../assets/styles/variables';
+
+.utility-management {
+    background-color: $lightgray;
+    padding: 2rem;
+    height: 100vh;
+
+    .utility-management-container {
+        background-color: white;
+        width: 100%;
+    }
+
+    .utility-management-table {
+        table{
+            margin-left: 2rem;
+        }
+
+        thead {
+            border: hidden;
+        }
+
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: -0.27px;
+            line-height: 17px;
+        }
+
+        td {
+            border: hidden;
+            font-size: 12px;
+            letter-spacing: -0.27px;
+            line-height: 17px;
+        }
+    }
+
+    .add-btn {
+        margin-top: 1rem;
+
+        .btn {
+            box-shadow: none;
+        }
+    }
+    
+}

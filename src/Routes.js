@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import ('./pages/Login'));
 const Project = lazy(() => import('./pages/Project'));
+const UtilityManagement = lazy(() => import('./pages/UtilityManagement'));
 
 const Routes = (props) => {
 
@@ -14,6 +15,7 @@ const Routes = (props) => {
                     <Route exact path='/login' component={Login} /> 
                     <Route exact path='/project' component={Project} />
                     <Route path='/project/:project' component={Project} />
+                    <Route path='/utility-management' component={UtilityManagement} />
             </Switch>
         </Suspense>
     )

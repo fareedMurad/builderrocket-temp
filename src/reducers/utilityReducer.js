@@ -1,7 +1,8 @@
-import { GET_UTILITIES } from '../actions/types';
+import { GET_UTILITIES, GET_UTILITY_TYPES } from '../actions/types';
 
 const intialState = {
-    utilities: []
+    utilities: [],
+    utilityTypes: []
 }
 
 const utilitiesReducer = (state = intialState, action) => {
@@ -10,6 +11,12 @@ const utilitiesReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 utilities: action.payload
+            }
+        }
+        case GET_UTILITY_TYPES: {
+            return {
+                ...state, 
+                utilityTypes: action.payload
             }
         }
         default: 

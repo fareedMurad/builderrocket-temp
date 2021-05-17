@@ -11,7 +11,7 @@ const Utilities = () => {
     return (
         <div className='d-flex utilities'>
             <div className='utilities-container'>
-                <div className='tab-item-title'>Utilities</div>
+                <div className='page-title'>Utilities</div>
 
 
                 <div className='d-flex utilities-form'>

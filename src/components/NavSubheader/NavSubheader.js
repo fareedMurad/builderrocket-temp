@@ -1,23 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import './NavSubheader.scss';
 
-// components
-import AddUtility from '../AddUtility';
-
 const NavSubheader = () => {
-    const [showUtility, setShowUtility] = useState(false);
-
-    const handleModal = () => {
-        setShowUtility(!showUtility);
-    }
-
+    const history = useHistory();
 
     return (
         <Navbar expand='lg' className='nav-bar'>
             <Container>
                 <Nav className='ml-4 pl-2 mr-auto'>
-                    <div className='header-item'>
+                    <div 
+                        className='header-item' 
+                        onClick={() => history.push('/')}
+                    >
                         <i className='far fa-images fa-sm tab-icon'></i>
                         Projects
                     </div>
@@ -27,7 +23,7 @@ const NavSubheader = () => {
                     </div>
                     <div 
                         className='header-item' 
-                        onClick={handleModal}
+                        onClick={() => history.push('/utility-management')}
                     >
                         <i className='far fa-lightbulb fa-sm tab-icon'></i>
                         Utility Management
@@ -42,13 +38,6 @@ const NavSubheader = () => {
                     </div>
                 </Nav>
             </Container>
-
-            {showUtility && 
-                <AddUtility 
-                    show={showUtility} 
-                    handleClose={handleModal} 
-                />
-            }
         </Navbar>
     );
 }

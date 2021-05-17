@@ -12,7 +12,7 @@ const Documents = (props) => {
     return (
         <div className='d-flex documents'>
             <div className='documents-container'>
-                <div className='tab-item-title'>Documents</div>
+                <div className='page-title'>Documents</div>
 
 
                 <div className='d-flex documents-form'>
