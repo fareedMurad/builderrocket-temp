@@ -1,15 +1,13 @@
-import axios from 'axios';
+import api from '../api';
 import {
     GET_USER_PROFILE,
-    LOGOUT
+    // LOGOUT
 } from './types';
 
-const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
+export const getUserProfile = () => dispatch => {
+    const URL = `/User`;
 
-export const getUserProfile = (token) => dispatch => {
-    let URL = `${baseURL}/User`;
-
-    return axios({
+    return api({
         method: 'GET', 
         url: URL
     })
@@ -22,7 +20,7 @@ export const getUserProfile = (token) => dispatch => {
     })
     .catch((error) => {
         if (error.response.status === 401) 
-            dispatch({ type: LOGOUT });
+            // dispatch({ type: LOGOUT });
 
         console.log('Get User Profile', error);
     });

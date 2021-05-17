@@ -1,14 +1,12 @@
-import axios from 'axios';
+import api from '../api';
 import {
     GET_SUBDIVISIONS
 } from './types';
 
-const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
-
 export const getSubdivisions = () => dispatch => {
-    let URL = `${baseURL}/Subdivision`;
+    const URL = '/Subdivision';
 
-    return axios({
+    return api({
         method: 'GET', 
         url: URL
     })

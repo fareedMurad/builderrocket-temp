@@ -1,12 +1,10 @@
-import axios from 'axios';
+import api from '../api';
 import { SET_USER, LOGOUT } from './types';
 
-const baseURL = process.env.REACT_APP_BUILDER_ROCKET_API;
-
 export const loginEmailPassword = (email, password) => dispatch => {
-    let URL = `${baseURL}/Login`;
+    const URL = '/Login';
 
-    return axios({
+    return api({
         method: 'POST', 
         url: URL,
         headers: { 
@@ -30,11 +28,6 @@ export const loginEmailPassword = (email, password) => dispatch => {
 }
 
 export const setUser = (token) => dispatch => {
-
-    if (token) {
-        // Add Authorization header to all axios requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
 
     dispatch({ type: SET_USER, payload: token });
 }
