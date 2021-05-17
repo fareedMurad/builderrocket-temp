@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { Button, Table, FormControl, Form } from 'react-bootstrap';
 import { getUtilities } from '../../actions/utilityActions';
+import { useDispatch, useSelector } from 'react-redux';
 import './UtilityManagement.scss';
 
 // components 
@@ -11,12 +11,30 @@ const UtilityManagement = () => {
     const dispatch = useDispatch();
     
     const utilities = useSelector(state => state.utility.utilities);
-    // console.log('utilities', utilities);
+
+    const [searchTerm, setSearchTerm] = useState('');
     const [showUtilityModal, setShowUtilityModal] = useState(false);
+    const [filteredUtilities, setFilteredUtilities] = useState(utilities);
 
     useEffect(() => {
         dispatch(getUtilities());
     }, [dispatch]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const filter = utilities?.filter(utility => 
+                utility?.companyName?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                utility?.utilityType?.name?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                utility?.phoneNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                utility?.region?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                utility?.emailAddress?.toLowerCase().includes(searchTerm?.toLowerCase())
+        );
+
+            setFilteredUtilities(filter);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm, utilities]);
 
 
     return (
@@ -33,10 +51,20 @@ const UtilityManagement = () => {
                             + Add Utility
                         </Button>
                     </div>    
+
+                    <div className='d-flex search-bar'> 
+                        <Form inline>
+                            <FormControl 
+                                placeholder='Search Keywords'
+                                type='text'
+                                onChange={(e) => setSearchTerm(e.target.value)}    
+                            />
+                        </Form>
+                    </div>
                 </div>
 
                 <div className='utility-management-table'>
-                    <Table responsive>
+                    <Table hover responsive>
                         <thead>
                             <tr>
                                 <th>Utility Name</th>
@@ -48,22 +76,26 @@ const UtilityManagement = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {utilities?.map((utility, index) => (
+                            {filteredUtilities?.map((utility, index) => (
                                 <tr key={index}>
-                                    <td>{utility.companyName}</td>
+                                    <td width='25%'>{utility.companyName}</td>
                                     <td>{utility.utilityType.name}</td>
                                     <td>{utility.phoneNumber}</td>
                                     <td>{utility.emailAddress}</td>
                                     <td>{utility.region}</td>
-                                    <td>ICONS</td>
+                                    <td>
+                                        <div className='d-flex justify-content-between'>
+                                            <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                            <i className='far fa-pencil-alt'></i>
+                                            <i className='far fa-trash-alt'></i>
+                                        </div>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </Table>
                 </div>
             </div>
-
-
 
             {showUtilityModal && 
                 <AddUtility 

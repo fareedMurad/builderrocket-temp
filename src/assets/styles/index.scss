@@ -82,11 +82,18 @@
 }
 
 .link-btn {
+    margin-top: 1rem;
     margin-left: .2em;
     font-size: 12px;
     letter-spacing: -0.27px;
     line-height: 17px;
     color: $tabblue;
+}
+
+.add-btn {
+    .btn {
+        box-shadow: none;
+    }
 }
 
 .select {

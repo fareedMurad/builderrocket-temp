@@ -1,17 +1,32 @@
-import React from 'react';
-import { Form, Col } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form, Col, Button } from 'react-bootstrap';
 import './Utilities.scss';
 
 // components
 import MarketingBlock from '../MarketingBlock';
+import AddUtility from '../AddUtility';
 import Select from '../Select';
 
 const Utilities = () => {
 
+    const [showUtilityModal, setShowUtilityModal] = useState(false);
+
     return (
         <div className='d-flex utilities'>
             <div className='utilities-container'>
-                <div className='page-title'>Utilities</div>
+                <div className='d-flex'>
+                    <div className='page-title'>Utilities</div>
+
+                    <div className='ml-1 add-btn'>
+                        <Button 
+                            variant='link' 
+                            className='link-btn'
+                            onClick={() => setShowUtilityModal(true)}    
+                        >
+                            + Add Utility
+                        </Button>
+                    </div>   
+                </div>
 
 
                 <div className='d-flex utilities-form'>
@@ -51,6 +66,13 @@ const Utilities = () => {
             </div>
 
             <MarketingBlock />
+
+            {showUtilityModal && 
+                <AddUtility 
+                    show={showUtilityModal} 
+                    handleClose={() => setShowUtilityModal(false)} 
+                />
+            }
         </div>
     );
 }

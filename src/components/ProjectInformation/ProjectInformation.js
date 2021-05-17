@@ -15,7 +15,6 @@ const ProjectInformation = (props) => {
     const dispatch = useDispatch();
 
     const subdivisions = useSelector(state => state.subdivision.subdivisions);
-    console.log('SUBS', subdivisions);
 
     useEffect(() => {
         dispatch(getSubdivisions());

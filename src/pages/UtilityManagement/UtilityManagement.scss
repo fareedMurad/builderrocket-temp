@@ -11,9 +11,8 @@
     }
 
     .utility-management-table {
-        table{
-            margin-left: 2rem;
-        }
+        margin-left: 2rem;
+        margin-right: 1rem;
 
         thead {
             border: hidden;
@@ -32,13 +31,18 @@
             letter-spacing: -0.27px;
             line-height: 17px;
         }
+
+        i {
+            cursor: pointer;
+        }
     }
+    
+    .search-bar {
+        margin-left: 50%;
 
-    .add-btn {
-        margin-top: 1rem;
-
-        .btn {
-            box-shadow: none;
+        .form-control {
+            height: 28px;
+            font-size: 12px;
         }
     }
     
