@@ -6,7 +6,15 @@ import './ProjectHeader.scss';
 
 const ProjectHeader = () => {
 
+    const statusMap = {
+        1: 'Open',
+        2: '',
+        3: 'Closed'
+    }
+
     const project = useSelector(state => state.project.project);
+
+    console.log('Project Header', project);
 
     return (
         <div className='project-header'>
@@ -61,7 +69,7 @@ const ProjectHeader = () => {
 
                     <div>
                         <div className='d-flex pt-3 justify-content-end'>
-                            <div className='pr-3 text'>Status: <span className='bold-text'>Open Project</span></div>
+                            <div className='pr-3 text'>Status: <span className='bold-text'>{statusMap[project?.statusID]}</span></div>
                             <button className='snapshot-btn'>Project Snapshot</button>
                         </div>
 
