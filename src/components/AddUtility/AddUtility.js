@@ -1,16 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Col, Button } from 'react-bootstrap';
+import { getUtilities } from '../../actions/utilityActions';
+import { useDispatch, useSelector } from 'react-redux';
 import './AddUtility.scss';
 
 const AddUtility = (props) => {
     const { show, handleClose } = props;
 
-    console.log('SHOW', props);
+    const dispatch = useDispatch();
+
+    const utilities = useSelector(state => state.utility.utilities);
+
+    console.log('Utilities', utilities);
+
+    useEffect(() => {
+        dispatch(getUtilities());
+    }, [dispatch]);
 
     return (
         <Modal 
             show={show} 
-            onHide={() => handleClose()}
+            onHide={handleClose}
             centered
             className='add-utility'
             size='xl'
@@ -41,16 +51,22 @@ const AddUtility = (props) => {
                             <Form.Label className='input-label'>Utility Type</Form.Label>
                             <Form.Control as='select'>
                                 <option></option>
-                                {/* {subdivisions?.map((subdivision, index) => (
-                                    <option key={index}>{subdivision.subdivisionName}</option>
-                                ))} */}
+                                {utilities?.map((utility, index) => (
+                                    <option key={index}>{utility.utilityType.name}</option>
+                                ))}
                             </Form.Control>
                         </div>
                     </Col>
                 </div>
                 
                 <div className='d-flex justify-content-center pt-5'>
-                    <Button onClick={handleClose} variant='link' className='cancel'>Cancel</Button>
+                    <Button 
+                        onClick={handleClose} 
+                        variant='link' 
+                        className='cancel'
+                    >
+                        Cancel
+                    </Button>
                     <button className='primary-gray-btn next-btn ml-3'>Next</button>
                 </div>
             </Modal.Body>

@@ -8,12 +8,10 @@ import AddUtility from '../AddUtility';
 const NavSubheader = () => {
     const [showUtility, setShowUtility] = useState(false);
 
-    const handleCloseUtilityModal = () => {
-        console.log('YUH', showUtility);
-
-        setShowUtility(false);
+    const handleModal = () => {
+        setShowUtility(!showUtility);
     }
-    
+
 
     return (
         <Navbar expand='lg' className='nav-bar'>
@@ -29,15 +27,10 @@ const NavSubheader = () => {
                     </div>
                     <div 
                         className='header-item' 
-                        onClick={() => setShowUtility(true)}
+                        onClick={handleModal}
                     >
                         <i className='far fa-lightbulb fa-sm tab-icon'></i>
                         Utility Management
-
-                        <AddUtility 
-                            show={showUtility} 
-                            handleClose={handleCloseUtilityModal} 
-                        />
                     </div>
                     <div className='header-item'>
                         <i className='far fa-bookmark fa-sm tab-icon'></i>
@@ -49,6 +42,13 @@ const NavSubheader = () => {
                     </div>
                 </Nav>
             </Container>
+
+            {showUtility && 
+                <AddUtility 
+                    show={showUtility} 
+                    handleClose={handleModal} 
+                />
+            }
         </Navbar>
     );
 }

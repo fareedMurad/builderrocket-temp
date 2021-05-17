@@ -14,3 +14,6 @@ export const GET_USER_PROFILE = 'GET_USER_PROFILE';
 
 // subdivision
 export const GET_SUBDIVISIONS = 'GET_SUBDIVISIONS';
+
+// utility
+export const GET_UTILITIES = 'GET_UTILITIES';
