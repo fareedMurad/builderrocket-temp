@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { Modal, Form, Col, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUtilityTypes } from '../../actions/utilityActions';
+import { Modal, Form, Col, Button } from 'react-bootstrap';
+import { getUtilityTypes, createUtility, getUtilities } from '../../actions/utilityActions';
+import { isEmpty } from 'lodash'
 import './AddUtility.scss';
 
 const AddUtility = (props) => {
@@ -10,11 +11,21 @@ const AddUtility = (props) => {
     const dispatch = useDispatch();
 
     const utilityTypes = useSelector(state => state.utility.utilityTypes);
-    console.log('Utility Types', utilityTypes);
+
+    const [utility, setUtility] = useState({});
+    console.log('Utility', utility);
 
     useEffect(() => {
         dispatch(getUtilityTypes());
     }, [dispatch]);
+
+    const handleCreateUtility = () => {
+        dispatch(createUtility(utility))
+            .then(() => {
+                dispatch(getUtilities());
+                handleClose();
+            });
+    }
 
     return (
         <Modal 
@@ -30,10 +41,11 @@ const AddUtility = (props) => {
                 <div className='d-flex add-utility-form'>
                     <Col>
                         <div className='pb-4'>
-                            <Form.Label className='input-label'>Utility Name</Form.Label>
+                            <Form.Label className='input-label'>Utility Name*</Form.Label>
                             <Form.Control
                                 type='email'
                                 className='input-gray'
+                                onChange={(e) => setUtility({ ...utility, companyName: e.target.value })}
                             />
                         </div>
                         <div className='pb-4'>
@@ -41,19 +53,44 @@ const AddUtility = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
+                                onChange={(e) => setUtility({ ...utility, phoneNumber: e.target.value })}
+                            />
+                        </div>
+                        <div className='pb-4'>
+                            <Form.Label className='input-label'>Region</Form.Label>
+                            <Form.Control
+                                type='email'
+                                className='input-gray'
+                                onChange={(e) => setUtility({ ...utility, region: e.target.value })}
                             />
                         </div>
                     </Col>
 
                     <Col>
                         <div className='pb-2 select'>
-                            <Form.Label className='input-label'>Utility Type</Form.Label>
-                            <Form.Control as='select'>
+                            <Form.Label className='input-label'>Utility Type*</Form.Label>
+                            <Form.Control 
+                                as='select'
+                                onChange={(e) => setUtility({ ...utility, utilityTypeID: e.target.value })}    
+                            >
                                 <option></option>
                                 {utilityTypes?.map((utilityType, index) => (
-                                    <option key={index}>{utilityType.name}</option>
+                                    <option 
+                                        key={index} 
+                                        value={utilityType.id}
+                                    >
+                                        {utilityType.name}
+                                    </option>
                                 ))}
                             </Form.Control>
+                        </div>
+                        <div className='pb-4'>
+                            <Form.Label className='input-label'>Email</Form.Label>
+                            <Form.Control
+                                type='email'
+                                className='input-gray'
+                                onChange={(e) => setUtility({ ...utility, email: e.target.value })}
+                            />
                         </div>
                     </Col>
                 </div>
@@ -66,7 +103,13 @@ const AddUtility = (props) => {
                     >
                         Cancel
                     </Button>
-                    <button className='primary-gray-btn next-btn ml-3'>Next</button>
+                    <button 
+                        className='primary-gray-btn next-btn ml-3'
+                        disabled={isEmpty(utility.companyName) || isEmpty(utility.utilityTypeID)}
+                        onClick={handleCreateUtility}
+                    >
+                        Next
+                    </button>
                 </div>
             </Modal.Body>
       </Modal>

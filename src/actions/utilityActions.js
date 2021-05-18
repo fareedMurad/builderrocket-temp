@@ -1,6 +1,9 @@
 import api from '../api';
 import {
-    GET_UTILITIES, GET_UTILITY_TYPES, LOGOUT
+    CREATE_UTILITY,
+    GET_UTILITIES, 
+    GET_UTILITY_TYPES, 
+    LOGOUT
 } from './types';
 
 export const getUtilities = () => dispatch => {
@@ -47,4 +50,25 @@ export const getUtilityTypes = () => dispatch => {
         console.log('Getting Utility Types', error);
     })
 
+}
+
+export const createUtility = (utility) => dispatch => {
+    const URL = '/utility';
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: utility
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: CREATE_UTILITY, payload: response.data });
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
 }

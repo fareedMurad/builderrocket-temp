@@ -1,4 +1,7 @@
-import { GET_UTILITIES, GET_UTILITY_TYPES } from '../actions/types';
+import { 
+    GET_UTILITIES, 
+    GET_UTILITY_TYPES
+} from '../actions/types';
 
 const intialState = {
     utilities: [],

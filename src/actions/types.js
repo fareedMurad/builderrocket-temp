@@ -18,3 +18,4 @@ export const GET_SUBDIVISIONS = 'GET_SUBDIVISIONS';
 // utility
 export const GET_UTILITIES = 'GET_UTILITIES';
 export const GET_UTILITY_TYPES = 'GET_UTILITY_TYPES';
+export const CREATE_UTILITY = 'CREATE_UTILITY';
