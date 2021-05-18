@@ -107,7 +107,7 @@ const AddUtility = (props) => {
                         disabled={isEmpty(utility.companyName) || isEmpty(utility.utilityTypeID)}
                         onClick={handleCreateUtility}
                     >
-                        Next
+                        Save
                     </button>
                 </div>
             </Modal.Body>
