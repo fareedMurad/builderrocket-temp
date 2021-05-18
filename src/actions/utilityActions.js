@@ -72,3 +72,23 @@ export const createUtility = (utility) => dispatch => {
             dispatch({ type: LOGOUT });
     })
 }
+
+
+export const deleteUtility = (utilityID) => dispatch => {
+    const URL = `/Utility/${utilityID}`;
+
+    return api({
+        method: 'DELETE',
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
+}

@@ -13,7 +13,6 @@ const AddUtility = (props) => {
     const utilityTypes = useSelector(state => state.utility.utilityTypes);
 
     const [utility, setUtility] = useState({});
-    console.log('Utility', utility);
 
     useEffect(() => {
         dispatch(getUtilityTypes());

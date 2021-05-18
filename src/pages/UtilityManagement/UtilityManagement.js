@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, FormControl, Form } from 'react-bootstrap';
-import { getUtilities } from '../../actions/utilityActions';
+import { Button, Table, FormControl, Form, Modal } from 'react-bootstrap';
+import { deleteUtility, getUtilities } from '../../actions/utilityActions';
 import { useDispatch, useSelector } from 'react-redux';
 import './UtilityManagement.scss';
 
@@ -13,6 +13,8 @@ const UtilityManagement = () => {
     const utilities = useSelector(state => state.utility.utilities);
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedUtilityID, setSelectedUtilityID] = useState();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showUtilityModal, setShowUtilityModal] = useState(false);
     const [filteredUtilities, setFilteredUtilities] = useState(utilities);
 
@@ -36,6 +38,62 @@ const UtilityManagement = () => {
         return () => clearTimeout(timer);
     }, [searchTerm, utilities]);
 
+    const handleDeleteUtility = () => {
+        dispatch(deleteUtility(selectedUtilityID))
+            .then(() => {
+                dispatch(getUtilities());
+                setShowDeleteModal(false);
+            });
+    }
+
+    const deleteUtilityConfirmation = (utilityID) => {
+        setSelectedUtilityID(utilityID);
+
+        setShowDeleteModal(true);
+    }
+
+    const cancelDeletion = () => {
+        setSelectedUtilityID();
+
+        setShowDeleteModal(false);
+    }
+
+    console.log(selectedUtilityID, showDeleteModal);
+
+    const deleteUtilityModal = () => {
+        return (
+            <Modal
+                show={showDeleteModal}
+                onHide={cancelDeletion}
+                centered
+                size='lg'
+            >
+                <Modal.Body>
+                    <div className='page-title'>Delete Utility</div>
+
+                    <div className='d-flex justify-content-center'>
+                        Are you sure you want to delete this utility?
+                    </div>
+
+                    <div className='d-flex justify-content-center pt-5'>
+                        <Button 
+                            onClick={cancelDeletion} 
+                            variant='link' 
+                            className='cancel'
+                        >
+                            Cancel
+                        </Button>
+                        <button 
+                            className='primary-gray-btn next-btn ml-3'
+                            onClick={handleDeleteUtility}
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+        )
+    }
 
     return (
         <div className='d-flex utility-management'>
@@ -87,7 +145,7 @@ const UtilityManagement = () => {
                                         <div className='d-flex justify-content-between'>
                                             <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                             <i className='far fa-pencil-alt'></i>
-                                            <i className='far fa-trash-alt'></i>
+                                            <i className='far fa-trash-alt' onClick={() => deleteUtilityConfirmation(utility.id)}></i>
                                         </div>
                                     </td>
                                 </tr>
@@ -103,6 +161,7 @@ const UtilityManagement = () => {
                     handleClose={() => setShowUtilityModal(false)} 
                 />
             }
+            {deleteUtilityModal()}
         </div>
     );
 }
