@@ -4,7 +4,7 @@ import {
     GET_PROJECT, 
     SET_SELECTED_PROJECT, 
     RESET_PROJECT, 
-    // LOGOUT
+    LOGOUT
 } from './types';
 
 
@@ -25,7 +25,7 @@ export const getProjects = () => dispatch => {
     })
     .catch((error) => {
         if (error.response.status === 401) 
-            // dispatch({ type: LOGOUT });
+            dispatch({ type: LOGOUT });
 
         console.log('Getting Projects', error);
     })
@@ -47,7 +47,7 @@ export const getProjectByProjectNumber = (projectNumber, token) => dispatch => {
     })
     .catch((error) => {
         if (error.response.status === 401) 
-            // dispatch({ type: LOGOUT });
+            dispatch({ type: LOGOUT });
 
         console.log('Get Project By Number', error);
     });

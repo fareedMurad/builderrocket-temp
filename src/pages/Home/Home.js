@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Container, Form, FormControl } from 'react-bootstrap';
 import { getProjects, resetProject } from '../../actions/projectActions.js';
+import { getUserProfile } from '../../actions/userActions.js';
 import { Link } from 'react-router-dom';
 // import { isEmpty } from 'lodash';
 import './Home.scss';
@@ -28,8 +29,10 @@ const Home = (props) => {
     });
     
     useEffect(() => {
-        if (token)
-            dispatch(getProjects(token));
+        if (token) {
+            dispatch(getProjects());
+            dispatch(getUserProfile());
+        }
 
     }, [dispatch, token]);
 

@@ -1,7 +1,7 @@
 import api from '../api';
 import {
     GET_USER_PROFILE,
-    // LOGOUT
+    LOGOUT
 } from './types';
 
 export const getUserProfile = () => dispatch => {
@@ -20,7 +20,7 @@ export const getUserProfile = () => dispatch => {
     })
     .catch((error) => {
         if (error.response.status === 401) 
-            // dispatch({ type: LOGOUT });
+            dispatch({ type: LOGOUT });
 
         console.log('Get User Profile', error);
     });

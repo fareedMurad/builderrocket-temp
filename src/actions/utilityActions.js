@@ -1,6 +1,6 @@
 import api from '../api';
 import {
-    GET_UTILITIES, GET_UTILITY_TYPES
+    GET_UTILITIES, GET_UTILITY_TYPES, LOGOUT
 } from './types';
 
 export const getUtilities = () => dispatch => {
@@ -18,6 +18,9 @@ export const getUtilities = () => dispatch => {
         }
     })
     .catch((error) => {
+        if (error.response.status === 401) 
+            dispatch({ type: LOGOUT });
+
         console.log('Getting Utilities', error);
     })
 
@@ -38,6 +41,9 @@ export const getUtilityTypes = () => dispatch => {
         }
     })
     .catch((error) => {
+        if (error.response.status === 401) 
+            dispatch({ type: LOGOUT });
+
         console.log('Getting Utility Types', error);
     })
 
