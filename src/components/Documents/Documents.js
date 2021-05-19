@@ -21,7 +21,7 @@ const Documents = (props) => {
                             <FileUpload label='Neighborhood Restrictions' short />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Plot of Lot' />
+                            <FileUpload label='Plot of Lot' short />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>C.O. Date</Form.Label>
@@ -38,7 +38,7 @@ const Documents = (props) => {
                             />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Building Permit' />
+                            <FileUpload label='Building Permit' short />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Septic Permit #</Form.Label>
@@ -54,7 +54,7 @@ const Documents = (props) => {
                             />
                         </div>
                         <div>
-                            <FileUpload label='Appraisal' />
+                            <FileUpload label='Appraisal' short />
                         </div>
                     </Col>
 
@@ -67,10 +67,10 @@ const Documents = (props) => {
                             />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Project Drawings' />
+                            <FileUpload label='Project Drawings' short />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Certificate of Occupancy' />
+                            <FileUpload label='Certificate of Occupancy' short />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Building Permit #</Form.Label>
@@ -85,7 +85,7 @@ const Documents = (props) => {
                             />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Septic Permit' />
+                            <FileUpload label='Septic Permit' short />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Tax Map #</Form.Label>
