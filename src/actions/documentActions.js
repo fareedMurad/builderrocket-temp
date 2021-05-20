@@ -12,8 +12,6 @@ export const getDocumentTypes = () => dispatch => {
         if (response?.status === 200) {
             dispatch({ type: GET_DOCUMENT_TYPES, payload: response.data });
 
-            console.log('Get Document Types', response);
-
             return response.data;
         }
     })

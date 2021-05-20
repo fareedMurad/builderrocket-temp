@@ -27,13 +27,15 @@
     }
 
     .label-margin {
-        margin-top: .75rem;
+        margin-top: .45rem;
     }
 
     .files-container {
-        padding: 1rem;
+        padding-left: .5rem;
+        padding-right: .5rem;
         width: 100%;
-        height: 28px;
+        min-height: 28px;
+        height: auto;
         border-radius: 2px;
         background-color: $lightgray;
         border: none;
@@ -43,6 +45,21 @@
 
         .link-btn {
             margin-top: 0;
+            padding: 0;
+        }
+    }
+
+    .file {
+        .file-name {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 13rem;
+        }
+
+        i {
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 }

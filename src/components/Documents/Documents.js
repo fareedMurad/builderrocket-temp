@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getDocumentTypes } from '../../actions/documentActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Col } from 'react-bootstrap';
-// import Utils from '../../utils';
+import Utils from '../../utils';
 import './Documents.scss';
 
 // components
@@ -16,7 +16,7 @@ const Documents = (props) => {
 
     const documentTypes = useSelector(state => state.document.documentTypes);
     const project = useSelector(state => state.project.project);
-    console.log('Document Types', documentTypes, project);
+    console.log('Project', project);
 
     useEffect(() => {
         dispatch(getDocumentTypes());
@@ -32,13 +32,12 @@ const Documents = (props) => {
         console.log('Doc Type ID', documentTypeID);
     }
 
-    const findDocumentType = (name) => {
-        // if (!isEmpty(documentTypes)) {     
-            return documentTypes?.find((documentType) => documentType?.name === name);
-        // } 
-        // else {
-        //     return {};
-        // }
+    const findDocumentType = (id) => {  
+        return documentTypes?.find((documentType) => documentType?.id === id);
+    }
+
+    const findDocumentTypeFiles = (id) => {
+        return project?.documents?.filter((document) => document?.documentTypeID === id);
     }
 
     return (
@@ -47,23 +46,29 @@ const Documents = (props) => {
                 <div className='page-title'>Documents</div>
 
 
-                <div className='d-flex documents-form'>
-                    <Col>
+                <div className='d-flex flex-wrap documents-form'>
+                    <Col md={6}>
                         <div className='pb-2'>
                             <FileUpload 
-                                label={findDocumentType('Neighborhood Restrictions')?.name} 
+                                label={findDocumentType(1)?.name} 
                                 onFileChange={onFileChange}
+                                files={findDocumentTypeFiles(1)}
                                 short 
                             />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Plot of Lot' short />
+                            <FileUpload 
+                                label={findDocumentType(2)?.name}     
+                                files={findDocumentTypeFiles(2)}
+                                short 
+                            />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>C.O. Date</Form.Label>
                             <Form.Control
                                 type='text'
                                 className='input-gray'
+                                defaultValue={Utils.formatShortDateUS(project?.occupencyDate)}
                             />
                         </div>
                         <div className='pb-2'>
@@ -71,10 +76,15 @@ const Documents = (props) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
+                                defaultValue={Utils.formatShortDateUS(project?.permitDate)}
                             />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Building Permit' short />
+                            <FileUpload 
+                                label={findDocumentType(3)?.name}     
+                                files={findDocumentTypeFiles(3)}
+                                short 
+                            />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Septic Permit #</Form.Label>
@@ -91,11 +101,15 @@ const Documents = (props) => {
                             />
                         </div>
                         <div>
-                            <FileUpload label='Appraisal' short />
+                            <FileUpload 
+                                label={findDocumentType(4)?.name}    
+                                files={findDocumentTypeFiles(4)} 
+                                short 
+                            />
                         </div>
                     </Col>
 
-                    <Col>
+                    <Col md={6}>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Lot #</Form.Label>
                             <Form.Control
@@ -105,10 +119,18 @@ const Documents = (props) => {
                             />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Project Drawings' short />
+                            <FileUpload 
+                                label={findDocumentType(7)?.name}     
+                                files={findDocumentTypeFiles(7)}
+                                short 
+                            />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Certificate of Occupancy' short />
+                            <FileUpload 
+                                label={findDocumentType(8)?.name}  
+                                files={findDocumentTypeFiles(8)}   
+                                short 
+                            />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Building Permit #</Form.Label>
@@ -121,10 +143,15 @@ const Documents = (props) => {
                             <Form.Label className='input-label'>Building Risk Policy</Form.Label>
                             <Form.Control
                                 className='input-gray'
+                                defaultValue={project?.buildingRiskPolicy}
                             />
                         </div>
                         <div className='pb-2'>
-                            <FileUpload label='Septic Permit' short />
+                            <FileUpload 
+                                label={findDocumentType(9)?.name}     
+                                files={findDocumentTypeFiles(9)}
+                                short 
+                            />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Tax Map #</Form.Label>
@@ -142,7 +169,9 @@ const Documents = (props) => {
                 </div>
             </div>
 
-            <MarketingBlock />
+            <div className='d-flex'>
+                <MarketingBlock />
+            </div>
         </div>
     );
 }

@@ -1,6 +1,6 @@
 const formatShortDateUS = (dateString) => {
     const date = new Date(dateString);
-    const dateFormatted = new Intl.DateTimeFormat('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' }).format(date);
+    const dateFormatted = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 
     return dateFormatted;
 }
