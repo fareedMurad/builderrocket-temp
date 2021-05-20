@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getDocumentTypes } from '../../actions/documentActions';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Col } from 'react-bootstrap';
 // import Utils from '../../utils';
 import './Documents.scss';
@@ -8,6 +10,36 @@ import MarketingBlock from '../MarketingBlock';
 import FileUpload from '../FileUpload';
 
 const Documents = (props) => {
+    const dispatch = useDispatch();
+
+    const [files, setFiles] = useState();
+
+    const documentTypes = useSelector(state => state.document.documentTypes);
+    const project = useSelector(state => state.project.project);
+    console.log('Document Types', documentTypes, project);
+
+    useEffect(() => {
+        dispatch(getDocumentTypes());
+    }, [dispatch])
+
+    const onFileChange = (documentTypeID, e) => {
+        // const files = e.target.files?.map((file) => {
+        //     return {
+                
+        //     }
+        // })
+        console.log('Event', e.target.value, e);
+        console.log('Doc Type ID', documentTypeID);
+    }
+
+    const findDocumentType = (name) => {
+        // if (!isEmpty(documentTypes)) {     
+            return documentTypes?.find((documentType) => documentType?.name === name);
+        // } 
+        // else {
+        //     return {};
+        // }
+    }
 
     return (
         <div className='d-flex documents'>
@@ -18,7 +50,11 @@ const Documents = (props) => {
                 <div className='d-flex documents-form'>
                     <Col>
                         <div className='pb-2'>
-                            <FileUpload label='Neighborhood Restrictions' short />
+                            <FileUpload 
+                                label={findDocumentType('Neighborhood Restrictions')?.name} 
+                                onFileChange={onFileChange}
+                                short 
+                            />
                         </div>
                         <div className='pb-2'>
                             <FileUpload label='Plot of Lot' short />
@@ -45,6 +81,7 @@ const Documents = (props) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
+                                defaultValue={project?.septicPermitNumber}
                             />
                         </div>
                         <div className='pb-2'>
@@ -64,6 +101,7 @@ const Documents = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
+                                defaultValue={project?.lotNumber}
                             />
                         </div>
                         <div className='pb-2'>
@@ -76,6 +114,7 @@ const Documents = (props) => {
                             <Form.Label className='input-label'>Building Permit #</Form.Label>
                             <Form.Control
                                 className='input-gray'
+                                defaultValue={project?.buildingPermitNumber}
                             />
                         </div>
                         <div className='pb-2'>
@@ -91,6 +130,7 @@ const Documents = (props) => {
                             <Form.Label className='input-label'>Tax Map #</Form.Label>
                             <Form.Control
                                 className='input-gray'
+                                defaultValue={project?.taxMapNumber}
                             />
                         </div>
                     </Col>

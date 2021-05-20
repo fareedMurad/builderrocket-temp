@@ -3,7 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import './FileUpload.scss';
 
 const FileUpload = (props) => {
-    const { label, short } = props;
+    const { label, short, onFileChange } = props;
 
     const inputFile = useRef();
 
@@ -29,12 +29,13 @@ const FileUpload = (props) => {
                             type='file' 
                             id='actual-btn' 
                             ref={inputFile} 
+                            onChange={onFileChange}
                             hidden 
                         />
                     </div>
                 :
                     <label className='custom-file-label'>
-                        <input type='file' />
+                        <input type='file' onChange={onFileChange} />
                     </label>
                 }
             </div>
