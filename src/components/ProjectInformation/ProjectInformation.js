@@ -96,7 +96,7 @@ const ProjectInformation = (props) => {
 
                     <Col>
                         <div className='pb-4'>
-                            <FileUpload label='Project Image' />
+                            <FileUpload label='Project Image' short />
                         </div>
                         <div className='pb-4'>
                             <Form.Label className='input-label'>Customer Email</Form.Label>
@@ -113,8 +113,8 @@ const ProjectInformation = (props) => {
                                 className='input-gray'
                             />
                         </div>
-                        <div className='pb-5 pt-3'></div>
-                        <div className='pb-2'>
+                        <div className='pb-5'></div>
+                        <div className='pb-2 pt-2'>
                             <Form.Label className='input-label'>Street Address2</Form.Label>
                             <Form.Control
                                 type='email'

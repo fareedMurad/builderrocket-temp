@@ -47,7 +47,7 @@ const Documents = (props) => {
 
 
                 <div className='d-flex flex-wrap documents-form'>
-                    <Col md={6}>
+                    <Col md={6} lg={6}>
                         <div className='pb-2'>
                             <FileUpload 
                                 label={findDocumentType(1)?.name} 
@@ -109,7 +109,7 @@ const Documents = (props) => {
                         </div>
                     </Col>
 
-                    <Col md={6}>
+                    <Col md={6} lg={6}>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Lot #</Form.Label>
                             <Form.Control

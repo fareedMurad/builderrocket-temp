@@ -54,12 +54,13 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            width: 13rem;
+            width: 75%;
         }
 
         i {
             margin-left: auto;
             margin-right: auto;
+            cursor: pointer;
         }
     }
 }
