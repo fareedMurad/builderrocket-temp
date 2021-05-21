@@ -4,7 +4,6 @@ import './FileUpload.scss';
 
 const FileUpload = (props) => {
     const { label, short, onFileChange, files } = props;
-    console.log('files', files);
 
     const inputFile = useRef();
 
@@ -43,14 +42,14 @@ const FileUpload = (props) => {
 
             {short && 
                 <div className='files-container'>
-                    {files?.map((file, index) => (
+                    {files && files?.map((file, index) => (
                         <div key={index} className='d-flex justify-content-between file'>
                             <div className='file-name'>
                                 <a href={file.url}>{file.userFileName}</a>
                             </div>
-                            <div><i className='far fa-pencil-alt'></i></div>
-                            <div><i className='fa fa-share-square'></i></div>
-                            <div><i className='far fa-trash-alt'></i></div>
+                            <div className='icon-container'><i className='far fa-pencil-alt'></i></div>
+                            <div className='icon-container'><i className='fa fa-share-square'></i></div>
+                            <div className='icon-container'><i className='far fa-trash-alt'></i></div>
                         </div>
                     ))}
                 </div>

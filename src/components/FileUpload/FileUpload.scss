@@ -51,16 +51,21 @@
 
     .file {
         .file-name {
+            padding-top: .1rem;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
             width: 75%;
         }
 
-        i {
-            margin-left: auto;
-            margin-right: auto;
-            cursor: pointer;
+        .icon-container {
+            padding-top: .1rem;
+
+            i {
+                margin-left: auto;
+                margin-right: auto;
+                cursor: pointer;
+            }
         }
     }
 }

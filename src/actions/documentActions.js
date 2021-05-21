@@ -20,13 +20,13 @@ export const getDocumentTypes = () => dispatch => {
     });
 }
 
-export const addDocument = (projectID, documents) => dispatch => {    
+export const addDocument = (projectID, document) => dispatch => {    
     const URL = `/Project/${projectID}/document`;
 
     return api({
         method: 'POST',
-        URL: URL,
-        data: documents
+        url: URL,
+        data: document
     })
     .then((response) => {
         if (response?.status === 200) {

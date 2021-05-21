@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { getDocumentTypes } from '../../actions/documentActions';
+import React, { useEffect } from 'react';
+import { addDocument, getDocumentTypes } from '../../actions/documentActions';
+import { getProjectByProjectNumber } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Col } from 'react-bootstrap';
 import Utils from '../../utils';
@@ -12,7 +13,7 @@ import FileUpload from '../FileUpload';
 const Documents = (props) => {
     const dispatch = useDispatch();
 
-    const [files, setFiles] = useState();
+    // const [files, setFiles] = useState();
 
     const documentTypes = useSelector(state => state.document.documentTypes);
     const project = useSelector(state => state.project.project);
@@ -22,14 +23,16 @@ const Documents = (props) => {
         dispatch(getDocumentTypes());
     }, [dispatch])
 
-    const onFileChange = (documentTypeID, e) => {
-        // const files = e.target.files?.map((file) => {
-        //     return {
-                
-        //     }
-        // })
-        console.log('Event', e.target.value, e);
-        console.log('Doc Type ID', documentTypeID);
+    const onFileChange = (documentTypeID, event) => {
+        const formData = new FormData();
+
+        formData.append('DocumentTypeID', documentTypeID);
+        formData.append('File', event.target.value);
+
+        dispatch(addDocument(project.id, formData))
+            .then(() => {
+                dispatch(getProjectByProjectNumber(project.projectNumber));
+            });
     }
 
     const findDocumentType = (id) => {  
@@ -51,7 +54,7 @@ const Documents = (props) => {
                         <div className='pb-2'>
                             <FileUpload 
                                 label={findDocumentType(1)?.name} 
-                                onFileChange={onFileChange}
+                                onFileChange={(event) => onFileChange(1, event)}
                                 files={findDocumentTypeFiles(1)}
                                 short 
                             />
