@@ -46,7 +46,7 @@ const Utilities = () => {
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Locate Permit #</Form.Label>
                             <Form.Control
-                                type='email'
+                                type='text'
                                 className='input-gray'
                             />
                         </div>

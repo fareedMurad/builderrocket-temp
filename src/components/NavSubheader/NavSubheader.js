@@ -32,7 +32,10 @@ const NavSubheader = () => {
                         <i className='far fa-bookmark fa-sm tab-icon'></i>
                         Vendor Management
                     </div>
-                    <div className='header-item'>
+                    <div 
+                        className='header-item'
+                        onClick={() => history.push('/contractor-management')}
+                    >
                         <i className='far fa-user-hard-hat fa-sm tab-icon'></i>
                         Contractor Management
                     </div>

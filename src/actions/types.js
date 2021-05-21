@@ -22,3 +22,8 @@ export const CREATE_UTILITY = 'CREATE_UTILITY';
 
 // documents 
 export const GET_DOCUMENT_TYPES = 'GET_DOCUMENT_TYPES';
+
+// contractor
+export const GET_CONTRACTORS = 'GET_CONTRACTORS';
+export const GET_CONTRACTOR_TYPES = 'GET_CONTRACTOR_TYPES';
+export const CREATE_CONTRACTOR = 'CREATE_CONTRACTOR';

@@ -58,8 +58,6 @@ const UtilityManagement = () => {
         setShowDeleteModal(false);
     }
 
-    console.log(selectedUtilityID, showDeleteModal);
-
     const deleteUtilityModal = () => {
         return (
             <Modal
@@ -136,11 +134,11 @@ const UtilityManagement = () => {
                         <tbody>
                             {filteredUtilities?.map((utility, index) => (
                                 <tr key={index}>
-                                    <td width='25%'>{utility.companyName}</td>
-                                    <td>{utility.utilityType.name}</td>
-                                    <td>{utility.phoneNumber}</td>
-                                    <td>{utility.emailAddress}</td>
-                                    <td>{utility.region}</td>
+                                    <td width='25%'>{utility?.companyName}</td>
+                                    <td>{utility?.utilityType.name}</td>
+                                    <td>{utility?.phoneNumber}</td>
+                                    <td>{utility?.emailAddress}</td>
+                                    <td>{utility?.region}</td>
                                     <td>
                                         <div className='d-flex justify-content-between'>
                                             <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>

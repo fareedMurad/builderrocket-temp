@@ -38,7 +38,7 @@ const AddUtility = (props) => {
                 <div className='page-title'>Add Utility</div>
                 
                 <div className='d-flex add-utility-form'>
-                    <Col>
+                    <Col md={6}>
                         <div className='pb-4'>
                             <Form.Label className='input-label'>Utility Name*</Form.Label>
                             <Form.Control
@@ -65,7 +65,7 @@ const AddUtility = (props) => {
                         </div>
                     </Col>
 
-                    <Col>
+                    <Col md={6}>
                         <div className='pb-2 select'>
                             <Form.Label className='input-label'>Utility Type*</Form.Label>
                             <Form.Control 

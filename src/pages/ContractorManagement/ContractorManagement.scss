@@ -1,16 +1,16 @@
 @import '../../assets/styles/variables';
 
-.utility-management {
+.contractor-management {
     background-color: $lightgray;
     padding: 2rem;
     min-height: 100vh;
 
-    .utility-management-container {
+    .contractor-management-container {
         background-color: white;
         width: 100%;
     }
 
-    .utility-management-table {
+    .contractor-management-table {
         margin-left: 2rem;
         margin-right: 1rem;
 
@@ -45,5 +45,4 @@
             font-size: 12px;
         }
     }
-    
 }

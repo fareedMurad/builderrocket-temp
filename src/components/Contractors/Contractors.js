@@ -1,23 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
 import './Contractors.scss';
 
 // components
 import MarketingBlock from '../MarketingBlock';
 import Select from '../Select';
+import AddContractor from '../AddContractor';
 
 const Contractors = () => {
+
+    const [showContractorModal, setShowContractorModal] = useState(false);
+
     return (
         <div className='d-flex contractors'>
             <div className='contractors-container'>
-                <div className='d-flex page-title'>
-                    Contractor  
-                    <div className='ml-3'>
-                        <Link to='/project' className='link-btn'>
+                <div className='d-flex'>
+                    <div className='page-title'>Contractor</div>
+
+                     <div className='ml-1 add-btn'>
+                        <Button 
+                            variant='link' 
+                            className='link-btn'
+                            onClick={() => setShowContractorModal(true)}
+                        >
                             + Add Contractor
-                        </Link>
-                    </div>
+                        </Button>
+                    </div> 
                 </div>
                
                 <div className='d-flex contractors-form'>
@@ -104,6 +113,13 @@ const Contractors = () => {
             </div>
 
             <MarketingBlock />
+
+            {showContractorModal &&
+                <AddContractor 
+                    show={showContractorModal}
+                    handleClose={() => setShowContractorModal(false)}  
+                    />
+            }
         </div>
     );
 }
