@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Form, Col, Button } from 'react-bootstrap';
-import { getUtilityTypes, createUtility, getUtilities } from '../../actions/utilityActions';
-import { isEmpty } from 'lodash'
+import { getUtilityTypes, createUtility, getUtilities, setSelectedUtility } from '../../actions/utilityActions';
 import './AddUtility.scss';
 
 const AddUtility = (props) => {
@@ -10,9 +9,18 @@ const AddUtility = (props) => {
 
     const dispatch = useDispatch();
 
+    const selectedUtility = useSelector(state => state.utility.utility);
     const utilityTypes = useSelector(state => state.utility.utilityTypes);
 
     const [utility, setUtility] = useState({});
+
+    useEffect(() => {
+        setUtility(selectedUtility);
+
+        return () => {
+            dispatch(setSelectedUtility({}));
+        }
+    }, [dispatch, selectedUtility]);
 
     useEffect(() => {
         dispatch(getUtilityTypes());
@@ -25,6 +33,8 @@ const AddUtility = (props) => {
                 handleClose();
             });
     }
+
+    console.log('utility', utility);
 
     return (
         <Modal 
@@ -45,6 +55,7 @@ const AddUtility = (props) => {
                                 type='email'
                                 className='input-gray'
                                 onChange={(e) => setUtility({ ...utility, companyName: e.target.value })}
+                                defaultValue={utility?.companyName}
                             />
                         </div>
                         <div className='pb-4'>
@@ -53,6 +64,7 @@ const AddUtility = (props) => {
                                 type='email'
                                 className='input-gray'
                                 onChange={(e) => setUtility({ ...utility, phoneNumber: e.target.value })}
+                                defaultValue={utility?.phoneNumber}
                             />
                         </div>
                         <div className='pb-4'>
@@ -61,6 +73,7 @@ const AddUtility = (props) => {
                                 type='email'
                                 className='input-gray'
                                 onChange={(e) => setUtility({ ...utility, region: e.target.value })}
+                                defaultValue={utility?.region}
                             />
                         </div>
                     </Col>
@@ -71,6 +84,7 @@ const AddUtility = (props) => {
                             <Form.Control 
                                 as='select'
                                 onChange={(e) => setUtility({ ...utility, utilityTypeID: e.target.value })}    
+                                value={utility?.utilityTypeID}
                             >
                                 <option></option>
                                 {utilityTypes?.map((utilityType, index) => (
@@ -88,7 +102,8 @@ const AddUtility = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                onChange={(e) => setUtility({ ...utility, email: e.target.value })}
+                                onChange={(e) => setUtility({ ...utility, emailAddress: e.target.value })}
+                                defaultValue={utility?.emailAddress}
                             />
                         </div>
                     </Col>
@@ -104,7 +119,7 @@ const AddUtility = (props) => {
                     </Button>
                     <button 
                         className='primary-gray-btn next-btn ml-3'
-                        disabled={isEmpty(utility.companyName) || isEmpty(utility.utilityTypeID)}
+                        disabled={!utility.companyName || !utility.utilityTypeID}
                         onClick={handleCreateUtility}
                     >
                         Save

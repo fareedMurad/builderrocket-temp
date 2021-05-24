@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table, FormControl, Form, Modal } from 'react-bootstrap';
-import { deleteUtility, getUtilities } from '../../actions/utilityActions';
+import { deleteUtility, getUtilities, setSelectedUtility } from '../../actions/utilityActions';
 import { useDispatch, useSelector } from 'react-redux';
 import './UtilityManagement.scss';
 
@@ -56,6 +56,12 @@ const UtilityManagement = () => {
         setSelectedUtilityID();
 
         setShowDeleteModal(false);
+    }
+
+    const editUtillity = (utility) => {
+        setShowUtilityModal(true);
+
+        dispatch(setSelectedUtility(utility));
     }
 
     const deleteUtilityModal = () => {
@@ -142,8 +148,14 @@ const UtilityManagement = () => {
                                     <td>
                                         <div className='d-flex justify-content-between'>
                                             <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                            <i className='far fa-pencil-alt'></i>
-                                            <i className='far fa-trash-alt' onClick={() => deleteUtilityConfirmation(utility.id)}></i>
+                                            <i 
+                                                className='far fa-pencil-alt'
+                                                onClick={() => editUtillity(utility)}
+                                            ></i>
+                                            <i 
+                                                className='far fa-trash-alt' 
+                                                onClick={() => deleteUtilityConfirmation(utility.id)}
+                                            ></i>
                                         </div>
                                     </td>
                                 </tr>

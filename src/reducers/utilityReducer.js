@@ -1,11 +1,13 @@
 import { 
     GET_UTILITIES, 
-    GET_UTILITY_TYPES
+    GET_UTILITY_TYPES,
+    SET_SELECTED_UTILITY
 } from '../actions/types';
 
 const intialState = {
     utilities: [],
-    utilityTypes: []
+    utilityTypes: [],
+    utility: {}
 }
 
 const utilitiesReducer = (state = intialState, action) => {
@@ -20,6 +22,12 @@ const utilitiesReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 utilityTypes: action.payload
+            }
+        }
+        case SET_SELECTED_UTILITY: {
+            return {
+                ...state, 
+                utility: action.payload
             }
         }
         default: 

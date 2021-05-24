@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getUtilityTypes } from '../../actions/utilityActions';
 import { Form, Col, Button } from 'react-bootstrap';
 import './Utilities.scss';
 
@@ -8,6 +10,13 @@ import AddUtility from '../AddUtility';
 import Select from '../Select';
 
 const Utilities = () => {
+    const dispatch = useDispatch();
+
+    // const utilityTypes = useSelector(state => state.utility.utilityTypes);
+
+    useEffect(() => {
+        dispatch(getUtilityTypes());
+    }, [dispatch]);
 
     const [showUtilityModal, setShowUtilityModal] = useState(false);
 

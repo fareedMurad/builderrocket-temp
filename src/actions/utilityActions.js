@@ -3,6 +3,7 @@ import {
     CREATE_UTILITY,
     GET_UTILITIES, 
     GET_UTILITY_TYPES, 
+    SET_SELECTED_UTILITY,
     LOGOUT
 } from './types';
 
@@ -91,4 +92,8 @@ export const deleteUtility = (utilityID) => dispatch => {
         if (error?.response?.status === 401) 
             dispatch({ type: LOGOUT });
     })
+}
+
+export const setSelectedUtility = (utility) => dispatch => {
+    dispatch({ type: SET_SELECTED_UTILITY, payload: utility });
 }

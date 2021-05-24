@@ -13,11 +13,8 @@ import FileUpload from '../FileUpload';
 const Documents = (props) => {
     const dispatch = useDispatch();
 
-    // const [files, setFiles] = useState();
-
     const documentTypes = useSelector(state => state.document.documentTypes);
     const project = useSelector(state => state.project.project);
-    console.log('Project', project);
 
     useEffect(() => {
         dispatch(getDocumentTypes());
@@ -27,7 +24,7 @@ const Documents = (props) => {
         const formData = new FormData();
 
         formData.append('DocumentTypeID', documentTypeID);
-        formData.append('File', event.target.value);
+        formData.append('File', event.target.files[0]);
 
         dispatch(addDocument(project.id, formData))
             .then(() => {
