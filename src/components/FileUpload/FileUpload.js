@@ -45,7 +45,13 @@ const FileUpload = (props) => {
                     {files && files?.map((file, index) => (
                         <div key={index} className='d-flex justify-content-between file'>
                             <div className='file-name'>
-                                <a href={file.url}>{file.userFileName}</a>
+                                <a 
+                                    href={file.url} 
+                                    target='_blank'
+                                    rel='noreferrer'
+                                >
+                                    {file.userFileName}
+                                </a>
                             </div>
                             <div className='icon-container'><i className='far fa-pencil-alt'></i></div>
                             <div className='icon-container'><i className='fa fa-share-square'></i></div>
