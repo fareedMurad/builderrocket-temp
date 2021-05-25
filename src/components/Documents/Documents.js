@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { addDocument, getDocumentTypes } from '../../actions/documentActions';
+import { addDocument, getDocumentTypes, deleteDocument } from '../../actions/documentActions';
 import { getProjectByProjectNumber } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Col } from 'react-bootstrap';
@@ -24,7 +24,7 @@ const Documents = (props) => {
         const formData = new FormData();
 
         formData.append('DocumentTypeID', documentTypeID);
-        formData.append('File', event.target.files[0]);
+        formData.append('File', event.target?.files?.[0]);
 
         dispatch(addDocument(project.id, formData))
             .then(() => {
@@ -40,6 +40,13 @@ const Documents = (props) => {
         return project?.documents?.filter((document) => document?.documentTypeID === id);
     }
 
+    const handleDocumentDelete = (documentID) => {
+        dispatch(deleteDocument(documentID))
+            .then(() => {
+                dispatch(getProjectByProjectNumber(project.projectNumber));
+            });
+    }
+
     return (
         <div className='d-flex documents'>
             <div className='documents-container'>
@@ -52,6 +59,7 @@ const Documents = (props) => {
                             <FileUpload 
                                 label={findDocumentType(1)?.name} 
                                 onFileChange={(event) => onFileChange(1, event)}
+                                handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(1)}
                                 short 
                             />
@@ -59,6 +67,7 @@ const Documents = (props) => {
                         <div className='pb-2'>
                             <FileUpload 
                                 label={findDocumentType(2)?.name}     
+                                onFileChange={(event) => onFileChange(2, event)}
                                 files={findDocumentTypeFiles(2)}
                                 short 
                             />
@@ -82,6 +91,7 @@ const Documents = (props) => {
                         <div className='pb-2'>
                             <FileUpload 
                                 label={findDocumentType(3)?.name}     
+                                onFileChange={(event) => onFileChange(3, event)}
                                 files={findDocumentTypeFiles(3)}
                                 short 
                             />
@@ -103,6 +113,7 @@ const Documents = (props) => {
                         <div>
                             <FileUpload 
                                 label={findDocumentType(4)?.name}    
+                                onFileChange={(event) => onFileChange(4, event)}
                                 files={findDocumentTypeFiles(4)} 
                                 short 
                             />
@@ -121,6 +132,7 @@ const Documents = (props) => {
                         <div className='pb-2'>
                             <FileUpload 
                                 label={findDocumentType(7)?.name}     
+                                onFileChange={(event) => onFileChange(7, event)}
                                 files={findDocumentTypeFiles(7)}
                                 short 
                             />
@@ -128,6 +140,7 @@ const Documents = (props) => {
                         <div className='pb-2'>
                             <FileUpload 
                                 label={findDocumentType(8)?.name}  
+                                onFileChange={(event) => onFileChange(8, event)}
                                 files={findDocumentTypeFiles(8)}   
                                 short 
                             />
@@ -149,6 +162,7 @@ const Documents = (props) => {
                         <div className='pb-2'>
                             <FileUpload 
                                 label={findDocumentType(9)?.name}     
+                                onFileChange={(event) => onFileChange(9, event)}
                                 files={findDocumentTypeFiles(9)}
                                 short 
                             />

@@ -3,7 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import './FileUpload.scss';
 
 const FileUpload = (props) => {
-    const { label, short, onFileChange, files } = props;
+    const { label, short, onFileChange, files, handleDocumentDelete } = props;
 
     const inputFile = useRef();
 
@@ -55,7 +55,9 @@ const FileUpload = (props) => {
                             </div>
                             <div className='icon-container'><i className='far fa-pencil-alt'></i></div>
                             <div className='icon-container'><i className='fa fa-share-square'></i></div>
-                            <div className='icon-container'><i className='far fa-trash-alt'></i></div>
+                            <div className='icon-container'>
+                                <i onClick={() => handleDocumentDelete(file.id)} className='far fa-trash-alt'></i>
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -39,3 +39,22 @@ export const addDocument = (projectID, document) => dispatch => {
 
     });
 }
+
+export const deleteDocument = (documentID) => dispatch => {    
+    const URL = `/Document/${documentID}`;
+
+    return api({
+        method: 'DELETE',
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            console.log('Deleted Document', response);
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+
+    });
+}

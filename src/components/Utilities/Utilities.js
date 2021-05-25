@@ -10,18 +10,17 @@ import AddUtility from '../AddUtility';
 import Select from '../Select';
 
 const Utilities = (props) => {
-    const { project } = props;
+    // const { project } = props;
 
     const dispatch = useDispatch();
 
     const utilityTypes = useSelector(state => state.utility.utilityTypes);
-    console.log('Utilities Types', project);
+    
+    const [showUtilityModal, setShowUtilityModal] = useState(false);
 
     useEffect(() => {
         dispatch(getUtilityTypes());
     }, [dispatch]);
-
-    const [showUtilityModal, setShowUtilityModal] = useState(false);
 
     return (
         <div className='d-flex utilities'>
