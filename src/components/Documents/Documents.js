@@ -68,6 +68,7 @@ const Documents = (props) => {
                             <FileUpload 
                                 label={findDocumentType(2)?.name}     
                                 onFileChange={(event) => onFileChange(2, event)}
+                                handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(2)}
                                 short 
                             />
@@ -92,6 +93,7 @@ const Documents = (props) => {
                             <FileUpload 
                                 label={findDocumentType(3)?.name}     
                                 onFileChange={(event) => onFileChange(3, event)}
+                                handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(3)}
                                 short 
                             />
@@ -114,6 +116,7 @@ const Documents = (props) => {
                             <FileUpload 
                                 label={findDocumentType(4)?.name}    
                                 onFileChange={(event) => onFileChange(4, event)}
+                                handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(4)} 
                                 short 
                             />
@@ -133,6 +136,7 @@ const Documents = (props) => {
                             <FileUpload 
                                 label={findDocumentType(7)?.name}     
                                 onFileChange={(event) => onFileChange(7, event)}
+                                handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(7)}
                                 short 
                             />
@@ -141,6 +145,7 @@ const Documents = (props) => {
                             <FileUpload 
                                 label={findDocumentType(8)?.name}  
                                 onFileChange={(event) => onFileChange(8, event)}
+                                handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(8)}   
                                 short 
                             />
@@ -163,6 +168,7 @@ const Documents = (props) => {
                             <FileUpload 
                                 label={findDocumentType(9)?.name}     
                                 onFileChange={(event) => onFileChange(9, event)}
+                                handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(9)}
                                 short 
                             />
