@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUtilityTypes } from '../../actions/utilityActions';
+import { getUtilities, getUtilityTypes } from '../../actions/utilityActions';
 import { Button, Form } from 'react-bootstrap';
 import './Utilities.scss';
 
 // components
 import MarketingBlock from '../MarketingBlock';
 import AddUtility from '../AddUtility';
-import Select from '../Select';
 
-const Utilities = (props) => {
-    // const { project } = props;
+const Utilities = () => {
 
     const dispatch = useDispatch();
 
     const utilityTypes = useSelector(state => state.utility.utilityTypes);
+    const utilities = useSelector(state => state.utility.utilities);
     
     const [showUtilityModal, setShowUtilityModal] = useState(false);
 
     useEffect(() => {
         dispatch(getUtilityTypes());
+        dispatch(getUtilities());
     }, [dispatch]);
+
+    const filterUtilitiesByType = (id) => {
+        return utilities?.filter((utility) => utility.utilityTypeID === id);
+    }
 
     return (
         <div className='d-flex utilities'>
@@ -42,8 +46,15 @@ const Utilities = (props) => {
                 <div className='utilities-form'>
                     <div className='d-flex flex-wrap'>
                         {utilityTypes?.map((utilityType, index) => (
-                            <div key={index} className='utility'>
-                                <Select label={utilityType?.name} />                                
+                            <div key={index} className='select utility'>
+                                <Form.Label className='input-label'>
+                                    {utilityType.name && utilityType.name}
+                                </Form.Label>
+                                <Form.Control as='select'>
+                                    {filterUtilitiesByType(utilityType.id)?.map((utility, index) => (
+                                        <option key={index}>{utility.companyName}</option>
+                                    ))}
+                                </Form.Control>
                             </div>
                         ))}
                         <div className='utility'>
