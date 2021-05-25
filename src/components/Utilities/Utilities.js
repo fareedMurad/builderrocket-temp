@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getUtilityTypes } from '../../actions/utilityActions';
-import { Form, Col, Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import './Utilities.scss';
 
 // components
@@ -9,10 +9,13 @@ import MarketingBlock from '../MarketingBlock';
 import AddUtility from '../AddUtility';
 import Select from '../Select';
 
-const Utilities = () => {
+const Utilities = (props) => {
+    const { project } = props;
+
     const dispatch = useDispatch();
 
-    // const utilityTypes = useSelector(state => state.utility.utilityTypes);
+    const utilityTypes = useSelector(state => state.utility.utilityTypes);
+    console.log('Utilities Types', project);
 
     useEffect(() => {
         dispatch(getUtilityTypes());
@@ -37,35 +40,21 @@ const Utilities = () => {
                     </div>   
                 </div>
 
-
-                <div className='d-flex utilities-form'>
-                    <Col>
-                        <div className='pb-2'>
-                            <Select label='Utility Locate' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Water Company' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Sewer' />
-                        </div>
-                    </Col>
-
-                    <Col>
-                        <div className='pb-2'>
+                <div className='utilities-form'>
+                    <div className='d-flex flex-wrap'>
+                        {utilityTypes?.map((utilityType, index) => (
+                            <div key={index} className='utility'>
+                                <Select label={utilityType?.name} />                                
+                            </div>
+                        ))}
+                        <div className='utility'>
                             <Form.Label className='input-label'>Locate Permit #</Form.Label>
                             <Form.Control
                                 type='text'
                                 className='input-gray'
                             />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Power Company' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Gas Company' />
-                        </div>
-                    </Col>
+                        </div>  
+                    </div>
                 </div>
 
                 <div className='d-flex justify-content-center pt-5'>

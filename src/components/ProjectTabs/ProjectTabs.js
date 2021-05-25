@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import './ProjectTabs.scss';
@@ -14,13 +14,17 @@ import Products from '../Products';
 
 
 const ProjectTabs = () => {
-
     const project = useSelector(state => state.project.project);
-    console.log('Project', project);
+
+    const [selectedTab, setSelectedTab] = useState('projectInformation');
+    console.log('Project', selectedTab);
 
     return (
         <div className='project-tabs'>
-            <Tabs defaultActiveKey='projectInformation' >
+            <Tabs
+                activeKey={selectedTab}
+                onSelect={(tab) => setSelectedTab(tab)}
+            >
                 <Tab eventKey='projectInformation' title='Project Information'>
                     <ProjectInformation project={project} />
                 </Tab>
@@ -28,7 +32,7 @@ const ProjectTabs = () => {
                     <Documents />
                 </Tab>
                 <Tab eventKey='utilities' title='Utilities'>
-                    <Utilities />
+                    <Utilities project={project} />
                 </Tab>
                 <Tab eventKey='contractors' title='Contractors'>
                     <Contractors />

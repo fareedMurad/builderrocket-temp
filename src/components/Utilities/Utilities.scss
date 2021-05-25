@@ -1,7 +1,7 @@
 @import '../../assets/styles/variables';
 
 .utilities {
-    
+
     .utilities-container {
         width: 981px;
         background-color: white;
@@ -10,12 +10,21 @@
     }
     
     .utilities-form {
-        min-height: 661px;
-        justify-content: space-evenly;
+        min-height: 450px;
         padding: 0 1.5rem;
 
         .col {
             padding: 0 3rem;
+        }
+    }
+
+    .utility {
+        padding: 0 1.5rem;
+        margin-bottom: .5rem;
+        width: 50%;
+
+        @include media-breakpoint-down(lg) {
+            width: 90%
         }
     }
 }
