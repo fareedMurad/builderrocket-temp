@@ -32,18 +32,18 @@ const Documents = (props) => {
             });
     }
 
-    const findDocumentType = (id) => {  
-        return documentTypes?.find((documentType) => documentType?.id === id);
+    const findDocumentType = (id) => {
+        return documentTypes?.find((documentType) => documentType?.ID === id);
     }
 
     const findDocumentTypeFiles = (id) => {
-        return project?.documents?.filter((document) => document?.documentTypeID === id);
+        return project?.Documents?.filter((document) => document?.DocumentTypeID === id);
     }
 
     const handleDocumentDelete = (documentID) => {
         dispatch(deleteDocument(documentID))
             .then(() => {
-                dispatch(getProjectByProjectNumber(project.projectNumber));
+                dispatch(getProjectByProjectNumber(project.ProjectNumber));
             });
     }
 
@@ -57,7 +57,7 @@ const Documents = (props) => {
                     <Col md={6} lg={6}>
                         <div className='pb-2'>
                             <FileUpload 
-                                label={findDocumentType(1)?.name} 
+                                label={findDocumentType(1)?.Name} 
                                 onFileChange={(event) => onFileChange(1, event)}
                                 handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(1)}
@@ -66,7 +66,7 @@ const Documents = (props) => {
                         </div>
                         <div className='pb-2'>
                             <FileUpload 
-                                label={findDocumentType(2)?.name}     
+                                label={findDocumentType(2)?.Name}     
                                 onFileChange={(event) => onFileChange(2, event)}
                                 handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(2)}
@@ -78,7 +78,7 @@ const Documents = (props) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                defaultValue={Utils.formatShortDateUS(project?.occupencyDate)}
+                                defaultValue={Utils.formatShortDateUS(project?.OccupencyDate)}
                             />
                         </div>
                         <div className='pb-2'>
@@ -86,12 +86,12 @@ const Documents = (props) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                defaultValue={Utils.formatShortDateUS(project?.permitDate)}
+                                defaultValue={Utils.formatShortDateUS(project?.PermitDate)}
                             />
                         </div>
                         <div className='pb-2'>
                             <FileUpload 
-                                label={findDocumentType(3)?.name}     
+                                label={findDocumentType(3)?.Name}     
                                 onFileChange={(event) => onFileChange(3, event)}
                                 handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(3)}
@@ -103,7 +103,7 @@ const Documents = (props) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                defaultValue={project?.septicPermitNumber}
+                                defaultValue={project?.SepticPermitNumber}
                             />
                         </div>
                         <div className='pb-2'>
@@ -114,7 +114,7 @@ const Documents = (props) => {
                         </div>
                         <div>
                             <FileUpload 
-                                label={findDocumentType(4)?.name}    
+                                label={findDocumentType(4)?.Name}    
                                 onFileChange={(event) => onFileChange(4, event)}
                                 handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(4)} 
@@ -129,12 +129,12 @@ const Documents = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.lotNumber}
+                                defaultValue={project?.LotNumber}
                             />
                         </div>
                         <div className='pb-2'>
                             <FileUpload 
-                                label={findDocumentType(7)?.name}     
+                                label={findDocumentType(7)?.Name}     
                                 onFileChange={(event) => onFileChange(7, event)}
                                 handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(7)}
@@ -143,7 +143,7 @@ const Documents = (props) => {
                         </div>
                         <div className='pb-2'>
                             <FileUpload 
-                                label={findDocumentType(8)?.name}  
+                                label={findDocumentType(8)?.Name}  
                                 onFileChange={(event) => onFileChange(8, event)}
                                 handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(8)}   
@@ -154,19 +154,19 @@ const Documents = (props) => {
                             <Form.Label className='input-label'>Building Permit #</Form.Label>
                             <Form.Control
                                 className='input-gray'
-                                defaultValue={project?.buildingPermitNumber}
+                                defaultValue={project?.BuildingPermitNumber}
                             />
                         </div>
                         <div className='pb-2'>
                             <Form.Label className='input-label'>Building Risk Policy</Form.Label>
                             <Form.Control
                                 className='input-gray'
-                                defaultValue={project?.buildingRiskPolicy}
+                                defaultValue={project?.BuildingRiskPolicy}
                             />
                         </div>
                         <div className='pb-2'>
                             <FileUpload 
-                                label={findDocumentType(9)?.name}     
+                                label={findDocumentType(9)?.Name}     
                                 onFileChange={(event) => onFileChange(9, event)}
                                 handleDocumentDelete={handleDocumentDelete}
                                 files={findDocumentTypeFiles(9)}
@@ -177,7 +177,7 @@ const Documents = (props) => {
                             <Form.Label className='input-label'>Tax Map #</Form.Label>
                             <Form.Control
                                 className='input-gray'
-                                defaultValue={project?.taxMapNumber}
+                                defaultValue={project?.TaxMapNumber}
                             />
                         </div>
                     </Col>

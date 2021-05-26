@@ -46,11 +46,11 @@ const FileUpload = (props) => {
                         <div key={index} className='d-flex justify-content-between file'>
                             <div className='file-name'>
                                 <a 
-                                    href={file.url} 
+                                    href={file.Url} 
                                     target='_blank'
                                     rel='noreferrer'
                                 >
-                                    {file.userFileName}
+                                    {file.UserFileName}
                                 </a>
                             </div>
                             <div className='icon-container'><i className='far fa-pencil-alt'></i></div>
