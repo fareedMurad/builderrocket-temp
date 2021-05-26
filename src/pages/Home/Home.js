@@ -41,11 +41,11 @@ const Home = (props) => {
         Filter delayed by 1 second */
         const timer = setTimeout(() => {
             const filter = projects?.filter(project => 
-                project?.projectName?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.projectNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-                project?.lotNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-                project?.streetAddress1?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.customers?.find(customer => customer?.firstName?.toLowerCase().includes(searchTerm?.toLowerCase()))
+                project?.ProjectName?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.ProjectNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                project?.LotNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                project?.StreetAddress1?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.Customers?.find(customer => customer?.FirstName?.toLowerCase().includes(searchTerm?.toLowerCase()))
         );
 
             setFilteredProjects(filter);
@@ -60,8 +60,8 @@ const Home = (props) => {
 
     const filterProjects = () => {
         return filteredProjects.filter(project => projectsStatus === 'Active' 
-            ? parseInt(project?.statusID) !== 3 
-            : parseInt(project?.statusID) === 3);
+            ? parseInt(project?.StatusID) !== 3 
+            : parseInt(project?.StatusID) === 3);
     }
 
     return (
