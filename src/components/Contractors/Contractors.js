@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { Col } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getContractors, getContractorTypes } from '../../actions/contractorActions';
+import { Button, Form } from 'react-bootstrap';
 import './Contractors.scss';
 
 // components
 import MarketingBlock from '../MarketingBlock';
-import Select from '../Select';
 import AddContractor from '../AddContractor';
 
 const Contractors = () => {
+    const dispatch = useDispatch();
+
+    const contractors = useSelector(state => state.contractor.contractors);
+    const contractorTypes = useSelector(state => state.contractor.contractorTypes);
 
     const [showContractorModal, setShowContractorModal] = useState(false);
+
+    useEffect(() => {
+        dispatch(getContractors());
+        dispatch(getContractorTypes());
+    }, [dispatch]);
+
+    const filterContractorsByType = (id) => {
+        return contractors?.filter((contractor) => contractor.contractorContractorTypes.find((type) => type.contractorTypeID === id));
+    }
 
     return (
         <div className='d-flex contractors'>
@@ -29,81 +42,22 @@ const Contractors = () => {
                     </div> 
                 </div>
                
-                <div className='d-flex contractors-form'>
-                    <Col>
-                        <div className='pb-2'>
-                            <Select label='Accesories/Filters/Refrigerator Water filters' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Brick Veneer' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Carpenter Farming' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Central Vacuum System' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Drywall' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Grading' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Labor - Cabinets' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Labor - Trim' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Plumbing' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Septic System' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Stone Veneer' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Porta John Contractor' />
-                        </div>
-                    </Col>
+                <div className='contractors-form'>
+                    <div className='d-flex flex-wrap'>
 
-                    <Col>
-                        <div>
-                            <Select label='Accesories/Portable Attachments/Stand' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Cabinet Installer' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Carpenter Trim' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Concrete' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Electrical' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Gutters' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Labor - Electrical' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Landscaping' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Roofer' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Siding Veneer' />
-                        </div>
-                        <div className='pb-2'>
-                            <Select label='Wood Siding' />
-                        </div>
-                    </Col>
+                    {contractorTypes?.map((contractorType, index) => (
+                            <div key={index} className='select contractor'>
+                                <Form.Label className='input-label'>
+                                    {contractorType.name && contractorType.name}
+                                </Form.Label>
+                                <Form.Control as='select'>
+                                    {filterContractorsByType(contractorType.id)?.map((contractor, index) => (
+                                        <option key={index}>{contractor.companyName}</option>
+                                    ))}
+                                </Form.Control>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 <div className='d-flex justify-content-center  pt-5'>
