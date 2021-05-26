@@ -32,7 +32,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.projectName}
+                                defaultValue={project?.ProjectName}
                             />
                         </div>
                         <div className='pb-4'>
@@ -40,7 +40,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.customers?.[0]?.firstName}
+                                defaultValue={project?.Customers?.[0]?.FirstName}
                             />
                         </div>
                         <div className='pb-4'>
@@ -48,7 +48,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.planName}
+                                defaultValue={project?.PlanName}
                             />
                         </div>
                         <div className='pb-2 select'>
@@ -56,7 +56,7 @@ const ProjectInformation = (props) => {
                             <Form.Control as='select'>
                                 <option></option>
                                 {subdivisions?.map((subdivision, index) => (
-                                    <option key={index}>{subdivision.subdivisionName}</option>
+                                    <option key={index}>{subdivision.SubdivisionName}</option>
                                 ))}
                             </Form.Control>
                         </div>
@@ -65,7 +65,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.streetAddress1}
+                                defaultValue={project?.StreetAddress1}
                             />
                         </div>
                         <div className='pb-2'>
@@ -73,7 +73,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.city}
+                                defaultValue={project?.City}
                             />
                         </div>
                         <div className='pb-4'>
@@ -81,7 +81,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.zip}
+                                defaultValue={project?.Zip}
                             />
                         </div>
                         <div>
@@ -89,7 +89,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={Utils.formatDateDashes(project?.closeDate)}
+                                defaultValue={Utils.formatDateDashes(project?.CloseDate)}
                             />
                         </div>
                     </Col>
@@ -103,7 +103,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.customers?.[0]?.email}
+                                defaultValue={project?.Customers?.[0]?.Email}
                             />
                         </div>
                         <div className='pb-4'>
@@ -119,7 +119,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.streetAddress2}
+                                defaultValue={project?.StreetAddress2}
                             />
                         </div>
 
@@ -128,7 +128,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.state}
+                                defaultValue={project?.State}
                             />
                         </div>
                     </Col>

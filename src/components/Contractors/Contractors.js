@@ -22,7 +22,7 @@ const Contractors = () => {
     }, [dispatch]);
 
     const filterContractorsByType = (id) => {
-        return contractors?.filter((contractor) => contractor.contractorContractorTypes.find((type) => type.contractorTypeID === id));
+        return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.contractorTypeID === id));
     }
 
     return (

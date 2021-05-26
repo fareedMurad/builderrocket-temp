@@ -25,22 +25,22 @@ const ProjectHeader = () => {
                                         alt='project' 
                                         height='119' 
                                         width='167' 
-                                        src={project?.thumbnailURL}
+                                        src={project?.ThumbnailURL}
                                     />
                                 </div>
                             </Col>
                             <Col md={8}>
-                                <div className='text'>Project # {project?.projectNumber} </div>
+                                <div className='text'>Project # {project?.ProjectNumber} </div>
 
                                 <div className='pt-2 d-flex'>
                                     <div className='project-name'>Project Name</div>   
-                                    <div className='text pl-2 pt-1'>{project?.projectName}</div>
+                                    <div className='text pl-2 pt-1'>{project?.ProjectName}</div>
                                 </div>
 
                                 <div className='d-flex'>
                                     Address
                                     {'    '}
-                                    {project?.streetAddress1}
+                                    {project?.StreetAddress1}
                                 </div>
 
                                 <div className='pt-2'>
@@ -53,13 +53,13 @@ const ProjectHeader = () => {
                         <div className='bold-text pt-5'>Customer Name</div>
                         <div className='d-flex'>
                             <div className='pr-2 text'>Phone</div>
-                            <div className='text'>Email Address {project?.customers?.[0]?.email}</div>
+                            <div className='text'>Email Address {project?.Customers?.[0]?.email}</div>
                         </div>
                         <div className='d-flex pt-3'>
                             <div className='bold-text pr-3'>
                                 Closed On 
                                 {'    '}
-                                {Utils.formatDateDashes (project?.closeDate)}</div>
+                                {Utils.formatDateDashes (project?.CloseDate)}</div>
                             <div className='bold-text pl-3'>Build Time</div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@ const ProjectHeader = () => {
                     <div>
                         <div className='d-flex pt-3 justify-content-end'>
                             <div className='pr-3 text'>
-                                Status: <span className='bold-text'>{statusMap[project?.statusID]}</span>
+                                Status: <span className='bold-text'>{statusMap[project?.StatusID]}</span>
                             </div>
                             <button className='snapshot-btn'>Project Snapshot</button>
                         </div>
