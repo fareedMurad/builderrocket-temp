@@ -17,7 +17,7 @@ const ProjectTabs = () => {
     const project = useSelector(state => state.project.project);
 
     const [selectedTab, setSelectedTab] = useState('projectInformation');
-    console.log('Project', selectedTab);
+    // console.log('Project', project);
 
     return (
         <div className='project-tabs'>

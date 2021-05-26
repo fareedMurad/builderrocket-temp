@@ -12,10 +12,19 @@
     .drawings-form {
         min-height: 661px;
         justify-content: space-evenly;
-        padding: 0 1.5rem;
+        padding: 0 3rem;
 
         .col {
             padding: 0 3rem;
+        }
+    }
+
+    .drawing {
+        width: 50%;
+        font-size: 12px;
+
+        i {
+            font-size: 15px;
         }
     }
 }

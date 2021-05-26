@@ -72,7 +72,7 @@ const Contractors = () => {
                 <AddContractor 
                     show={showContractorModal}
                     handleClose={() => setShowContractorModal(false)}  
-                    />
+                />
             }
         </div>
     );

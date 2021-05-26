@@ -9,7 +9,6 @@ import MarketingBlock from '../MarketingBlock';
 import AddUtility from '../AddUtility';
 
 const Utilities = () => {
-
     const dispatch = useDispatch();
 
     const utilityTypes = useSelector(state => state.utility.utilityTypes);

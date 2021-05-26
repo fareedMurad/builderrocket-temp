@@ -16,9 +16,15 @@ const ProjectInformation = (props) => {
 
     const subdivisions = useSelector(state => state.subdivision.subdivisions);
 
+    console.log('sub', subdivisions);
+
     useEffect(() => {
         dispatch(getSubdivisions());
     }, [dispatch]);
+
+    const handleSubdivision = () => {
+        
+    }
 
     return (
         <div className='d-flex project-information'> 
@@ -53,10 +59,19 @@ const ProjectInformation = (props) => {
                         </div>
                         <div className='pb-2 select'>
                             <Form.Label className='input-label'>Subdivision</Form.Label>
-                            <Form.Control as='select'>
+                            <Form.Control
+                                as='select'
+                                value={parseInt(project?.Subdivision)}
+                                onChange={handleSubdivision}
+                            >
                                 <option></option>
                                 {subdivisions?.map((subdivision, index) => (
-                                    <option key={index}>{subdivision.SubdivisionName}</option>
+                                    <option 
+                                        key={index}
+                                        value={subdivision.ID}
+                                    >
+                                        {subdivision.SubdivisionName}
+                                    </option>
                                 ))}
                             </Form.Control>
                         </div>
