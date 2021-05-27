@@ -25,11 +25,11 @@ const ContractorManagement = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             const filter = contractors?.filter(contractor => 
-                contractor?.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.phoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.emailAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.uom?.toLowerCase().includes(searchTerm.toLowerCase())
+                contractor?.CompanyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                contractor?.FirstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                contractor?.PhoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                contractor?.EmailAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                contractor?.UOM?.toLowerCase().includes(searchTerm.toLowerCase())
             )
 
             setFilteredContractors(filter)
@@ -93,6 +93,8 @@ const ContractorManagement = () => {
         )
     }
 
+    console.log('Contract', contractors);
+
     return (
         <div className='d-flex contractor-management'>
             <div className='contractor-management-container'>
@@ -138,19 +140,19 @@ const ContractorManagement = () => {
                         <tbody>
                             {filteredContractors?.map((contractor, index) => (
                                 <tr key={index}>
-                                    <td width='20%'>{contractor?.companyName}</td>
-                                    <td>{contractor?.firstName}</td>
+                                    <td width='20%'>{contractor?.CompanyName}</td>
+                                    <td>{contractor?.FirstName}</td>
                                     <td>{''}</td>
                                     <td>{''}</td>
-                                    <td>{contractor?.phoneNumber}</td>
-                                    <td>{contractor?.emailAddress}</td>
+                                    <td>{contractor?.PhoneNumber}</td>
+                                    <td>{contractor?.EmailAddress}</td>
                                     <td>{''}</td>
-                                    <td>{contractor?.uom}</td>
+                                    <td>{contractor?.UOM}</td>
                                     <td>
                                         <div className='d-flex justify-content-between'>
                                             <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                             <i className='far fa-pencil-alt'></i>
-                                            <i className='far fa-trash-alt' onClick={() => deleteContractorConfirmation(contractor.id)}></i>
+                                            <i className='far fa-trash-alt' onClick={() => deleteContractorConfirmation(contractor.ID)}></i>
                                         </div>
                                     </td>
                                 </tr>

@@ -40,9 +40,6 @@ const ProjectTabs = () => {
                 <Tab eventKey='drawings' title='Drawings'>
                     <Drawings />
                 </Tab>
-                <Tab eventKey='photos' title='Photos'>
-                    ''
-                </Tab>
                 <Tab eventKey='roomAreaLayout' title='Room/Area Layout'>
                     <RoomAreaLayout />
                 </Tab>

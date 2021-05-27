@@ -34,8 +34,6 @@ const AddUtility = (props) => {
             });
     }
 
-    console.log('utility', utility);
-
     return (
         <Modal 
             show={show} 
@@ -54,8 +52,8 @@ const AddUtility = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                onChange={(e) => setUtility({ ...utility, companyName: e.target.value })}
-                                defaultValue={utility?.companyName}
+                                onChange={(e) => setUtility({ ...utility, CompanyName: e.target.value })}
+                                defaultValue={utility?.CompanyName}
                             />
                         </div>
                         <div className='pb-4'>
@@ -63,8 +61,8 @@ const AddUtility = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                onChange={(e) => setUtility({ ...utility, phoneNumber: e.target.value })}
-                                defaultValue={utility?.phoneNumber}
+                                onChange={(e) => setUtility({ ...utility, PhoneNumber: e.target.value })}
+                                defaultValue={utility?.PhoneNumber}
                             />
                         </div>
                         <div className='pb-4'>
@@ -72,8 +70,8 @@ const AddUtility = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                onChange={(e) => setUtility({ ...utility, region: e.target.value })}
-                                defaultValue={utility?.region}
+                                onChange={(e) => setUtility({ ...utility, Region: e.target.value })}
+                                defaultValue={utility?.Region}
                             />
                         </div>
                     </Col>
@@ -83,16 +81,16 @@ const AddUtility = (props) => {
                             <Form.Label className='input-label'>Utility Type*</Form.Label>
                             <Form.Control 
                                 as='select'
-                                onChange={(e) => setUtility({ ...utility, utilityTypeID: e.target.value })}    
-                                value={utility?.utilityTypeID}
+                                onChange={(e) => setUtility({ ...utility, UtilityTypeID: e.target.value })}    
+                                value={utility?.UtilityTypeID}
                             >
                                 <option></option>
                                 {utilityTypes?.map((utilityType, index) => (
                                     <option 
                                         key={index} 
-                                        value={utilityType.id}
+                                        value={utilityType.ID}
                                     >
-                                        {utilityType.name}
+                                        {utilityType.Name}
                                     </option>
                                 ))}
                             </Form.Control>
@@ -102,8 +100,8 @@ const AddUtility = (props) => {
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                onChange={(e) => setUtility({ ...utility, emailAddress: e.target.value })}
-                                defaultValue={utility?.emailAddress}
+                                onChange={(e) => setUtility({ ...utility, EmailAddress: e.target.value })}
+                                defaultValue={utility?.EmailAddress}
                             />
                         </div>
                     </Col>
@@ -119,7 +117,7 @@ const AddUtility = (props) => {
                     </Button>
                     <button 
                         className='primary-gray-btn next-btn ml-3'
-                        disabled={!utility.companyName || !utility.utilityTypeID}
+                        disabled={!utility.CompanyName || !utility.UtilityTypeID}
                         onClick={handleCreateUtility}
                     >
                         Save

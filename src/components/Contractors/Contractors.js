@@ -22,7 +22,7 @@ const Contractors = () => {
     }, [dispatch]);
 
     const filterContractorsByType = (id) => {
-        return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.contractorTypeID === id));
+        return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.ID === id));
     }
 
     return (
@@ -48,11 +48,11 @@ const Contractors = () => {
                     {contractorTypes?.map((contractorType, index) => (
                             <div key={index} className='select contractor'>
                                 <Form.Label className='input-label'>
-                                    {contractorType.name && contractorType.name}
+                                    {contractorType.Name && contractorType.Name}
                                 </Form.Label>
                                 <Form.Control as='select'>
-                                    {filterContractorsByType(contractorType.id)?.map((contractor, index) => (
-                                        <option key={index}>{contractor.companyName}</option>
+                                    {filterContractorsByType(contractorType.ID)?.map((contractor, index) => (
+                                        <option key={index}>{contractor.CompanyName}</option>
                                     ))}
                                 </Form.Control>
                             </div>

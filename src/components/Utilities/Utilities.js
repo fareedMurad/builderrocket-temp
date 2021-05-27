@@ -22,7 +22,7 @@ const Utilities = () => {
     }, [dispatch]);
 
     const filterUtilitiesByType = (id) => {
-        return utilities?.filter((utility) => utility.utilityTypeID === id);
+        return utilities?.filter((utility) => utility.UtilityTypeID === id);
     }
 
     return (
@@ -47,11 +47,11 @@ const Utilities = () => {
                         {utilityTypes?.map((utilityType, index) => (
                             <div key={index} className='select utility'>
                                 <Form.Label className='input-label'>
-                                    {utilityType.name && utilityType.name}
+                                    {utilityType.Name && utilityType.Name}
                                 </Form.Label>
                                 <Form.Control as='select'>
-                                    {filterUtilitiesByType(utilityType.id)?.map((utility, index) => (
-                                        <option key={index}>{utility.companyName}</option>
+                                    {filterUtilitiesByType(utilityType.ID)?.map((utility, index) => (
+                                        <option key={index}>{utility.CompanyName}</option>
                                     ))}
                                 </Form.Control>
                             </div>

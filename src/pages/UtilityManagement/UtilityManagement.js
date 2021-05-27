@@ -25,11 +25,11 @@ const UtilityManagement = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             const filter = utilities?.filter(utility => 
-                utility?.companyName?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-                utility?.utilityType?.name?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                utility?.phoneNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-                utility?.region?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                utility?.emailAddress?.toLowerCase().includes(searchTerm?.toLowerCase())
+                utility?.CompanyName?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                utility?.UtilityType?.Name?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                utility?.PhoneNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                utility?.Region?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                utility?.EmailAddress?.toLowerCase().includes(searchTerm?.toLowerCase())
         );
 
             setFilteredUtilities(filter);
@@ -140,11 +140,11 @@ const UtilityManagement = () => {
                         <tbody>
                             {filteredUtilities?.map((utility, index) => (
                                 <tr key={index}>
-                                    <td width='25%'>{utility?.companyName}</td>
-                                    <td>{utility?.utilityType.name}</td>
-                                    <td>{utility?.phoneNumber}</td>
-                                    <td>{utility?.emailAddress}</td>
-                                    <td>{utility?.region}</td>
+                                    <td width='25%'>{utility?.CompanyName}</td>
+                                    <td>{utility?.UtilityType?.Name}</td>
+                                    <td>{utility?.PhoneNumber}</td>
+                                    <td>{utility?.EmailAddress}</td>
+                                    <td>{utility?.Region}</td>
                                     <td>
                                         <div className='d-flex justify-content-between'>
                                             <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
@@ -154,7 +154,7 @@ const UtilityManagement = () => {
                                             ></i>
                                             <i 
                                                 className='far fa-trash-alt' 
-                                                onClick={() => deleteUtilityConfirmation(utility.id)}
+                                                onClick={() => deleteUtilityConfirmation(utility.ID)}
                                             ></i>
                                         </div>
                                     </td>
