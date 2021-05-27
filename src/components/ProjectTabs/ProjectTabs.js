@@ -38,7 +38,7 @@ const ProjectTabs = () => {
                     <Contractors />
                 </Tab>
                 <Tab eventKey='drawings' title='Drawings'>
-                    <Drawings />
+                    <Drawings project={project} />
                 </Tab>
                 <Tab eventKey='roomAreaLayout' title='Room/Area Layout'>
                     <RoomAreaLayout />

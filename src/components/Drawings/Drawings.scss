@@ -12,11 +12,7 @@
     .drawings-form {
         min-height: 661px;
         justify-content: space-evenly;
-        padding: 0 3rem;
-
-        .col {
-            padding: 0 3rem;
-        }
+        padding: 0 5rem;
     }
 
     .drawing {
@@ -25,6 +21,22 @@
 
         i {
             font-size: 15px;
+            cursor: pointer;
+        }
+
+        .file-image {
+            margin-right: 3rem;
+        }
+
+        .file-name { 
+            margin-top: 1rem;
+            margin-right: 3rem;
+        }
+
+        .icon {
+            margin-top: 1rem;
+            margin-left: .5rem;
+            margin-right: .5rem;
         }
     }
 }

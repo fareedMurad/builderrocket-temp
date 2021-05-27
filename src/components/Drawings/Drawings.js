@@ -5,7 +5,10 @@ import './Drawings.scss';
 // components
 import MarketingBlock from '../MarketingBlock';
 
-const Drawings = () => {
+const Drawings = (props) => {
+    const { project } = props;
+
+    console.log('project', project);
 
     return (
         <div className='d-flex drawings'>
@@ -25,14 +28,26 @@ const Drawings = () => {
                 </div>
 
                 <div className='drawings-form'>
-                    <div className='d-flex justify-content-between drawing'>
-                        <div>Floor Plan Drawing Main Floor</div>
-                        <div className='icon-container'><i className='far fa-pencil-alt'></i></div>
-                        <div className='icon-container'><i className='fa fa-share-square'></i></div>
-                        <div className='icon-container'>
-                            <i className='far fa-trash-alt'></i>
+                    {project?.Images?.map((image, index) => (
+                        <div key={index} className='d-flex drawing'>
+                            <div className='file-image'>       
+                                <img 
+                                    alt='drawing' 
+                                    height='45' 
+                                    width='50' 
+                                    src={image?.URL}
+                                />
+                            </div>
+                            <div className='file-name'>{image?.FileName}</div>
+                            {/* <div className='d-flex icons'> */}
+                                <div className='icon'><i className='far fa-pencil-alt'></i></div>
+                                <div className='icon'><i className='fa fa-share-square'></i></div>
+                                <div className='icon'>
+                                    <i className='far fa-trash-alt'></i>
+                                </div>
+                            {/* </div> */}
                         </div>
-                    </div>
+                    ))}
                 </div>
 
             </div>
