@@ -56,7 +56,7 @@ const FileUpload = (props) => {
                             <div className='icon-container'><i className='far fa-pencil-alt'></i></div>
                             <div className='icon-container'><i className='fa fa-share-square'></i></div>
                             <div className='icon-container'>
-                                <i onClick={() => handleDocumentDelete(file.id)} className='far fa-trash-alt'></i>
+                                <i onClick={() => handleDocumentDelete(file.ID)} className='far fa-trash-alt'></i>
                             </div>
                         </div>
                     ))}

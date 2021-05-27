@@ -26,9 +26,9 @@ const Documents = (props) => {
         formData.append('DocumentTypeID', documentTypeID);
         formData.append('File', event.target?.files?.[0]);
 
-        dispatch(addDocument(project.id, formData))
+        dispatch(addDocument(project.ID, formData))
             .then(() => {
-                dispatch(getProjectByProjectNumber(project.projectNumber));
+                dispatch(getProjectByProjectNumber(project.ProjectNumber));
             });
     }
 
