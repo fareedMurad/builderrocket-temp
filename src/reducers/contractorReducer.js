@@ -1,11 +1,13 @@
 import { 
     GET_CONTRACTORS,
-    GET_CONTRACTOR_TYPES
+    GET_CONTRACTOR_TYPES,
+    SET_SELECTED_CONTRACTOR
 } from '../actions/types';
 
 const intialState = {
     contractors: [],
-    contractorTypes: []
+    contractorTypes: [],
+    contractor: {}
 }
 
 const contractorReducer = (state = intialState, action) => {
@@ -20,6 +22,12 @@ const contractorReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 contractorTypes: action.payload   
+            }
+        }
+        case SET_SELECTED_CONTRACTOR: {
+            return {
+                ...state, 
+                contractor: action.payload
             }
         }
         default: 

@@ -3,6 +3,7 @@ import {
     GET_CONTRACTORS,
     GET_CONTRACTOR_TYPES,
     CREATE_CONTRACTOR,
+    SET_SELECTED_CONTRACTOR,
     LOGOUT
 } from './types';
 
@@ -89,4 +90,8 @@ export const deleteContractor = (contractorID) => dispatch => {
             dispatch({ type: LOGOUT });
     })
 
+}
+
+export const setSelectedContractor = (contractor) => dispatch => {
+    dispatch({ type: SET_SELECTED_CONTRACTOR, payload: contractor });
 }

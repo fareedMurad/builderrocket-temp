@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Table, Button, Form, FormControl } from 'react-bootstrap';
-import { deleteContractor, getContractors } from '../../actions/contractorActions';
+import { deleteContractor, getContractors, setSelectedContractor } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
 
 // components
@@ -56,6 +56,12 @@ const ContractorManagement = () => {
         setSelectedContractorID();
 
         setShowDeleteModal(false);
+    }
+
+    const editContractor = (contractor) => {
+        setShowContractorModal(true);
+
+        dispatch(setSelectedContractor(contractor));
     }
 
     const deleteContractorModal = () => {
@@ -149,8 +155,14 @@ const ContractorManagement = () => {
                                     <td>
                                         <div className='d-flex justify-content-between'>
                                             <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                            <i className='far fa-pencil-alt'></i>
-                                            <i className='far fa-trash-alt' onClick={() => deleteContractorConfirmation(contractor.ID)}></i>
+                                            <i 
+                                                className='far fa-pencil-alt'
+                                                onClick={() => editContractor(contractor)}
+                                            ></i>
+                                            <i 
+                                                className='far fa-trash-alt' 
+                                                onClick={() => deleteContractorConfirmation(contractor.ID)}
+                                            ></i>
                                         </div>
                                     </td>
                                 </tr>

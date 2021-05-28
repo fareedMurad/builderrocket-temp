@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Modal, Form, Col, Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createContractor, getContractors } from '../../actions/contractorActions';
+import { Modal, Form, Col, Button } from 'react-bootstrap';
+import { createContractor, getContractors, getContractorTypes, setSelectedContractor } from '../../actions/contractorActions';
+import { isEmpty } from 'lodash';
 import './AddContractor.scss';
 
 
@@ -10,12 +11,25 @@ const AddContractor = (props) => {
 
     const dispatch = useDispatch();
 
+    const selectedContractor = useSelector(state => state.contractor.contractor);
     const contractorTypes = useSelector(state => state.contractor.contractorTypes);
 
     const [contractor, setContractor] = useState({});
 
-    const setContractorTypes = (index) => {
-        const selectedContractorType = contractorTypes[index];
+    useEffect(() => {
+        setContractor(selectedContractor);
+
+        return () => {
+            dispatch(setSelectedContractor({}));
+        }
+    }, [dispatch, selectedContractor]);
+
+    useEffect(() => {
+        dispatch(getContractorTypes());
+    }, [dispatch]);
+
+    const setContractorTypes = (id) => {
+        const selectedContractorType = contractorTypes?.find((contractorType) => contractorType.ID === id);
 
         setContractor({ ...contractor, ContractorTypes: [selectedContractorType] });
     }
@@ -48,6 +62,7 @@ const AddContractor = (props) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, CompanyName: e.target.value })}
+                                defaultValue={contractor?.CompanyName}
                             />
                         </div>
                         <div className='pb-4'>
@@ -64,6 +79,7 @@ const AddContractor = (props) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, PhoneNumber: e.target.value })}
+                                defaultValue={contractor?.PhoneNumber}
                             />
                         </div>
                         <div className='pb-4'>
@@ -71,7 +87,7 @@ const AddContractor = (props) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                onChange={(e) => setContractor({ ...contractor, Region: e.target.value })}
+                                // onChange={(e) => setContractor({ ...contractor, Region: e.target.value })}
                             />
                         </div>
                         <div className='pb-2'>
@@ -80,6 +96,7 @@ const AddContractor = (props) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, UOM: e.target.value })}
+                                defaultValue={contractor?.UOM}
                             />
                         </div>
                     </Col>
@@ -91,13 +108,13 @@ const AddContractor = (props) => {
                                 as='select'
                                 // multiple
                                 onChange={(e) => setContractorTypes(e.target.value)}
-                                // value={utility?.UtilityTypeID}
+                                value={contractor?.ContractorTypes?.[0]?.ID}
                             >
                                 <option>SELECT</option>
                                 {contractorTypes?.map((contractorType, index) => (
                                     <option 
                                         key={index} 
-                                        value={index}
+                                        value={contractorType?.ID}
                                     >
                                         {contractorType.Name}
                                     </option>
@@ -110,6 +127,7 @@ const AddContractor = (props) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, FirstName: e.target.value })}
+                                defaultValue={contractor?.FirstName}
                             />
                         </div>
                         <div className='pb-4'>
@@ -118,6 +136,7 @@ const AddContractor = (props) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, Zip: e.target.value })}
+                                defaultValue={contractor?.Zip}
                             />
                         </div>
                         <div className='pb-4'>
@@ -126,6 +145,7 @@ const AddContractor = (props) => {
                                 type='email'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, EmailAddress: e.target.value })}
+                                defaultValue={contractor?.EmailAddress}
                             />
                         </div>
                     </Col>
@@ -141,6 +161,7 @@ const AddContractor = (props) => {
                     </Button>
                     <button 
                         className='primary-gray-btn next-btn ml-3'
+                        disabled={!contractor.CompanyName || isEmpty(contractor?.ContractorTypes)}
                         onClick={handleCreateContractor}
                     >
                         Save
