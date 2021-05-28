@@ -45,7 +45,7 @@ const AddUtility = (props) => {
             <Modal.Body>
                 <div className='page-title'>Add Utility</div>
                 
-                <div className='d-flex add-utility-form'>
+                <div className='d-flex flex-wrap add-utility-form'>
                     <Col md={6}>
                         <div className='pb-4'>
                             <Form.Label className='input-label'>Utility Name*</Form.Label>

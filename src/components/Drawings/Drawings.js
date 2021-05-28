@@ -39,13 +39,11 @@ const Drawings = (props) => {
                                 />
                             </div>
                             <div className='file-name'>{image?.FileName}</div>
-                            {/* <div className='d-flex icons'> */}
-                                <div className='icon'><i className='far fa-pencil-alt'></i></div>
-                                <div className='icon'><i className='fa fa-share-square'></i></div>
-                                <div className='icon'>
-                                    <i className='far fa-trash-alt'></i>
-                                </div>
-                            {/* </div> */}
+                            <div className='icon'><i className='far fa-pencil-alt'></i></div>
+                            <div className='icon'><i className='fa fa-share-square'></i></div>
+                            <div className='icon'>
+                                <i className='far fa-trash-alt'></i>
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -93,8 +93,6 @@ const ContractorManagement = () => {
         )
     }
 
-    console.log('Contract', contractors);
-
     return (
         <div className='d-flex contractor-management'>
             <div className='contractor-management-container'>

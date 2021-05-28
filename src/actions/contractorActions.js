@@ -75,7 +75,7 @@ export const deleteContractor = (contractorID) => dispatch => {
     const URL = `/Contractor/${contractorID}`;
 
     return api({
-        method: 'DELTE',
+        method: 'DELETE',
         url: URL
     })
     .then((response) => {

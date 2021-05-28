@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUtilities, getUtilityTypes } from '../../actions/utilityActions';
 import { Button, Form } from 'react-bootstrap';
+import { isEmpty } from 'lodash';
 import './Utilities.scss';
 
 // components
@@ -50,9 +51,13 @@ const Utilities = () => {
                                     {utilityType.Name && utilityType.Name}
                                 </Form.Label>
                                 <Form.Control as='select'>
-                                    {filterUtilitiesByType(utilityType.ID)?.map((utility, index) => (
-                                        <option key={index}>{utility.CompanyName}</option>
-                                    ))}
+                                    {!isEmpty(filterUtilitiesByType(utilityType.ID)) ? 
+                                        filterUtilitiesByType(utilityType.ID)?.map((utility, index) => (
+                                            <option key={index} value={utility.ID}>{utility.CompanyName}</option>
+                                        ))
+                                    : 
+                                        <option>SELECT</option>
+                                    }
                                 </Form.Control>
                             </div>
                         ))}
