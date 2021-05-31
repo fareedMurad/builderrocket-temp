@@ -1,7 +1,10 @@
 import { combineReducers  } from 'redux';
 import { LOGOUT } from '../actions/types';
+
+// reducers
 import authReducer from './authReducer';
 import userReducer from './userReducer';
+import roomReducer from './roomReducer';
 import projectReducer from './projectReducer';
 import utilityReducer from './utilityReducer';
 import documentReducer from './documentReducer';
@@ -11,6 +14,7 @@ import subdivisionReducer from './subdivisionReducer';
 const appReducer = combineReducers({
     auth: authReducer,
     user: userReducer,
+    room: roomReducer,
     project: projectReducer,
     utility: utilityReducer,
     document: documentReducer,

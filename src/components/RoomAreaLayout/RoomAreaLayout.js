@@ -1,10 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getRoomTypes } from '../../actions/roomActions';
 import './RoomAreaLayout.scss';
 
 // components
 import MarketingBlock from '../MarketingBlock';
 
 const RoomAreaLayout = (props) => {
+    const dispatch = useDispatch();
+
+    const roomTypes = useSelector(state => state.room.roomTypes);
+
+    useEffect(() => {
+        dispatch(getRoomTypes());
+    }, [dispatch]);
+
+    console.log('ROOMS', roomTypes);
+
     return (
         <div className='d-flex room-area-layout'>
             <div className='container'>

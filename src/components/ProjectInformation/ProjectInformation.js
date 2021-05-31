@@ -24,6 +24,8 @@ const ProjectInformation = (props) => {
         
     }
 
+    console.log('project', project);
+
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 

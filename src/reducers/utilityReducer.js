@@ -10,7 +10,7 @@ const intialState = {
     utility: {}
 }
 
-const utilitiesReducer = (state = intialState, action) => {
+const utilityReducer = (state = intialState, action) => {
     switch (action.type) {
         case GET_UTILITIES: {
             return {
@@ -35,4 +35,4 @@ const utilitiesReducer = (state = intialState, action) => {
     }
 };
 
-export default utilitiesReducer;
+export default utilityReducer;

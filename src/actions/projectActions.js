@@ -24,7 +24,7 @@ export const getProjects = () => dispatch => {
         console.log('yoo', response);
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
         console.log('Getting Projects', error);
@@ -46,7 +46,7 @@ export const getProjectByProjectNumber = (projectNumber, token) => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
         console.log('Get Project By Number', error);

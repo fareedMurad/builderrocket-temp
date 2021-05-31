@@ -22,7 +22,7 @@ export const getUtilities = () => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
         console.log('Getting Utilities', error);
@@ -45,7 +45,7 @@ export const getUtilityTypes = () => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
         console.log('Getting Utility Types', error);
@@ -69,7 +69,7 @@ export const createUtility = (utility) => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
     })
 }

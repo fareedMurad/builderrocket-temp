@@ -22,7 +22,7 @@ export const getContractors = () => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
     });
@@ -43,7 +43,7 @@ export const getContractorTypes = () => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
     });
@@ -66,7 +66,7 @@ export const createContractor = (contractor) => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
     })
 }

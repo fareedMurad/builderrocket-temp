@@ -106,7 +106,7 @@ const AddContractor = (props) => {
                             <Form.Label className='input-label'>Contractor Type*</Form.Label>
                             <Form.Control 
                                 as='select'
-                                // multiple
+                                multiple
                                 onChange={(e) => setContractorTypes(e.target.value)}
                                 value={contractor?.ContractorTypes?.[0]?.ID}
                             >
