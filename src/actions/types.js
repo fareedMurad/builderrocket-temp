@@ -6,8 +6,9 @@ export const SET_USER = 'SET_USER';
 // projects
 export const GET_PROJECT = 'GET_PROJECT';
 export const GET_PROJECTS = 'GET_PROJECTS';
-export const SET_SELECTED_PROJECT = 'SET_SELECTED_PROJECT';
 export const RESET_PROJECT = 'RESET_PROJECT';
+export const SET_SELECTED_PROJECT = 'SET_SELECTED_PROJECT';
+export const SET_SELECTED_PROJECT_TAB = 'SET_SELECTED_PROJECT_TAB';
 
 // user
 export const GET_USER_PROFILE = 'GET_USER_PROFILE';

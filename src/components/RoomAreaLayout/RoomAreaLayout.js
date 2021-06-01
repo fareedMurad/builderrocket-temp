@@ -15,7 +15,7 @@ const RoomAreaLayout = (props) => {
         dispatch(getRoomTypes());
     }, [dispatch]);
 
-    console.log('ROOMS', roomTypes);
+    console.log('ROOM Types', roomTypes);
 
     return (
         <div className='d-flex room-area-layout'>
@@ -26,8 +26,13 @@ const RoomAreaLayout = (props) => {
 
                 </div>
 
-                <div className='rooms'>
-        
+                <div className='rooms d-flex'>
+                    {roomTypes?.map((room, index) => (
+                        <div key={index}>
+                            <div>{room?.Name}</div>
+                        </div>
+
+                    ))}
                 </div>
             </div>
     

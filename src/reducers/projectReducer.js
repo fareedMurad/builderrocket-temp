@@ -1,13 +1,15 @@
 import { 
-    GET_PROJECTS, 
     GET_PROJECT,
-    SET_SELECTED_PROJECT, 
-    RESET_PROJECT 
+    GET_PROJECTS, 
+    RESET_PROJECT,
+    SET_SELECTED_PROJECT,
+    SET_SELECTED_PROJECT_TAB 
 } from '../actions/types';
 
 const intialState = {
     project: {},
-    projects: []
+    projects: [],
+    selectedProjectTab: 'projectInformation'
 };
 
 const projectReducer = (state = intialState, action) => {
@@ -34,6 +36,12 @@ const projectReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 project: {}
+            }
+        }
+        case SET_SELECTED_PROJECT_TAB: {
+            return {
+                ...state, 
+                selectedProjectTab: action.payload
             }
         }
         default:

@@ -1,8 +1,9 @@
 import api from '../api';
 import { 
+    SET_SELECTED_PROJECT_TAB,
+    SET_SELECTED_PROJECT, 
     GET_PROJECTS, 
     GET_PROJECT, 
-    SET_SELECTED_PROJECT, 
     RESET_PROJECT, 
     LOGOUT
 } from './types';
@@ -74,6 +75,19 @@ export const resetProject = () => dispatch => {
             resolve();
         } catch (error) {
             console.log('Error Project Reset', error);
+            reject(error);
+        }
+    });
+}
+
+export const setSelectedProjectTab = (tab) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_SELECTED_PROJECT_TAB, payload: tab });
+
+            resolve();
+        } catch (error) {
+            console.log('Selected Project Tab', error);
             reject(error);
         }
     });

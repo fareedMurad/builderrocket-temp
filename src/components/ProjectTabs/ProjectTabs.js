@@ -1,50 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedProjectTab } from '../../actions/projectActions';
 import './ProjectTabs.scss';
 
 // components 
-import ProjectInformation from '../ProjectInformation';
+import Drawings from '../Drawings';
+import Products from '../Products';
 import Documents from '../Documents';
 import Utilities from '../Utilities';
 import Contractors from '../Contractors';
-import Drawings from '../Drawings';
 import RoomAreaLayout from '../RoomAreaLayout';
-import Products from '../Products';
+import ProjectInformation from '../ProjectInformation';
 
 
-const ProjectTabs = () => {
+const ProjectTabs = (props) => {
+    const dispatch = useDispatch();
+
     const project = useSelector(state => state.project.project);
+    const selectedProjectTab = useSelector(state => state.project.selectedProjectTab);
 
-    const [selectedTab, setSelectedTab] = useState('projectInformation');
-    // console.log('Project', project);
+    const handleSelectedTab = (tab) => {
+        dispatch(setSelectedProjectTab(tab));
+    }
 
     return (
         <div className='project-tabs'>
             <Tabs
-                activeKey={selectedTab}
-                onSelect={(tab) => setSelectedTab(tab)}
+                activeKey={selectedProjectTab}
+                onSelect={(tab) => handleSelectedTab(tab)}
             >
                 <Tab eventKey='projectInformation' title='Project Information'>
-                    <ProjectInformation project={project} />
+                    {selectedProjectTab === 'projectInformation' &&
+                        <ProjectInformation project={project} />
+                    }
                 </Tab>
                 <Tab eventKey='documents' title='Documents'>
-                    <Documents />
+                    {selectedProjectTab === 'documents' &&
+                        <Documents />
+                    }
                 </Tab>
                 <Tab eventKey='utilities' title='Utilities'>
-                    <Utilities project={project} />
+                    {selectedProjectTab === 'utilities' &&
+                        <Utilities project={project} />
+                    }
                 </Tab>
                 <Tab eventKey='contractors' title='Contractors'>
-                    <Contractors />
+                    {selectedProjectTab === 'contractors' &&
+                        <Contractors />
+                    }
                 </Tab>
                 <Tab eventKey='drawings' title='Drawings'>
-                    <Drawings project={project} />
+                    {selectedProjectTab === 'drawings' &&
+                        <Drawings project={project} />
+                    }
                 </Tab>
                 <Tab eventKey='roomAreaLayout' title='Room/Area Layout'>
-                    <RoomAreaLayout />
+                    {selectedProjectTab === 'roomAreaLayout' &&
+                        <RoomAreaLayout />
+                    }
                 </Tab>
                 <Tab eventKey='products' title='Products'>
-                    <Products />
+                    {selectedProjectTab === 'products' &&
+                        <Products />
+                    }
                 </Tab>
             </Tabs>
         </div>
