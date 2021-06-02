@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRoomTypes } from '../../actions/roomActions';
 import './RoomAreaLayout.scss';
@@ -26,10 +27,16 @@ const RoomAreaLayout = (props) => {
 
                 </div>
 
-                <div className='rooms d-flex'>
-                    {roomTypes?.map((room, index) => (
-                        <div key={index}>
-                            <div>{room?.Name}</div>
+                <div className='rooms d-flex flex-wrap justify-content-around'>
+                    {roomTypes?.map((roomType, index) => (
+                        <div key={index} className='room-type-container'>
+                            <div className='room-type'>{roomType?.Name}</div>
+
+                            {roomType?.Rooms?.map((room, index) => (
+                                <div key={index} className='room-name'>
+                                    <Form.Check type='checkbox' label={`${room?.Name}`} />
+                                </div>
+                            ))}
                         </div>
 
                     ))}

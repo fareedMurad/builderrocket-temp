@@ -3,16 +3,35 @@
 
     .container {
         width: 981px;
-        background-color: white;
         margin-right: 3rem;
         padding-bottom: 2rem;
+        background-color: white;
     }
 
     .rooms {
-        padding: 0 1.5rem;
+        padding: 0 2.25rem;
     }
 
     .page-title {
         padding-bottom: .85rem;
+    }
+
+    .room-type-container {
+        width: 25%;
+        margin-bottom: 2rem;
+    }
+
+    .room-type {
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 14px;
+        letter-spacing: -0.27px;
+        margin-bottom: .5rem;
+    }
+
+    .room-name {
+        font-size: 12px;
+        line-height: 24px;
+        letter-spacing: -0.27px;
     }
 }

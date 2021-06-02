@@ -51,6 +51,7 @@ const Contractors = () => {
                                 <Form.Label className='input-label'>
                                     {contractorType.Name && contractorType.Name}
                                 </Form.Label>
+
                                 <Form.Control as='select'>
                                     {!isEmpty(filterContractorsByType(contractorType.ID)) ? 
                                         filterContractorsByType(contractorType.ID)?.map((contractor, index) => (
@@ -65,7 +66,7 @@ const Contractors = () => {
                     </div>
                 </div>
 
-                <div className='d-flex justify-content-center  pt-5'>
+                <div className='d-flex justify-content-center pt-5'>
                     <a href='/' className='cancel'>Cancel</a>
                     <button className='primary-gray-btn next-btn ml-3'>Next</button>
                 </div>
