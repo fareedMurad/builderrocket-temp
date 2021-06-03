@@ -1,14 +1,13 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import './Drawings.scss';
 
 // components
 import MarketingBlock from '../MarketingBlock';
 
 const Drawings = (props) => {
-    const { project } = props;
-
-    console.log('project', project);
+    const project = useSelector(state => state.project.project);
 
     return (
         <div className='d-flex drawings'>

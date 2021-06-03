@@ -17,7 +17,6 @@ import ProjectInformation from '../ProjectInformation';
 const ProjectTabs = (props) => {
     const dispatch = useDispatch();
 
-    const project = useSelector(state => state.project.project);
     const selectedProjectTab = useSelector(state => state.project.selectedProjectTab);
 
     const handleSelectedTab = (tab) => {
@@ -32,7 +31,7 @@ const ProjectTabs = (props) => {
             >
                 <Tab eventKey='projectInformation' title='Project Information'>
                     {selectedProjectTab === 'projectInformation' &&
-                        <ProjectInformation project={project} />
+                        <ProjectInformation />
                     }
                 </Tab>
                 <Tab eventKey='documents' title='Documents'>
@@ -42,7 +41,7 @@ const ProjectTabs = (props) => {
                 </Tab>
                 <Tab eventKey='utilities' title='Utilities'>
                     {selectedProjectTab === 'utilities' &&
-                        <Utilities project={project} />
+                        <Utilities />
                     }
                 </Tab>
                 <Tab eventKey='contractors' title='Contractors'>
@@ -52,7 +51,7 @@ const ProjectTabs = (props) => {
                 </Tab>
                 <Tab eventKey='drawings' title='Drawings'>
                     {selectedProjectTab === 'drawings' &&
-                        <Drawings project={project} />
+                        <Drawings />
                     }
                 </Tab>
                 <Tab eventKey='roomAreaLayout' title='Room/Area Layout'>

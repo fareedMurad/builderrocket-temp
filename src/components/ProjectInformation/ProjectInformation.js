@@ -10,11 +10,10 @@ import MarketingBlock from '../MarketingBlock';
 import FileUpload from '../FileUpload';
 
 const ProjectInformation = (props) => {
-    const { project } = props;
-
     const dispatch = useDispatch();
 
     const subdivisions = useSelector(state => state.subdivision.subdivisions);
+    const project = useSelector(state => state.project.project);
 
     useEffect(() => {
         dispatch(getSubdivisions());

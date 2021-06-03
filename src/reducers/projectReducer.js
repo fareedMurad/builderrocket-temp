@@ -2,6 +2,7 @@ import {
     GET_PROJECT,
     GET_PROJECTS, 
     RESET_PROJECT,
+    ADD_PROJECT_ROOMS,
     SET_SELECTED_PROJECT,
     SET_SELECTED_PROJECT_TAB 
 } from '../actions/types';
@@ -42,6 +43,12 @@ const projectReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 selectedProjectTab: action.payload
+            }
+        }
+        case ADD_PROJECT_ROOMS: {
+            return {
+                ...state, 
+                project: action.payload
             }
         }
         default:

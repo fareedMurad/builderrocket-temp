@@ -2,6 +2,7 @@ import api from '../api';
 import { 
     SET_SELECTED_PROJECT_TAB,
     SET_SELECTED_PROJECT, 
+    ADD_PROJECT_ROOMS,
     GET_PROJECTS, 
     GET_PROJECT, 
     RESET_PROJECT, 
@@ -90,5 +91,28 @@ export const setSelectedProjectTab = (tab) => dispatch => {
             console.log('Selected Project Tab', error);
             reject(error);
         }
+    });
+}
+
+export const addRoomsToProject = (projectID, rooms) => dispatch => {
+    const URL = `/Project/${projectID}/AddRooms`;
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: rooms
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: ADD_PROJECT_ROOMS, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+
+        console.log('Save Rooms', error);
     });
 }

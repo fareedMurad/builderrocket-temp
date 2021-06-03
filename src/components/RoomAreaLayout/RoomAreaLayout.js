@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRoomTypes } from '../../actions/roomActions';
+import { addRoomsToProject } from '../../actions/projectActions';
+import { isEmpty } from 'lodash';
 import './RoomAreaLayout.scss';
 
 // components
@@ -11,12 +13,49 @@ const RoomAreaLayout = (props) => {
     const dispatch = useDispatch();
 
     const roomTypes = useSelector(state => state.room.roomTypes);
+    const project = useSelector(state => state.project.project);
+
+    const [roomList, setRoomList] = useState([]);
 
     useEffect(() => {
         dispatch(getRoomTypes());
     }, [dispatch]);
 
-    console.log('ROOM Types', roomTypes);
+    const isRoomInProject = (id) => {
+        return project?.ProjectRooms?.find((room) => room?.RoomID === id);
+    }
+
+    const handleCheckBox = (roomID, e) => {
+        
+        if (!roomList.includes(roomID)) {
+            setRoomList([ ...roomList, roomID]);
+        } else {
+            let tempRoomList = roomList;
+            const roomIndex = tempRoomList.indexOf(roomID);
+
+            if (roomIndex > -1) {
+                tempRoomList.splice(roomIndex, 1);
+              }
+
+            setRoomList(tempRoomList);
+        }
+    }
+
+    const handleAddRoomsToProject = () => {
+        if (!isEmpty(roomList)) {
+            const roomsObj = {
+                RoomIDs: roomList
+            }
+
+            dispatch(addRoomsToProject(project?.ID, roomsObj))
+                .then(() => {
+                    setRoomList([]);
+                });
+        }
+    }
+
+    console.log('ROOM Types', project);
+    console.log('ROOM LIST', roomList);
 
     return (
         <div className='d-flex room-area-layout'>
@@ -34,12 +73,27 @@ const RoomAreaLayout = (props) => {
 
                             {roomType?.Rooms?.map((room, index) => (
                                 <div key={index} className='room-name'>
-                                    <Form.Check type='checkbox' label={`${room?.Name}`} />
+                                    <Form.Check 
+                                        type='checkbox'
+                                        defaultChecked={isRoomInProject(room?.ID)} 
+                                        onChange={() => handleCheckBox(room?.ID)}
+                                        label={`${room?.Name}`} 
+                                    />
                                 </div>
                             ))}
                         </div>
 
                     ))}
+                </div>
+
+                <div className='d-flex justify-content-center pt-5'>
+                    <a href='/' className='cancel'>Cancel</a>
+                    <button 
+                        className='primary-gray-btn next-btn ml-3'
+                        onClick={handleAddRoomsToProject}
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
     

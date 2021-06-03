@@ -12,8 +12,8 @@ import AddUtility from '../AddUtility';
 const Utilities = () => {
     const dispatch = useDispatch();
 
-    const utilityTypes = useSelector(state => state.utility.utilityTypes);
     const utilities = useSelector(state => state.utility.utilities);
+    const utilityTypes = useSelector(state => state.utility.utilityTypes);
     
     const [showUtilityModal, setShowUtilityModal] = useState(false);
 
