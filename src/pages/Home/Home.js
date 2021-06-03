@@ -22,11 +22,6 @@ const Home = (props) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredProjects, setFilteredProjects] = useState(projects);
     const [projectsStatus, setProjectsStatus] = useState('Active');
-
-    useEffect(() => {
-        if (!token) 
-            history.push('/login');
-    });
     
     useEffect(() => {
         if (token) {

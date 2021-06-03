@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRoomTypes } from '../../actions/roomActions';
-import { addRoomsToProject } from '../../actions/projectActions';
+import { addRoomsToProject, deleteRoomsFromProject } from '../../actions/projectActions';
 import { Form, Spinner } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import './RoomAreaLayout.scss';
@@ -17,6 +17,7 @@ const RoomAreaLayout = (props) => {
 
     const [roomList, setRoomList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [deleteRoomList, setDeleteRoomList] = useState([]);
 
     useEffect(() => {
         dispatch(getRoomTypes());
@@ -27,25 +28,45 @@ const RoomAreaLayout = (props) => {
     }
 
     const handleCheckBox = (roomID, e) => {
-        
-        if (!roomList.includes(roomID)) {
-            setRoomList([ ...roomList, roomID]);
+
+        if (isRoomInProject(roomID)) {
+    
+            if (deleteRoomList?.includes(roomID)) {
+                let tempDeleteRoomList = deleteRoomList;
+                const deleteRoomIndex = tempDeleteRoomList.indexOf(roomID);
+
+                if (deleteRoomIndex > -1) {
+                    tempDeleteRoomList.splice(deleteRoomIndex, 1);
+                }
+
+                setDeleteRoomList(tempDeleteRoomList);
+            } else {
+                setDeleteRoomList([ ...deleteRoomList, roomID ]);
+            }
         } else {
-            let tempRoomList = roomList;
-            const roomIndex = tempRoomList.indexOf(roomID);
 
-            if (roomIndex > -1) {
-                tempRoomList.splice(roomIndex, 1);
-              }
+            if (roomList.includes(roomID)) {
+                let tempRoomList = roomList;
+                const roomIndex = tempRoomList.indexOf(roomID);
 
-            setRoomList(tempRoomList);
+                if (roomIndex > -1) {
+                    tempRoomList.splice(roomIndex, 1);
+                }
+
+                setRoomList(tempRoomList);
+            } else {
+                setRoomList([ ...roomList, roomID]);
+            }
         }
     }
+    
+    console.log('ROOMS', roomList);
+    console.log('DELETE ROOM', deleteRoomList);
 
     const handleAddRoomsToProject = () => {
-        if (!isEmpty(roomList)) {
-            setIsLoading(true);
+        setIsLoading(true);
 
+        if (!isEmpty(roomList)) {
             const roomsObj = {
                 RoomIDs: roomList
             }
@@ -58,8 +79,26 @@ const RoomAreaLayout = (props) => {
         }
     }
 
-    console.log('ROOM Types', project);
-    console.log('ROOM LIST', roomList);
+    const handleRemoveProjectRooms = () => {
+        setIsLoading(true);
+
+        if (!isEmpty(deleteRoomList)) {
+            const deleteRoomsObj = {
+                IDs: deleteRoomList
+            }
+
+            dispatch(deleteRoomsFromProject(project?.ID, deleteRoomsObj))
+                .then(() => {
+                    setDeleteRoomList([]);
+                    setIsLoading(false);
+                })
+        }
+    }
+
+    const save = () => {
+        handleAddRoomsToProject();
+        handleRemoveProjectRooms();
+    }
 
     return (
         <div className='d-flex room-area-layout'>
@@ -102,7 +141,7 @@ const RoomAreaLayout = (props) => {
                         <a href='/' className='cancel'>Cancel</a>
                         <button 
                             className='primary-gray-btn next-btn ml-3'
-                            onClick={handleAddRoomsToProject}
+                            onClick={save}
                         >
                             Next
                         </button>

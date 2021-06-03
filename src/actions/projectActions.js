@@ -2,6 +2,7 @@ import api from '../api';
 import { 
     SET_SELECTED_PROJECT_TAB,
     SET_SELECTED_PROJECT, 
+    DELETE_PROJECT_ROOMS,
     ADD_PROJECT_ROOMS,
     GET_PROJECTS, 
     GET_PROJECT, 
@@ -114,5 +115,28 @@ export const addRoomsToProject = (projectID, rooms) => dispatch => {
             dispatch({ type: LOGOUT });
 
         console.log('Save Rooms', error);
+    });
+}
+
+export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
+    const URL = `/Project/${projectID}/RemoveRooms`;
+
+    return api({
+        method: 'DELETE',
+        url: URL,
+        data: rooms
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: DELETE_PROJECT_ROOMS, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+
+        console.log('Delete Rooms', error);
     });
 }

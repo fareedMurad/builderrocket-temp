@@ -4,7 +4,8 @@ import {
     RESET_PROJECT,
     ADD_PROJECT_ROOMS,
     SET_SELECTED_PROJECT,
-    SET_SELECTED_PROJECT_TAB 
+    SET_SELECTED_PROJECT_TAB, 
+    DELETE_PROJECT_ROOMS
 } from '../actions/types';
 
 const intialState = {
@@ -46,6 +47,12 @@ const projectReducer = (state = intialState, action) => {
             }
         }
         case ADD_PROJECT_ROOMS: {
+            return {
+                ...state, 
+                project: action.payload
+            }
+        }
+        case DELETE_PROJECT_ROOMS: {
             return {
                 ...state, 
                 project: action.payload
