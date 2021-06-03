@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRoomTypes } from '../../actions/roomActions';
 import { addRoomsToProject } from '../../actions/projectActions';
+import { Form, Spinner } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import './RoomAreaLayout.scss';
 
@@ -16,6 +16,7 @@ const RoomAreaLayout = (props) => {
     const project = useSelector(state => state.project.project);
 
     const [roomList, setRoomList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         dispatch(getRoomTypes());
@@ -43,6 +44,8 @@ const RoomAreaLayout = (props) => {
 
     const handleAddRoomsToProject = () => {
         if (!isEmpty(roomList)) {
+            setIsLoading(true);
+
             const roomsObj = {
                 RoomIDs: roomList
             }
@@ -50,6 +53,7 @@ const RoomAreaLayout = (props) => {
             dispatch(addRoomsToProject(project?.ID, roomsObj))
                 .then(() => {
                     setRoomList([]);
+                    setIsLoading(false);
                 });
         }
     }
@@ -86,15 +90,24 @@ const RoomAreaLayout = (props) => {
                     ))}
                 </div>
 
-                <div className='d-flex justify-content-center pt-5'>
-                    <a href='/' className='cancel'>Cancel</a>
-                    <button 
-                        className='primary-gray-btn next-btn ml-3'
-                        onClick={handleAddRoomsToProject}
-                    >
-                        Next
-                    </button>
-                </div>
+                {isLoading ? 
+                        <div className='d-flex justify-content-center pt-5'>
+                            <Spinner 
+                                animation='border'
+                                variant='primary' 
+                            />
+                        </div>
+                :
+                    <div className='d-flex justify-content-center pt-5'>
+                        <a href='/' className='cancel'>Cancel</a>
+                        <button 
+                            className='primary-gray-btn next-btn ml-3'
+                            onClick={handleAddRoomsToProject}
+                        >
+                            Next
+                        </button>
+                    </div>
+                }
             </div>
     
             <MarketingBlock />
