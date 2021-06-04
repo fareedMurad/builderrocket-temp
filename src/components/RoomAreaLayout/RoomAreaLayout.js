@@ -12,8 +12,8 @@ import MarketingBlock from '../MarketingBlock';
 const RoomAreaLayout = (props) => {
     const dispatch = useDispatch();
 
-    const roomTypes = useSelector(state => state.room.roomTypes);
     const project = useSelector(state => state.project.project);
+    const roomTypes = useSelector(state => state.room.roomTypes);
 
     const [roomList, setRoomList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -30,10 +30,11 @@ const RoomAreaLayout = (props) => {
     const handleCheckBox = (roomID, e) => {
 
         if (isRoomInProject(roomID)) {
-    
-            if (deleteRoomList?.includes(roomID)) {
+            const selectedRoomID = isRoomInProject(roomID)?.ID;
+
+            if (deleteRoomList?.includes(selectedRoomID)) {
                 let tempDeleteRoomList = deleteRoomList;
-                const deleteRoomIndex = tempDeleteRoomList.indexOf(roomID);
+                const deleteRoomIndex = tempDeleteRoomList.indexOf(selectedRoomID);
 
                 if (deleteRoomIndex > -1) {
                     tempDeleteRoomList.splice(deleteRoomIndex, 1);
@@ -41,7 +42,7 @@ const RoomAreaLayout = (props) => {
 
                 setDeleteRoomList(tempDeleteRoomList);
             } else {
-                setDeleteRoomList([ ...deleteRoomList, roomID ]);
+                setDeleteRoomList([ ...deleteRoomList, selectedRoomID ]);
             }
         } else {
 
@@ -59,14 +60,11 @@ const RoomAreaLayout = (props) => {
             }
         }
     }
-    
-    console.log('ROOMS', roomList);
-    console.log('DELETE ROOM', deleteRoomList);
 
     const handleAddRoomsToProject = () => {
-        setIsLoading(true);
-
         if (!isEmpty(roomList)) {
+            setIsLoading(true);
+
             const roomsObj = {
                 RoomIDs: roomList
             }
@@ -80,9 +78,9 @@ const RoomAreaLayout = (props) => {
     }
 
     const handleRemoveProjectRooms = () => {
-        setIsLoading(true);
-
         if (!isEmpty(deleteRoomList)) {
+            setIsLoading(true);
+
             const deleteRoomsObj = {
                 IDs: deleteRoomList
             }
