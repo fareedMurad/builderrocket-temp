@@ -87,6 +87,18 @@
                     font-size: 14px;
                 }
             }
+
+            .add-btn-templateItem {
+                .btn {
+                    padding: 0;
+                    margin-bottom: .75rem;
+                }
+            }
+
+            .plus-circle {
+                color: $tabblue;
+                margin-top: .25rem;
+            }
         }
     }
 

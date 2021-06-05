@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import './Products.scss';
@@ -8,7 +8,17 @@ import './Products.scss';
 const Products = (props) => {
 
     const project = useSelector(state => state.project.project);
+
+    const [selectedRoom, setSelectedRoom] = useState(project?.ProjectRooms?.[0] ? project?.ProjectRooms?.[0] : {});
+
     console.log('PROJECT PRODUCTS', project);
+    console.log('Selected Room', selectedRoom);
+
+    const handleSelectedRoom = (roomIndex) => {
+        const selectedRoomObj = project?.ProjectRooms?.[roomIndex];
+        
+        setSelectedRoom(selectedRoomObj);
+    }
 
     return (
         <div className='d-flex products'>
@@ -42,9 +52,17 @@ const Products = (props) => {
                 <div className='middle-section'>
                     <div className='d-flex'>
                         <div>
-                            <Form.Control as='select'>
+                            <Form.Control 
+                                as='select'
+                                onChange={(e) => handleSelectedRoom(e.target.value)}
+                            >
                                 {project?.ProjectRooms?.map((projectRoom, index) => (
-                                    <option key={index}>{projectRoom.RoomName}</option>
+                                    <option 
+                                        key={index} 
+                                        value={index}
+                                    >
+                                        {projectRoom.RoomName}
+                                    </option>
                                 ))}
                             </Form.Control>
                         </div>
@@ -82,50 +100,62 @@ const Products = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <div className='d-flex'>
-                                        <Form.Check 
-                                            type='checkbox'
-                                        />
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <div className='d-flex'>
-                                        <Form.Check 
-                                            type='radio'
-                                        />
-                                        <Form.Check 
-                                            type='radio'
-                                        />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div className='distributor-select'>
-                                        <Form.Control as='select'>
-                                        </Form.Control>
-                                    </div>
-                                </td>
-                                <td>  
-                                    <div className='qty-select'>
-                                        <Form.Control as='select'>
-                                        </Form.Control>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <div className='d-flex justify-content-between'>
-                                        <i className='fas fa-retweet'></i>
-                                        <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                        <i className='far fa-trash-alt'></i>
-                                    </div>
-                                </td>
-                            </tr>
+                            {selectedRoom?.TemplateItems?.map((templateItem, index) => (
+                                <tr key={index}>
+                                    <td>
+                                        <div className='d-flex'>
+                                            <Form.Check 
+                                                type='checkbox'
+                                            />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className='add-btn-templateItem'>
+                                            <i class='fas fa-plus-circle plus-circle'></i>
+                                            <Button 
+                                                variant='link' 
+                                                className='link-btn'
+                                            >
+                                                {templateItem?.AddLabel} 
+                                            </Button>
+                                        </div>  
+                                    </td>
+                                    <td></td>
+                                    <td>{templateItem?.CategoryName}</td>
+                                    <td></td>
+                                    <td>
+                                        <div className='d-flex'>
+                                            <Form.Check 
+                                                type='radio'
+                                            />
+                                            <Form.Check 
+                                                type='radio'
+                                            />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className='distributor-select'>
+                                            <Form.Control as='select'>
+                                            </Form.Control>
+                                        </div>
+                                    </td>
+                                    <td>  
+                                        <div className='qty-select'>
+                                            <Form.Control as='select'>
+                                            </Form.Control>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <div className='d-flex justify-content-between'>
+                                            <i className='fas fa-retweet'></i>
+                                            <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                            <i className='far fa-trash-alt'></i>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
 
                     </Table>
