@@ -1,10 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Navbar, Nav, Image } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../actions/authActions';
 import './Header.scss';
 
+// components
 import NavSubheader from '../NavSubheader';
 
 import Logo from '../../assets/images/builder-rocket-logo.png';
@@ -14,6 +15,7 @@ const Header = () => {
     const dispatch = useDispatch();
 
     const user = useSelector(state => state.user.user);
+    const isSignedIn = useSelector(state => state.auth.isSignedIn);
 
     const handleLogout = () => {
         dispatch(logout())  
@@ -30,33 +32,37 @@ const Header = () => {
                 </Navbar.Brand>
 
                 <Navbar.Toggle />
-                <Navbar.Collapse className='justify-content-end'>
-                    <Nav.Link className='item'>
-                        {user?.avatarURL ?
-                            <Image src={user?.avatarURL} roundedCircle />
-                        :
-                            <i className='far fa-user-circle'></i>
+                {isSignedIn &&
+                    <Navbar.Collapse className='justify-content-end'>
+                        <Nav.Link className='item'>
+                            {user?.AvatarURL ?
+                                <Image src={user?.AvatarURL} roundedCircle />
+                            :
+                                <i className='far fa-user-circle'></i>
+                            }
+                        </Nav.Link>
+                        <Nav.Link className='item'>
+                            <i className='far fa-cog'></i>
+                        </Nav.Link>
+                        {user?.FirstName ?
+                            <Navbar.Text className='item'>
+                                {user?.FirstName} {user?.LastName}
+                            </Navbar.Text>
+                        : 
+                            <Navbar.Text className='item'>
+                                {user?.Company}
+                            </Navbar.Text>
                         }
-                    </Nav.Link>
-                    <Nav.Link className='item'>
-                        <i className='far fa-cog'></i>
-                    </Nav.Link>
-                    {user?.firstName ?
-                        <Navbar.Text className='item'>
-                            {user?.firstName} {user?.lastName}
-                        </Navbar.Text>
-                    : 
-                        <Navbar.Text className='item'>
-                            {user?.company}
-                        </Navbar.Text>
-                    }
-                    <Nav.Link className='item' onClick={handleLogout}>
-                        <i className='far fa-sign-out-alt'></i>
-                    </Nav.Link>
-                </Navbar.Collapse>
+                        <Nav.Link className='item' onClick={handleLogout}>
+                            <i className='far fa-sign-out-alt'></i>
+                        </Nav.Link>
+                    </Navbar.Collapse>
+                }
             </Navbar>
 
-            <NavSubheader />
+            {isSignedIn && 
+                <NavSubheader />
+            }
         </>
     )
 }

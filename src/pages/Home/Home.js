@@ -4,7 +4,6 @@ import { Button, Container, Form, FormControl } from 'react-bootstrap';
 import { getProjects, resetProject } from '../../actions/projectActions.js';
 import { getUserProfile } from '../../actions/userActions.js';
 import { Link } from 'react-router-dom';
-// import { isEmpty } from 'lodash';
 import './Home.scss';
 
 // components 
@@ -16,7 +15,7 @@ const Home = (props) => {
 
     const dispatch = useDispatch();
 
-    const token = useSelector(state => state.auth.token);
+    const isSignedIn = useSelector(state => state.auth.isSignedIn);
     const projects = useSelector(state => state.project.projects);
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -24,12 +23,12 @@ const Home = (props) => {
     const [projectsStatus, setProjectsStatus] = useState('Active');
     
     useEffect(() => {
-        if (token) {
+        if (isSignedIn) {
             dispatch(getProjects());
             dispatch(getUserProfile());
         }
 
-    }, [dispatch, token]);
+    }, [dispatch, isSignedIn]);
 
     useEffect(() => {
         /* Filter projects on project name, project #, lot #, street address, or customer first name.

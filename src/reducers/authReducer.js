@@ -1,7 +1,8 @@
 import { LOGIN, SET_USER } from '../actions/types';
 
 const intialState = {
-    token: null
+    token: null,
+    isSignedIn: false
 };
 
 const authReducer = (state = intialState, action) => {
@@ -17,7 +18,8 @@ const authReducer = (state = intialState, action) => {
             {
                 return {
                     ...state,
-                    token: action.payload
+                    token: action.payload,
+                    isSignedIn: true
                 }
             }
         default:

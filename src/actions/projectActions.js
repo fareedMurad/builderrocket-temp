@@ -24,7 +24,6 @@ export const getProjects = () => dispatch => {
 
             return response?.data;
         }
-        console.log('yoo', response);
     })
     .catch((error) => {
         if (error.response?.status === 401) 
