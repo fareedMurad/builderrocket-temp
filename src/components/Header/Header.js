@@ -28,12 +28,18 @@ const Header = () => {
         <>
             <Navbar expand='lg' bg='dark' className='header'>
                 <Navbar.Brand href='/' className='brand'>
-                    <img src={Logo} alt='builder rocket' height='45' width='100' />
+                    <img 
+                        src={Logo} 
+                        alt='builder rocket' 
+                        height='45' 
+                        width='100' 
+                    />
                 </Navbar.Brand>
 
-                <Navbar.Toggle />
+                <Navbar.Toggle aria-controls='nav-bar' />
                 {isSignedIn &&
-                    <Navbar.Collapse className='justify-content-end'>
+                    <Navbar.Collapse className='justify-content-end' id='nav-bar'>
+                        <Nav>
                         <Nav.Link className='item'>
                             {user?.AvatarURL ?
                                 <Image src={user?.AvatarURL} roundedCircle />
@@ -56,6 +62,7 @@ const Header = () => {
                         <Nav.Link className='item' onClick={handleLogout}>
                             <i className='far fa-sign-out-alt'></i>
                         </Nav.Link>
+                        </Nav>
                     </Navbar.Collapse>
                 }
             </Navbar>

@@ -43,6 +43,12 @@
         }
     }
 
+    .cards-container { 
+        @include media-breakpoint-down(lg) {
+            flex-wrap: wrap;
+        }
+    }
+
     #splitter {
         margin-top: .2rem;
         padding-left: .1rem;
@@ -59,5 +65,17 @@
 
     .search-bar {
         margin-left: 42%;
+
+        @include media-breakpoint-down(md) {
+            margin-left: 25%;
+        }
+
+        @include media-breakpoint-down(sm) {
+            margin-left: 5%;
+        }
+
+        @include media-breakpoint-down(xs) {
+            margin-left: 10%;
+        }
     }
 }

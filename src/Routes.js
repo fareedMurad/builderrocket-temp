@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { Switch, Route, useHistory } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -18,8 +19,19 @@ const Routes = (props) => {
             history.push('/login');
     });
 
+    const Loading = () => {
+        return (
+            <div className='d-flex justify-content-center mt-5 pt-5'>
+                <Spinner 
+                    animation='border'
+                    variant='primary' 
+                />
+            </div>
+        );
+    }
+
     return (
-        <Suspense fallback={<h1>Page is Loading...</h1>}>
+        <Suspense fallback={<Loading />}>
             <Switch>
                     <Route path='/' exact component={Home} />
                     <Route exact path='/login' component={Login} /> 

@@ -5,13 +5,22 @@
     color: white;
     height: 46px;
 
+    @include media-breakpoint-down(md) {
+        height: auto;
+    }
+
     .item {
         color: white;
 
         img {
             height: 18px;
         }
+        
+        i { 
+            color: white;
+        }
     }
+
     
     .navbar-text {
         padding-right: 10px;

@@ -105,7 +105,7 @@ const Home = (props) => {
                     </div>
                 </div>
 
-                <div className='d-flex justify-content-between'>
+                <div className='d-flex justify-content-between cards-container'>
                     <div className='d-flex flex-wrap cards'>
                         {filterProjects()?.map((project, index) => (
                             <ProjectCard 
