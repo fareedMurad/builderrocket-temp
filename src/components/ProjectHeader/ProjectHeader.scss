@@ -2,8 +2,8 @@
 
 .project-header {
     height: 144px;
-    background-color: $lightgray;
     box-sizing: border-box;
+    background-color: $lightgray;
     border: 1px solid $bordergray;
 
 
@@ -29,6 +29,36 @@
         letter-spacing: -0.32px;
     }
 
+    .save-icon {
+        font-size: 14px;
+        letter-spacing: -0.32px;
+        padding-bottom: 1rem;
+        color: $tabblue;
+    }
+
+    .share-icon {
+        color: $tabblue;
+        cursor: pointer;
+    }
+
+    .phone {
+        a {
+            color: $tabblue;
+        }
+    }
+
+    .email {
+        a {
+            color: $tabblue;
+        }
+    }
+
+    .link-btn {
+        padding: 0;
+        padding-bottom: 1rem;
+        font-size: 14px;
+    }
+
     .total {
         margin-top: 5em;
     }
@@ -42,9 +72,9 @@
         width: 150px;
         color: white;
         font-size: 14px;
-        letter-spacing: -0.17px;
         line-height: 19px;
         border-radius: 3px;
+        letter-spacing: -0.17px;
         background-color: #888888;
     }
 }
