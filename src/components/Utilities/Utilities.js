@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUtilities, getUtilityTypes } from '../../actions/utilityActions';
 import { Button, Form } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
 import './Utilities.scss';
 
 // components
@@ -46,18 +45,19 @@ const Utilities = () => {
                 <div className='utilities-form'>
                     <div className='d-flex flex-wrap'>
                         {utilityTypes?.map((utilityType, index) => (
-                            <div key={index} className='select utility'>
+                            <div 
+                                key={index} 
+                                className='select utility'
+                            >
                                 <Form.Label className='input-label'>
                                     {utilityType.Name && utilityType.Name}
                                 </Form.Label>
+                                
                                 <Form.Control as='select'>
-                                    {!isEmpty(filterUtilitiesByType(utilityType.ID)) ? 
-                                        filterUtilitiesByType(utilityType.ID)?.map((utility, index) => (
-                                            <option key={index} value={utility.ID}>{utility.CompanyName}</option>
-                                        ))
-                                    : 
-                                        <option>SELECT</option>
-                                    }
+                                    <option>SELECT</option>
+                                    {filterUtilitiesByType(utilityType.ID)?.map((utility, index) => (
+                                        <option key={index} value={utility.ID}>{utility.CompanyName}</option>
+                                    ))}
                                 </Form.Control>
                             </div>
                         ))}

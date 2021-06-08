@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContractors, getContractorTypes } from '../../actions/contractorActions';
 import { Button, Form } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
 import './Contractors.scss';
 
 // components
@@ -53,13 +52,10 @@ const Contractors = () => {
                                 </Form.Label>
 
                                 <Form.Control as='select'>
-                                    {!isEmpty(filterContractorsByType(contractorType.ID)) ? 
-                                        filterContractorsByType(contractorType.ID)?.map((contractor, index) => (
-                                            <option key={index} value={contractor.ID}>{contractor.CompanyName}</option>
-                                        ))
-                                    : 
-                                        <option>SELECT</option>
-                                    }
+                                    <option>SELECT</option>
+                                    {filterContractorsByType(contractorType.ID)?.map((contractor, index) => (
+                                        <option key={index} value={contractor.ID}>{contractor.CompanyName}</option>
+                                    ))}
                                 </Form.Control>
                             </div>
                         ))}
