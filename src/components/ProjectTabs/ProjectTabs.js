@@ -28,6 +28,7 @@ const ProjectTabs = (props) => {
             <Tabs
                 activeKey={selectedProjectTab}
                 onSelect={(tab) => handleSelectedTab(tab)}
+                transition={false}
             >
                 <Tab eventKey='projectInformation' title='Project Information'>
                     {selectedProjectTab === 'projectInformation' &&
