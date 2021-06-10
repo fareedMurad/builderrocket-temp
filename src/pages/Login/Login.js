@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import { isEmpty } from 'lodash'
 
 const Login = (props) => {
+    const { history } = props;
+
     const dispatch = useDispatch();
 
     const [login, setLogin] = useState({ email: 'ronbibb@gmail.com' });
@@ -17,6 +19,7 @@ const Login = (props) => {
             dispatch(loginEmailPassword(login.email, login.password))
                 .then(() => {
                     setIsLoading(false);
+                    history.push('/');
                 });
     }
 

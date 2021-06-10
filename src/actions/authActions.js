@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import api from '../api';
 import { SET_USER, LOGOUT } from './types';
 
