@@ -1,8 +1,8 @@
 import api from '../api';
 import { 
-    // GET_ROOM, 
     GET_ROOMS,
     GET_ROOM_TYPES,
+    SET_SELECTED_ROOM,
     LOGOUT
 } from './types';
 
@@ -21,7 +21,7 @@ export const getRooms = () => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error?.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
         console.log('Getting Rooms', error);
@@ -45,10 +45,21 @@ export const getRoomTypes = () => dispatch => {
         }
     })
     .catch((error) => {
-        if (error.response.status === 401) 
+        if (error?.response?.status === 401) 
             dispatch({ type: LOGOUT });
 
         console.log('Getting Rooms', error);
     })
-
 }
+
+export const setSelectedRoom = (room) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_SELECTED_ROOM, payload: room });
+
+            resolve(room);
+        } catch (error) {
+            reject(error);
+        }
+    });
+} 

@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedRoom } from '../../actions/roomActions';
+import { setSelectedTemplateItem } from '../../actions/productActions';
 import './Products.scss';
 
 // components 
 import AddProduct from '../../components/AddProduct';
 
 const Products = (props) => {
+    const dispatch = useDispatch();
 
     const project = useSelector(state => state.project.project);
+    const selectedRoom = useSelector(state => state.room.selectedRoom);
 
     const [isAddProducts, setIsAddProducts] = useState(false);
-
-    const [selectedRoom, setSelectedRoom] = useState(project?.ProjectRooms?.[0] ? project?.ProjectRooms?.[0] : {});
 
     console.log('PROJECT PRODUCTS', project);
     console.log('Selected Room', selectedRoom);
 
+    useEffect(() => {
+        if (project?.ProjectRooms?.[0])
+            dispatch(setSelectedRoom(project.ProjectRooms?.[0]));
+    }, [dispatch, project]);
+
     const handleSelectedRoom = (roomIndex) => {
         const selectedRoomObj = project?.ProjectRooms?.[roomIndex];
         
-        setSelectedRoom(selectedRoomObj);
+        dispatch(setSelectedRoom(selectedRoomObj));
     }
 
-    const handleSelectedTemplateItem = () => {
+    const handleSelectedTemplateItem = (templateItem) => {
         setIsAddProducts(true);
+
+        dispatch(setSelectedTemplateItem(templateItem));
     }
 
     return (

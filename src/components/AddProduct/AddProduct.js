@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCustomFilters } from '../../actions/productActions';
 import './AddProduct.scss';
 
 const AddProduct = () => {
+    const dispatch = useDispatch();
+
+    const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const productFilters = useSelector(state => state.product.productFilters);
+    const selectedTemplateItem = useSelector(state => state.product.selectedTemplateItem);
+    console.log('SELECTED', productFilters);
+
+    useEffect(() => {
+        dispatch(getCustomFilters(selectedTemplateItem?.CategoryID));
+    }, [dispatch, selectedTemplateItem]);
 
     return (
         <div className='add-product-container'>
@@ -21,8 +33,18 @@ const AddProduct = () => {
             <div className='filter-section'>
                 <div className='d-flex'>
                     <div className='mr-3'>
-                        <Form.Control as='select'>
-                            <option>Flooring</option>
+                        <Form.Control 
+                            as='select'
+                            defaultValue={selectedRoom?.ID}
+                        >
+                            {selectedRoom?.TemplateItems?.map((templateItem, index) => (
+                                <option 
+                                    key={index} 
+                                    value={templateItem?.ID}
+                                >
+                                    {templateItem?.CategoryName}
+                                </option>
+                            ))}
                         </Form.Control>
                     </div>
                     <div className='mr-3'>

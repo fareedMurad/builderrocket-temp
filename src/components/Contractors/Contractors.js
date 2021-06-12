@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContractors, getContractorTypes } from '../../actions/contractorActions';
 import { Button, Form } from 'react-bootstrap';
+import Select from 'react-select';
 import './Contractors.scss';
 
 // components
@@ -51,12 +52,14 @@ const Contractors = () => {
                                     {contractorType.Name && contractorType.Name}
                                 </Form.Label>
 
-                                <Form.Control as='select'>
-                                    <option>SELECT</option>
-                                    {filterContractorsByType(contractorType.ID)?.map((contractor, index) => (
-                                        <option key={index} value={contractor.ID}>{contractor.CompanyName}</option>
-                                    ))}
-                                </Form.Control>
+                                <Select 
+                                    isMulti 
+                                    options={
+                                        filterContractorsByType(contractorType.ID)?.map((contractor, index) => { 
+                                            return { value: contractor.ID, label: contractor.CompanyName }
+                                        })
+                                    }
+                                />
                             </div>
                         ))}
                     </div>

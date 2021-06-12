@@ -5,6 +5,7 @@ import { LOGOUT } from '../actions/types';
 import authReducer from './authReducer';
 import userReducer from './userReducer';
 import roomReducer from './roomReducer';
+import productReducer from './productReducer';
 import projectReducer from './projectReducer';
 import utilityReducer from './utilityReducer';
 import documentReducer from './documentReducer';
@@ -16,6 +17,7 @@ const appReducer = combineReducers({
     user: userReducer,
     room: roomReducer,
     project: projectReducer,
+    product: productReducer,
     utility: utilityReducer,
     document: documentReducer,
     contractor: contractorReducer,
