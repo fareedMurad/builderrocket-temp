@@ -180,7 +180,7 @@ const Products = (props) => {
                     </div>
                 </div>
             :
-                <AddProduct />
+                <AddProduct handleShow={setIsAddProducts} />
             }
         </div>
     );

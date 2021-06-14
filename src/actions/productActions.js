@@ -1,13 +1,14 @@
 import { 
     LOGOUT,
     SEARCH_PRODUCTS,
-    GET_CUSTOM_FILTERS,
+    GET_CATEGORIES,
+    GET_CHILD_CATEGORIES,
     SET_SELECTED_TEMPLATE_ITEM
 } from '../actions/types';
 import api from '../api';
 
-export const getCustomFilters = (categoryID) => dispatch => {
-    const URL = `/Product/${categoryID}`;
+export const getCategories = () => dispatch => {
+    const URL = '/Product/Category';
 
     return api({
         method: 'GET',
@@ -15,7 +16,7 @@ export const getCustomFilters = (categoryID) => dispatch => {
     })
     .then((response) => {
         if (response.status === 200) {
-            dispatch({ type: GET_CUSTOM_FILTERS, payload: response.data });
+            dispatch({ type: GET_CATEGORIES, payload: response.data });
 
             return response.data;
         }
@@ -26,13 +27,33 @@ export const getCustomFilters = (categoryID) => dispatch => {
     });
 }
 
-export const searchProducts = (filters) => dispatch => {
-    const URL = '/Product/Search';
+export const getChildCategories = (categoryID) => dispatch => {
+    const URL = `/Product/Category/${categoryID}`;
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            dispatch({ type: GET_CHILD_CATEGORIES, payload: response.data });
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+
+}
+
+export const searchProducts = (categoryID) => dispatch => {
+    const URL = `/Product/${categoryID ? categoryID : 'Search'}`;
 
     return api({
         method: 'POST',
-        url: URL,
-        data: filters
+        url: URL
     })
     .then((response) => {
         if (response.status === 200) {

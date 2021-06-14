@@ -1,21 +1,22 @@
 import { 
+    GET_CATEGORIES, 
+    // GET_CHILD_CATEGORIES,
     SEARCH_PRODUCTS, 
-    GET_CUSTOM_FILTERS, 
     SET_SELECTED_TEMPLATE_ITEM
 } from '../actions/types';
 
 const intialState = {
     products: [],
-    productFilters: [],
+    productCategories: [],
     selectedTemplateItem: {}
 }
 
 const productReducer = (state = intialState, action) => {
     switch (action.type) {
-        case GET_CUSTOM_FILTERS: {
+        case GET_CATEGORIES: {
             return {
                 ...state, 
-                productFilters: action.payload
+                productCategories: action.payload
             }
         }
         case SEARCH_PRODUCTS: {

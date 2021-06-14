@@ -1,20 +1,24 @@
 import React, { useEffect } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCustomFilters } from '../../actions/productActions';
+import { getCategories } from '../../actions/productActions';
 import './AddProduct.scss';
 
-const AddProduct = () => {
+const AddProduct = (props) => {
+    const { handleShow } = props;
+
     const dispatch = useDispatch();
 
     const selectedRoom = useSelector(state => state.room.selectedRoom);
-    const productFilters = useSelector(state => state.product.productFilters);
+    const productCategories = useSelector(state => state.product.productCategories);
     const selectedTemplateItem = useSelector(state => state.product.selectedTemplateItem);
-    console.log('SELECTED', productFilters);
+    
+    console.log('SELECTED', productCategories);
+    console.log('Selected Template Item', selectedTemplateItem);
 
     useEffect(() => {
-        dispatch(getCustomFilters(selectedTemplateItem?.CategoryID));
-    }, [dispatch, selectedTemplateItem]);
+        dispatch(getCategories());
+    }, [dispatch]);
 
     return (
         <div className='add-product-container'>
@@ -23,6 +27,7 @@ const AddProduct = () => {
                     <Button 
                         variant='link' 
                         className='link-btn'
+                        onClick={() => handleShow(false)}
                     >
                         Products /
                     </Button>
@@ -35,7 +40,7 @@ const AddProduct = () => {
                     <div className='mr-3'>
                         <Form.Control 
                             as='select'
-                            defaultValue={selectedRoom?.ID}
+                            defaultValue={selectedTemplateItem?.ID}
                         >
                             {selectedRoom?.TemplateItems?.map((templateItem, index) => (
                                 <option 
