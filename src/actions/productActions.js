@@ -7,8 +7,8 @@ import {
 } from '../actions/types';
 import api from '../api';
 
-export const getCategories = () => dispatch => {
-    const URL = '/Product/Category';
+export const getCategories = (categoryID) => dispatch => {
+    const URL = `/Product/Category/${categoryID}`;
 
     return api({
         method: 'GET',
@@ -48,7 +48,7 @@ export const getChildCategories = (categoryID) => dispatch => {
 
 }
 
-export const searchProducts = (categoryID) => dispatch => {
+export const searchProducts = (categoryID, updatedFilter) => dispatch => {
     const URL = `/Product/${categoryID ? categoryID : 'Search'}`;
 
     return api({

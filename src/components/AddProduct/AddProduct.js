@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories } from '../../actions/productActions';
+import { getCategories, searchProducts } from '../../actions/productActions';
 import './AddProduct.scss';
 
 const AddProduct = (props) => {
@@ -9,16 +9,29 @@ const AddProduct = (props) => {
 
     const dispatch = useDispatch();
 
-    const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const products = useSelector(state => state.product.products);
     const productCategories = useSelector(state => state.product.productCategories);
     const selectedTemplateItem = useSelector(state => state.product.selectedTemplateItem);
     
-    console.log('SELECTED', productCategories);
-    console.log('Selected Template Item', selectedTemplateItem);
+    // console.log('SELECTED', productCategories);
+    // console.log('Selected Template Item', selectedTemplateItem);
+    // console.log('PRODUCTS', products);
 
     useEffect(() => {
-        dispatch(getCategories());
-    }, [dispatch]);
+        if (selectedTemplateItem?.CategoryID)
+            dispatch(getCategories(selectedTemplateItem?.CategoryID));
+    }, [dispatch, selectedTemplateItem]);
+
+    useEffect(() => {
+        if (selectedTemplateItem?.CategoryID)
+            dispatch(searchProducts(selectedTemplateItem?.CategoryID));
+    }, [dispatch, selectedTemplateItem]);
+
+    const onProductCategoryChange = (productCategoryID, updatedFilter) => {
+        if (!productCategoryID) return;
+
+        dispatch(searchProducts(productCategoryID));
+    }
 
     return (
         <div className='add-product-container'>
@@ -40,23 +53,18 @@ const AddProduct = (props) => {
                     <div className='mr-3'>
                         <Form.Control 
                             as='select'
-                            defaultValue={selectedTemplateItem?.ID}
+                            value={selectedTemplateItem?.CategoryID}
+                            onChange={(event) => onProductCategoryChange(event.target.value)}
                         >
-                            {selectedRoom?.TemplateItems?.map((templateItem, index) => (
+                            <option value=''>Select Category</option>
+                            {productCategories?.map((productCategory, index) => (
                                 <option 
                                     key={index} 
-                                    value={templateItem?.ID}
+                                    value={productCategory?.ID}
                                 >
-                                    {templateItem?.CategoryName}
+                                    {productCategory?.Name}
                                 </option>
                             ))}
-                        </Form.Control>
-                    </div>
-                    <div className='mr-3'>
-                        <Form.Control 
-                            as='select'
-                        >
-                            <option>Sub Category</option>
                         </Form.Control>
                     </div>
                     <div>
@@ -65,7 +73,7 @@ const AddProduct = (props) => {
                     </div>
                     <div className='d-flex qty-items-select'>
                         <Form.Control as='select'>
-                            <option>50</option>
+                            <option>25</option>
                         </Form.Control>
                         <div className='select-text'>Items Per Page</div>
                     </div>
@@ -74,34 +82,20 @@ const AddProduct = (props) => {
 
             <div className='add-products-body d-flex'>
                 <div className='checkbox-filter'>
-                    <div>
-                        <div className='bold-text mb-3 mt-4'>Favorites</div>
-                        <Form.Check 
-                            type='checkbox'
-                            label='Only Show Favorites' 
-                        />
-                    </div>
-                    <div>
-                        <div className='bold-text mb-3 mt-4'>Brand</div>
-                        <Form.Check 
-                            type='checkbox'
-                            label='Chris' 
-                        />
-                    </div>
-                    <div>
-                        <div className='bold-text mb-3 mt-4'>Type</div>
-                        <Form.Check 
-                            type='checkbox'
-                            label='Bamboo' 
-                        />
-                    </div>
-                    <div>
-                        <div className='bold-text mb-3 mt-4'>Color/Finish</div>
-                        <Form.Check 
-                            type='checkbox'
-                            label='Charcoal' 
-                        />
-                    </div>
+                    {products?.CustomFilters && Object.keys(products?.CustomFilters)?.map((filter, index) => (
+                        <div key={index} className='mt-3 mb-5'>
+                            <div className='bold-text mb-3'>{filter}</div>
+
+                            {products?.CustomFilters?.[filter]?.splice(0, 10)?.map((filterChild, index) => (
+                                <Form.Check 
+                                    key={index}
+                                    className='mt-2'
+                                    type='checkbox'
+                                    label={filterChild?.Name}
+                                />
+                            ))}
+                        </div>
+                    ))}
                 </div>
 
                 <div className='add-product-table'>
@@ -119,26 +113,28 @@ const AddProduct = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <div className='distributor-select'>
-                                        <Form.Control as='select'>
-                                        </Form.Control>
-                                        <div>Available from x vendors</div>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td>
-                                    <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                </td>
-                                <td>
-                                    <button className='add-product-btn'>Add</button>
-                                </td>
-                            </tr>
+                            {products?.Products?.splice(0, 25).map((product, index) => (
+                                <tr key={index}>
+                                    <td>{product?.Name}</td>
+                                    <td>{product?.ProductName}</td>
+                                    <td></td>
+                                    <td>{product?.ColorFinish}</td>
+                                    <td>
+                                        <div className='distributor-select'>
+                                            <Form.Control as='select'>
+                                            </Form.Control>
+                                            <div>Available from x vendors</div>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                    </td>
+                                    <td>
+                                        <button className='add-product-btn'>Add</button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 </div>

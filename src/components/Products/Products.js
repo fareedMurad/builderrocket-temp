@@ -16,9 +16,6 @@ const Products = (props) => {
 
     const [isAddProducts, setIsAddProducts] = useState(false);
 
-    console.log('PROJECT PRODUCTS', project);
-    console.log('Selected Room', selectedRoom);
-
     useEffect(() => {
         if (project?.ProjectRooms?.[0])
             dispatch(setSelectedRoom(project.ProjectRooms?.[0]));
