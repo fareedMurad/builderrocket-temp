@@ -58,7 +58,8 @@
 
         .checkbox-filter {
             width: 200px;
-            height: 560px;
+            min-height: 560px;
+            height: fit-content;
             padding-left: 1.25rem;
             background-color: $lightgray;
 

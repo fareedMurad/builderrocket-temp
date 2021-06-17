@@ -3,7 +3,7 @@ import {
     SEARCH_PRODUCTS,
     GET_CATEGORIES,
     GET_CHILD_CATEGORIES,
-    SET_SELECTED_TEMPLATE_ITEM
+    SET_SELECTED_CATEGORY_ID
 } from '../actions/types';
 import api from '../api';
 
@@ -53,7 +53,8 @@ export const searchProducts = (categoryID, updatedFilter) => dispatch => {
 
     return api({
         method: 'POST',
-        url: URL
+        url: URL,
+        data: updatedFilter
     })
     .then((response) => {
         if (response.status === 200) {
@@ -68,12 +69,12 @@ export const searchProducts = (categoryID, updatedFilter) => dispatch => {
     });
 }
 
-export const setSelectedTemplateItem = (templateItem) => dispatch => {
+export const setSelectedCategoryID = (categoryID) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
-            dispatch({ type: SET_SELECTED_TEMPLATE_ITEM, payload: templateItem });
+            dispatch({ type: SET_SELECTED_CATEGORY_ID, payload: categoryID });
 
-            resolve(templateItem);
+            resolve(categoryID);
         } catch (error) {
             reject(error);
         }

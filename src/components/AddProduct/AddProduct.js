@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, searchProducts } from '../../actions/productActions';
+import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
 import './AddProduct.scss';
 
 const AddProduct = (props) => {
@@ -11,26 +11,43 @@ const AddProduct = (props) => {
 
     const products = useSelector(state => state.product.products);
     const productCategories = useSelector(state => state.product.productCategories);
-    const selectedTemplateItem = useSelector(state => state.product.selectedTemplateItem);
-    
-    // console.log('SELECTED', productCategories);
-    // console.log('Selected Template Item', selectedTemplateItem);
-    // console.log('PRODUCTS', products);
+    const selectedCategoryID = useSelector(state => state.product.selectedCategoryID);
+    console.log('Products', products.CustomFilters);
 
     useEffect(() => {
-        if (selectedTemplateItem?.CategoryID)
-            dispatch(getCategories(selectedTemplateItem?.CategoryID));
-    }, [dispatch, selectedTemplateItem]);
+        if (selectedCategoryID)
+            dispatch(getCategories(selectedCategoryID));
+    }, [dispatch, selectedCategoryID]);
 
     useEffect(() => {
-        if (selectedTemplateItem?.CategoryID)
-            dispatch(searchProducts(selectedTemplateItem?.CategoryID));
-    }, [dispatch, selectedTemplateItem]);
+        if (selectedCategoryID)
+            dispatch(searchProducts(selectedCategoryID));
+    }, [dispatch, selectedCategoryID]);
 
     const onProductCategoryChange = (productCategoryID, updatedFilter) => {
         if (!productCategoryID) return;
 
-        dispatch(searchProducts(productCategoryID));
+        dispatch(setSelectedCategoryID(productCategoryID));
+    }
+
+    // update individual filter checkbox 
+    const handleFilters = (filterType, filterChild, filterChildIndex) => {
+        let updatedFilterChild = filterChild;
+
+        updatedFilterChild.IsChecked = true;
+
+        let updatedFilters = products?.CustomFilters;
+
+        updatedFilters[filterType][filterChildIndex] = updatedFilterChild;
+ 
+        const searchObject = {
+            CategoryID: selectedCategoryID,
+            ModelName: null,
+            Description: null, 
+            CustomFilters: updatedFilters
+        }
+
+        dispatch(searchProducts(selectedCategoryID, searchObject))
     }
 
     return (
@@ -53,7 +70,7 @@ const AddProduct = (props) => {
                     <div className='mr-3'>
                         <Form.Control 
                             as='select'
-                            value={selectedTemplateItem?.CategoryID}
+                            value={selectedCategoryID}
                             onChange={(event) => onProductCategoryChange(event.target.value)}
                         >
                             <option value=''>Select Category</option>
@@ -86,12 +103,14 @@ const AddProduct = (props) => {
                         <div key={index} className='mt-3 mb-5'>
                             <div className='bold-text mb-3'>{filter}</div>
 
-                            {products?.CustomFilters?.[filter]?.splice(0, 10)?.map((filterChild, index) => (
+                            {products?.CustomFilters?.[filter]?.map((filterChild, childIndex) => (
                                 <Form.Check 
-                                    key={index}
-                                    className='mt-2'
+                                    key={childIndex}
                                     type='checkbox'
+                                    className='mt-2'
+                                    value={filterChild?.IsChecked}
                                     label={filterChild?.Name}
+                                    onClick={() => handleFilters(filter, filterChild, childIndex)}
                                 />
                             ))}
                         </div>

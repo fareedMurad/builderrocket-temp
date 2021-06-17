@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedRoom } from '../../actions/roomActions';
-import { setSelectedTemplateItem } from '../../actions/productActions';
+import { setSelectedCategoryID } from '../../actions/productActions';
 import './Products.scss';
 
 // components 
@@ -17,20 +17,20 @@ const Products = (props) => {
     const [isAddProducts, setIsAddProducts] = useState(false);
 
     useEffect(() => {
-        if (project?.ProjectRooms?.[0])
+        if (!selectedRoom)
             dispatch(setSelectedRoom(project.ProjectRooms?.[0]));
-    }, [dispatch, project]);
+    }, [dispatch, project, selectedRoom]);
 
-    const handleSelectedRoom = (roomIndex) => {
-        const selectedRoomObj = project?.ProjectRooms?.[roomIndex];
+    const handleSelectedRoom = (roomID) => {
+        const selectedRoomObj = project?.ProjectRooms?.find((room) => room.ID === parseInt(roomID));
         
         dispatch(setSelectedRoom(selectedRoomObj));
     }
 
-    const handleSelectedTemplateItem = (templateItem) => {
+    const handleSelectedCategoryID = (categoryID) => {
         setIsAddProducts(true);
 
-        dispatch(setSelectedTemplateItem(templateItem));
+        dispatch(setSelectedCategoryID(categoryID));
     }
 
     return (
@@ -68,12 +68,13 @@ const Products = (props) => {
                             <div>
                                 <Form.Control 
                                     as='select'
+                                    value={selectedRoom?.ID}
                                     onChange={(e) => handleSelectedRoom(e.target.value)}
                                 >
                                     {project?.ProjectRooms?.map((projectRoom, index) => (
                                         <option 
                                             key={index} 
-                                            value={index}
+                                            value={projectRoom?.ID}
                                         >
                                             {projectRoom.RoomName}
                                         </option>
@@ -129,7 +130,7 @@ const Products = (props) => {
                                                 <Button 
                                                     variant='link' 
                                                     className='link-btn'
-                                                    onClick={() => handleSelectedTemplateItem(templateItem)}
+                                                    onClick={() => handleSelectedCategoryID(templateItem?.CategoryID)}
                                                 >
                                                     {templateItem?.AddLabel} 
                                                 </Button>

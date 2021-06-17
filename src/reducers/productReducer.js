@@ -2,13 +2,13 @@ import {
     GET_CATEGORIES, 
     // GET_CHILD_CATEGORIES,
     SEARCH_PRODUCTS, 
-    SET_SELECTED_TEMPLATE_ITEM
+    SET_SELECTED_CATEGORY_ID
 } from '../actions/types';
 
 const intialState = {
     products: [],
     productCategories: [],
-    selectedTemplateItem: {}
+    selectedCategoryID: ''
 }
 
 const productReducer = (state = intialState, action) => {
@@ -25,10 +25,10 @@ const productReducer = (state = intialState, action) => {
                 products: action.payload
             }
         }
-        case SET_SELECTED_TEMPLATE_ITEM: {
+        case SET_SELECTED_CATEGORY_ID: {
             return {
                 ...state, 
-                selectedTemplateItem: action.payload
+                selectedCategoryID: action.payload
             }
         }
         default: 
