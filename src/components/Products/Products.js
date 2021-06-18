@@ -117,8 +117,8 @@ const Products = (props) => {
                             <tbody>
                                 {selectedRoom?.TemplateItems?.map((templateItem, index) => (
                                     <tr key={index}>
-                                        <td>
-                                            <div className='d-flex'>
+                                        <td className='approval-checkbox'>
+                                            <div >
                                                 <Form.Check 
                                                     type='checkbox'
                                                 />
@@ -126,12 +126,12 @@ const Products = (props) => {
                                         </td>
                                         <td>
                                             <div className='add-btn-templateItem'>
-                                                <i className='fas fa-plus-circle plus-circle'></i>
                                                 <Button 
                                                     variant='link' 
                                                     className='link-btn'
                                                     onClick={() => handleSelectedCategoryID(templateItem?.CategoryID)}
                                                 >
+                                                    <i className='fas fa-plus-circle plus-circle'></i>
                                                     {templateItem?.AddLabel} 
                                                 </Button>
                                             </div>  

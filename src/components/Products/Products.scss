@@ -79,6 +79,10 @@
                 }
             }
 
+            .approval-checkbox {
+                width: 25px;
+            }
+
             .qty-select { 
                 select {
                     padding: 0;
@@ -91,7 +95,6 @@
             .add-btn-templateItem {
                 .btn {
                     padding: 0;
-                    margin-bottom: .75rem;
                 }
             }
 

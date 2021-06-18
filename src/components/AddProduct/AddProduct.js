@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
@@ -12,7 +12,9 @@ const AddProduct = (props) => {
     const products = useSelector(state => state.product.products);
     const productCategories = useSelector(state => state.product.productCategories);
     const selectedCategoryID = useSelector(state => state.product.selectedCategoryID);
-    console.log('Products', products.CustomFilters);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    // console.log('Products', products);
 
     useEffect(() => {
         if (selectedCategoryID)
@@ -24,7 +26,7 @@ const AddProduct = (props) => {
             dispatch(searchProducts(selectedCategoryID));
     }, [dispatch, selectedCategoryID]);
 
-    const onProductCategoryChange = (productCategoryID, updatedFilter) => {
+    const onProductCategoryChange = (productCategoryID) => {
         if (!productCategoryID) return;
 
         dispatch(setSelectedCategoryID(productCategoryID));
@@ -34,7 +36,12 @@ const AddProduct = (props) => {
     const handleFilters = (filterType, filterChild, filterChildIndex) => {
         let updatedFilterChild = filterChild;
 
-        updatedFilterChild.IsChecked = true;
+        if (updatedFilterChild.IsChecked) {
+
+            updatedFilterChild.IsChecked = false;
+        } else {
+            updatedFilterChild.IsChecked = true;
+        }
 
         let updatedFilters = products?.CustomFilters;
 
@@ -84,9 +91,13 @@ const AddProduct = (props) => {
                             ))}
                         </Form.Control>
                     </div>
-                    <div>
-                        <Form.Control placeholder='Search Keywords'>
+                    <div className='d-flex'>
+                        <Form.Control 
+                            placeholder='Search Keywords'
+                            onChange={(e) => setSearchTerm(e.target.value)}    
+                        >
                         </Form.Control>
+                        <button className='primary-gray-btn search-btn ml-3'>Search</button>
                     </div>
                     <div className='d-flex qty-items-select'>
                         <Form.Control as='select'>
@@ -108,8 +119,8 @@ const AddProduct = (props) => {
                                     key={childIndex}
                                     type='checkbox'
                                     className='mt-2'
-                                    value={filterChild?.IsChecked}
                                     label={filterChild?.Name}
+                                    value={filterChild?.IsChecked}
                                     onClick={() => handleFilters(filter, filterChild, childIndex)}
                                 />
                             ))}
@@ -134,8 +145,19 @@ const AddProduct = (props) => {
                         <tbody>
                             {products?.Products?.splice(0, 25).map((product, index) => (
                                 <tr key={index}>
-                                    <td>{product?.Name}</td>
-                                    <td>{product?.ProductName}</td>
+                                    <td>
+                                        <img
+                                            alt='product' 
+                                            width='50'
+                                            height='50'
+                                            src={product?.ThumbnailURL}
+                                        />
+                                    </td>
+                                    <td>
+                                        {product?.BrandName}
+                                        {' '}
+                                        {product?.ProductName}
+                                    </td>
                                     <td></td>
                                     <td>{product?.ColorFinish}</td>
                                     <td>
