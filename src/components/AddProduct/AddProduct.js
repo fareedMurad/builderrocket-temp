@@ -57,6 +57,10 @@ const AddProduct = (props) => {
         dispatch(searchProducts(selectedCategoryID, searchObject))
     }
 
+    // const addProduct = () => {
+        
+    // }
+
     return (
         <div className='add-product-container'>
             <div className='d-flex'>

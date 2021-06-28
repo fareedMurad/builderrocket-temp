@@ -15,23 +15,26 @@ const Products = (props) => {
     const selectedRoom = useSelector(state => state.room.selectedRoom);
 
     const [isAddProducts, setIsAddProducts] = useState(false);
-
+    // const [templateItems, setTemplateItems] = useState({});
+    
     useEffect(() => {
         if (!selectedRoom)
-            dispatch(setSelectedRoom(project.ProjectRooms?.[0]));
+        dispatch(setSelectedRoom(project.ProjectRooms?.[0]));
     }, [dispatch, project, selectedRoom]);
-
+    
     const handleSelectedRoom = (roomID) => {
         const selectedRoomObj = project?.ProjectRooms?.find((room) => room.ID === parseInt(roomID));
         
         dispatch(setSelectedRoom(selectedRoomObj));
     }
-
+    
     const handleSelectedCategoryID = (categoryID) => {
         setIsAddProducts(true);
-
+        
         dispatch(setSelectedCategoryID(categoryID));
     }
+    
+    console.log('Project', project);
 
     return (
         <div className='d-flex products'>
@@ -106,7 +109,7 @@ const Products = (props) => {
                                     <th>Description</th>
                                     <th>Category</th>
                                     <th>UOM</th>
-                                    <th>Rough In / Trim Out</th>
+                                    <th className='radios'>Rough In / Trim Out</th>
                                     <th>Distributor</th>
                                     <th>QTY</th>
                                     <th>Price</th>
@@ -115,14 +118,15 @@ const Products = (props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {selectedRoom?.TemplateItems?.map((templateItem, index) => (
+                                {selectedRoom?.Items?.map((templateItem, index) => (
                                     <tr key={index}>
                                         <td className='approval-checkbox'>
-                                            <div >
+                                            <Form>
                                                 <Form.Check 
                                                     type='checkbox'
+                                                    checked={templateItem?.IsApproved}
                                                 />
-                                            </div>
+                                            </Form>
                                         </td>
                                         <td>
                                             <div className='add-btn-templateItem'>
@@ -140,14 +144,16 @@ const Products = (props) => {
                                         <td>{templateItem?.CategoryName}</td>
                                         <td></td>
                                         <td>
-                                            <div className='d-flex'>
+                                            <Form className='d-flex justify-content-center'>
                                                 <Form.Check 
                                                     type='radio'
+                                                    checked={templateItem?.RoughInTrimOutEnum === 'RoughIn'}
                                                 />
                                                 <Form.Check 
                                                     type='radio'
+                                                    checked={templateItem?.RoughInTrimOutEnum === 'TrimOut'}
                                                 />
-                                            </div>
+                                            </Form>
                                         </td>
                                         <td>
                                             <div className='distributor-select'>

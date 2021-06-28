@@ -1,7 +1,8 @@
 import { 
     LOGOUT,
-    SEARCH_PRODUCTS,
+    SET_PRODUCT,
     GET_CATEGORIES,
+    SEARCH_PRODUCTS,
     GET_CHILD_CATEGORIES,
     SET_SELECTED_CATEGORY_ID
 } from '../actions/types';
@@ -80,3 +81,15 @@ export const setSelectedCategoryID = (categoryID) => dispatch => {
         }
     });
 } 
+
+export const setProduct = (product) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_PRODUCT, payload: product });
+
+            resolve(product);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

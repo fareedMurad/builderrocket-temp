@@ -139,3 +139,24 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
         console.log('Delete Rooms', error);
     });
 }
+
+export const addProductToProject = (projectRoomID, product) => dispatch => {
+    const URL = `/Project/Room/${projectRoomID}/product`;
+
+    return api({
+        method: 'POST', 
+        url: URL,
+        data: product
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
+}
