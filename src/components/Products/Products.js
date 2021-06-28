@@ -15,11 +15,10 @@ const Products = (props) => {
     const selectedRoom = useSelector(state => state.room.selectedRoom);
 
     const [isAddProducts, setIsAddProducts] = useState(false);
-    // const [templateItems, setTemplateItems] = useState({});
+    const [templateItems, setTemplateItems] = useState({});
     
     useEffect(() => {
-        if (!selectedRoom)
-        dispatch(setSelectedRoom(project.ProjectRooms?.[0]));
+            dispatch(setSelectedRoom(project?.ProjectRooms?.[0]));
     }, [dispatch, project, selectedRoom]);
     
     const handleSelectedRoom = (roomID) => {
@@ -34,7 +33,35 @@ const Products = (props) => {
         dispatch(setSelectedCategoryID(categoryID));
     }
     
+    const handleItems = (incomingItem, key, value) => {
+        let newValue = value;
+
+        if (key === 'IsApproved')
+            newValue = !value;
+
+        if (!templateItems?.[incomingItem?.ID]) {
+
+            setTemplateItems({ 
+                ...templateItems, 
+                [incomingItem?.ID]: {
+                    TemplateItemID: incomingItem?.ID,
+                    [key]: newValue
+                }
+            });
+
+        } else {
+            setTemplateItems({
+                ...templateItems, 
+                [incomingItem?.ID]: {
+                    ...templateItems?.[incomingItem?.ID],
+                    [key]: newValue
+                }
+            })
+        }
+        
+    }
     console.log('Project', project);
+    console.log('TEMPLATES', templateItems);
 
     return (
         <div className='d-flex products'>
@@ -105,7 +132,11 @@ const Products = (props) => {
                             <thead>
                                 <tr>
                                     <th>Needs Approval</th>
-                                    <th>Product Name</th>
+                                    <th>
+                                        <div className='d-flex justify-content-center'>
+                                            Product Name
+                                        </div>
+                                    </th>
                                     <th>Description</th>
                                     <th>Category</th>
                                     <th>UOM</th>
@@ -118,66 +149,89 @@ const Products = (props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {selectedRoom?.Items?.map((templateItem, index) => (
-                                    <tr key={index}>
-                                        <td className='approval-checkbox'>
-                                            <Form>
-                                                <Form.Check 
-                                                    type='checkbox'
-                                                    checked={templateItem?.IsApproved}
-                                                />
-                                            </Form>
-                                        </td>
-                                        <td>
-                                            <div className='add-btn-templateItem'>
-                                                <Button 
-                                                    variant='link' 
-                                                    className='link-btn'
-                                                    onClick={() => handleSelectedCategoryID(templateItem?.CategoryID)}
-                                                >
-                                                    <i className='fas fa-plus-circle plus-circle'></i>
-                                                    {templateItem?.AddLabel} 
-                                                </Button>
-                                            </div>  
-                                        </td>
-                                        <td></td>
-                                        <td>{templateItem?.CategoryName}</td>
-                                        <td></td>
-                                        <td>
-                                            <Form className='d-flex justify-content-center'>
-                                                <Form.Check 
-                                                    type='radio'
-                                                    checked={templateItem?.RoughInTrimOutEnum === 'RoughIn'}
-                                                />
-                                                <Form.Check 
-                                                    type='radio'
-                                                    checked={templateItem?.RoughInTrimOutEnum === 'TrimOut'}
-                                                />
-                                            </Form>
-                                        </td>
-                                        <td>
-                                            <div className='distributor-select'>
-                                                <Form.Control as='select'>
-                                                </Form.Control>
-                                            </div>
-                                        </td>
-                                        <td>  
-                                            <div className='qty-select'>
-                                                <Form.Control as='select'>
-                                                </Form.Control>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <div className='d-flex justify-content-between'>
-                                                <i className='fas fa-retweet'></i>
-                                                <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                                <i className='far fa-trash-alt'></i>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {selectedRoom?.Items?.map((templateItem, index) => {
+                                    const isApproved = !!(templateItem?.IsApproved || templateItems?.[templateItem?.ID]?.IsApproved);
+                                    const isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn' || templateItems?.[templateItem?.ID]?.RoughInTrimOutEnum === 'RoughIn';
+                                    const isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut' || templateItems?.[templateItem?.ID]?.RoughInTrimOutEnum === 'TrimOut';
+
+                                    return (
+                                        <tr key={index}>
+                                            <td className='approval-checkbox'>
+                                                <Form>
+                                                    <Form.Check 
+                                                        type='checkbox'
+                                                        checked={!(isApproved) ? false : isApproved}
+                                                        onChange={
+                                                            () => handleItems(templateItem, 'IsApproved', isApproved)
+                                                        }
+                                                    />
+                                                </Form>
+                                            </td>
+                                            <td>
+                                                <div className='add-btn-templateItem'>
+                                                    {templateItem?.ProductThumbnailURl && (
+                                                        <img 
+                                                            width='50' 
+                                                            height='50' 
+                                                            alt='template item' 
+                                                            src={templateItem?.ProductThumbnailURl} 
+                                                        />
+                                                    )}
+                                                    <Button 
+                                                        variant='link' 
+                                                        className='link-btn'
+                                                        onClick={() => handleSelectedCategoryID(templateItem?.CategoryID)}
+                                                    >
+                                                        <i className='fas fa-plus-circle plus-circle'></i>
+                                                        {templateItem?.AddLabel} 
+                                                    </Button>
+                                                </div>  
+                                            </td>
+                                            <td></td>
+                                            <td>{templateItem?.CategoryName}</td>
+                                            <td></td>
+                                            <td>
+                                                <Form className='d-flex justify-content-center'>
+                                                    <Form.Check 
+                                                        type='radio'
+                                                        checked={isRoughIn}
+                                                        onChange={
+                                                            () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
+                                                        }
+                                                    />
+                                                    <Form.Check 
+                                                        type='radio'
+                                                        checked={isTrimOut}
+                                                        onChange={
+                                                            () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
+                                                        }
+                                                    />
+                                                </Form>
+                                            </td>
+                                            <td>
+                                                <div className='distributor-select'>
+                                                    <Form.Control as='select'>
+                                                    </Form.Control>
+                                                </div>
+                                            </td>
+                                            <td>  
+                                                <div className='qty-select'>
+                                                    <Form.Control as='select'>
+                                                    </Form.Control>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                                <div className='d-flex justify-content-between'>
+                                                    <i className='fas fa-retweet'></i>
+                                                    <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                                    <i className='far fa-trash-alt'></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )}
+                                )}
                             </tbody>
 
                         </Table>
