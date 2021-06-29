@@ -49,13 +49,13 @@ export const getChildCategories = (categoryID) => dispatch => {
 
 }
 
-export const searchProducts = (categoryID, updatedFilter) => dispatch => {
+export const searchProducts = (categoryID, searchObject) => dispatch => {
     const URL = `/Product/${categoryID ? categoryID : 'Search'}`;
 
     return api({
         method: 'POST',
         url: URL,
-        data: updatedFilter
+        data: searchObject
     })
     .then((response) => {
         if (response.status === 200) {

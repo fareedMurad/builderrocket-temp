@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
@@ -9,22 +9,23 @@ const AddProduct = (props) => {
 
     const dispatch = useDispatch();
 
+    const product = useSelector(state => state.product.product);
     const products = useSelector(state => state.product.products);
     const productCategories = useSelector(state => state.product.productCategories);
     const selectedCategoryID = useSelector(state => state.product.selectedCategoryID);
 
-    const [searchTerm, setSearchTerm] = useState('');
-    // console.log('Products', products);
+    // const [searchTerm, setSearchTerm] = useState('');
+    console.log('Product', product);
 
     useEffect(() => {
-        if (selectedCategoryID)
-            dispatch(getCategories(selectedCategoryID));
-    }, [dispatch, selectedCategoryID]);
+        if (product)
+            dispatch(getCategories(product?.CategoryID));
+    }, [dispatch, product]);
 
     useEffect(() => {
-        if (selectedCategoryID)
-            dispatch(searchProducts(selectedCategoryID));
-    }, [dispatch, selectedCategoryID]);
+        if (product)
+            dispatch(searchProducts(product?.CategoryID));
+    }, [dispatch, product]);
 
     const onProductCategoryChange = (productCategoryID) => {
         if (!productCategoryID) return;
@@ -54,12 +55,16 @@ const AddProduct = (props) => {
             CustomFilters: updatedFilters
         }
 
-        dispatch(searchProducts(selectedCategoryID, searchObject))
+        dispatch(searchProducts(searchObject))
     }
 
-    // const addProduct = () => {
+    const addProduct = () => {
         
-    // }
+    }
+
+    const handleProductChange = () => {
+
+    }
 
     return (
         <div className='add-product-container'>
@@ -81,7 +86,7 @@ const AddProduct = (props) => {
                     <div className='mr-3'>
                         <Form.Control 
                             as='select'
-                            value={selectedCategoryID}
+                            value={product?.CategoryID}
                             onChange={(event) => onProductCategoryChange(event.target.value)}
                         >
                             <option value=''>Select Category</option>
@@ -98,7 +103,7 @@ const AddProduct = (props) => {
                     <div className='d-flex'>
                         <Form.Control 
                             placeholder='Search Keywords'
-                            onChange={(e) => setSearchTerm(e.target.value)}    
+                            // onChange={(e) => setSearchTerm(e.target.value)}    
                         >
                         </Form.Control>
                         <button className='primary-gray-btn search-btn ml-3'>Search</button>

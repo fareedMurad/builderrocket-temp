@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedRoom } from '../../actions/roomActions';
-import { setSelectedCategoryID } from '../../actions/productActions';
+import { setProduct } from '../../actions/productActions';
 import './Products.scss';
 
 // components 
@@ -27,13 +27,38 @@ const Products = (props) => {
         dispatch(setSelectedRoom(selectedRoomObj));
     }
     
-    const handleSelectedCategoryID = (categoryID) => {
-        setIsAddProducts(true);
+    const handleSelectedCategoryID = (id) => {
+        if (!id) return;
+
+        const product = templateItems?.[id];
+
+        if (!product?.Quantity) {
+            alert('Please choose a quantity.');
+
+            return;
+        } 
         
-        dispatch(setSelectedCategoryID(categoryID));
+        dispatch(setProduct(product))
+            .then(
+                setIsAddProducts(true)
+            );
     }
-    
+
+    const handleQuantity = (incomingItem, value) => {
+        const itemQuantity = parseInt(value);   
+        
+        if (!incomingItem?.ID || !itemQuantity || itemQuantity < 0) {
+            document.getElementById(`quantity-${incomingItem?.ID}`).value = '';
+
+            return;
+        }
+
+        handleItems(incomingItem, 'Quantity', itemQuantity);
+    }
+
     const handleItems = (incomingItem, key, value) => {
+        if (!incomingItem?.ID) return;
+
         let newValue = value;
 
         if (key === 'IsApproved')
@@ -45,6 +70,7 @@ const Products = (props) => {
                 ...templateItems, 
                 [incomingItem?.ID]: {
                     TemplateItemID: incomingItem?.ID,
+                    CategoryID: incomingItem?.CategoryID,
                     [key]: newValue
                 }
             });
@@ -61,7 +87,7 @@ const Products = (props) => {
         
     }
     console.log('Project', project);
-    console.log('TEMPLATES', templateItems);
+    console.log('TEMPLATES', templateItems);            
 
     return (
         <div className='d-flex products'>
@@ -153,22 +179,25 @@ const Products = (props) => {
                                     const isApproved = !!(templateItem?.IsApproved || templateItems?.[templateItem?.ID]?.IsApproved);
                                     const isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn' || templateItems?.[templateItem?.ID]?.RoughInTrimOutEnum === 'RoughIn';
                                     const isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut' || templateItems?.[templateItem?.ID]?.RoughInTrimOutEnum === 'TrimOut';
+                                    const quantity = templateItems?.[templateItem?.ID]?.Quantity || templateItem?.Quantity;
 
                                     return (
                                         <tr key={index}>
                                             <td className='approval-checkbox'>
-                                                <Form>
-                                                    <Form.Check 
-                                                        type='checkbox'
-                                                        checked={!(isApproved) ? false : isApproved}
-                                                        onChange={
-                                                            () => handleItems(templateItem, 'IsApproved', isApproved)
-                                                        }
-                                                    />
-                                                </Form>
+                                                <div className='d-flex justify-content-center'>
+                                                    <Form>
+                                                        <Form.Check 
+                                                            type='checkbox'
+                                                            checked={!(isApproved) ? false : isApproved}
+                                                            onChange={
+                                                                () => handleItems(templateItem, 'IsApproved', isApproved)
+                                                            }
+                                                        />
+                                                    </Form>
+                                                </div>
                                             </td>
                                             <td>
-                                                <div className='add-btn-templateItem'>
+                                                <div className='d-flex add-btn-templateItem'>
                                                     {templateItem?.ProductThumbnailURl && (
                                                         <img 
                                                             width='50' 
@@ -180,7 +209,7 @@ const Products = (props) => {
                                                     <Button 
                                                         variant='link' 
                                                         className='link-btn'
-                                                        onClick={() => handleSelectedCategoryID(templateItem?.CategoryID)}
+                                                        onClick={() => handleSelectedCategoryID(templateItem?.ID)}
                                                     >
                                                         <i className='fas fa-plus-circle plus-circle'></i>
                                                         {templateItem?.AddLabel} 
@@ -215,8 +244,16 @@ const Products = (props) => {
                                                 </div>
                                             </td>
                                             <td>  
-                                                <div className='qty-select'>
-                                                    <Form.Control as='select'>
+                                                <div className='qty-input'>
+                                                    <Form.Control 
+                                                        min='0'
+                                                        type='number'
+                                                        id={`quantity-${templateItem?.ID}`}
+                                                        // onfocus="this.value=''"
+                                                        // onFocus={this.value = null}
+                                                        defaultValue={quantity ? quantity : null}
+                                                        onChange={(e) => handleQuantity(templateItem, e.target.value)}
+                                                    >
                                                     </Form.Control>
                                                 </div>
                                             </td>
