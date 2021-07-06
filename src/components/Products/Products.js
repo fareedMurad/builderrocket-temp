@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Form, Table } from 'react-bootstrap';
+import { Button, Form, Table, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProduct } from '../../actions/productActions';
 import { setSelectedRoom } from '../../actions/roomActions';
@@ -18,6 +18,8 @@ const Products = (props) => {
 
     const [isAddProducts, setIsAddProducts] = useState(false);
     const [templateItems, setTemplateItems] = useState({});
+    const [tempProduct, setTempProduct] = useState({});
+    const [showModal, setShowModal] = useState(false);
     
     useEffect(() => {
         if (isEmpty(selectedRoom))
@@ -69,7 +71,18 @@ const Products = (props) => {
             RoughInTrimOutEnum: product.RoughInTrimOutEnum
         } 
 
-        dispatch(handleProductForProject(selectedRoom?.ID, [productDeleteObj]));
+        dispatch(handleProductForProject(selectedRoom?.ID, [productDeleteObj]))
+            .then(setShowModal(false));
+    }
+
+    const handleOpenModal = (item) => {
+        setTempProduct(item);
+        setShowModal(true);
+    }
+
+    const handleCloseModal = () => {
+        setTempProduct({});
+        setShowModal(false);
     }
 
     const handleQuantity = (incomingItem, value) => {
@@ -115,6 +128,30 @@ const Products = (props) => {
             })
         }
         
+    }
+
+    const deleteModal = () => {
+
+        return (
+            <Modal
+                show={showModal}
+                onHide={() => setShowModal(false)}>
+                    <Modal.Header>
+                        Delete Product
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to delete this product? 
+                    </Modal.Body>
+                    <Modal.Footer>
+                    <Button variant='secondary' onClick={handleCloseModal}>
+                        Close
+                    </Button>
+                    <Button variant='primary' onClick={() => handleDeleteProduct(tempProduct)}>
+                        Save Changes
+                    </Button>
+                    </Modal.Footer>
+            </Modal>
+        )
     }
     console.log('Project', project, selectedRoom);
     // console.log('TEMPLATES', templateItems);            
@@ -182,6 +219,8 @@ const Products = (props) => {
                         </div>
                     </div>
 
+                    {deleteModal()}
+
                     <div className='products-table'>
                         <div className='table-title'>Title</div>
                         <Table>
@@ -236,14 +275,27 @@ const Products = (props) => {
                                                             src={templateItem?.ProductThumbnailURl} 
                                                         />
                                                     )}
-                                                    <Button 
-                                                        variant='link' 
-                                                        className='link-btn'
-                                                        onClick={() => handleSelectedCategoryID(templateItem)}
-                                                    >
-                                                        <i className='fas fa-plus-circle plus-circle'></i>
-                                                        {templateItem?.AddLabel} 
-                                                    </Button>
+                                                    <div>
+                                                        <Button 
+                                                            variant='link' 
+                                                            className='link-btn'
+                                                            onClick={() => handleSelectedCategoryID(templateItem)}
+                                                        >
+                                                            {templateItem?.IsTemplate ? 
+                                                                <>
+                                                                    <i className='fas fa-plus-circle plus-circle'></i>
+                                                                    {templateItem?.AddLabel} 
+                                                                </>
+                                                            : 
+                                                                <>
+                                                                    {templateItem?.ShortDescription}
+                                                                </>
+                                                            }
+                                                        </Button>
+                                                        <div>
+                                                            Model: {templateItem?.ModelNumber}
+                                                        </div>
+                                                    </div>
                                                 </div>  
                                             </td>
                                             <td></td>
@@ -296,7 +348,7 @@ const Products = (props) => {
                                                     <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                                     <i 
                                                         className='far fa-trash-alt'
-                                                        onClick={() => handleDeleteProduct(templateItem)}
+                                                        onClick={() => handleOpenModal(templateItem)}
                                                     ></i>
                                                 </div>
                                             </td>
