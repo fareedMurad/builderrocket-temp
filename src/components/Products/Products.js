@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedRoom } from '../../actions/roomActions';
 import { setProduct } from '../../actions/productActions';
+import { setSelectedRoom } from '../../actions/roomActions';
+import { handleProductForProject } from '../../actions/projectActions';
+import { isEmpty, isUndefined } from 'lodash';
 import './Products.scss';
 
 // components 
@@ -18,30 +20,56 @@ const Products = (props) => {
     const [templateItems, setTemplateItems] = useState({});
     
     useEffect(() => {
+        if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(project?.ProjectRooms?.[0]));
     }, [dispatch, project, selectedRoom]);
-    
-    const handleSelectedRoom = (roomID) => {
+ 
+    const handleSelectedRoom = useCallback((roomID) => {
         const selectedRoomObj = project?.ProjectRooms?.find((room) => room.ID === parseInt(roomID));
         
         dispatch(setSelectedRoom(selectedRoomObj));
-    }
+    }, [dispatch, project]);
+
+    useEffect(() => {
+        if (!isEmpty(selectedRoom))
+            handleSelectedRoom(selectedRoom?.ID);
+    }, [project, selectedRoom, handleSelectedRoom]);
     
-    const handleSelectedCategoryID = (id) => {
-        if (!id) return;
+    const handleSelectedCategoryID = (templateItem) => {
+        if (!templateItem) return;
 
-        const product = templateItems?.[id];
+        if (templateItem) {
+            const product = {
+                Quantity: 1, 
+                TemplateItemID: templateItem.ID,
+                CategoryID: templateItem.CategoryID,
+                RoughInTrimOutEnum: 'RoughIn',
+                IsApproved: false,
+            }
 
-        if (!product?.Quantity) {
-            alert('Please choose a quantity.');
+            dispatch(setProduct(product))
+                .then(
+                    setIsAddProducts(true)
+                );
+        }
 
-            return;
+    }
+
+    const handleDeleteProduct = (product) => {
+        if (!product || !selectedRoom?.ID) return;
+ 
+        const productDeleteObj = {
+            ID: product.ID,
+            Quantity: 0,
+            ProductID: product.ProductID,
+            IsApproved: product.IsApproved,
+            IsFavorite: product.IsFavorite,
+            TemplateItemID: product.TemplateID,
+            RequiredApproval: product.RequiredApproval,
+            RoughInTrimOutEnum: product.RoughInTrimOutEnum
         } 
-        
-        dispatch(setProduct(product))
-            .then(
-                setIsAddProducts(true)
-            );
+
+        dispatch(handleProductForProject(selectedRoom?.ID, [productDeleteObj]));
     }
 
     const handleQuantity = (incomingItem, value) => {
@@ -71,6 +99,8 @@ const Products = (props) => {
                 [incomingItem?.ID]: {
                     TemplateItemID: incomingItem?.ID,
                     CategoryID: incomingItem?.CategoryID,
+                    IsApproved: false,
+                    Quantity: 1,
                     [key]: newValue
                 }
             });
@@ -86,8 +116,8 @@ const Products = (props) => {
         }
         
     }
-    console.log('Project', project);
-    console.log('TEMPLATES', templateItems);            
+    console.log('Project', project, selectedRoom);
+    // console.log('TEMPLATES', templateItems);            
 
     return (
         <div className='d-flex products'>
@@ -176,10 +206,9 @@ const Products = (props) => {
                             </thead>
                             <tbody>
                                 {selectedRoom?.Items?.map((templateItem, index) => {
-                                    const isApproved = !!(templateItem?.IsApproved || templateItems?.[templateItem?.ID]?.IsApproved);
-                                    const isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn' || templateItems?.[templateItem?.ID]?.RoughInTrimOutEnum === 'RoughIn';
-                                    const isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut' || templateItems?.[templateItem?.ID]?.RoughInTrimOutEnum === 'TrimOut';
-                                    const quantity = templateItems?.[templateItem?.ID]?.Quantity || templateItem?.Quantity;
+                                    const isApproved = !!(templateItem?.IsApproved);
+                                    const isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
+                                    const isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
 
                                     return (
                                         <tr key={index}>
@@ -189,6 +218,7 @@ const Products = (props) => {
                                                         <Form.Check 
                                                             type='checkbox'
                                                             checked={!(isApproved) ? false : isApproved}
+                                                            disabled={isUndefined(templateItem?.IsApproved) ? true : false}
                                                             onChange={
                                                                 () => handleItems(templateItem, 'IsApproved', isApproved)
                                                             }
@@ -209,7 +239,7 @@ const Products = (props) => {
                                                     <Button 
                                                         variant='link' 
                                                         className='link-btn'
-                                                        onClick={() => handleSelectedCategoryID(templateItem?.ID)}
+                                                        onClick={() => handleSelectedCategoryID(templateItem)}
                                                     >
                                                         <i className='fas fa-plus-circle plus-circle'></i>
                                                         {templateItem?.AddLabel} 
@@ -224,6 +254,7 @@ const Products = (props) => {
                                                     <Form.Check 
                                                         type='radio'
                                                         checked={isRoughIn}
+                                                        disabled={!isRoughIn}
                                                         onChange={
                                                             () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
                                                         }
@@ -231,6 +262,7 @@ const Products = (props) => {
                                                     <Form.Check 
                                                         type='radio'
                                                         checked={isTrimOut}
+                                                        disabled={!isTrimOut}
                                                         onChange={
                                                             () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
                                                         }
@@ -249,9 +281,8 @@ const Products = (props) => {
                                                         min='0'
                                                         type='number'
                                                         id={`quantity-${templateItem?.ID}`}
-                                                        // onfocus="this.value=''"
-                                                        // onFocus={this.value = null}
-                                                        defaultValue={quantity ? quantity : null}
+                                                        disabled={!templateItem?.Quantity}
+                                                        defaultValue={templateItem?.Quantity ? templateItem?.Quantity : 1}
                                                         onChange={(e) => handleQuantity(templateItem, e.target.value)}
                                                     >
                                                     </Form.Control>
@@ -263,7 +294,10 @@ const Products = (props) => {
                                                 <div className='d-flex justify-content-between'>
                                                     <i className='fas fa-retweet'></i>
                                                     <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                                    <i className='far fa-trash-alt'></i>
+                                                    <i 
+                                                        className='far fa-trash-alt'
+                                                        onClick={() => handleDeleteProduct(templateItem)}
+                                                    ></i>
                                                 </div>
                                             </td>
                                         </tr>

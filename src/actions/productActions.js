@@ -51,7 +51,7 @@ export const getChildCategories = (categoryID) => dispatch => {
 
 export const searchProducts = (categoryID, searchObject) => dispatch => {
     const URL = `/Product/${categoryID ? categoryID : 'Search'}`;
-
+    
     return api({
         method: 'POST',
         url: URL,

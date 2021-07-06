@@ -1,21 +1,22 @@
 import React, { useEffect } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { handleProductForProject } from '../../actions/projectActions';
 import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
 import './AddProduct.scss';
 
 const AddProduct = (props) => {
     const { handleShow } = props;
-
+    
     const dispatch = useDispatch();
 
     const product = useSelector(state => state.product.product);
     const products = useSelector(state => state.product.products);
+    const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productCategories = useSelector(state => state.product.productCategories);
-    const selectedCategoryID = useSelector(state => state.product.selectedCategoryID);
 
     // const [searchTerm, setSearchTerm] = useState('');
-    console.log('Product', product);
+    console.log('Product', products, props);
 
     useEffect(() => {
         if (product)
@@ -49,22 +50,31 @@ const AddProduct = (props) => {
         updatedFilters[filterType][filterChildIndex] = updatedFilterChild;
  
         const searchObject = {
-            CategoryID: selectedCategoryID,
+            CategoryID: product?.CategoryID,
             ModelName: null,
             Description: null, 
             CustomFilters: updatedFilters
         }
 
-        dispatch(searchProducts(searchObject))
+        dispatch(searchProducts(product?.CategoryID, searchObject));
     }
 
-    const addProduct = () => {
-        
+    const addProduct = (productID) => {
+        if (!productID) return;
+
+        const newProduct = {
+            ...product, 
+            ProductID: productID
+        }
+
+        delete newProduct.CategoryID
+
+        dispatch(handleProductForProject(selectedRoom?.ID, [newProduct]))
+            .then(
+                handleShow(false)
+            );
     }
 
-    const handleProductChange = () => {
-
-    }
 
     return (
         <div className='add-product-container'>
@@ -152,7 +162,7 @@ const AddProduct = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {products?.Products?.splice(0, 25).map((product, index) => (
+                            {products?.Products?.map((product, index) => (
                                 <tr key={index}>
                                     <td>
                                         <img
@@ -181,7 +191,12 @@ const AddProduct = (props) => {
                                         <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                     </td>
                                     <td>
-                                        <button className='add-product-btn'>Add</button>
+                                        <button 
+                                            className='add-product-btn'
+                                            onClick={() => addProduct(product?.ID)}
+                                        >
+                                            Add
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

@@ -33,7 +33,7 @@ export const getProjects = () => dispatch => {
     })
 }
 
-export const getProjectByProjectNumber = (projectNumber, token) => dispatch => {
+export const getProjectByProjectNumber = (projectNumber) => dispatch => {
     const URL = `/Project/${projectNumber}`;
 
     return api({
@@ -140,7 +140,7 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
     });
 }
 
-export const addProductToProject = (projectRoomID, product) => dispatch => {
+export const handleProductForProject = (projectRoomID, product) => dispatch => {
     const URL = `/Project/Room/${projectRoomID}/product`;
 
     return api({
