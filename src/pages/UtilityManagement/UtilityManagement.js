@@ -104,7 +104,7 @@ const UtilityManagement = () => {
             <div className='utility-management-container'>
                 <div className='d-flex'>
                     <div className='page-title'>Utility Management</div>
-                    <div className='ml-2 add-btn'>
+                    <div className='ml-2'>
                         <Button 
                             variant='link' 
                             className='link-btn'

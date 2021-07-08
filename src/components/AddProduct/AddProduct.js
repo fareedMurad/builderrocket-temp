@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleProductForProject } from '../../actions/projectActions';
 import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
 import './AddProduct.scss';
+
+// components 
+import ProductModal from '../ProductModal';
 
 const AddProduct = (props) => {
     const { handleShow } = props;
@@ -16,6 +19,8 @@ const AddProduct = (props) => {
     const productCategories = useSelector(state => state.product.productCategories);
 
     // const [searchTerm, setSearchTerm] = useState('');
+    const [showModal, setShowModal] = useState(false);
+
     console.log('Product', products, props);
 
     useEffect(() => {
@@ -79,7 +84,7 @@ const AddProduct = (props) => {
     return (
         <div className='add-product-container'>
             <div className='d-flex'>
-                <div className='add-btn'>
+                <div>
                     <Button 
                         variant='link' 
                         className='link-btn'
@@ -204,6 +209,9 @@ const AddProduct = (props) => {
                     </Table>
                 </div>
             </div>
+        
+
+            <ProductModal show={showModal} handleClose={setShowModal} />
         </div>
     );
 }

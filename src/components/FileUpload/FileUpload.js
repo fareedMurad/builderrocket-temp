@@ -17,7 +17,7 @@ const FileUpload = (props) => {
             <div className={`${short && 'd-flex justify-content-between'}`}>
                 <Form.Label className={`input-label ${short && 'label-margin'}`}>{label}</Form.Label>
                 {short ? 
-                    <div className='upload-btn add-btn'>
+                    <div className='upload-btn'>
                         <Button 
                             variant='link' 
                             className='link-btn' 

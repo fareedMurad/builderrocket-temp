@@ -15,7 +15,7 @@ const Drawings = (props) => {
                 <div className='d-flex'>
                     <div className='page-title'>Drawings</div>
 
-                    <div className='ml-1 add-btn'>
+                    <div className='ml-1'>
                         <Button 
                             variant='link' 
                             className='link-btn'

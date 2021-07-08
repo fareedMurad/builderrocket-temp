@@ -32,7 +32,7 @@ const Contractors = () => {
                 <div className='d-flex'>
                     <div className='page-title'>Contractor</div>
 
-                     <div className='ml-1 add-btn'>
+                     <div className='ml-1'>
                         <Button 
                             variant='link' 
                             className='link-btn'

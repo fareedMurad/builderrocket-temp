@@ -43,15 +43,13 @@ const ProjectHeader = () => {
                             </div>
 
                             <div className='pt-1 d-flex'>
-                                <div className='add-btn'>
-                                    <Button 
-                                        variant='link' 
-                                        className='link-btn'
-                                    >
-                                        <i className='fas fa-file-download mr-2 save-icon'></i>
-                                        Save as New Project
-                                    </Button>
-                                </div>
+                                <Button 
+                                    variant='link' 
+                                    className='link-btn'
+                                >
+                                    <i className='fas fa-file-download mr-2 save-icon'></i>
+                                    Save as New Project
+                                </Button>
                             </div>
                         </Col>
                     </div>

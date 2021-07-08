@@ -1,0 +1,29 @@
+@import '../../assets/styles/variables';
+
+.product-modal {
+
+    .header-container {
+        padding: 1rem 1rem;
+        background-color: #222223;
+
+        .product-modal-header {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: -0.41px;
+            line-height: 24px;
+        }
+    }
+
+    .product-modal-body {
+        padding: 1rem 1rem;
+
+        .body-header {
+            font-size: 14px;
+            letter-spacing: -0.32px;
+            line-height: 16px;
+            color: rgba(0,0,0,0.85);
+        }
+
+    }
+}

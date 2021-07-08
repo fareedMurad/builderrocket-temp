@@ -76,6 +76,8 @@ const Products = (props) => {
     }
 
     const handleOpenModal = (item) => {
+        if (item.IsTemplate) return;
+
         setTempProduct(item);
         setShowModal(true);
     }
@@ -135,26 +137,31 @@ const Products = (props) => {
         return (
             <Modal
                 show={showModal}
-                onHide={() => setShowModal(false)}>
-                    <Modal.Header>
-                        Delete Product
-                    </Modal.Header>
-                    <Modal.Body>
-                        Are you sure you want to delete this product? 
-                    </Modal.Body>
-                    <Modal.Footer>
-                    <Button variant='secondary' onClick={handleCloseModal}>
-                        Close
-                    </Button>
-                    <Button variant='primary' onClick={() => handleDeleteProduct(tempProduct)}>
-                        Save Changes
-                    </Button>
-                    </Modal.Footer>
+                onHide={() => setShowModal(false)}
+            >
+                <div className='p-3'>
+                    <b>Delete Product</b>
+                </div>
+                <Modal.Body>
+                    Are you sure you want to delete this product? 
+
+                    <div className='d-flex justify-content-center pt-5'>
+                        <Button 
+                            variant='link' 
+                            className='cancel'
+                            onClick={handleCloseModal}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            className='primary-gray-btn next-btn ml-3'
+                            onClick={() => handleDeleteProduct(tempProduct)}>Delete</Button>
+                    </div>
+                </Modal.Body>
             </Modal>
         )
     }
-    console.log('Project', project, selectedRoom);
-    // console.log('TEMPLATES', templateItems);            
+    console.log('Project', project, selectedRoom);       
 
     return (
         <div className='d-flex products'>
@@ -205,7 +212,7 @@ const Products = (props) => {
                                 </Form.Control>
                             </div>
 
-                            <div className='ml-1 add-btn'>
+                            <div className='ml-1'>
                                 <Button 
                                     variant='link' 
                                     className='link-btn'
@@ -292,9 +299,12 @@ const Products = (props) => {
                                                                 </>
                                                             }
                                                         </Button>
-                                                        <div>
-                                                            Model: {templateItem?.ModelNumber}
-                                                        </div>
+
+                                                        {!templateItem?.IsTemplate && (
+                                                            <div>
+                                                                Model: {templateItem?.ModelNumber}
+                                                            </div>
+                                                        )} 
                                                     </div>
                                                 </div>  
                                             </td>
@@ -306,7 +316,7 @@ const Products = (props) => {
                                                     <Form.Check 
                                                         type='radio'
                                                         checked={isRoughIn}
-                                                        disabled={!isRoughIn}
+                                                        disabled={isUndefined(templateItem?.RoughInTrimOutEnum)}
                                                         onChange={
                                                             () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
                                                         }
@@ -314,7 +324,7 @@ const Products = (props) => {
                                                     <Form.Check 
                                                         type='radio'
                                                         checked={isTrimOut}
-                                                        disabled={!isTrimOut}
+                                                        disabled={isUndefined(templateItem?.RoughInTrimOutEnum)}
                                                         onChange={
                                                             () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
                                                         }
