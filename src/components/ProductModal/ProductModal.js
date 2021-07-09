@@ -27,6 +27,7 @@ const ProductModal = (props) => {
                     <Button 
                             variant='link' 
                             className='cancel'
+                            onClick={() => handleClose(false)}
                         >
                             Cancel
                     </Button>

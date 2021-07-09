@@ -167,7 +167,7 @@ const AddProduct = (props) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {products?.Products?.map((product, index) => (
+                            {products?.Products?.slice(0, 25)?.map((product, index) => (
                                 <tr key={index}>
                                     <td>
                                         <img
@@ -193,7 +193,7 @@ const AddProduct = (props) => {
                                     </td>
                                     <td></td>
                                     <td>
-                                        <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                        <i onClick={() => setShowModal(true)} className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                     </td>
                                     <td>
                                         <button 
