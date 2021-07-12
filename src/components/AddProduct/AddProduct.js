@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleProductForProject } from '../../actions/projectActions';
-import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
+// import { handleProductForProject } from '../../actions/projectActions';
+import { getCategories, searchProducts, setProductDetails, setSelectedCategoryID } from '../../actions/productActions';
 import './AddProduct.scss';
 
 // components 
@@ -15,11 +15,11 @@ const AddProduct = (props) => {
 
     const product = useSelector(state => state.product.product);
     const products = useSelector(state => state.product.products);
-    const selectedRoom = useSelector(state => state.room.selectedRoom);
+    // const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productCategories = useSelector(state => state.product.productCategories);
 
     // const [searchTerm, setSearchTerm] = useState('');
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(true);
 
     console.log('Product', products, props);
 
@@ -64,20 +64,26 @@ const AddProduct = (props) => {
         dispatch(searchProducts(product?.CategoryID, searchObject));
     }
 
-    const addProduct = (productID) => {
-        if (!productID) return;
+    const addProduct = (product) => {
+        if (!product) return;
 
-        const newProduct = {
-            ...product, 
-            ProductID: productID
-        }
-
-        delete newProduct.CategoryID
-
-        dispatch(handleProductForProject(selectedRoom?.ID, [newProduct]))
+        dispatch(setProductDetails(product))
             .then(
-                handleShow(false)
+                setShowModal(true)
             );
+
+        // const newProduct = {
+        //     ...product, 
+        //     ProductID: productID,
+        //     RoomID: selectedRoom.ID
+        // }
+
+        // delete newProduct.CategoryID
+
+        // dispatch(handleProductForProject([newProduct]))
+        //     .then(
+        //         handleShow(false)
+        //     );
     }
 
 
@@ -191,14 +197,14 @@ const AddProduct = (props) => {
                                             <div>Available from x vendors</div>
                                         </div>
                                     </td>
-                                    <td></td>
+                                    <td>${product?.MSRP}</td>
                                     <td>
                                         <i onClick={() => setShowModal(true)} className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                     </td>
                                     <td>
                                         <button 
                                             className='add-product-btn'
-                                            onClick={() => addProduct(product?.ID)}
+                                            onClick={() => addProduct(product)}
                                         >
                                             Add
                                         </button>

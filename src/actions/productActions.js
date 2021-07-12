@@ -3,6 +3,7 @@ import {
     SET_PRODUCT,
     GET_CATEGORIES,
     SEARCH_PRODUCTS,
+    SET_PRODUCT_DETAILS,
     GET_CHILD_CATEGORIES,
     SET_SELECTED_CATEGORY_ID
 } from '../actions/types';
@@ -88,6 +89,18 @@ export const setProduct = (product) => dispatch => {
             dispatch({ type: SET_PRODUCT, payload: product });
 
             resolve(product);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export const setProductDetails = (productDetails) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_PRODUCT_DETAILS, payload: productDetails });
+
+            resolve(productDetails);
         } catch (error) {
             reject(error);
         }

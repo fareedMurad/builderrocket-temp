@@ -140,8 +140,8 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
     });
 }
 
-export const handleProductForProject = (projectRoomID, product) => dispatch => {
-    const URL = `/Project/Room/${projectRoomID}/product`;
+export const handleProductForProject = (product) => dispatch => {
+    const URL = `/Project/Room/product`;
 
     return api({
         method: 'POST', 

@@ -64,6 +64,7 @@ const Products = (props) => {
             ID: product.ID,
             Quantity: 0,
             ProductID: product.ProductID,
+            ProjectRoomID: selectedRoom.ID,
             IsApproved: product.IsApproved,
             IsFavorite: product.IsFavorite,
             TemplateItemID: product.TemplateID,
@@ -71,7 +72,7 @@ const Products = (props) => {
             RoughInTrimOutEnum: product.RoughInTrimOutEnum
         } 
 
-        dispatch(handleProductForProject(selectedRoom?.ID, [productDeleteObj]))
+        dispatch(handleProductForProject([productDeleteObj]))
             .then(setShowModal(false));
     }
 

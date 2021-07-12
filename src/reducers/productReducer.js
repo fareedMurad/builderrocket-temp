@@ -1,14 +1,16 @@
 import { 
-    GET_CATEGORIES, 
     SET_PRODUCT,
+    GET_CATEGORIES, 
     SEARCH_PRODUCTS, 
+    SET_PRODUCT_DETAILS,
     SET_SELECTED_CATEGORY_ID
 } from '../actions/types';
 
 const intialState = {
     products: [],
     productCategories: [],
-    selectedCategoryID: ''
+    selectedCategoryID: '',
+    productDetails: {}
 }
 
 const productReducer = (state = intialState, action) => {
@@ -35,6 +37,12 @@ const productReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 product: action.payload
+            }
+        }
+        case SET_PRODUCT_DETAILS: {
+            return {
+                ...state, 
+                productDetails: action.payload
             }
         }
         default: 
