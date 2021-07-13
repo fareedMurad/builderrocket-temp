@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRoomTypes } from '../../actions/roomActions';
+import { handleProductForProject } from '../../actions/projectActions';
 import { isEmpty } from 'lodash';
 import './ProductModal.scss';
 
 const ProductModal = (props) => {
-    const { show, handleClose } = props;
+    const { show, handleClose, handleCloseModal } = props;
 
     const dispatch = useDispatch();
 
+    const product = useSelector(state => state.product.product);
     const roomTypes = useSelector(state => state.room.roomTypes);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productDetails = useSelector(state => state.product.productDetails);
@@ -25,15 +27,45 @@ const ProductModal = (props) => {
         if (!roomID) return;
 
         if (roomList?.includes(roomID)) {
-            
+            let tempRoomList = roomList;
+
+            const index = tempRoomList.indexOf(roomID);
+
+            if (index > -1) 
+                tempRoomList.splice(index, 1);
+
+            setRoomList(tempRoomList);
+        } else {
+            setRoomList([ ...roomList, roomID ]);
         }
     }
 
-    console.log('product details', productDetails);
+    const addToRooms = () => {
+        if (roomList.length === 0) return;
+
+        let newProductObj = product;
+
+        delete newProductObj.CategoryID;
+
+        const newProducts = roomList.map((roomID) => {
+            return {
+                ...newProductObj,
+                ProductID: productDetails?.ID,
+                ProjectRoomID: roomID
+            }
+        });
+
+        dispatch(handleProductForProject(newProducts))
+            .then(
+                handleClose()
+            );
+    }
+
+    console.log('product details', productDetails, product);
     return (
         <Modal 
             show={show}
-            onHide={() => handleClose(false)}
+            onHide={handleCloseModal}
             size='lg'
             className='product-modal'
         >
@@ -81,7 +113,7 @@ const ProductModal = (props) => {
                                 <div key={index} className='room-name'>
                                     <Form.Check 
                                         type='checkbox'
-                                        // defaultChecked={isRoomInProject(room?.ID)} 
+                                        defaultChecked={roomList.includes(room?.ID)} 
                                         onChange={() => handleCheckBox(room?.ID)}
                                         label={`${room?.Name}`} 
                                     />
@@ -96,11 +128,16 @@ const ProductModal = (props) => {
                     <Button 
                             variant='link' 
                             className='cancel'
-                            onClick={() => handleClose(false)}
+                            onClick={handleCloseModal}
                         >
                             Cancel
                     </Button>
-                    <Button className='primary-gray-btn next-btn ml-3'>Add to Rooms</Button>
+                    <Button 
+                        className='primary-gray-btn next-btn ml-3'
+                        onClick={addToRooms}
+                    >
+                        Add to Rooms
+                    </Button>
                 </div>
             </div>
         </Modal>

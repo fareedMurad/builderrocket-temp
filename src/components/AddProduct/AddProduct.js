@@ -71,19 +71,11 @@ const AddProduct = (props) => {
             .then(
                 setShowModal(true)
             );
+    }
 
-        // const newProduct = {
-        //     ...product, 
-        //     ProductID: productID,
-        //     RoomID: selectedRoom.ID
-        // }
-
-        // delete newProduct.CategoryID
-
-        // dispatch(handleProductForProject([newProduct]))
-        //     .then(
-        //         handleShow(false)
-        //     );
+    const handleClose = () => {
+      handleShow(false);
+      setShowModal(false);
     }
 
 
@@ -199,7 +191,7 @@ const AddProduct = (props) => {
                                     </td>
                                     <td>${product?.MSRP}</td>
                                     <td>
-                                        <i onClick={() => setShowModal(true)} className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                        <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                     </td>
                                     <td>
                                         <button 
@@ -217,7 +209,11 @@ const AddProduct = (props) => {
             </div>
         
 
-            <ProductModal show={showModal} handleClose={setShowModal} />
+            <ProductModal 
+                show={showModal} 
+                handleClose={handleClose} 
+                handleCloseModal={() => setShowModal(false)} 
+            />
         </div>
     );
 }
