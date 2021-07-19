@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Form, Col } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
 import { useDispatch, useSelector } from 'react-redux';
 import './ProjectInformation.scss';
@@ -12,56 +12,99 @@ import FileUpload from '../FileUpload';
 const ProjectInformation = (props) => {
     const dispatch = useDispatch();
 
-    const subdivisions = useSelector(state => state.subdivision.subdivisions);
     const project = useSelector(state => state.project.project);
+    const subdivisions = useSelector(state => state.subdivision.subdivisions);
+
+    const [projectInformation, setProjectInformation] = useState(project);
 
     useEffect(() => {
         dispatch(getSubdivisions());
     }, [dispatch]);
 
-    const handleSubdivision = () => {
-        
+    const clearChanges = () => {
+        setProjectInformation(project);
     }
-
-    console.log('project', project);
+    // console.log('project', project);
+    // console.log('updatedProject', projectInformation);
 
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 
                 <div className='page-title'>Project Information</div>
 
-                <div className='d-flex information-form'>
-                    <Col>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>Project Name</Form.Label>
+                <Form>
+                    <div className='d-flex flex-wrap information-form'>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>
+                                Project Name
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={projectInformation?.ProjectName}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    ProjectName: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-4'>
+                            <FileUpload 
+                                label='Project Image' 
+                                short 
+                            />
+                        </div>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>
+                                Customer Name
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                defaultValue={projectInformation?.Customers?.[0]?.FirstName}
+                            />
+                        </div>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>Customer Email</Form.Label>
                             <Form.Control
                                 type='email'
                                 className='input-gray'
-                                defaultValue={project?.ProjectName}
+                                defaultValue={projectInformation?.Customers?.[0]?.Email}
                             />
                         </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>Customer Name</Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                                defaultValue={project?.Customers?.[0]?.FirstName}
-                            />
-                        </div>
-                        <div className='pb-4'>
+                        <div className='form-col pb-4'>
                             <Form.Label className='input-label'>Plan Name</Form.Label>
                             <Form.Control
-                                type='email'
                                 className='input-gray'
-                                defaultValue={project?.PlanName}
+                                value={projectInformation?.PlanName}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    PlanName: event.target.value
+                                })}
                             />
                         </div>
-                        <div className='pb-2 select'>
-                            <Form.Label className='input-label'>Subdivision</Form.Label>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>
+                                Project Status
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={projectInformation?.PlanName}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    PlanName: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-3 select'>
+                            <Form.Label className='input-label'>
+                                Subdivision
+                            </Form.Label>
                             <Form.Control
                                 as='select'
-                                value={parseInt(project?.Subdivision)}
-                                onChange={handleSubdivision}
+                                value={parseInt(projectInformation?.Subdivision)}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    Subdivision: event.target.value
+                                })}
                             >
                                 <option></option>
                                 {subdivisions?.map((subdivision, index) => (
@@ -74,83 +117,104 @@ const ProjectInformation = (props) => {
                                 ))}
                             </Form.Control>
                         </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Street Address 1</Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                                defaultValue={project?.StreetAddress1}
-                            />
-                        </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>City</Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                                defaultValue={project?.City}
-                            />
-                        </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>Zip Code</Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                                defaultValue={project?.Zip}
-                            />
-                        </div>
-                        <div>
-                            <Form.Label className='input-label'>Closing Date</Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                                defaultValue={Utils.formatDateDashes(project?.CloseDate)}
-                            />
-                        </div>
-                    </Col>
 
-                    <Col>
-                        <div className='pb-4'>
-                            <FileUpload label='Project Image' short />
-                        </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>Customer Email</Form.Label>
+                        <div className='form-col pb-5'></div>
+
+                        <div className='form-col pb-2'> 
+                            <Form.Label className='input-label'>
+                                Street Address 1
+                            </Form.Label>
                             <Form.Control
-                                type='email'
                                 className='input-gray'
-                                defaultValue={project?.Customers?.[0]?.Email}
+                                value={projectInformation?.StreetAddress1}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    StreetAddress1: event.target.value
+                                })}
                             />
                         </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>Project Status</Form.Label>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>
+                                Street Address2
+                            </Form.Label>
                             <Form.Control
-                                type='email'
                                 className='input-gray'
+                                value={projectInformation?.StreetAddress2}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    StreetAddress2: event.target.value
+                                })}
                             />
                         </div>
-                        <div className='pb-5'></div>
-                        <div className='pb-2 pt-2'>
-                            <Form.Label className='input-label'>Street Address2</Form.Label>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                City
+                            </Form.Label>
                             <Form.Control
-                                type='email'
                                 className='input-gray'
-                                defaultValue={project?.StreetAddress2}
+                                value={projectInformation?.City}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    City: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>
+                                State
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={projectInformation?.State}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    State: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>
+                                Zip Code
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={projectInformation?.Zip}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    Zip: event.target.value
+                                })}
                             />
                         </div>
 
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>State</Form.Label>
+                        <div className='form-col pb-5'></div>
+
+                        <div className='form-col'>
+                            <Form.Label className='input-label'>
+                                Closing Date
+                            </Form.Label>
                             <Form.Control
-                                type='email'
                                 className='input-gray'
-                                defaultValue={project?.State}
+                                value={Utils.formatDateDashes(projectInformation?.CloseDate)}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    CloseDate: event.target.value
+                                })}
                             />
                         </div>
-                    </Col>
-                </div>
+
+                        <div className='form-col pb-5'></div>
+                    </div>
+                </Form>
 
                 <div className='d-flex justify-content-center pt-5'>
-                    <a href='/' className='cancel'>Cancel</a>
-                    <button className='primary-gray-btn next-btn ml-3'>Next</button>
+                    <Button 
+                        variant='link' 
+                        className='cancel'
+                        onClick={clearChanges}
+                    >
+                        Cancel
+                    </Button>
+                    <Button className='primary-gray-btn next-btn ml-3'>Next</Button>
                 </div>
             </div>
 

@@ -45,8 +45,6 @@ const ProductModal = (props) => {
 
         let newProductObj = product;
 
-        delete newProductObj.CategoryID;
-
         const newProducts = roomList.map((roomID) => {
             return {
                 ...newProductObj,
@@ -126,10 +124,10 @@ const ProductModal = (props) => {
 
                 <div className='d-flex justify-content-center'>
                     <Button 
-                            variant='link' 
-                            className='cancel'
-                            onClick={handleCloseModal}
-                        >
+                        variant='link' 
+                        className='cancel'
+                        onClick={handleCloseModal}
+                    >
                             Cancel
                     </Button>
                     <Button 

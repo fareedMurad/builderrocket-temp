@@ -160,3 +160,24 @@ export const handleProductForProject = (product) => dispatch => {
             dispatch({ type: LOGOUT }); 
     });
 }
+
+export const saveProject = (updatedProject, projectID) => dispatch => {
+    const URL = `/Project/${projectID}`;
+
+    return api({
+        method: 'POST', 
+        url: URL, 
+        data: updatedProject
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
+}

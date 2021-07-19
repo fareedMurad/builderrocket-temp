@@ -4,8 +4,10 @@ import './MarketingBlock.scss';
 const MarketingBlock = () => {
 
     return (
-        <div className='marketing-block d-flex justify-content-center pt-5'>
-            <h1>Marketing</h1>
+        <div className='marketing-block'>
+            <div className='marketing-block-body d-flex pt-5 justify-content-center'>
+                <h1>Marketing</h1>
+            </div>
         </div>
     );
 }
