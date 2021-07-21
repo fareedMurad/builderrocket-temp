@@ -161,13 +161,15 @@ export const handleProductForProject = (product) => dispatch => {
     });
 }
 
-export const saveProject = (updatedProject, projectID) => dispatch => {
-    const URL = `/Project/${projectID}`;
+export const saveProject = (project) => dispatch => {
+    if (!project.ID) return;
+ 
+    const URL = `/Project/${project.ID}`;
 
     return api({
         method: 'POST', 
         url: URL, 
-        data: updatedProject
+        data: project
     })
     .then((response) => {
         if (response?.status === 200) {

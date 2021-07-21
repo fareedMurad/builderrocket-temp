@@ -9,7 +9,37 @@ import {
 } from '../actions/types';
 
 const intialState = {
-    project: {},
+    project: {
+        BuildingPermitNumber: '',
+        BuildingRiskPolicy: '',
+        City: '',
+        CloseDate: '',
+        Customers: [],
+        DateCreated: '',
+        Documents: [],
+        ID: '',
+        Images: [],
+        LocatePermitNumber: '',
+        LotNumber: '',
+        OccupencyDate: '',
+        PermitDate: '',
+        PlanName: '',
+        ProjectName: '',
+        ProjectNumber: '',
+        ProjectRooms: [],
+        SepticPermitNumber: '',
+        State: '',
+        Status: '',
+        StatusID: '',
+        StreetAddress1: '',
+        StreetAddress2: '',
+        Subdivision: '',
+        TaxMapNumber: '',
+        ThumbnailName: '',
+        ThumbnailURL: '',
+        UserID: '',
+        Zip: '',
+    },
     projects: [],
     selectedProjectTab: 'projectInformation'
 };

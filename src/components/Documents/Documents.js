@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { addDocument, getDocumentTypes, deleteDocument } from '../../actions/documentActions';
-import { getProjectByProjectNumber } from '../../actions/projectActions';
+import { getProjectByProjectNumber, saveProject } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Col } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import Utils from '../../utils';
 import './Documents.scss';
 
@@ -10,11 +10,13 @@ import './Documents.scss';
 import MarketingBlock from '../MarketingBlock';
 import FileUpload from '../FileUpload';
 
-const Documents = (props) => {
+const Documents = () => {
     const dispatch = useDispatch();
 
-    const documentTypes = useSelector(state => state.document.documentTypes);
     const project = useSelector(state => state.project.project);
+    const documentTypes = useSelector(state => state.document.documentTypes);
+
+    const [documentsInfo, setDocumentsInfo] = useState(project);
 
     useEffect(() => {
         dispatch(getDocumentTypes());
@@ -47,15 +49,23 @@ const Documents = (props) => {
             });
     }
 
+    const clearChanges = () => {
+        setDocumentsInfo(project);
+    }
+
+    const saveChanges = () => {
+        dispatch(saveProject(documentsInfo));
+    }
+
+    // console.log('project', project, documentTypes);
     return (
         <div className='d-flex documents'>
             <div className='documents-container'>
                 <div className='page-title'>Documents</div>
 
-
-                <div className='d-flex flex-wrap documents-form'>
-                    <Col md={6} lg={6}>
-                        <div className='pb-2'>
+                <Form>
+                    <div className='d-flex flex-wrap documents-form'>
+                        <div className='form-col pb-2'>
                             <FileUpload 
                                 label={findDocumentType(1)?.Name} 
                                 onFileChange={(event) => onFileChange(1, event)}
@@ -64,7 +74,21 @@ const Documents = (props) => {
                                 short 
                             />
                         </div>
-                        <div className='pb-2'>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                Lot #
+                            </Form.Label>
+                            <Form.Control
+                                type='email'
+                                className='input-gray'
+                                value={documentsInfo?.LotNumber}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    LotNumber: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-2'>
                             <FileUpload 
                                 label={findDocumentType(2)?.Name}     
                                 onFileChange={(event) => onFileChange(2, event)}
@@ -73,66 +97,7 @@ const Documents = (props) => {
                                 short 
                             />
                         </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>C.O. Date</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                defaultValue={Utils.formatShortDateUS(project?.OccupencyDate)}
-                            />
-                        </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Permit Date</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                defaultValue={Utils.formatShortDateUS(project?.PermitDate)}
-                            />
-                        </div>
-                        <div className='pb-2'>
-                            <FileUpload 
-                                label={findDocumentType(3)?.Name}     
-                                onFileChange={(event) => onFileChange(3, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(3)}
-                                short 
-                            />
-                        </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Septic Permit #</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                defaultValue={project?.SepticPermitNumber}
-                            />
-                        </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Soil Treatment Contractor</Form.Label>
-                            <Form.Control
-                                className='input-gray'
-                            />
-                        </div>
-                        <div>
-                            <FileUpload 
-                                label={findDocumentType(4)?.Name}    
-                                onFileChange={(event) => onFileChange(4, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(4)} 
-                                short 
-                            />
-                        </div>
-                    </Col>
-
-                    <Col md={6} lg={6}>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Lot #</Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                                defaultValue={project?.LotNumber}
-                            />
-                        </div>
-                        <div className='pb-2'>
+                        <div className='form-col pb-2'>
                             <FileUpload 
                                 label={findDocumentType(7)?.Name}     
                                 onFileChange={(event) => onFileChange(7, event)}
@@ -141,30 +106,82 @@ const Documents = (props) => {
                                 short 
                             />
                         </div>
-                        <div className='pb-2'>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                C.O. Date
+                            </Form.Label>
+                            <Form.Control
+                                type='text'
+                                className='input-gray'
+                                value={Utils.formatShortDateUS(documentsInfo?.OccupencyDate)}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    OccupencyDate: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                Permit Date
+                            </Form.Label>
+                            <Form.Control
+                                type='text'
+                                className='input-gray'
+                                value={Utils.formatShortDateUS(documentsInfo?.PermitDate)}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    PermitDate: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                Building Permit #
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={documentsInfo?.BuildingPermitNumber}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    BuildingPermitNumber: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-2'>
                             <FileUpload 
-                                label={findDocumentType(8)?.Name}  
-                                onFileChange={(event) => onFileChange(8, event)}
+                                label={findDocumentType(3)?.Name}     
+                                onFileChange={(event) => onFileChange(3, event)}
                                 handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(8)}   
+                                files={findDocumentTypeFiles(3)}
                                 short 
                             />
                         </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Building Permit #</Form.Label>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                Building Risk Policy
+                            </Form.Label>
                             <Form.Control
                                 className='input-gray'
-                                defaultValue={project?.BuildingPermitNumber}
+                                value={documentsInfo?.BuildingRiskPolicy}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    BuildingRiskPolicy: event.target.value
+                                })}
                             />
                         </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Building Risk Policy</Form.Label>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>Septic Permit #</Form.Label>
                             <Form.Control
+                                type='text'
                                 className='input-gray'
-                                defaultValue={project?.BuildingRiskPolicy}
+                                value={documentsInfo?.SepticPermitNumber}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    SepticPermitNumber: event.target.value
+                                })}
                             />
                         </div>
-                        <div className='pb-2'>
+                        <div className='form-col pb-2'>
                             <FileUpload 
                                 label={findDocumentType(9)?.Name}     
                                 onFileChange={(event) => onFileChange(9, event)}
@@ -173,25 +190,60 @@ const Documents = (props) => {
                                 short 
                             />
                         </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>Tax Map #</Form.Label>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>Soil Treatment Contractor</Form.Label>
                             <Form.Control
                                 className='input-gray'
-                                defaultValue={project?.TaxMapNumber}
+                                value={documentsInfo?.SoilTreatmentContractor}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    SoilTreatmentContractor: event.target.value
+                                })}
                             />
                         </div>
-                    </Col>
-                </div>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                Tax Map #
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={documentsInfo?.TaxMapNumber}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    TaxMapNumber: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-2'>
+                            <FileUpload 
+                                label={findDocumentType(4)?.Name}    
+                                onFileChange={(event) => onFileChange(4, event)}
+                                handleDocumentDelete={handleDocumentDelete}
+                                files={findDocumentTypeFiles(4)} 
+                                short 
+                            />
+                        </div>
+                    </div>
+                </Form>
 
                 <div className='d-flex justify-content-center pt-5'>
-                    <a href='/' className='cancel'>Cancel</a>
-                    <button className='primary-gray-btn next-btn ml-3'>Next</button>
+                    <Button 
+                        variant='link' 
+                        className='cancel'
+                        onClick={clearChanges}
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        className='primary-gray-btn next-btn ml-3'
+                        onClick={saveChanges}
+                    >
+                        Next
+                    </Button>
                 </div>
             </div>
 
-            <div className='d-flex'>
-                <MarketingBlock />
-            </div>
+            <MarketingBlock />
         </div>
     );
 }

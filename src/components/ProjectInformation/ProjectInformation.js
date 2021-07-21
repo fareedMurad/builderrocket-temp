@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
+import { saveProject } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import './ProjectInformation.scss';
 import Utils from '../../utils';
@@ -24,8 +25,12 @@ const ProjectInformation = (props) => {
     const clearChanges = () => {
         setProjectInformation(project);
     }
-    // console.log('project', project);
-    // console.log('updatedProject', projectInformation);
+
+    const saveChanges = () => {
+        dispatch(saveProject(projectInformation));
+    }
+    
+    // console.log('updatedProject', projectInformation, subdivisions);
 
     return (
         <div className='d-flex project-information'> 
@@ -87,10 +92,10 @@ const ProjectInformation = (props) => {
                             </Form.Label>
                             <Form.Control
                                 className='input-gray'
-                                value={projectInformation?.PlanName}
+                                value={projectInformation?.Status}
                                 onChange={(event) => setProjectInformation({
                                     ...projectInformation,
-                                    PlanName: event.target.value
+                                    Status: event.target.value
                                 })}
                             />
                         </div>
@@ -100,7 +105,7 @@ const ProjectInformation = (props) => {
                             </Form.Label>
                             <Form.Control
                                 as='select'
-                                value={parseInt(projectInformation?.Subdivision)}
+                                value={projectInformation?.Subdivision}
                                 onChange={(event) => setProjectInformation({
                                     ...projectInformation,
                                     Subdivision: event.target.value
@@ -110,7 +115,7 @@ const ProjectInformation = (props) => {
                                 {subdivisions?.map((subdivision, index) => (
                                     <option 
                                         key={index}
-                                        value={subdivision.ID}
+                                        value={subdivision.SubdivisionName}
                                     >
                                         {subdivision.SubdivisionName}
                                     </option>
@@ -214,7 +219,12 @@ const ProjectInformation = (props) => {
                     >
                         Cancel
                     </Button>
-                    <Button className='primary-gray-btn next-btn ml-3'>Next</Button>
+                    <Button 
+                        onClick={saveChanges}
+                        className='primary-gray-btn next-btn ml-3'
+                    >
+                        Next
+                    </Button>
                 </div>
             </div>
 
