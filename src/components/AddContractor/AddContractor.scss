@@ -17,9 +17,10 @@
             div {
                 height: 28px;
             }
-
+            
             background-color: $lightgray;
             border-radius: 2px;
+            min-height: 28px;
             border: none;
 
             .css-tlfecz-indicatorContainer {
@@ -27,11 +28,13 @@
             }
 
             .css-g1d714-ValueContainer {
-                padding: 0 .15rem;
+                padding-left: .15rem;
+                padding-top: 0;
             }
 
             .css-1wa3eu0-placeholder {
-                padding: .15rem .5rem;
+                padding-bottom: .35rem;
+                padding-left: .5rem;
             }
         }
 
