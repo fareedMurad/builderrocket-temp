@@ -1,4 +1,4 @@
-
+@import '../../assets/styles/variables';
 
 .add-contractor {
 
@@ -9,5 +9,31 @@
             .col {
                 padding: 0 3rem;
             }
+    }
+
+    .css-2b097c-container {
+
+        .css-yk16xz-control {
+            div {
+                height: 28px;
+            }
+
+            background-color: $lightgray;
+            border-radius: 2px;
+            border: none;
+
+            .css-tlfecz-indicatorContainer {
+                padding-top: .25rem;
+            }
+
+            .css-g1d714-ValueContainer {
+                padding: 0 .15rem;
+            }
+
+            .css-1wa3eu0-placeholder {
+                padding: .15rem .5rem;
+            }
+        }
+
     }
 }

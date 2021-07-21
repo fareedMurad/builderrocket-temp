@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Form, Col, Button } from 'react-bootstrap';
-import { createContractor, getContractors, getContractorTypes, setSelectedContractor } from '../../actions/contractorActions';
+import { createContractor, getContractors, getContractorTypes } from '../../actions/contractorActions';
+import Select from 'react-select';
 import { isEmpty } from 'lodash';
 import './AddContractor.scss';
-
 
 const AddContractor = (props) => {
     const { show, handleClose } = props;
@@ -18,30 +18,22 @@ const AddContractor = (props) => {
 
     useEffect(() => {
         setContractor(selectedContractor);
-
-        return () => {
-            dispatch(setSelectedContractor({}));
-        }
     }, [dispatch, selectedContractor]);
 
     useEffect(() => {
-        dispatch(getContractorTypes());
-    }, [dispatch]);
-
-    const setContractorTypes = (id) => {
-        const selectedContractorType = contractorTypes?.find((contractorType) => contractorType.ID === id);
-
-        setContractor({ ...contractor, ContractorTypes: [selectedContractorType] });
-    }
+        if (isEmpty(contractorTypes))
+            dispatch(getContractorTypes());
+    }, [dispatch, contractorTypes]);
 
     const handleCreateContractor = () => {
         dispatch(createContractor(contractor))
             .then(() => {
                 dispatch(getContractors());
                 handleClose();
-            })
+            });
     }
-    console.log('Add Contractor', contractor);
+
+    console.log('Add Contractor', contractorTypes, contractor);
 
     return (
         <Modal 
@@ -102,24 +94,17 @@ const AddContractor = (props) => {
                     </Col>
 
                     <Col md={6}> 
-                        <div className='pb-4 select'>
+                        <div className='pb-4'>
                             <Form.Label className='input-label'>Contractor Type*</Form.Label>
-                            <Form.Control 
-                                as='select'
-                                multiple
-                                onChange={(e) => setContractorTypes(e.target.value)}
-                                value={contractor?.ContractorTypes?.[0]?.ID}
-                            >
-                                <option>SELECT</option>
-                                {contractorTypes?.map((contractorType, index) => (
-                                    <option 
-                                        key={index} 
-                                        value={contractorType?.ID}
-                                    >
-                                        {contractorType.Name}
-                                    </option>
-                                ))}
-                            </Form.Control>
+                            <Select 
+                                isMulti 
+                                options={
+                                    contractorTypes?.map((contractor, index) => { 
+                                        return { value: contractor.ID, label: contractor.Name }
+                                    })
+                                }
+                                onChange={(options) => setContractor({ ...contractor, ContractorTypes: options })}
+                            />
                         </div>
                         <div className='pb-4'>
                             <Form.Label className='input-label'>Contact Name</Form.Label>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContractors, getContractorTypes } from '../../actions/contractorActions';
 import { Button, Form } from 'react-bootstrap';
-import Select from 'react-select';
 import './Contractors.scss';
 
 // components
@@ -12,6 +11,7 @@ import AddContractor from '../AddContractor';
 const Contractors = () => {
     const dispatch = useDispatch();
 
+    const project = useSelector(state => state.project.project);
     const contractors = useSelector(state => state.contractor.contractors);
     const contractorTypes = useSelector(state => state.contractor.contractorTypes);
 
@@ -25,6 +25,8 @@ const Contractors = () => {
     const filterContractorsByType = (id) => {
         return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.ID === id));
     }
+
+    console.log('PROJECT', project);
 
     return (
         <div className='d-flex contractors'>
@@ -52,14 +54,28 @@ const Contractors = () => {
                                     {contractorType.Name && contractorType.Name}
                                 </Form.Label>
 
-                                <Select 
+                                <Form.Control
+                                    as='select'
+                                >
+                                    <option></option>
+                                    {filterContractorsByType(contractorType.ID)?.map((contractor, index) => (
+                                        <option 
+                                            key={index}
+                                            value={contractor.ID}
+                                        >
+                                            {contractor.CompanyName}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+
+                                {/* <Select 
                                     isMulti 
                                     options={
                                         filterContractorsByType(contractorType.ID)?.map((contractor, index) => { 
                                             return { value: contractor.ID, label: contractor.CompanyName }
                                         })
                                     }
-                                />
+                                /> */}
                             </div>
                         ))}
                     </div>
