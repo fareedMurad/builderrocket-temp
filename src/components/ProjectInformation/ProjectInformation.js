@@ -29,8 +29,6 @@ const ProjectInformation = (props) => {
     const saveChanges = () => {
         dispatch(saveProject(projectInformation));
     }
-    
-    // console.log('updatedProject', projectInformation, subdivisions);
 
     return (
         <div className='d-flex project-information'> 

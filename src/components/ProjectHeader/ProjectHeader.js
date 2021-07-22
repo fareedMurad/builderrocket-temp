@@ -1,10 +1,16 @@
-import React from 'react';
-import { Col, Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { Col, Button, Modal, Form } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectHeader.scss';
 
 const ProjectHeader = () => {
+    const dispatch = useDispatch();
+
+    const project = useSelector(state => state.project.project);
+
+    const [showModal, setShowModal] = useState(false);
 
     const statusMap = {
         1: 'Open',
@@ -12,47 +18,85 @@ const ProjectHeader = () => {
         3: 'Closed'
     }
 
-    const project = useSelector(state => state.project.project);
+    const saveNewProjectModal = () => {
+        return (
+            <Modal
+            size='lg'
+            show={showModal}
+            className='new-project-modal'
+            onHide={() => setShowModal(false)}
+        >
+            <div className='modal-container'>
+                <Form>
+                    <Form.Label className='input-label'>
+                        Project Name
+                    </Form.Label>
+                    <Form.Control
+                        className='input-gray'
+                        value={project?.ProjectName}
+                        onChange={() => {}}
+                    />
+                </Form>
+                <div className='d-flex justify-content-center mt-3'>
+                    <Button 
+                        variant='link' 
+                        className='cancel'
+                    >
+                            Cancel
+                    </Button>
+                    <Button 
+                        className='primary-gray-btn next-btn ml-3'
+                    >
+                        Add to Rooms
+                    </Button>
+                </div>
+            </div>
+        </Modal>
+        )
+    }
 
     return (
         <div className='project-header'>
             <div className='d-flex flex-wrap justify-content-around'>
-                    <div className='d-flex pt-2'>
-                        <Col>   
-                            <div className='project-image d-flex'>
-                                <img 
-                                    alt='project' 
-                                    height='119' 
-                                    width='167' 
-                                    src={project?.ThumbnailURL}
-                                />
-                            </div>
-                        </Col>
-                        <Col md={8}>
-                            <div className='text'>
-                                {project?.ProjectNumber} 
-                                <i className='fas fa-share-square ml-5 share-icon'></i>    
-                            </div>
+                <div className='d-flex pt-2'>
+                    <Col>   
+                        <div className='project-image d-flex'>
+                            <img 
+                                alt='project' 
+                                height='119' 
+                                width='167' 
+                                src={project?.ThumbnailURL}
+                            />
+                        </div>
+                    </Col>
+                    <Col md={8}>
+                        <div className='text'>
+                            {project?.ProjectNumber} 
+                            <i className='fas fa-share-square ml-5 share-icon'></i>    
+                        </div>
 
-                            <div className='pt-2 d-flex'>
-                                <div className='project-name'>{project?.ProjectName}</div>   
-                            </div>
+                        <div className='pt-2 d-flex'>
+                            <div className='project-name'>{project?.ProjectName}</div>   
+                        </div>
 
-                            <div className='d-flex'> 
-                                {project?.StreetAddress1}
-                            </div>
+                        <div className='d-flex'> 
+                            {project?.StreetAddress1}
+                        </div>
 
-                            <div className='pt-1 d-flex'>
-                                <Button 
-                                    variant='link' 
-                                    className='link-btn'
-                                >
-                                    <i className='fas fa-file-download mr-2 save-icon'></i>
-                                    Save as New Project
-                                </Button>
-                            </div>
-                        </Col>
-                    </div>
+                        <div className='pt-1 d-flex'>
+                            <Button 
+                                variant='link' 
+                                className='link-btn'
+                                onClick={() => setShowModal(true)}
+                            >
+                                <i className='fas fa-file-download mr-2 save-icon'></i>
+                                Save as New Project
+                            </Button>
+                        </div>
+                    </Col>
+                </div>
+
+                {saveNewProjectModal()}
 
                 <div>
                     <div className='bold-text pt-5'>
@@ -85,7 +129,6 @@ const ProjectHeader = () => {
                         }
                     </div>
                 </div>
-
 
                 <div>
                     <div className='d-flex pt-3 justify-content-end'>

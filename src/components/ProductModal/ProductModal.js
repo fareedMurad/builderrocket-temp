@@ -59,12 +59,11 @@ const ProductModal = (props) => {
             );
     }
 
-    console.log('product details', productDetails, product);
     return (
         <Modal 
+            size='lg'
             show={show}
             onHide={handleCloseModal}
-            size='lg'
             className='product-modal'
         >
             <div className='header-container'>
