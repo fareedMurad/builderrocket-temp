@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Col, Button, Modal, Form } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectHeader.scss';
 
 const ProjectHeader = () => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
     const project = useSelector(state => state.project.project);
 

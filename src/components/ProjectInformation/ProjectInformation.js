@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
-import { saveProject } from '../../actions/projectActions';
+import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import './ProjectInformation.scss';
 import Utils from '../../utils';
@@ -16,6 +16,7 @@ const ProjectInformation = (props) => {
     const project = useSelector(state => state.project.project);
     const subdivisions = useSelector(state => state.subdivision.subdivisions);
 
+    const [isLoading, setIsLoading] = useState(false);
     const [projectInformation, setProjectInformation] = useState(project);
 
     useEffect(() => {
@@ -27,7 +28,13 @@ const ProjectInformation = (props) => {
     }
 
     const saveChanges = () => {
-        dispatch(saveProject(projectInformation));
+        setIsLoading(true);
+
+        dispatch(saveProject(projectInformation))
+            .then(() => {
+                setIsLoading(false);
+                dispatch(setSelectedProjectTab('documents'));
+            });
     }
 
     return (
@@ -210,19 +217,28 @@ const ProjectInformation = (props) => {
                 </Form>
 
                 <div className='d-flex justify-content-center pt-5'>
-                    <Button 
-                        variant='link' 
-                        className='cancel'
-                        onClick={clearChanges}
-                    >
-                        Cancel
-                    </Button>
-                    <Button 
-                        onClick={saveChanges}
-                        className='primary-gray-btn next-btn ml-3'
-                    >
-                        Next
-                    </Button>
+                    {isLoading ? (
+                        <Spinner 
+                           animation='border'
+                           variant='primary' 
+                       />
+                    ) : (
+                        <>
+                            <Button 
+                                variant='link' 
+                                className='cancel'
+                                onClick={clearChanges}
+                            >
+                                Cancel
+                            </Button>
+                            <Button 
+                                onClick={saveChanges}
+                                className='primary-gray-btn next-btn ml-3'
+                            >
+                                Next
+                            </Button>
+                        </>
+                    )}
                 </div>
             </div>
 

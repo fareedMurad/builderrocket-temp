@@ -28,8 +28,6 @@ export const getProjects = () => dispatch => {
     .catch((error) => {
         if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
-
-        console.log('Getting Projects', error);
     })
 }
 
@@ -50,8 +48,6 @@ export const getProjectByProjectNumber = (projectNumber) => dispatch => {
     .catch((error) => {
         if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
-
-        console.log('Get Project By Number', error);
     });
 }
 
@@ -62,7 +58,6 @@ export const setSelectedProject = (selectedProject) => dispatch => {
 
             resolve(selectedProject);
         } catch (error) {
-            console.log('Error Setting Project', error);
             reject(error);
         }
     });
@@ -75,7 +70,6 @@ export const resetProject = () => dispatch => {
 
             resolve();
         } catch (error) {
-            console.log('Error Project Reset', error);
             reject(error);
         }
     });
@@ -88,7 +82,6 @@ export const setSelectedProjectTab = (tab) => dispatch => {
 
             resolve();
         } catch (error) {
-            console.log('Selected Project Tab', error);
             reject(error);
         }
     });
@@ -112,8 +105,6 @@ export const addRoomsToProject = (projectID, rooms) => dispatch => {
     .catch((error) => {
         if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
-
-        console.log('Save Rooms', error);
     });
 }
 
@@ -135,8 +126,6 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
     .catch((error) => {
         if (error.response?.status === 401) 
             dispatch({ type: LOGOUT });
-
-        console.log('Delete Rooms', error);
     });
 }
 
@@ -168,6 +157,29 @@ export const saveProject = (project) => dispatch => {
 
     return api({
         method: 'POST', 
+        url: URL, 
+        data: project
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
+}
+
+export const updateProject = (project) => dispatch => {
+    if (!project.ID) return;
+ 
+    const URL = `/Project/${project.ID}`;
+
+    return api({
+        method: 'PATCH', 
         url: URL, 
         data: project
     })
