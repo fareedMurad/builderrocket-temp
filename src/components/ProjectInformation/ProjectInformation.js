@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button, Spinner, Modal } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
 import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ const ProjectInformation = (props) => {
     const project = useSelector(state => state.project.project);
     const subdivisions = useSelector(state => state.subdivision.subdivisions);
 
+    const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [projectInformation, setProjectInformation] = useState({
         ...project, 
@@ -27,7 +28,12 @@ const ProjectInformation = (props) => {
     }, [dispatch]);
 
     const clearChanges = () => {
-        setProjectInformation(project);
+        setProjectInformation({
+            ...project, 
+            CloseDate: Utils.formatShortDateUS(project?.CloseDate)
+        });
+
+        setShowModal(false);
     }
 
     const saveChanges = () => {
@@ -44,6 +50,39 @@ const ProjectInformation = (props) => {
                 dispatch(setSelectedProjectTab('documents'));
             });
     }
+
+    const renderClearChangesModal = () => {
+        return (
+            <Modal
+                size='md'
+                centered
+                show={showModal}    
+                onHide={() => setShowModal(false)}
+            >
+                <Modal.Body>
+                    <div className='d-flex justify-content-center'>
+                        Are you sure you want to clear changes?
+                    </div>
+                    <div className='d-flex justify-content-center pt-5'>
+                        <Button 
+                            variant='link' 
+                            className='cancel'
+                            onClick={() => setShowModal(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={clearChanges}
+                            className='primary-gray-btn next-btn ml-3'
+                        >
+                            Confirm
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+        )
+    }
+
 
     return (
         <div className='d-flex project-information'> 
@@ -224,6 +263,8 @@ const ProjectInformation = (props) => {
                     </div>
                 </Form>
 
+                {renderClearChangesModal()}
+
                 <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
                         <Spinner 
@@ -235,7 +276,7 @@ const ProjectInformation = (props) => {
                             <Button 
                                 variant='link' 
                                 className='cancel'
-                                onClick={clearChanges}
+                                onClick={() => setShowModal(true)}
                             >
                                 Cancel
                             </Button>
