@@ -82,10 +82,12 @@
 .new-project-modal {
 
     .modal-container {
-        padding: 1.5rem 3rem;
+        .page-title {
+            padding: 0;
+        }
 
         form {
-            padding-bottom: 1rem;
+            padding: 1rem 1.5rem;
         }
     }
 }

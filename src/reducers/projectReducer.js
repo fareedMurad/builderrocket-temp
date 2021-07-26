@@ -67,7 +67,7 @@ const projectReducer = (state = intialState, action) => {
         case RESET_PROJECT: {
             return {
                 ...state, 
-                project: {}
+                project: intialState.project
             }
         }
         case SET_SELECTED_PROJECT_TAB: {

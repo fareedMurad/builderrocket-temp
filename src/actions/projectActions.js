@@ -10,7 +10,10 @@ import {
     LOGOUT
 } from './types';
 
-
+/**
+ * Get users projects
+ * 
+ */
 export const getProjects = () => dispatch => {
     const URL = '/Project';
 
@@ -31,6 +34,11 @@ export const getProjects = () => dispatch => {
     })
 }
 
+/**
+ * Get project by project number  
+ * @param {*} projectNumber 
+ *
+ */
 export const getProjectByProjectNumber = (projectNumber) => dispatch => {
     const URL = `/Project/${projectNumber}`;
 
@@ -63,6 +71,10 @@ export const setSelectedProject = (selectedProject) => dispatch => {
     });
 }
 
+/**
+ * 
+ * Resets project to intial state
+ */
 export const resetProject = () => dispatch => {
     return new Promise((resolve, reject) => {
         try {
@@ -75,6 +87,10 @@ export const resetProject = () => dispatch => {
     });
 }
 
+/**
+ * Sets selected project tab 
+ * @param {*} tab  
+ */
 export const setSelectedProjectTab = (tab) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
@@ -87,6 +103,11 @@ export const setSelectedProjectTab = (tab) => dispatch => {
     });
 }
 
+/**
+ * Adds rooms to selected project
+ * @param {*} projectID 
+ * @param {*} rooms 
+ */
 export const addRoomsToProject = (projectID, rooms) => dispatch => {
     const URL = `/Project/${projectID}/AddRooms`;
 
@@ -108,6 +129,11 @@ export const addRoomsToProject = (projectID, rooms) => dispatch => {
     });
 }
 
+/**
+ * Deletes rooms from a selected project
+ * @param {*} projectID 
+ * @param {*} rooms 
+ */
 export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
     const URL = `/Project/${projectID}/RemoveRooms`;
 
@@ -150,6 +176,11 @@ export const handleProductForProject = (product) => dispatch => {
     });
 }
 
+/**
+ * Save / Update existing project
+ * @param project - project object contaning ID
+ * 
+ */
 export const saveProject = (project) => dispatch => {
     if (!project.ID) return;
  
@@ -182,6 +213,34 @@ export const updateProject = (project) => dispatch => {
         method: 'PATCH', 
         url: URL, 
         data: project
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
+}
+
+/**
+*   Create a copy of project 
+* @param projectID - ID of project to copy
+* @param projectName - Key value pair object of project name { projectName: 'NAME' }
+*/
+export const copyProject = (projectID, projectName) => dispatch => {
+    if (!projectID) return;
+
+    const URL = `/Project/${projectID}/Copy`;
+
+    return api({
+        method: 'POST',
+        url: URL, 
+        data: projectName
     })
     .then((response) => {
         if (response?.status === 200) {
