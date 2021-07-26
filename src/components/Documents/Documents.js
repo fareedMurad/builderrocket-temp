@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { addDocument, getDocumentTypes, deleteDocument } from '../../actions/documentActions';
-import { getProjectByProjectNumber, saveProject } from '../../actions/projectActions';
+import { getProjectByProjectNumber, saveProject, setSelectedProjectTab } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import Utils from '../../utils';
 import './Documents.scss';
 
@@ -16,7 +16,12 @@ const Documents = () => {
     const project = useSelector(state => state.project.project);
     const documentTypes = useSelector(state => state.document.documentTypes);
 
-    const [documentsInfo, setDocumentsInfo] = useState(project);
+    const [isLoading, setIsLoading] = useState(false);
+    const [documentsInfo, setDocumentsInfo] = useState({ 
+        ...project, 
+        OccupencyDate: Utils.formatShortDateUS(project?.OccupencyDate),
+        PermitDate: Utils.formatShortDateUS(project?.PermitDate)
+    });
 
     useEffect(() => {
         dispatch(getDocumentTypes());
@@ -54,10 +59,21 @@ const Documents = () => {
     }
 
     const saveChanges = () => {
-        dispatch(saveProject(documentsInfo));
+        setIsLoading(true);
+
+        const documentsInfoFinal = {
+            ...documentsInfo,
+            PermitDate: Utils.formatDate(documentsInfo.PermitDate),
+            OccupencyDate: Utils.formatDate(documentsInfo.OccupencyDate)
+        };
+
+        dispatch(saveProject(documentsInfoFinal))
+            .then(() => {
+                setIsLoading(false);
+                dispatch(setSelectedProjectTab('utilities'));
+            });
     }
 
-    // console.log('project', project, documentTypes);
     return (
         <div className='d-flex documents'>
             <div className='documents-container'>
@@ -113,7 +129,7 @@ const Documents = () => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                value={Utils.formatShortDateUS(documentsInfo?.OccupencyDate)}
+                                value={documentsInfo?.OccupencyDate}
                                 onChange={(event) => setDocumentsInfo({
                                     ...documentsInfo,
                                     OccupencyDate: event.target.value
@@ -127,7 +143,7 @@ const Documents = () => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                value={Utils.formatShortDateUS(documentsInfo?.PermitDate)}
+                                value={documentsInfo?.PermitDate}
                                 onChange={(event) => setDocumentsInfo({
                                     ...documentsInfo,
                                     PermitDate: event.target.value
@@ -227,19 +243,28 @@ const Documents = () => {
                 </Form>
 
                 <div className='d-flex justify-content-center pt-5'>
-                    <Button 
-                        variant='link' 
-                        className='cancel'
-                        onClick={clearChanges}
-                    >
-                        Cancel
-                    </Button>
-                    <Button 
-                        className='primary-gray-btn next-btn ml-3'
-                        onClick={saveChanges}
-                    >
-                        Next
-                    </Button>
+                    {isLoading ? (
+                        <Spinner 
+                           animation='border'
+                           variant='primary' 
+                       />
+                    ) : (
+                        <>
+                            <Button 
+                                variant='link' 
+                                className='cancel'
+                                onClick={clearChanges}
+                            >
+                                Cancel
+                            </Button>
+                            <Button 
+                                className='primary-gray-btn next-btn ml-3'
+                                onClick={saveChanges}
+                            >
+                                Next
+                            </Button>
+                        </>
+                    )}
                 </div>
             </div>
 

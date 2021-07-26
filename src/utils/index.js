@@ -16,11 +16,19 @@ const formatDateDashes = (dateString) => {
     return formatted;
 }
 
+const formatDate = (dateString) => {
+    if (!dateString) return;
 
+    const date = new Date(dateString);
+    const formatted = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+
+    return formatted;
+}
 
 const Utils = {
     formatShortDateUS,
-    formatDateDashes
+    formatDateDashes,
+    formatDate
 }
 
 export default Utils;

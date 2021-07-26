@@ -17,7 +17,10 @@ const ProjectInformation = (props) => {
     const subdivisions = useSelector(state => state.subdivision.subdivisions);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [projectInformation, setProjectInformation] = useState(project);
+    const [projectInformation, setProjectInformation] = useState({
+        ...project, 
+        CloseDate: Utils.formatShortDateUS(project?.CloseDate)
+    });
 
     useEffect(() => {
         dispatch(getSubdivisions());
@@ -30,7 +33,12 @@ const ProjectInformation = (props) => {
     const saveChanges = () => {
         setIsLoading(true);
 
-        dispatch(saveProject(projectInformation))
+        const projectInformationFinal = {
+            ...projectInformation,
+            CloseDate: Utils.formatDate(project?.CloseDate)
+        };
+
+        dispatch(saveProject(projectInformationFinal))
             .then(() => {
                 setIsLoading(false);
                 dispatch(setSelectedProjectTab('documents'));
@@ -204,7 +212,7 @@ const ProjectInformation = (props) => {
                             </Form.Label>
                             <Form.Control
                                 className='input-gray'
-                                value={Utils.formatDateDashes(projectInformation?.CloseDate)}
+                                value={projectInformation?.CloseDate}
                                 onChange={(event) => setProjectInformation({
                                     ...projectInformation,
                                     CloseDate: event.target.value
