@@ -21,7 +21,7 @@ const Routes = (props) => {
 
     const Loading = () => {
         return (
-            <div className='d-flex justify-content-center mt-5 pt-5'>
+            <div style={{ marginTop: '15rem' }} className='d-flex justify-content-center'>
                 <Spinner 
                     animation='border'
                     variant='primary' 

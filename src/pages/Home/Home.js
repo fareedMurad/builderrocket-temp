@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Container, Form, FormControl } from 'react-bootstrap';
+import { Button, Container, Form, FormControl, Spinner } from 'react-bootstrap';
 import { getProjects, resetProject } from '../../actions/projectActions.js';
 import { getUserProfile } from '../../actions/userActions.js';
 import { Link } from 'react-router-dom';
@@ -19,12 +19,20 @@ const Home = (props) => {
     const projects = useSelector(state => state.project.projects);
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [filteredProjects, setFilteredProjects] = useState(projects);
     const [projectsStatus, setProjectsStatus] = useState('Active');
     
     useEffect(() => {
         if (isSignedIn) {
-            dispatch(getProjects());
+            setIsLoading(true);
+            
+            dispatch(getProjects())
+                .then(() => {
+                    setIsLoading(false);
+                })
+                .catch(() => setIsLoading(false));
+
             dispatch(getUserProfile());
         }
 
@@ -105,22 +113,30 @@ const Home = (props) => {
                     </div>
                 </div>
 
-                <div className='d-flex justify-content-between cards-container'>
-                    <div className='d-flex flex-wrap cards'>
-                        {filterProjects()?.map((project, index) => (
-                            <ProjectCard 
-                                key={index} 
-                                project={project} 
-                                history={history} 
-                            />
-                        ))}
+                {!isLoading && (
+                    <div className='d-flex justify-content-between cards-container'>
+                            <div className='d-flex flex-wrap cards'>
+                                {filterProjects()?.map((project, index) => (
+                                    <ProjectCard 
+                                        key={index} 
+                                        project={project} 
+                                        history={history} 
+                                    />
+                                ))}
+                            </div>
+                            <MarketingBlock />
                     </div>
-                    
-                    <div className='d-flex'>
-                        <MarketingBlock />
-                    </div>
-                </div>
+                )}
             </Container>
+            
+            {isLoading && (
+                <div className='spinner d-flex justify-content-center'>
+                    <Spinner 
+                        animation='border'
+                        variant='primary' 
+                    />
+                </div>
+            )}
         </div>
     );
 }
