@@ -31,7 +31,7 @@
     }
 
     .files-container {
-        padding-left: .5rem;
+        padding-left: .35rem;
         padding-right: .5rem;
         width: 100%;
         min-height: 28px;
@@ -39,6 +39,15 @@
         border-radius: 2px;
         background-color: $lightgray;
         border: none;
+
+        .file-input {
+            padding: .15rem 0;
+            width: 75%;
+
+            .form-control {
+                height: 28px;
+            }
+        }
     }
 
     .upload-btn {

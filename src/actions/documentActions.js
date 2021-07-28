@@ -1,6 +1,10 @@
 import api from '../api';
 import { GET_DOCUMENT_TYPES } from './types';
 
+/**
+ * Get document types
+ * 
+ */
 export const getDocumentTypes = () => dispatch => {    
     const URL = '/DocumentType';
 
@@ -20,6 +24,12 @@ export const getDocumentTypes = () => dispatch => {
     });
 }
 
+/**
+ * Add document to project
+ * @param {*} projectID - Selected project ID
+ * @param {*} document - document data
+ *  
+ */
 export const addDocument = (projectID, document) => dispatch => {    
     const URL = `/Project/${projectID}/document`;
 
@@ -40,6 +50,11 @@ export const addDocument = (projectID, document) => dispatch => {
     });
 }
 
+/**
+ * Delete document by document ID
+ * @param {*} documentID 
+ * 
+ */
 export const deleteDocument = (documentID) => dispatch => {    
     const URL = `/Document/${documentID}`;
 
@@ -50,6 +65,32 @@ export const deleteDocument = (documentID) => dispatch => {
     .then((response) => {
         if (response?.status === 200) {
             console.log('Deleted Document', response);
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+
+    });
+}
+
+/**
+ * 
+ * @param {*} documentID - ID of selected document  
+ * @param {*} documentNameObj - Object of document name { userFileName: 'NEW NAME' }
+ *  
+ */
+export const renameDocument = (documentID, documentNameObj) => dispatch => {    
+    const URL = `/Document/${documentID}`;
+
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data: documentNameObj
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            console.log('Document Name Updated', response);
 
             return response.data;
         }

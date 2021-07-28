@@ -18,6 +18,7 @@ const Documents = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [selectedInput, setSelectedInput] = useState();
     const [documentsInfo, setDocumentsInfo] = useState({ 
         ...project, 
         OccupencyDate: Utils.formatShortDateUS(project?.OccupencyDate),
@@ -29,6 +30,7 @@ const Documents = () => {
     }, [dispatch])
 
     const onFileChange = (documentTypeID, event) => {
+        // Save new file / document
         const formData = new FormData();
 
         formData.append('DocumentTypeID', documentTypeID);
@@ -41,14 +43,17 @@ const Documents = () => {
     }
 
     const findDocumentType = (id) => {
+        // return document type to use for label
         return documentTypes?.find((documentType) => documentType?.ID === id);
     }
 
     const findDocumentTypeFiles = (id) => {
+        // return document list based on type
         return project?.Documents?.filter((document) => document?.DocumentTypeID === id);
     }
 
     const handleDocumentDelete = (documentID) => {
+        // delete document by document ID then refresh project
         dispatch(deleteDocument(documentID))
             .then(() => {
                 dispatch(getProjectByProjectNumber(project.ProjectNumber));
@@ -122,11 +127,13 @@ const Documents = () => {
                     <div className='d-flex flex-wrap documents-form'>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                label={findDocumentType(1)?.Name} 
-                                onFileChange={(event) => onFileChange(1, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(1)}
                                 short 
+                                label={findDocumentType(1)?.Name} 
+                                files={findDocumentTypeFiles(1)}
+                                selectedInput={selectedInput}
+                                setSelectedInput={setSelectedInput}
+                                handleDocumentDelete={handleDocumentDelete}
+                                onFileChange={(event) => onFileChange(1, event)}
                             />
                         </div>
                         <div className='form-col pb-2'>
@@ -145,20 +152,24 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                label={findDocumentType(2)?.Name}     
-                                onFileChange={(event) => onFileChange(2, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(2)}
                                 short 
+                                label={findDocumentType(2)?.Name}     
+                                files={findDocumentTypeFiles(2)}
+                                selectedInput={selectedInput}
+                                setSelectedInput={setSelectedInput}
+                                handleDocumentDelete={handleDocumentDelete}
+                                onFileChange={(event) => onFileChange(2, event)}
                             />
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                label={findDocumentType(7)?.Name}     
-                                onFileChange={(event) => onFileChange(7, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(7)}
                                 short 
+                                label={findDocumentType(7)?.Name}     
+                                files={findDocumentTypeFiles(7)}
+                                selectedInput={selectedInput}
+                                setSelectedInput={setSelectedInput}
+                                handleDocumentDelete={handleDocumentDelete}
+                                onFileChange={(event) => onFileChange(7, event)}
                             />
                         </div>
                         <div className='form-col pb-2'>
@@ -204,11 +215,13 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                label={findDocumentType(3)?.Name}     
-                                onFileChange={(event) => onFileChange(3, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(3)}
                                 short 
+                                files={findDocumentTypeFiles(3)}
+                                label={findDocumentType(3)?.Name}     
+                                selectedInput={selectedInput}
+                                setSelectedInput={setSelectedInput}
+                                handleDocumentDelete={handleDocumentDelete}
+                                onFileChange={(event) => onFileChange(3, event)}
                             />
                         </div>
                         <div className='form-col pb-2'>
@@ -238,11 +251,13 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                label={findDocumentType(9)?.Name}     
-                                onFileChange={(event) => onFileChange(9, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(9)}
                                 short 
+                                files={findDocumentTypeFiles(9)}
+                                label={findDocumentType(9)?.Name}     
+                                selectedInput={selectedInput}
+                                setSelectedInput={setSelectedInput}
+                                handleDocumentDelete={handleDocumentDelete}
+                                onFileChange={(event) => onFileChange(9, event)}
                             />
                         </div>
                         <div className='form-col pb-2'>
@@ -271,11 +286,13 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                label={findDocumentType(4)?.Name}    
-                                onFileChange={(event) => onFileChange(4, event)}
-                                handleDocumentDelete={handleDocumentDelete}
-                                files={findDocumentTypeFiles(4)} 
                                 short 
+                                files={findDocumentTypeFiles(4)} 
+                                label={findDocumentType(4)?.Name}    
+                                selectedInput={selectedInput}
+                                setSelectedInput={setSelectedInput}
+                                handleDocumentDelete={handleDocumentDelete}
+                                onFileChange={(event) => onFileChange(4, event)}
                             />
                         </div>
                     </div>
