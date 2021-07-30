@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { renameDocument } from '../../actions/documentActions';
 import { getProjectByProjectNumber } from '../../actions/projectActions';
@@ -21,26 +21,41 @@ const FileUpload = (props) => {
 
     const project = useSelector(state => state.project.project);
 
-    const [newDocumentName, setNewDocumentName] = useState('');
+    const [newFileName, setNewFileName] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const browse = () => {
         // clicks file upload input through button
         inputFile.current.click();
     }
 
-    const updateDocumentName = (fileID) => {
-        dispatch(renameDocument())
-            .then(() => {
-                dispatch(getProjectByProjectNumber(project.ProjectNumber));
-            })
+    const updateFileName = (fileID) => {
+        if (!fileID) return;
+
+        setIsLoading(true);
+
+        const fileNameObj = {
+            userFileName: newFileName
+        }
+
+        dispatch(renameDocument(fileID, fileNameObj))
+            .then(() => clearInput())
+            .then(() => dispatch(getProjectByProjectNumber(project.ProjectNumber)))
+            .then(() => setIsLoading(false));
     }
 
     const clearInput = () => {
+        setNewFileName('');
+        
         setSelectedInput();
-        setNewDocumentName('');
     }
 
-    console.log('input list', selectedInput);
+    const handleShowInput = (fileID) => {
+        setNewFileName('');
+
+        setSelectedInput(fileID);
+    }
+
 
     return (
         <div className='file-upload'>
@@ -78,12 +93,16 @@ const FileUpload = (props) => {
                             className='d-flex justify-content-between file'
                         >
                             {selectedInput === file?.ID ? (
-                                <div className='file-input'>
-                                    <Form.Control 
-                                        value={newDocumentName}
-                                        onChange={(event) => setNewDocumentName(event.target.value)}
-                                    />
-                                </div>
+                                <>
+                                    {!isLoading && (
+                                    <div className='file-input'>
+                                        <Form.Control 
+                                            value={newFileName}
+                                            onChange={(event) => setNewFileName(event.target.value)}
+                                        />
+                                    </div>
+                                    )}
+                                </>
                             ) : (
                                 <div className='file-name'>
                                     <a 
@@ -98,27 +117,44 @@ const FileUpload = (props) => {
 
                             {selectedInput === file?.ID ? (
                                 <>
-                                    <div className='icon-container'></div>
-                                    <div className='icon-container'><i className='fa fa-check'></i></div>
-                                    <div 
-                                        className='icon-container'
-                                        onClick={clearInput}
-                                    >
-                                        <i className='fa fa-times'></i>
-                                    </div>
+                                    {isLoading ? (
+                                        <div className='icon-container'>
+                                            <Spinner 
+                                                size='sm' 
+                                                variant='primary'
+                                                animation='border' 
+                                            />
+                                        </div>
+                                    ) : (
+                                    <>
+                                        <div className='icon-container'></div>
+                                        <div 
+                                            className='icon-container'
+                                            onClick={() => updateFileName(file?.ID)}
+                                        >
+                                            <i className='fa fa-check'></i>
+                                        </div>
+                                        <div 
+                                            className='icon-container'
+                                            onClick={clearInput}
+                                        >
+                                            <i className='fa fa-times'></i>
+                                        </div>
+                                    </>
+                                    )}
                                 </>
                             ) : (
-                            <>
-                                <div 
-                                    className='icon-container'
-                                    onClick={() => setSelectedInput(file?.ID)}
-                                >
-                                    <i className='far fa-pencil-alt'></i>
-                                </div>
-                                <div className='icon-container'><i className='fa fa-share-square'></i></div>
-                                <div className='icon-container'>
-                                    <i onClick={() => handleDocumentDelete(file?.ID)} className='far fa-trash-alt'></i>
-                                </div>
+                                <>
+                                    <div 
+                                        className='icon-container'
+                                        onClick={() => handleShowInput(file?.ID)}
+                                    >
+                                        <i className='far fa-pencil-alt'></i>
+                                    </div>
+                                    <div className='icon-container'><i className='fa fa-share-square'></i></div>
+                                    <div className='icon-container'>
+                                        <i onClick={() => handleDocumentDelete(file?.ID)} className='far fa-trash-alt'></i>
+                                    </div>
                                 </>
                             )}
                         </div>
