@@ -19,7 +19,7 @@ const AddProduct = (props) => {
     const productCategories = useSelector(state => state.product.productCategories);
 
     // const [searchTerm, setSearchTerm] = useState('');
-    const [showModal, setShowModal] = useState(true);
+    const [showModal, setShowModal] = useState(false);
 
     console.log('Product', products, props);
 
