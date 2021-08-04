@@ -28,6 +28,7 @@ const Utilities = () => {
     }, [dispatch]);
 
     const filterUtilitiesByType = (id) => {
+        // filter utilities by utility type
         return utilities?.filter((utility) => utility.UtilityTypeID === id);
     }
 
@@ -138,12 +139,12 @@ const Utilities = () => {
                 clearChanges={clearChanges}
             />
 
-            {showUtilityModal && 
+            {showUtilityModal && (
                 <AddUtility 
                     show={showUtilityModal} 
                     handleClose={() => setShowUtilityModal(false)} 
                 />
-            }
+            )}
         </div>
     );
 }

@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setSelectedProjectTab } from '../../actions/projectActions';
 import './Project.scss';
 
 // components
 import ProjectHeader from '../../components/ProjectHeader';
 import ProjectTabs from '../../components/ProjectTabs';
 
-const Project = () => {
+const Project = () => { 
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        return () => {
+            dispatch(setSelectedProjectTab('projectInformation'));
+        }
+    });
 
     return (
         <>
