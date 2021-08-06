@@ -11,6 +11,7 @@ const Project = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        // reset selected tab when leaving page
         return () => {
             dispatch(setSelectedProjectTab('projectInformation'));
         }

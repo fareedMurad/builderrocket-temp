@@ -19,8 +19,8 @@ const Contractors = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [contractorInfo, setContratorInfo] = useState(project);
     const [showContractorModal, setShowContractorModal] = useState(false);
+    const [contractorsInfo, setContractorsInfo] = useState(project.Contractors);
 
     useEffect(() => {
         dispatch(getContractors());
@@ -33,27 +33,43 @@ const Contractors = () => {
     }
 
     const handleContractor = (id, contractorTypeID) => {
-        if (!id || !contractorTypeID) return;
+        if (!contractorTypeID) return;
 
-        const contractorID = parseInt(id);
-        const contractorsMap = contractorInfo.Contractors;
-        const selectedContractor = contractors.find(contractor => contractor.ID === contractorID);
+        let contractorID;
+        let newContractorsMap;
+        let selectedContractor;
+
+        if (id) {
+            contractorID = parseInt(id);
+            selectedContractor = contractors.find(contractor => contractor.ID === contractorID);
         
-        // update the selected contractor type with selected contractor
-        contractorsMap[contractorTypeID] = { 
-            ContractorID: contractorID, 
-            ContractorTypeID: contractorTypeID, 
-            CompanyName: selectedContractor.CompanyName,
-            PhoneNumber: selectedContractor.PhoneNumber,
-            EmailAddress: selectedContractor.EmailAddress
-        };
+            // update the selected contractor type with selected contractor
+            newContractorsMap = {
+                ...contractorsInfo,
+                [contractorTypeID]: { 
+                    ContractorID: contractorID, 
+                    ContractorTypeID: contractorTypeID, 
+                    CompanyName: selectedContractor?.CompanyName,
+                    PhoneNumber: selectedContractor?.PhoneNumber,
+                    EmailAddress: selectedContractor?.EmailAddress
+                }
+            }
+        } else {
+            newContractorsMap = {
+                ...contractorsInfo,
+                [contractorTypeID] : {
+                    ContractorID: null,
+                    ContractorTypeID: contractorTypeID
+                }
+            }
+        }
         
         // update project component state with updated contractor map
-        setContratorInfo({ ...contractorInfo, Contractors: contractorsMap });
+        setContractorsInfo({ ...newContractorsMap });
     }
 
     const clearChanges = () => {
-        setContratorInfo(project);
+        setContractorsInfo({ ...project.Contractors });
 
         setShowModal(false);
     }
@@ -62,7 +78,7 @@ const Contractors = () => {
         // Save changes and navigate to Drawings tab
         setIsLoading(true); 
 
-        dispatch(saveProject(contractorInfo))
+        dispatch(saveProject({ ...project, Contractors: contractorsInfo }))
             .then(() => {
                 setIsLoading(false);
                 dispatch(setSelectedProjectTab('drawings'));
@@ -100,7 +116,7 @@ const Contractors = () => {
 
                                 <Form.Control
                                     as='select'
-                                    value={contractorInfo?.Contractors?.[contractorType?.ID]?.ContractorID}
+                                    value={contractorsInfo?.[contractorType?.ID]?.ContractorID ? contractorsInfo?.[contractorType?.ID]?.ContractorID : ''}
                                     onChange={(event) => handleContractor(event.target.value, contractorType.ID)}
                                 >
                                     <option value=''>SELECT</option>
@@ -109,26 +125,32 @@ const Contractors = () => {
                                             key={index}
                                             value={contractor.ID}
                                         >
-                                            {contractor.CompanyName}
+                                            {contractor.CompanyName} 
+                                            {contractor.FirstName && (
+                                                ` - ${contractor.FirstName}`
+                                            )}
+                                            {contractor.LastName && (
+                                                ` ${contractor.LastName}`
+                                            )}
                                         </option>
                                     ))}
                                 </Form.Control>
                                     
-                                {contractorInfo?.Contractors?.[contractorType?.ID]?.ContractorID && (
-                                    <div className='pt-1 pl-1'>
-                                        {contractorInfo?.Contractors?.[contractorType?.ID]?.PhoneNumber && (
-                                            <div>
+                                {contractorsInfo?.[contractorType?.ID]?.ContractorID && (
+                                    <div className='d-flex pt-1 pl-1'>
+                                        {contractorsInfo?.[contractorType?.ID]?.PhoneNumber && (
+                                            <div className='pr-3'>
                                                 <i className='fas fa-phone mr-2'></i> 
-                                                <a href={`tel:+1${contractorInfo?.Contractors?.[contractorType?.ID]?.PhoneNumber}`}>
-                                                    {contractorInfo?.Contractors?.[contractorType?.ID]?.PhoneNumber}
+                                                <a href={`tel:+1${contractorsInfo?.[contractorType?.ID]?.PhoneNumber}`}>
+                                                    {contractorsInfo?.[contractorType?.ID]?.PhoneNumber}
                                                 </a>  
                                             </div>
                                         )}
-                                        {contractorInfo?.Contractors?.[contractorType?.ID]?.EmailAddress && (
+                                        {contractorsInfo?.[contractorType?.ID]?.EmailAddress && (
                                             <div>
                                                 <i className='fas fa-envelope mr-2'></i> 
-                                                <a href={`mailto:${contractorInfo?.Contractors?.[contractorType?.ID]?.EmailAddress}`}> 
-                                                    {contractorInfo?.Contractors?.[contractorType?.ID]?.EmailAddress}
+                                                <a href={`mailto:${contractorsInfo?.[contractorType?.ID]?.EmailAddress}`}> 
+                                                    {contractorsInfo?.[contractorType?.ID]?.EmailAddress}
                                                 </a>
                                             </div>
                                         )}

@@ -272,7 +272,7 @@ const Documents = () => {
                 <ClearChangesModal 
                     show={showModal}
                     setShow={setShowModal}
-                    clearChanges={clearChanges} 
+                    clearChanges={clearChanges}
                 />
 
                 <div className='d-flex justify-content-center pt-5'>

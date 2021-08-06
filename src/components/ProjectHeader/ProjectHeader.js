@@ -119,7 +119,7 @@ const ProjectHeader = () => {
                             {project?.StreetAddress1}
                         </div>
 
-                        <div className='pt-1 d-flex'>
+                        <div className='mt-1 d-flex'>
                             <Button 
                                 variant='link' 
                                 className='link-btn'
