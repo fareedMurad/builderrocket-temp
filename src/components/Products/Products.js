@@ -162,11 +162,16 @@ const Products = (props) => {
             </Modal>
         )
     }
+
+    const showProducts = () => {
+        dispatch(setProduct({}))
+            .then(setIsAddProducts(true));
+    }
     console.log('Project', project, selectedRoom);       
 
     return (
         <div className='d-flex products'>
-            {!isAddProducts ?
+            {!isAddProducts ? (
                 <div className='products-container'>
                     <div className='d-flex justify-content-between'>
                         <div>
@@ -217,6 +222,7 @@ const Products = (props) => {
                                 <Button 
                                     variant='link' 
                                     className='link-btn'
+                                    onClick={showProducts}
                                 >
                                     + Add Products
                                 </Button>
@@ -371,9 +377,9 @@ const Products = (props) => {
                         </Table>
                     </div>
                 </div>
-            :
+            ) : (
                 <AddProduct handleShow={setIsAddProducts} />
-            }
+            )}
         </div>
     );
 }

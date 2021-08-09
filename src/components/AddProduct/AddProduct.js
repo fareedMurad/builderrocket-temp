@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-// import { handleProductForProject } from '../../actions/projectActions';
-import { getCategories, searchProducts, setProductDetails, setSelectedCategoryID } from '../../actions/productActions';
+import { handleProductForProject } from '../../actions/projectActions';
+import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
 import './AddProduct.scss';
 
 // components 
@@ -15,22 +15,18 @@ const AddProduct = (props) => {
 
     const product = useSelector(state => state.product.product);
     const products = useSelector(state => state.product.products);
-    // const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productCategories = useSelector(state => state.product.productCategories);
 
-    // const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
 
-    console.log('Product', products, props);
-
     useEffect(() => {
-        if (product)
+        if (product.CategoryID) {
             dispatch(getCategories(product?.CategoryID));
-    }, [dispatch, product]);
-
-    useEffect(() => {
-        if (product)
             dispatch(searchProducts(product?.CategoryID));
+        } else {
+            dispatch(searchProducts());
+        }
     }, [dispatch, product]);
 
     const onProductCategoryChange = (productCategoryID) => {
@@ -64,12 +60,20 @@ const AddProduct = (props) => {
         dispatch(searchProducts(product?.CategoryID, searchObject));
     }
 
-    const addProduct = (product) => {
-        if (!product) return;
+    const addProduct = (productID) => {
+        if (!productID || !selectedRoom.ID) return;
 
-        dispatch(setProductDetails(product))
+        const newProduct = {
+            ...product, 
+            ProductID: productID,
+            ProjectRoomID: selectedRoom.ID
+        }
+
+        delete newProduct.CategoryID
+        console.log('ADDING', productID, newProduct);
+        dispatch(handleProductForProject([newProduct]))
             .then(
-                setShowModal(true)
+                handleShow(false)
             );
     }
 
@@ -133,7 +137,10 @@ const AddProduct = (props) => {
             <div className='add-products-body d-flex'>
                 <div className='checkbox-filter'>
                     {products?.CustomFilters && Object.keys(products?.CustomFilters)?.map((filter, index) => (
-                        <div key={index} className='mt-3 mb-5'>
+                        <div 
+                            key={index} 
+                            className='mt-3 mb-5'
+                        >
                             <div className='bold-text mb-3'>{filter}</div>
 
                             {products?.CustomFilters?.[filter]?.map((filterChild, childIndex) => (
@@ -194,12 +201,12 @@ const AddProduct = (props) => {
                                         <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                     </td>
                                     <td>
-                                        <button 
+                                        <Button
                                             className='add-product-btn'
-                                            onClick={() => addProduct(product)}
+                                            onClick={() => addProduct(product?.ID)}
                                         >
                                             Add
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}
