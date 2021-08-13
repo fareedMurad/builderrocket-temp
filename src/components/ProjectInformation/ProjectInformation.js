@@ -7,8 +7,9 @@ import './ProjectInformation.scss';
 import Utils from '../../utils';
 
 // components
-import MarketingBlock from '../MarketingBlock';
 import FileUpload from '../FileUpload';
+import CustomerModal from '../CustomerModal';
+import MarketingBlock from '../MarketingBlock';
 import ClearChangesModal from '../ClearChangesModal';
 
 const ProjectInformation = (props) => {
@@ -19,6 +20,7 @@ const ProjectInformation = (props) => {
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [showCustomerModal, setShowCustomerModal] = useState(false);
     const [projectInformation, setProjectInformation] = useState({
         ...project, 
         CloseDate: Utils.formatShortDateUS(project?.CloseDate)
@@ -37,6 +39,10 @@ const ProjectInformation = (props) => {
         setShowModal(false);
     }
 
+    const handleShowCustomerModal = (bool) => {
+        setShowCustomerModal(bool);
+    }
+
     const saveChanges = () => {
         setIsLoading(true);
 
@@ -52,6 +58,10 @@ const ProjectInformation = (props) => {
                 dispatch(setSelectedProjectTab('documents'));
             });
     }
+
+    const customerFullName = `${project?.Customers?.[0]?.FirstName} ${project?.Customers?.[0]?.LastName}`;
+
+    console.log('customer', customerFullName);
 
     return (
         <div className='d-flex project-information'> 
@@ -84,16 +94,20 @@ const ProjectInformation = (props) => {
                                 Customer Name
                             </Form.Label>
                             <Form.Control
+                                readOnly
                                 className='input-gray'
-                                defaultValue={projectInformation?.Customers?.[0]?.FirstName}
+                                value={customerFullName}
+                                onClick={() => setShowCustomerModal(true)}
                             />
                         </div>
                         <div className='form-col pb-4'>
                             <Form.Label className='input-label'>Customer Email</Form.Label>
                             <Form.Control
+                                readOnly
                                 type='email'
                                 className='input-gray'
-                                defaultValue={projectInformation?.Customers?.[0]?.Email}
+                                onClick={() => setShowCustomerModal(true)}
+                                value={project?.Customers?.[0]?.Email}
                             />
                         </div>
                         <div className='form-col pb-4'>
@@ -236,6 +250,11 @@ const ProjectInformation = (props) => {
                     show={showModal}
                     setShow={setShowModal}
                     clearChanges={clearChanges}
+                />
+
+                <CustomerModal 
+                    show={showCustomerModal}
+                    setShow={handleShowCustomerModal}
                 />
 
                 <div className='d-flex justify-content-center pt-5'>

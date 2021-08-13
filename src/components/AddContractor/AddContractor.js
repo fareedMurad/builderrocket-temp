@@ -6,9 +6,7 @@ import Select from 'react-select';
 import { isEmpty } from 'lodash';
 import './AddContractor.scss';
 
-const AddContractor = (props) => {
-    const { show, handleClose } = props;
-
+const AddContractor = ({ show, handleClose }) => {
     const dispatch = useDispatch();
 
     const selectedContractor = useSelector(state => state.contractor.contractor);
@@ -26,6 +24,8 @@ const AddContractor = (props) => {
     }, [dispatch, contractorTypes]);
 
     const handleCreateContractor = () => {
+        if (!contractor.CompanyName || isEmpty(contractor?.ContractorTypes)) return;
+
         dispatch(createContractor(contractor))
             .then(() => {
                 dispatch(getContractors());
@@ -33,15 +33,13 @@ const AddContractor = (props) => {
             });
     }
 
-    console.log('Add Contractor', contractorTypes, contractor);
-
     return (
         <Modal 
+            size='xl'
+            centered
             show={show} 
             onHide={handleClose}
-            centered
             className='add-contractor'
-            size='xl'
         >
             <Modal.Body>
                 <div className='page-title ml-2'>Add Contractor</div>
@@ -138,19 +136,18 @@ const AddContractor = (props) => {
                 
                 <div className='d-flex justify-content-center pt-5'>
                     <Button 
-                        onClick={handleClose} 
                         variant='link' 
                         className='cancel'
+                        onClick={handleClose} 
                     >
                         Cancel
                     </Button>
-                    <button 
-                        className='primary-gray-btn next-btn ml-3'
-                        disabled={!contractor.CompanyName || isEmpty(contractor?.ContractorTypes)}
+                    <Button
                         onClick={handleCreateContractor}
+                        className='primary-gray-btn next-btn ml-3'
                     >
                         Save
-                    </button>
+                    </Button>
                 </div>
             </Modal.Body>
         </Modal>

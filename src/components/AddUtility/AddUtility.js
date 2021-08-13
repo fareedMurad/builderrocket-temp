@@ -27,6 +27,8 @@ const AddUtility = (props) => {
     }, [dispatch]);
 
     const handleCreateUtility = () => {
+        if (!utility.CompanyName || !utility.UtilityTypeID) return;
+
         dispatch(createUtility(utility))
             .then(() => {
                 dispatch(getUtilities());
@@ -109,19 +111,18 @@ const AddUtility = (props) => {
                 
                 <div className='d-flex justify-content-center pt-5'>
                     <Button 
-                        onClick={handleClose} 
                         variant='link' 
                         className='cancel'
+                        onClick={handleClose} 
                     >
                         Cancel
                     </Button>
-                    <button 
-                        className='primary-gray-btn next-btn ml-3'
-                        disabled={!utility.CompanyName || !utility.UtilityTypeID}
+                    <Button 
                         onClick={handleCreateUtility}
+                        className='primary-gray-btn next-btn ml-3'
                     >
                         Save
-                    </button>
+                    </Button>
                 </div>
             </Modal.Body>
       </Modal>
