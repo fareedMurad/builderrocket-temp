@@ -120,6 +120,7 @@ const Utilities = () => {
                                 
                                 <Form.Control 
                                     as='select'
+                                    value={utilitiesInfo?.[utilityType?.ID]?.UtilityID ? utilitiesInfo?.[utilityType?.ID]?.UtilityID : ''}
                                     onChange={(event) => handleUtility(event.target.value, utilityType.ID)}    
                                 >
                                     <option>SELECT</option>
