@@ -19,8 +19,9 @@ const Utilities = () => {
     
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [utilitiesInfo, setUtilitiesInfo] = useState(project);
     const [showUtilityModal, setShowUtilityModal] = useState(false);
+    const [utilitiesInfo, setUtilitiesInfo] = useState(project.Utilities);
+    const [locatePermitNumber, setLocatePermitNumber] = useState(project.LocatePermitNumber);
 
     useEffect(() => {
         dispatch(getUtilityTypes());
@@ -32,8 +33,45 @@ const Utilities = () => {
         return utilities?.filter((utility) => utility.UtilityTypeID === id);
     }
 
+    const handleUtility = (id, utilityTypeID) => {
+        if (!utilityTypeID) return;
+
+        let utilityID;
+        let newUtilitiesMap;
+        let selectedUtility;
+
+        if (id) {
+            utilityID = parseInt(id);
+            selectedUtility = utilities.find(utility => utility.ID === utilityID);
+
+            // update the selected utility TYPE with selected utility
+            newUtilitiesMap = {
+                ...utilitiesInfo, 
+                [utilityTypeID]: {
+                    UtilityID: utilityID,
+                    UtilityTypeID: utilityTypeID,
+                    CompanyName: selectedUtility?.CompanyName, 
+                    PhoneNumber: selectedUtility?.PhoneNumber,
+                    EmailAddress: selectedUtility?.EmailAddress
+                }
+            }
+        } else {
+            newUtilitiesMap = {
+                ...utilitiesInfo,
+                [utilityTypeID]: {
+                    UtilityID: null,
+                    UtilityTypeID: utilityTypeID
+                }
+            }
+        }
+
+        // update component state with updated utilities map
+        setUtilitiesInfo({ ...newUtilitiesMap });
+    }
+
     const clearChanges = () => {
-        setUtilitiesInfo(project);
+        setUtilitiesInfo({ ...project.Utilities });
+        setLocatePermitNumber(project.LocatePermitNumber);
 
         setShowModal(false);
     }
@@ -42,13 +80,16 @@ const Utilities = () => {
         setIsLoading(true);
 
         // Save Project then navigate to contractors tab
-        dispatch(saveProject(utilitiesInfo))
-            .then(() => {
+        dispatch(saveProject({
+            ...project,
+            Utilities: utilitiesInfo,
+            LocatePermitNumber: locatePermitNumber
+        })).then(() => {
                 setIsLoading(false);
                 dispatch(setSelectedProjectTab('contractors'));
             });
     }
-    
+
     return (
         <div className='d-flex utilities'>
             <div className='utilities-container'>
@@ -77,7 +118,10 @@ const Utilities = () => {
                                     {utilityType.Name && utilityType.Name}
                                 </Form.Label>
                                 
-                                <Form.Control as='select'>
+                                <Form.Control 
+                                    as='select'
+                                    onChange={(event) => handleUtility(event.target.value, utilityType.ID)}    
+                                >
                                     <option>SELECT</option>
                                     {filterUtilitiesByType(utilityType.ID)?.map((utility, index) => (
                                         <option 
@@ -88,6 +132,27 @@ const Utilities = () => {
                                         </option>
                                     ))}
                                 </Form.Control>
+
+                                {utilitiesInfo?.[utilityType?.ID]?.UtilityID && (
+                                    <div className='d-flex pt-1 pl-1'>
+                                        {utilitiesInfo?.[utilityType?.ID]?.PhoneNumber && (
+                                            <div className='pr-3'>
+                                                <i className='fas fa-phone mr-2'></i> 
+                                                <a href={`tel:+1${utilitiesInfo?.[utilityType?.ID]?.PhoneNumber}`}>
+                                                    {utilitiesInfo?.[utilityType?.ID]?.PhoneNumber}
+                                                </a>  
+                                            </div>
+                                        )}
+                                        {utilitiesInfo?.[utilityType?.ID]?.EmailAddress && (
+                                            <div>
+                                                <i className='fas fa-envelope mr-2'></i> 
+                                                <a href={`mailto:${utilitiesInfo?.[utilityType?.ID]?.EmailAddress}`}> 
+                                                    {utilitiesInfo?.[utilityType?.ID]?.EmailAddress}
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))}
                         <div className='utility'>
@@ -95,11 +160,8 @@ const Utilities = () => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                value={utilitiesInfo?.LocatePermitNumber ? utilitiesInfo?.LocatePermitNumber : ''}
-                                onChange={(event) => setUtilitiesInfo({ 
-                                    ...utilitiesInfo,
-                                    LocatePermitNumber: event.target.value
-                                })}
+                                value={locatePermitNumber}
+                                onChange={(event) => setLocatePermitNumber(event.target.value)}
                             />
                         </div>  
                     </div>

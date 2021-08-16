@@ -43,7 +43,7 @@ const Contractors = () => {
             contractorID = parseInt(id);
             selectedContractor = contractors.find(contractor => contractor.ID === contractorID);
         
-            // update the selected contractor type with selected contractor
+            // update the selected contractor TYPE with selected contractor
             newContractorsMap = {
                 ...contractorsInfo,
                 [contractorTypeID]: { 
@@ -64,7 +64,7 @@ const Contractors = () => {
             }
         }
         
-        // update project component state with updated contractor map
+        // update component state with updated contractor map
         setContractorsInfo({ ...newContractorsMap });
     }
 
