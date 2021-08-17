@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Modal, Form, Col, Button } from 'react-bootstrap';
+import { Modal, Form, Col, Button, Row } from 'react-bootstrap';
 import { createContractor, getContractors, getContractorTypes } from '../../actions/contractorActions';
 import Select from 'react-select';
 import { isEmpty } from 'lodash';
@@ -39,14 +39,14 @@ const AddContractor = ({ show, handleClose }) => {
             centered
             show={show} 
             onHide={handleClose}
-            className='add-contractor'
+            className='add-contractor-modal'
         >
             <Modal.Body>
-                <div className='page-title ml-2'>Add Contractor</div>
-                
-                <div className='d-flex flex-wrap add-contractor-form'>
+                <div className='page-title'>Add Contractor</div>
+
+                <Row>
                     <Col md={6}>
-                        <div className='pb-4'>
+                        <Form.Group>
                             <Form.Label className='input-label'>Company Name*</Form.Label>
                             <Form.Control
                                 type='text'
@@ -54,45 +54,10 @@ const AddContractor = ({ show, handleClose }) => {
                                 onChange={(e) => setContractor({ ...contractor, CompanyName: e.target.value })}
                                 defaultValue={contractor?.CompanyName}
                             />
-                        </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>City/State</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                // onChange={(e) => setContractor({ ...contractor, cityState: e.target.value })}
-                            />
-                        </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>Phone</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                onChange={(e) => setContractor({ ...contractor, PhoneNumber: e.target.value })}
-                                defaultValue={contractor?.PhoneNumber}
-                            />
-                        </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>Categories</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                // onChange={(e) => setContractor({ ...contractor, Region: e.target.value })}
-                            />
-                        </div>
-                        <div className='pb-2'>
-                            <Form.Label className='input-label'>UOM</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                onChange={(e) => setContractor({ ...contractor, UOM: e.target.value })}
-                                defaultValue={contractor?.UOM}
-                            />
-                        </div>
+                        </Form.Group>
                     </Col>
-
-                    <Col md={6}> 
-                        <div className='pb-4'>
+                    <Col md={6}>
+                        <Form.Group>
                             <Form.Label className='input-label'>Contractor Type*</Form.Label>
                             <Select 
                                 isMulti 
@@ -103,8 +68,10 @@ const AddContractor = ({ show, handleClose }) => {
                                 }
                                 onChange={(options) => setContractor({ ...contractor, ContractorTypes: options })}
                             />
-                        </div>
-                        <div className='pb-4'>
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group>
                             <Form.Label className='input-label'>Contact Name</Form.Label>
                             <Form.Control
                                 type='text'
@@ -112,27 +79,85 @@ const AddContractor = ({ show, handleClose }) => {
                                 onChange={(e) => setContractor({ ...contractor, FirstName: e.target.value })}
                                 defaultValue={contractor?.FirstName}
                             />
-                        </div>
-                        <div className='pb-4'>
-                            <Form.Label className='input-label'>ZIP Code</Form.Label>
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group>
+                            <Form.Label className='input-label'>Phone</Form.Label>
+                            <Form.Control
+                                type='text'
+                                inputMode='tel'
+                                className='input-gray'
+                                onChange={(e) => setContractor({ ...contractor, PhoneNumber: e.target.value })}
+                                defaultValue={contractor?.PhoneNumber}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group>
+                            <Form.Label className='input-label'>City</Form.Label>
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                onChange={(e) => setContractor({ ...contractor, Zip: e.target.value })}
-                                defaultValue={contractor?.Zip}
+                                // onChange={(e) => setContractor({ ...contractor, City: e.target.value })}
                             />
-                        </div>
-                        <div className='pb-4'>
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group>
+                            <Form.Label className='input-label'>State</Form.Label>
+                            <Form.Control
+                                type='text'
+                                className='input-gray'
+                                // onChange={(e) => setContractor({ ...contractor, State: e.target.value })}
+                            />
+                        </Form.Group>
+                    </Col>   
+                    <Col md={6}>
+                        <Form.Group>
+                        <Form.Label className='input-label'>ZIP Code</Form.Label>
+                        <Form.Control
+                            type='text'
+                            className='input-gray'
+                            onChange={(e) => setContractor({ ...contractor, Zip: e.target.value })}
+                            defaultValue={contractor?.Zip}
+                        />
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group>
                             <Form.Label className='input-label'>Email</Form.Label>
                             <Form.Control
                                 type='email'
+                                inputMode='email'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, EmailAddress: e.target.value })}
                                 defaultValue={contractor?.EmailAddress}
                             />
-                        </div>
+                        </Form.Group>
                     </Col>
-                </div>
+                    <Col md={6}>
+                        <Form.Group>
+                            <Form.Label className='input-label'>Categories</Form.Label>
+                            <Form.Control
+                                type='text'
+                                className='input-gray'
+                                // onChange={(e) => setContractor({ ...contractor, Region: e.target.value })}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group>
+                        <Form.Label className='input-label'>UOM</Form.Label>
+                        <Form.Control
+                            type='text'
+                            className='input-gray'
+                            onChange={(e) => setContractor({ ...contractor, UOM: e.target.value })}
+                            defaultValue={contractor?.UOM}
+                        />
+                        </Form.Group>
+                    </Col>
+                </Row>
                 
                 <div className='d-flex justify-content-center pt-5'>
                     <Button 

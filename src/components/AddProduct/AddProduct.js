@@ -70,7 +70,7 @@ const AddProduct = (props) => {
         }
 
         delete newProduct.CategoryID
-        console.log('ADDING', productID, newProduct);
+
         dispatch(handleProductForProject([newProduct]))
             .then(
                 handleShow(false)
@@ -99,7 +99,7 @@ const AddProduct = (props) => {
             </div>
 
             <div className='filter-section'>
-                <div className='d-flex'>
+                <div className='d-flex flex-wrap'>
                     <div className='mr-3'>
                         <Form.Control 
                             as='select'
@@ -123,15 +123,15 @@ const AddProduct = (props) => {
                             // onChange={(e) => setSearchTerm(e.target.value)}    
                         >
                         </Form.Control>
-                        <button className='primary-gray-btn search-btn ml-3'>Search</button>
+                        <Button className='primary-gray-btn search-btn ml-3'>Search</Button>
                     </div>
-                    <div className='d-flex qty-items-select'>
+                </div>
+                    <div className='d-flex qty-items-select justify-content-end'>
                         <Form.Control as='select'>
                             <option>25</option>
                         </Form.Control>
                         <div className='select-text'>Items Per Page</div>
                     </div>
-                </div>
             </div>
 
             <div className='add-products-body d-flex'>
@@ -213,6 +213,16 @@ const AddProduct = (props) => {
                         </tbody>
                     </Table>
                 </div>
+            </div>
+
+            <div className='d-flex justify-content-center p2-5'>
+                <Button 
+                    variant='link' 
+                    className='cancel'
+                    onClick={() => handleShow(false)}
+                >
+                    Cancel
+                </Button>
             </div>
         
 
