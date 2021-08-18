@@ -81,7 +81,7 @@ const AddProduct = (props) => {
       handleShow(false);
       setShowModal(false);
     }
-
+    console.log('Product Catergories', productCategories);
 
     return (
         <div className='add-product-container'>
@@ -103,17 +103,28 @@ const AddProduct = (props) => {
                     <div className='mr-3'>
                         <Form.Control 
                             as='select'
-                            value={product?.CategoryID}
+                            defaultValue={product?.CategoryID}
                             onChange={(event) => onProductCategoryChange(event.target.value)}
                         >
                             <option value=''>Select Category</option>
                             {productCategories?.map((productCategory, index) => (
-                                <option 
-                                    key={index} 
-                                    value={productCategory?.ID}
-                                >
-                                    {productCategory?.Name}
-                                </option>
+                                <>
+                                    <option 
+                                        key={index} 
+                                        value={productCategory?.ID}
+                                    >
+                                        {productCategory?.Name}
+                                    </option>
+                                    {productCategory?.Children?.map((child, index) => (
+                                        <option 
+                                            key={index}
+                                            value={index}
+                                            className='select-option'
+                                        >
+                                            {child.Name}          
+                                        </option>
+                                    ))} 
+                                </>
                             ))}
                         </Form.Control>
                     </div>

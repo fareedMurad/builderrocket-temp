@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Modal, Form, Col, Button, Row } from 'react-bootstrap';
-import { createContractor, getContractors, getContractorTypes } from '../../actions/contractorActions';
+import { Modal, Form, Col, Button, Row, Spinner } from 'react-bootstrap';
+import { 
+    createContractor, 
+    getContractors, 
+    getContractorTypes, 
+    setSelectedContractor 
+} from '../../actions/contractorActions';
 import Select from 'react-select';
 import { isEmpty } from 'lodash';
 import './AddContractor.scss';
@@ -13,10 +18,18 @@ const AddContractor = ({ show, handleClose }) => {
     const contractorTypes = useSelector(state => state.contractor.contractorTypes);
 
     const [contractor, setContractor] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        setContractor(selectedContractor);
+        if (!isEmpty(selectedContractor)) {
+            // const contractorTypes = selectedContractor.ContractorTypes.m
+
+
+            setContractor(selectedContractor);
+        }
     }, [dispatch, selectedContractor]);
+    
+    console.log('selected', selectedContractor);
 
     useEffect(() => {
         if (isEmpty(contractorTypes))
@@ -24,15 +37,34 @@ const AddContractor = ({ show, handleClose }) => {
     }, [dispatch, contractorTypes]);
 
     const handleCreateContractor = () => {
-        if (!contractor.CompanyName || isEmpty(contractor?.ContractorTypes)) return;
+        if (!contractor.CompanyName) {
+            return alert('Company Name is Required');
+        } else if (isEmpty(contractor?.ContractorTypes)) {
+            return alert('Contractor Types are Required');
+        }
 
+        setIsLoading(true);
+
+        const contractorFinal = {
+            ...contractor, 
+            ContractorTypes: contractor.ContractorTypes?.map(type => {
+                return { 
+                    ID: type.value 
+                }
+            })
+        }
+        console.log('FINAL', contractorFinal);
         dispatch(createContractor(contractor))
             .then(() => {
                 dispatch(getContractors());
+                dispatch(setSelectedContractor({}));
+                setIsLoading(false);
                 handleClose();
             });
     }
 
+    const title = isEmpty(contractor) ? 'Add Contractor' : 'Edit Contractor';
+    console.log('Contractor Types', contractor);
     return (
         <Modal 
             size='xl'
@@ -42,7 +74,7 @@ const AddContractor = ({ show, handleClose }) => {
             className='add-contractor-modal'
         >
             <Modal.Body>
-                <div className='page-title'>Add Contractor</div>
+                <div className='page-title'>{title}</div>
 
                 <Row>
                     <Col md={6}>
@@ -160,19 +192,28 @@ const AddContractor = ({ show, handleClose }) => {
                 </Row>
                 
                 <div className='d-flex justify-content-center pt-5'>
-                    <Button 
-                        variant='link' 
-                        className='cancel'
-                        onClick={handleClose} 
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={handleCreateContractor}
-                        className='primary-gray-btn next-btn ml-3'
-                    >
-                        Save
-                    </Button>
+                {isLoading ? (
+                        <Spinner 
+                           animation='border'
+                           variant='primary' 
+                       />
+                    ) : (
+                        <>
+                            <Button 
+                                variant='link' 
+                                className='cancel'
+                                onClick={handleClose} 
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleCreateContractor}
+                                className='primary-gray-btn next-btn ml-3'
+                            >
+                                Save
+                            </Button>
+                        </>
+                    )}
                 </div>
             </Modal.Body>
         </Modal>

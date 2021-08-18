@@ -99,6 +99,11 @@ const ContractorManagement = () => {
         )
     }
 
+    const handleCloseContractorModal = () => {
+        dispatch(setSelectedContractor({}));
+        setShowContractorModal(false);
+    }
+
     return (
         <div className='d-flex contractor-management'>
             <div className='contractor-management-container'>
@@ -176,7 +181,7 @@ const ContractorManagement = () => {
             {showContractorModal && 
                 <AddContractor 
                     show={showContractorModal}
-                    handleClose={() => setShowContractorModal(false)}
+                    handleClose={handleCloseContractorModal}
                 />
             }
             {deleteContractorModal()}
