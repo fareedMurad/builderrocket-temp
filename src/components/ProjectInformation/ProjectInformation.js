@@ -61,8 +61,6 @@ const ProjectInformation = (props) => {
 
     const customerFullName = `${project?.Customers?.[0]?.FirstName} ${project?.Customers?.[0]?.LastName}`;
 
-    console.log('customer', customerFullName);
-
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 

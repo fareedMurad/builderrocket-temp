@@ -1,8 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const ClearChangesModal = (props) => {
-    const { show, setShow, clearChanges } = props;
+const ClearChangesModal = ({ show, setShow, clearChanges }) => {
 
     return (
         <Modal

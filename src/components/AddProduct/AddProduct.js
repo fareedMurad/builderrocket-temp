@@ -126,12 +126,12 @@ const AddProduct = (props) => {
                         <Button className='primary-gray-btn search-btn ml-3'>Search</Button>
                     </div>
                 </div>
-                    <div className='d-flex qty-items-select justify-content-end'>
-                        <Form.Control as='select'>
-                            <option>25</option>
-                        </Form.Control>
-                        <div className='select-text'>Items Per Page</div>
-                    </div>
+                <div className='d-flex qty-items-select justify-content-end'>
+                    <Form.Control as='select'>
+                        <option>25</option>
+                    </Form.Control>
+                    <div className='select-text'>Items Per Page</div>
+                </div>
             </div>
 
             <div className='add-products-body d-flex'>

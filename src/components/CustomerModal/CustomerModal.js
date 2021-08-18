@@ -13,10 +13,10 @@ const CustomerModal = ({ show, setShow }) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [editedCustomer, setEditedCustomer] = useState({ 
-        FirstName: customer.FirstName, 
-        LastName: customer.LastName, 
-        Email: customer.Email,
-        Phone: customer.Phone
+        FirstName: customer?.FirstName, 
+        LastName: customer?.LastName, 
+        Email: customer?.Email,
+        Phone: customer?.Phone
     });
 
 
