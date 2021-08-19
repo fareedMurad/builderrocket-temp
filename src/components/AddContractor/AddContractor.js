@@ -29,14 +29,15 @@ const AddContractor = ({ show, handleClose }) => {
         }
     }, [dispatch, selectedContractor]);
     
-    console.log('selected', selectedContractor);
+    // console.log('selected', selectedContractor, contractorTypes);
+    // console.log('Contractor Types', contractor);
 
     useEffect(() => {
         if (isEmpty(contractorTypes))
             dispatch(getContractorTypes());
     }, [dispatch, contractorTypes]);
 
-    const handleCreateContractor = () => {
+    const handleSaveContractor = () => {
         if (!contractor.CompanyName) {
             return alert('Company Name is Required');
         } else if (isEmpty(contractor?.ContractorTypes)) {
@@ -49,7 +50,8 @@ const AddContractor = ({ show, handleClose }) => {
             ...contractor, 
             ContractorTypes: contractor.ContractorTypes?.map(type => {
                 return { 
-                    ID: type.value 
+                    ID: type.value,
+                    Name: type.label
                 }
             })
         }
@@ -64,7 +66,7 @@ const AddContractor = ({ show, handleClose }) => {
     }
 
     const title = isEmpty(contractor) ? 'Add Contractor' : 'Edit Contractor';
-    console.log('Contractor Types', contractor);
+    
     return (
         <Modal 
             size='xl'
@@ -207,7 +209,7 @@ const AddContractor = ({ show, handleClose }) => {
                                 Cancel
                             </Button>
                             <Button
-                                onClick={handleCreateContractor}
+                                onClick={handleSaveContractor}
                                 className='primary-gray-btn next-btn ml-3'
                             >
                                 Save

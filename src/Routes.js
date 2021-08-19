@@ -3,6 +3,8 @@ import { Switch, Route, useHistory } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import ('./pages/Login'));
 const Project = lazy(() => import('./pages/Project'));
@@ -21,7 +23,10 @@ const Routes = (props) => {
 
     const Loading = () => {
         return (
-            <div style={{ marginTop: '15rem' }} className='d-flex justify-content-center'>
+            <div 
+                style={{ marginTop: '15rem' }} 
+                className='d-flex justify-content-center'
+            >
                 <Spinner 
                     animation='border'
                     variant='primary' 
@@ -32,14 +37,16 @@ const Routes = (props) => {
 
     return (
         <Suspense fallback={<Loading />}>
-            <Switch>
-                    <Route path='/' exact component={Home} />
-                    <Route exact path='/login' component={Login} /> 
-                    <Route exact path='/project' component={Project} />
-                    <Route path='/project/:project' component={Project} />
-                    <Route path='/utility-management' component={UtilityManagement} />
-                    <Route path='/contractor-management' component={ContractorManagement} />
-            </Switch>
+            <ScrollToTop>
+                <Switch>
+                        <Route path='/' exact component={Home} />
+                        <Route exact path='/login' component={Login} /> 
+                        <Route exact path='/project' component={Project} />
+                        <Route path='/project/:project' component={Project} />
+                        <Route path='/utility-management' component={UtilityManagement} />
+                        <Route path='/contractor-management' component={ContractorManagement} />
+                </Switch>
+            </ScrollToTop>
         </Suspense>
     )
 }

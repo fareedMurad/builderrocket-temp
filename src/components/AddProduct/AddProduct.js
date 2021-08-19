@@ -21,6 +21,10 @@ const AddProduct = (props) => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
         if (product.CategoryID) {
             dispatch(getCategories(product?.CategoryID));
             dispatch(searchProducts(product?.CategoryID));
