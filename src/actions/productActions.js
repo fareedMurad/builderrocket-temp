@@ -10,6 +10,8 @@ import {
 import api from '../api';
 
 export const getCategories = (categoryID) => dispatch => {
+    if (!categoryID) return;
+
     const URL = `/Product/Category/${categoryID}`;
 
     return api({
@@ -30,6 +32,8 @@ export const getCategories = (categoryID) => dispatch => {
 }
 
 export const getChildCategories = (categoryID) => dispatch => {
+    if (!categoryID) return;
+
     const URL = `/Product/Category/${categoryID}`;
 
     return api({

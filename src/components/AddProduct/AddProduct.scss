@@ -25,9 +25,8 @@
         padding-left: .5rem;
         padding-bottom: 1.5rem;
 
-        .select-option {
-            margin-left: 1rem !important;
-            padding:  1.5rem 0;
+        .dropdown-item {
+            width: 199px;
         }
 
         .form-control {
@@ -42,6 +41,7 @@
         }
 
         .qty-items-select {
+            padding-right: 2.75rem;
 
             select {
                 width: 60px;

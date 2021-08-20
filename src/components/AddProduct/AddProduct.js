@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleProductForProject } from '../../actions/projectActions';
-import { getCategories, searchProducts, setSelectedCategoryID } from '../../actions/productActions';
+import { getCategories, searchProducts, setProduct } from '../../actions/productActions';
 import './AddProduct.scss';
 
 // components 
@@ -25,8 +25,11 @@ const AddProduct = (props) => {
     }, []);
 
     useEffect(() => {
-        if (product.CategoryID) {
             dispatch(getCategories(product?.CategoryID));
+    }, [dispatch, product]);
+
+    useEffect(() => {
+        if (product.CategoryID) {
             dispatch(searchProducts(product?.CategoryID));
         } else {
             dispatch(searchProducts());
@@ -36,7 +39,10 @@ const AddProduct = (props) => {
     const onProductCategoryChange = (productCategoryID) => {
         if (!productCategoryID) return;
 
-        dispatch(setSelectedCategoryID(productCategoryID));
+        dispatch(setProduct({
+            ...product, 
+            CategoryID: parseInt(productCategoryID)
+        }));
     }
 
     // update individual filter checkbox 
@@ -85,7 +91,7 @@ const AddProduct = (props) => {
       handleShow(false);
       setShowModal(false);
     }
-    console.log('Product Catergories', productCategories);
+    console.log('Product Catergories', product, productCategories);
 
     return (
         <div className='add-product-container'>
@@ -107,7 +113,7 @@ const AddProduct = (props) => {
                     <div className='mr-3'>
                         <Form.Control 
                             as='select'
-                            defaultValue={product?.CategoryID}
+                            value={product?.CategoryID}
                             onChange={(event) => onProductCategoryChange(event.target.value)}
                         >
                             <option value=''>Select Category</option>
@@ -123,7 +129,6 @@ const AddProduct = (props) => {
                                         <option 
                                             key={index}
                                             value={index}
-                                            className='select-option'
                                         >
                                             {child.Name}          
                                         </option>
@@ -139,6 +144,8 @@ const AddProduct = (props) => {
                         >
                         </Form.Control>
                         <Button className='primary-gray-btn search-btn ml-3'>Search</Button>
+                    </div>
+                    <div>
                     </div>
                 </div>
                 <div className='d-flex qty-items-select justify-content-end'>

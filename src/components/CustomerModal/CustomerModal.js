@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Modal, Form, Row, Col, Button, Spinner } from 'react-bootstrap';
-import { saveProject } from '../../actions/projectActions';
+import React, { useEffect, useState } from 'react';
+import { Modal, Form, Row, Col, Button } from 'react-bootstrap';
 import './CustomerModal.scss';
 
-const CustomerModal = ({ show, setShow }) => {
-    const dispatch = useDispatch();
-
-    const project = useSelector(state => state.project.project);
-    
+const CustomerModal = ({ show, setShow, setCustomer, project }) => {    
     const customer = project.Customers?.[0];
 
-    const [isLoading, setIsLoading] = useState(false);
     const [editedCustomer, setEditedCustomer] = useState({ 
         FirstName: customer?.FirstName, 
         LastName: customer?.LastName, 
@@ -19,10 +12,17 @@ const CustomerModal = ({ show, setShow }) => {
         Phone: customer?.Phone
     });
 
+    useEffect(() => {
+        // Set customer on opening of modal
+        setEditedCustomer({
+            FirstName: customer?.FirstName, 
+            LastName: customer?.LastName, 
+            Email: customer?.Email,
+            Phone: customer?.Phone
+        });
+    }, [customer]);
 
     const saveChanges = () => {
-        setIsLoading(true);
-
         const updatedProject = {
             ...project,
             Customers: [{
@@ -31,14 +31,23 @@ const CustomerModal = ({ show, setShow }) => {
             }]
         }
 
-        dispatch(saveProject(updatedProject))
-            .then(() => {
-                setIsLoading(false);
-                setShow(false);
-            });
+        setCustomer(updatedProject);
+        setShow(false);
     }
 
-    console.log('project', project);
+    const cancelChanges = () => {
+        // // reset customer to initial state
+        setEditedCustomer({
+            FirstName: customer?.FirstName, 
+            LastName: customer?.LastName, 
+            Email: customer?.Email,
+            Phone: customer?.Phone
+        });
+
+        setShow(false);
+    }
+
+    console.log('project', project, customer);
 
     return (
         <Modal
@@ -114,28 +123,19 @@ const CustomerModal = ({ show, setShow }) => {
 
 
                 <div className='d-flex justify-content-center pt-5'>
-                    {isLoading ? (
-                        <Spinner 
-                           animation='border'
-                           variant='primary' 
-                       />
-                    ) : (
-                        <>
-                            <Button 
-                                variant='link' 
-                                className='cancel'
-                                onClick={() => setShow(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button 
-                                onClick={saveChanges}
-                                className='primary-gray-btn next-btn ml-3'
-                            >
-                                Save
-                            </Button>
-                        </>
-                    )}
+                    <Button 
+                        variant='link' 
+                        className='cancel'
+                        onClick={cancelChanges}
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={saveChanges}
+                        className='primary-gray-btn next-btn ml-3'
+                    >
+                        Ok
+                    </Button>
                 </div>
             </Modal.Body>
         </Modal>

@@ -59,7 +59,7 @@ const ProjectInformation = (props) => {
             });
     }
 
-    const customerFullName = `${project?.Customers?.[0]?.FirstName} ${project?.Customers?.[0]?.LastName}`;
+    const customerFullName = `${projectInformation?.Customers?.[0]?.FirstName} ${projectInformation?.Customers?.[0]?.LastName}`;
 
     return (
         <div className='d-flex project-information'> 
@@ -105,7 +105,7 @@ const ProjectInformation = (props) => {
                                 type='email'
                                 className='input-gray'
                                 onClick={() => setShowCustomerModal(true)}
-                                value={project?.Customers?.[0]?.Email}
+                                value={projectInformation?.Customers?.[0]?.Email}
                             />
                         </div>
                         <div className='form-col pb-4'>
@@ -253,6 +253,8 @@ const ProjectInformation = (props) => {
                 <CustomerModal 
                     show={showCustomerModal}
                     setShow={handleShowCustomerModal}
+                    project={projectInformation}
+                    setCustomer={setProjectInformation}
                 />
 
                 <div className='d-flex justify-content-center pt-5'>
