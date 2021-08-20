@@ -91,7 +91,23 @@ const AddProduct = (props) => {
       handleShow(false);
       setShowModal(false);
     }
-    console.log('Product Catergories', product, productCategories);
+
+    const Category = ({ category }) => {
+        // recursive method to list all categories and children categories
+        const nestedCategories = (category.Children || []).map(category => {
+            return <Category key={category.ID} category={category} type='child' />
+        });
+
+        return (
+            <>
+                <option value={category?.ID}>
+                    {category?.Name}
+                </option>
+
+                {nestedCategories}
+            </>
+        )
+    }
 
     return (
         <div className='add-product-container'>
@@ -117,23 +133,12 @@ const AddProduct = (props) => {
                             onChange={(event) => onProductCategoryChange(event.target.value)}
                         >
                             <option value=''>Select Category</option>
-                            {productCategories?.map((productCategory, index) => (
-                                <>
-                                    <option 
-                                        key={index} 
-                                        value={productCategory?.ID}
-                                    >
-                                        {productCategory?.Name}
-                                    </option>
-                                    {productCategory?.Children?.map((child, index) => (
-                                        <option 
-                                            key={index}
-                                            value={index}
-                                        >
-                                            {child.Name}          
-                                        </option>
-                                    ))} 
-                                </>
+
+                            {productCategories?.map((category) => (
+                                <Category 
+                                    key={category.ID} 
+                                    category={category} 
+                                />
                             ))}
                         </Form.Control>
                     </div>

@@ -47,8 +47,6 @@ const CustomerModal = ({ show, setShow, setCustomer, project }) => {
         setShow(false);
     }
 
-    console.log('project', project, customer);
-
     return (
         <Modal
             centered    
