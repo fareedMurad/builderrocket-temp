@@ -27,8 +27,6 @@ const AddProduct = (props) => {
             dispatch(setCategories([]));
         }
     }, [dispatch]);
-
-    console.log('YOO', productCategories);
     
     useEffect(() => {
         if (product.CategoryID) {

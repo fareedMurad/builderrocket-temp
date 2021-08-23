@@ -10,9 +10,10 @@ import {
 import api from '../api';
 
 export const getCategories = (categoryID) => dispatch => {
-    if (!categoryID) return;
+    let URL = '/Product/Category';
 
-    const URL = `/Product/Category/${categoryID}`;
+    if (categoryID)
+        URL = URL + `/${categoryID}`;
 
     return api({
         method: 'GET',

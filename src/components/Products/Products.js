@@ -163,8 +163,8 @@ const Products = (props) => {
     }
 
     const showProducts = () => {
-        dispatch(setProduct({}))
-            .then(dispatch(getCategories('')))
+        dispatch(getCategories(''))
+            .then(dispatch(setProduct({})))
             .then(setIsAddProducts(true));
     }
     // console.log('Project', project, selectedRoom);       
