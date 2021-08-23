@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Form, Table, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { setProduct } from '../../actions/productActions';
 import { setSelectedRoom } from '../../actions/roomActions';
+import { Button, Form, Table, Modal } from 'react-bootstrap';
+import { setProduct, getCategories } from '../../actions/productActions';
 import { handleProductForProject } from '../../actions/projectActions';
 import { isEmpty, isUndefined } from 'lodash';
 import './Products.scss';
@@ -16,10 +16,10 @@ const Products = (props) => {
     const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
 
-    const [isAddProducts, setIsAddProducts] = useState(false);
-    const [templateItems, setTemplateItems] = useState({});
-    const [tempProduct, setTempProduct] = useState({});
     const [showModal, setShowModal] = useState(false);
+    const [tempProduct, setTempProduct] = useState({});
+    const [templateItems, setTemplateItems] = useState({});
+    const [isAddProducts, setIsAddProducts] = useState(false);
     
     useEffect(() => {
         if (isEmpty(selectedRoom))
@@ -50,9 +50,8 @@ const Products = (props) => {
             }
 
             dispatch(setProduct(product))
-                .then(
-                    setIsAddProducts(true)
-                );
+                .then(dispatch(getCategories(product?.CategoryID)))
+                .then(setIsAddProducts(true));
         }
 
     }
@@ -165,6 +164,7 @@ const Products = (props) => {
 
     const showProducts = () => {
         dispatch(setProduct({}))
+            .then(dispatch(getCategories('')))
             .then(setIsAddProducts(true));
     }
     // console.log('Project', project, selectedRoom);       

@@ -110,3 +110,15 @@ export const setProductDetails = (productDetails) => dispatch => {
         }
     });
 }
+
+export const setCategories = (categories) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: GET_CATEGORIES, payload: categories });
+
+            resolve(categories);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleProductForProject } from '../../actions/projectActions';
-import { getCategories, searchProducts, setProduct } from '../../actions/productActions';
+import { searchProducts, setCategories, setProduct } from '../../actions/productActions';
 import './AddProduct.scss';
 
 // components 
@@ -22,12 +22,14 @@ const AddProduct = (props) => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []);
 
-    useEffect(() => {
-            dispatch(getCategories(product?.CategoryID));
-    }, [dispatch, product]);
+        return () => {
+            dispatch(setCategories([]));
+        }
+    }, [dispatch]);
 
+    console.log('YOO', productCategories);
+    
     useEffect(() => {
         if (product.CategoryID) {
             dispatch(searchProducts(product?.CategoryID));
