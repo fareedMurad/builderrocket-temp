@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { addDocument, getDocumentTypes, deleteDocument } from '../../actions/documentActions';
 import { getProjectByProjectNumber, saveProject, setSelectedProjectTab } from '../../actions/projectActions';
-import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button, Spinner } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 import Utils from '../../utils';
 import './Documents.scss';
 
@@ -22,7 +24,6 @@ const Documents = () => {
     const [selectedInput, setSelectedInput] = useState();
     const [documentsInfo, setDocumentsInfo] = useState({ 
         ...project, 
-        OccupencyDate: Utils.formatShortDateUS(project?.OccupencyDate),
         PermitDate: Utils.formatShortDateUS(project?.PermitDate)
     });
 
@@ -63,11 +64,7 @@ const Documents = () => {
 
     const clearChanges = () => {
         //Reset changes to default
-        setDocumentsInfo({ 
-            ...project, 
-            OccupencyDate: Utils.formatShortDateUS(project?.OccupencyDate),
-            PermitDate: Utils.formatShortDateUS(project?.PermitDate)
-        });
+        setDocumentsInfo({ ...project });
 
         setShowModal(false);
     }
@@ -147,28 +144,20 @@ const Documents = () => {
                             <Form.Label className='input-label'>
                                 C.O. Date
                             </Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                value={documentsInfo?.OccupencyDate}
-                                onChange={(event) => setDocumentsInfo({
-                                    ...documentsInfo,
-                                    OccupencyDate: event.target.value
-                                })}
+                            <DatePicker 
+                                className='input-gray date-picker'
+                                selected={new Date(documentsInfo?.OccupencyDate)}
+                                onChange={(date) => setDocumentsInfo({ ...documentsInfo, OccupencyDate: date })}
                             />
                         </div>
                         <div className='form-col pb-2'>
                             <Form.Label className='input-label'>
                                 Permit Date
                             </Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                value={documentsInfo?.PermitDate}
-                                onChange={(event) => setDocumentsInfo({
-                                    ...documentsInfo,
-                                    PermitDate: event.target.value
-                                })}
+                            <DatePicker 
+                                className='input-gray date-picker'
+                                selected={new Date(documentsInfo?.PermitDate)}
+                                onChange={(date) => setDocumentsInfo({ ...documentsInfo, PermitDate: date })}
                             />
                         </div>
                         <div className='form-col pb-2'>

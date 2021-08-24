@@ -3,8 +3,9 @@ import { Form, Button, Spinner } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
 import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 import './ProjectInformation.scss';
-import Utils from '../../utils';
 
 // components
 import FileUpload from '../FileUpload';
@@ -23,7 +24,7 @@ const ProjectInformation = (props) => {
     const [showCustomerModal, setShowCustomerModal] = useState(false);
     const [projectInformation, setProjectInformation] = useState({
         ...project, 
-        CloseDate: Utils.formatShortDateUS(project?.CloseDate)
+        CloseDate: project?.CloseDate
     });
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const ProjectInformation = (props) => {
     const clearChanges = () => {
         setProjectInformation({
             ...project, 
-            CloseDate: Utils.formatShortDateUS(project?.CloseDate)
+            CloseDate: project?.CloseDate
         });
 
         setShowModal(false);
@@ -48,7 +49,7 @@ const ProjectInformation = (props) => {
 
         const projectInformationFinal = {
             ...projectInformation,
-            CloseDate: Utils.formatDate(project?.CloseDate)
+            CloseDate: projectInformation?.CloseDate
         };
 
         // Save Project then navigate to documents tab
@@ -230,13 +231,10 @@ const ProjectInformation = (props) => {
                             <Form.Label className='input-label'>
                                 Closing Date
                             </Form.Label>
-                            <Form.Control
-                                className='input-gray'
-                                value={projectInformation?.CloseDate}
-                                onChange={(event) => setProjectInformation({
-                                    ...projectInformation,
-                                    CloseDate: event.target.value
-                                })}
+                            <DatePicker 
+                                className='input-gray date-picker'
+                                onChange={(date) => setProjectInformation({ ...projectInformation, CloseDate: date})}
+                                selected={new Date(projectInformation?.CloseDate)}
                             />
                         </div>
 
@@ -253,8 +251,8 @@ const ProjectInformation = (props) => {
                 <CustomerModal 
                     show={showCustomerModal}
                     setShow={handleShowCustomerModal}
-                    project={projectInformation}
                     setCustomer={setProjectInformation}
+                    project={projectInformation}
                 />
 
                 <div className='d-flex justify-content-center pt-5'>

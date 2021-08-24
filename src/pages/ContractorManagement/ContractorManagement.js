@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Modal, Table, Button, Form, FormControl } from 'react-bootstrap';
+import { 
+    Form, 
+    Modal, 
+    Table, 
+    Button, 
+    Tooltip,    
+    FormControl,
+    OverlayTrigger, 
+} from 'react-bootstrap';
 import { deleteContractor, getContractors, setSelectedContractor } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
 
@@ -104,6 +112,12 @@ const ContractorManagement = () => {
         setShowContractorModal(false);
     }
 
+    const renderTooltip = (props) => (
+        <Tooltip id='button-tooltip' {...props}>
+            Tooltip
+        </Tooltip>
+      );
+
     return (
         <div className='d-flex contractor-management'>
             <div className='contractor-management-container'>
@@ -157,6 +171,15 @@ const ContractorManagement = () => {
                                     <td>{contractor?.EmailAddress}</td>
                                     <td>{''}</td>
                                     <td>{contractor?.UOM}</td>
+                                    <td>
+                                        <OverlayTrigger
+                                            placement='top'
+                                            overlay={renderTooltip}
+                                            delay={{ show: 250, hide: 400 }}
+                                        >
+                                            <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                        </OverlayTrigger>
+                                    </td>
                                     <td>
                                         <div className='d-flex justify-content-between'>
                                             <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
