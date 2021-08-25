@@ -20,6 +20,7 @@ const AddContractor = ({ show, handleClose }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSelectedContractor = useCallback(() => {
+        // Set selected contractor to component state to edit 
         if (!isEmpty(selectedContractor)) {
             const tempContractor = {
                 ...selectedContractor, 
@@ -38,12 +39,7 @@ const AddContractor = ({ show, handleClose }) => {
     useEffect(() => {
         handleSelectedContractor();
 
-        return () => {
-            dispatch(setSelectedContractor({}));
-        }
-    }, [dispatch, handleSelectedContractor]);
-    
-    console.log('selected', selectedContractor, contractor);
+    }, [handleSelectedContractor]);
 
     useEffect(() => {
         if (isEmpty(contractorTypes))
@@ -59,6 +55,7 @@ const AddContractor = ({ show, handleClose }) => {
 
         setIsLoading(true);
 
+        // remap contractor types to save properly
         const contractorFinal = {
             ...contractor, 
             ContractorTypes: contractor.ContractorTypes?.map(type => {
@@ -67,7 +64,7 @@ const AddContractor = ({ show, handleClose }) => {
                 }
             })
         }
-        console.log('FINAL', contractorFinal);
+
         dispatch(createContractor(contractorFinal))
             .then(() => {
                 dispatch(setSelectedContractor({}));
@@ -80,7 +77,7 @@ const AddContractor = ({ show, handleClose }) => {
     
     return (
         <Modal 
-            size='xl'
+            size='lg'
             centered
             show={show} 
             onHide={handleClose}
@@ -206,7 +203,7 @@ const AddContractor = ({ show, handleClose }) => {
                 </Row>
                 
                 <div className='d-flex justify-content-center pt-5'>
-                {isLoading ? (
+                    {isLoading ? (
                         <Spinner 
                            animation='border'
                            variant='primary' 

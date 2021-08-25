@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, FormControl, Form, Modal } from 'react-bootstrap';
+import { 
+    Form, 
+    Modal, 
+    Table, 
+    Button,
+    Spinner, 
+    FormControl, 
+} from 'react-bootstrap';
 import { deleteUtility, getUtilities, setSelectedUtility } from '../../actions/utilityActions';
 import { useDispatch, useSelector } from 'react-redux';
 import './UtilityManagement.scss';
@@ -13,6 +20,7 @@ const UtilityManagement = () => {
     const utilities = useSelector(state => state.utility.utilities);
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedUtilityID, setSelectedUtilityID] = useState();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showUtilityModal, setShowUtilityModal] = useState(false);
@@ -39,11 +47,16 @@ const UtilityManagement = () => {
     }, [searchTerm, utilities]);
 
     const handleDeleteUtility = () => {
+        setIsLoading(true);
+
         dispatch(deleteUtility(selectedUtilityID))
             .then(() => {
                 dispatch(getUtilities());
+            })
+            .then(() => {
+                setIsLoading(false);
                 setShowDeleteModal(false);
-            });
+            })
     }
 
     const deleteUtilityConfirmation = (utilityID) => {
@@ -146,17 +159,26 @@ const UtilityManagement = () => {
                                     <td>{utility?.EmailAddress}</td>
                                     <td>{utility?.Region}</td>
                                     <td>
-                                        <div className='d-flex justify-content-between'>
-                                            <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                            <i 
-                                                className='far fa-pencil-alt'
-                                                onClick={() => editUtillity(utility)}
-                                            ></i>
-                                            <i 
-                                                className='far fa-trash-alt' 
-                                                onClick={() => deleteUtilityConfirmation(utility.ID)}
-                                            ></i>
-                                        </div>
+                                        {(isLoading && selectedUtilityID === utility.ID) ? (
+                                            <Spinner 
+                                                size='sm'
+                                                variant='primary' 
+                                                animation='border'
+                                                className='justify-content-center d-flex'
+                                            />
+                                        ) : (
+                                            <div className='d-flex justify-content-between'>
+                                                <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                                <i 
+                                                    className='far fa-pencil-alt'
+                                                    onClick={() => editUtillity(utility)}
+                                                ></i>
+                                                <i 
+                                                    className='far fa-trash-alt' 
+                                                    onClick={() => deleteUtilityConfirmation(utility.ID)}
+                                                ></i>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

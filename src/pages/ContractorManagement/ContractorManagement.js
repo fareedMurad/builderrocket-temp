@@ -58,7 +58,6 @@ const ContractorManagement = () => {
         dispatch(deleteContractor(selectedContractorID))
             .then(() => {
                 dispatch(getContractors());
-        
             })
             .then(() => {
                 setIsLoading(false);
@@ -124,6 +123,12 @@ const ContractorManagement = () => {
         setShowContractorModal(false);
     }
 
+    const getContractorCategories = (contractorCategories) => {
+        return contractorCategories.map((category) => {
+            return `${category.Name} `;
+        })
+    }
+
     const renderTooltip = (props) => (
         <Tooltip id='button-tooltip' {...props}>
             Tooltip
@@ -156,7 +161,7 @@ const ContractorManagement = () => {
                     </div>
                 </div>
 
-                <div className='contractor-management-table'>
+                <div className='contractor-management-table d-flex'>
                     <Table hover responsive>
                         <thead>
                             <tr>
@@ -175,13 +180,13 @@ const ContractorManagement = () => {
                         <tbody>
                             {filteredContractors?.map((contractor, index) => (
                                 <tr key={index}>
-                                    <td width='20%'>{contractor?.CompanyName}</td>
+                                    <td width='15%'>{contractor?.CompanyName}</td>
                                     <td>{contractor?.FirstName}</td>
                                     <td>{''}</td>
                                     <td>{''}</td>
                                     <td>{contractor?.PhoneNumber}</td>
                                     <td>{contractor?.EmailAddress}</td>
-                                    <td>{''}</td>
+                                    <td width='15%'>{getContractorCategories(contractor.ContractorTypes)}</td>
                                     <td>{contractor?.UOM}</td>
                                     <td>
                                         <OverlayTrigger
@@ -191,8 +196,14 @@ const ContractorManagement = () => {
                                         >
                                             <i className='far fa-sticky-note d-flex justify-content-center'></i>
                                         </OverlayTrigger>
+
+                                        {/* <Form.Control
+                                            as='textarea'
+                                            placeholder='Leave a comment here'
+                                            style={{ height: '50px' }}
+                                        /> */}
                                     </td>
-                                    <td>
+                                    <td width='5%'>
                                         {(isLoading && selectedContractorID === contractor.ID) ? (
                                             <Spinner 
                                                 size='sm'

@@ -16,7 +16,7 @@ const ScrollToTop = ({ children }) => {
             unlisten();
         }
     }, [history]);
-    console.log('YUHH');
+    
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [selectedProjectTab]);
