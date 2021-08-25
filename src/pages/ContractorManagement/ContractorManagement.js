@@ -5,11 +5,16 @@ import {
     Modal, 
     Table, 
     Button, 
+    Spinner,
     Tooltip,    
     FormControl,
     OverlayTrigger, 
 } from 'react-bootstrap';
-import { deleteContractor, getContractors, setSelectedContractor } from '../../actions/contractorActions';
+import { 
+    getContractors, 
+    deleteContractor, 
+    setSelectedContractor 
+} from '../../actions/contractorActions';
 import './ContractorManagement.scss';
 
 // components
@@ -21,6 +26,7 @@ const ContractorManagement = () => {
     const contractors = useSelector(state => state.contractor.contractors);
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedContractorID, setSelectedContractorID] = useState();
     const [showContractorModal, setShowContractorModal] = useState(false);
@@ -47,11 +53,17 @@ const ContractorManagement = () => {
     }, [searchTerm, contractors]);
 
     const handleDeleteContractor = () => {
+        setIsLoading(true);
+
         dispatch(deleteContractor(selectedContractorID))
             .then(() => {
                 dispatch(getContractors());
+        
+            })
+            .then(() => {
+                setIsLoading(false);
                 setShowDeleteModal(false);
-            });
+            })
     }
 
     const deleteContractorConfirmation = (contractorID) => {
@@ -75,10 +87,10 @@ const ContractorManagement = () => {
     const deleteContractorModal = () => {
         return (
             <Modal
+                size='lg'
+                centered
                 show={showDeleteModal}
                 onHide={cancelDeletion}
-                centered
-                size='lg'
             >
                 <Modal.Body>
                     <div className='page-title'>Delete Contractor</div>
@@ -181,17 +193,26 @@ const ContractorManagement = () => {
                                         </OverlayTrigger>
                                     </td>
                                     <td>
-                                        <div className='d-flex justify-content-between'>
-                                            <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                            <i 
-                                                className='far fa-pencil-alt'
-                                                onClick={() => editContractor(contractor)}
-                                            ></i>
-                                            <i 
-                                                className='far fa-trash-alt' 
-                                                onClick={() => deleteContractorConfirmation(contractor.ID)}
-                                            ></i>
-                                        </div>
+                                        {(isLoading && selectedContractorID === contractor.ID) ? (
+                                            <Spinner 
+                                                size='sm'
+                                                className='justify-content-center d-flex'
+                                                animation='border'
+                                                variant='primary' 
+                                            />
+                                        ) : (
+                                            <div className='d-flex justify-content-between'>
+                                                <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                                <i 
+                                                    className='far fa-pencil-alt'
+                                                    onClick={() => editContractor(contractor)}
+                                                ></i>
+                                                <i 
+                                                    className='far fa-trash-alt' 
+                                                    onClick={() => deleteContractorConfirmation(contractor.ID)}
+                                                ></i>
+                                            </div>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

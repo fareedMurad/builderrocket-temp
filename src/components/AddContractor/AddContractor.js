@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal, Form, Col, Button, Row, Spinner } from 'react-bootstrap';
 import { 
     createContractor, 
-    getContractors, 
     getContractorTypes, 
     setSelectedContractor 
 } from '../../actions/contractorActions';
@@ -20,17 +19,31 @@ const AddContractor = ({ show, handleClose }) => {
     const [contractor, setContractor] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
+    const handleSelectedContractor = useCallback(() => {
         if (!isEmpty(selectedContractor)) {
-            // const contractorTypes = selectedContractor.ContractorTypes.m
-
-
-            setContractor(selectedContractor);
-        }
-    }, [dispatch, selectedContractor]);
+            const tempContractor = {
+                ...selectedContractor, 
+                ContractorTypes: selectedContractor.ContractorTypes.map((contractorType) => {
+                    return {
+                        value: contractorType.ID, 
+                        label: contractorType.Name 
+                    }
+                })
+            }
     
-    // console.log('selected', selectedContractor, contractorTypes);
-    // console.log('Contractor Types', contractor);
+            setContractor(tempContractor);
+        }
+    }, [selectedContractor]);
+
+    useEffect(() => {
+        handleSelectedContractor();
+
+        return () => {
+            dispatch(setSelectedContractor({}));
+        }
+    }, [dispatch, handleSelectedContractor]);
+    
+    console.log('selected', selectedContractor, contractor);
 
     useEffect(() => {
         if (isEmpty(contractorTypes))
@@ -50,15 +63,13 @@ const AddContractor = ({ show, handleClose }) => {
             ...contractor, 
             ContractorTypes: contractor.ContractorTypes?.map(type => {
                 return { 
-                    ID: type.value,
-                    Name: type.label
+                    ID: type.value
                 }
             })
         }
         console.log('FINAL', contractorFinal);
-        dispatch(createContractor(contractor))
+        dispatch(createContractor(contractorFinal))
             .then(() => {
-                dispatch(getContractors());
                 dispatch(setSelectedContractor({}));
                 setIsLoading(false);
                 handleClose();
@@ -100,6 +111,7 @@ const AddContractor = ({ show, handleClose }) => {
                                         return { value: contractor.ID, label: contractor.Name }
                                     })
                                 }
+                                value={contractor.ContractorTypes}
                                 onChange={(options) => setContractor({ ...contractor, ContractorTypes: options })}
                             />
                         </Form.Group>
@@ -133,7 +145,7 @@ const AddContractor = ({ show, handleClose }) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                // onChange={(e) => setContractor({ ...contractor, City: e.target.value })}
+                                onChange={(e) => setContractor({ ...contractor, City: e.target.value })}
                             />
                         </Form.Group>
                     </Col>
@@ -143,7 +155,7 @@ const AddContractor = ({ show, handleClose }) => {
                             <Form.Control
                                 type='text'
                                 className='input-gray'
-                                // onChange={(e) => setContractor({ ...contractor, State: e.target.value })}
+                                onChange={(e) => setContractor({ ...contractor, State: e.target.value })}
                             />
                         </Form.Group>
                     </Col>   

@@ -1,4 +1,5 @@
 import { 
+    CREATE_CONTRACTOR,
     GET_CONTRACTORS,
     GET_CONTRACTOR_TYPES,
     SET_SELECTED_CONTRACTOR
@@ -13,6 +14,12 @@ const intialState = {
 const contractorReducer = (state = intialState, action) => {
     switch (action.type) {
         case GET_CONTRACTORS: {
+            return {
+                ...state, 
+                contractors: action.payload
+            }
+        }
+        case CREATE_CONTRACTOR: {
             return {
                 ...state, 
                 contractors: action.payload
