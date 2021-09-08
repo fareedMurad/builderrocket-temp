@@ -10,6 +10,8 @@ const FileUpload = (props) => {
         label, 
         short, 
         files, 
+        fileURL, 
+        placeholder,
         onFileChange, 
         selectedInput, 
         setSelectedInput,
@@ -55,7 +57,7 @@ const FileUpload = (props) => {
 
         setSelectedInput(fileID);
     }
-
+    console.log('PLACE HOLDER', placeholder);
 
     return (
         <div className='file-upload'>
@@ -71,11 +73,11 @@ const FileUpload = (props) => {
                             + Add File
                         </Button>
                         <input 
+                            hidden 
                             type='file' 
                             id='actual-btn' 
                             ref={inputFile} 
                             onChange={onFileChange}
-                            hidden 
                         />
                     </div>
                 ) : (
@@ -85,8 +87,19 @@ const FileUpload = (props) => {
                 )}
             </div>
 
-            {short && 
+            {short && (
                 <div className='files-container'>
+                    <div className='file-name'>
+                        {placeholder && (
+                            <a 
+                               href={fileURL} 
+                               target='_blank'
+                               rel='noreferrer'
+                            >
+                               {placeholder}
+                           </a>
+                        )}
+                    </div>
                     {files && files?.map((file, index) => (
                         <div 
                             key={index} 
@@ -95,12 +108,12 @@ const FileUpload = (props) => {
                             {selectedInput === file?.ID ? (
                                 <>
                                     {!isLoading && (
-                                    <div className='file-input'>
-                                        <Form.Control 
-                                            value={newFileName}
-                                            onChange={(event) => setNewFileName(event.target.value)}
-                                        />
-                                    </div>
+                                        <div className='file-input'>
+                                            <Form.Control 
+                                                value={newFileName}
+                                                onChange={(event) => setNewFileName(event.target.value)}
+                                            />
+                                        </div>
                                     )}
                                 </>
                             ) : (
@@ -160,7 +173,7 @@ const FileUpload = (props) => {
                         </div>
                     ))}
                 </div>
-            }
+            )}
         </div>
     )
 }

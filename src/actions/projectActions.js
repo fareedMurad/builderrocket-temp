@@ -204,6 +204,11 @@ export const saveProject = (project) => dispatch => {
     });
 }
 
+/**
+ * Update Project
+ * @param {Object} project 
+ * @returns 
+ */
 export const updateProject = (project) => dispatch => {
     if (!project.ID) return;
  
@@ -253,4 +258,29 @@ export const copyProject = (projectID, projectName) => dispatch => {
         if (error.response?.status === 401) 
             dispatch({ type: LOGOUT }); 
     });
+}
+
+/**
+ * 
+ * @param {String} projectID 
+ * @param {*} thumbnail - thumbnail data
+ * @returns 
+ */
+export const uploadProjectThumbnail = (projectID, thumbnail) => async dispatch => {
+    if (!projectID) return;
+
+    const URL = `/Project/${projectID}/thumbnail`;
+
+    try {
+        const response = await api({
+            method: 'POST',
+            url: URL,
+            data: thumbnail
+        });
+        if (response.status === 200) {
+            console.log('THUMBNAIL RESPONSE', response);
+
+            return response.data;
+        }
+    } catch (error) { }
 }

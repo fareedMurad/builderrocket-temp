@@ -3,7 +3,7 @@ import { Switch, Route, useHistory } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+import ScrollToTop from './components/ScrollToTop';
 
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import ('./pages/Login'));
@@ -39,12 +39,12 @@ const Routes = (props) => {
         <Suspense fallback={<Loading />}>
             <ScrollToTop>
                 <Switch>
-                        <Route path='/' exact component={Home} />
-                        <Route exact path='/login' component={Login} /> 
-                        <Route exact path='/project' component={Project} />
-                        <Route path='/project/:project' component={Project} />
-                        <Route path='/utility-management' component={UtilityManagement} />
-                        <Route path='/contractor-management' component={ContractorManagement} />
+                    <Route path='/' exact component={Home} />
+                    <Route exact path='/login' component={Login} /> 
+                    <Route exact path='/project' component={Project} />
+                    <Route path='/project/:project' component={Project} />
+                    <Route path='/utility-management' component={UtilityManagement} />
+                    <Route path='/contractor-management' component={ContractorManagement} />
                 </Switch>
             </ScrollToTop>
         </Suspense>

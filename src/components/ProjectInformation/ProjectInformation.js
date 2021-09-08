@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
-import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
+import { saveProject, setSelectedProjectTab, uploadProjectThumbnail } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
@@ -30,6 +30,16 @@ const ProjectInformation = (props) => {
     useEffect(() => {
         dispatch(getSubdivisions());
     }, [dispatch]);
+
+    const onFileChange = (event) => {
+        // Save new thumbnail
+        const formData = new FormData();
+
+        formData.append('File', event.target?.files?.[0]);
+        console.log('FORM DATA', formData);
+
+        dispatch(uploadProjectThumbnail(project?.ID, formData));
+    }
 
     const clearChanges = () => {
         setProjectInformation({
@@ -62,6 +72,8 @@ const ProjectInformation = (props) => {
 
     const customerFullName = `${projectInformation?.Customers?.[0]?.FirstName} ${projectInformation?.Customers?.[0]?.LastName}`;
 
+    console.log('project', projectInformation);
+
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 
@@ -84,8 +96,11 @@ const ProjectInformation = (props) => {
                         </div>
                         <div className='form-col pb-4'>
                             <FileUpload 
-                                label='Project Image' 
                                 short 
+                                label='Project Image' 
+                                onFileChange={(event) => onFileChange(event)}
+                                placeholder={projectInformation?.ThumbnailName}
+                                fileURL={projectInformation?.ThumbnailURL}
                             />
                         </div>
                         <div className='form-col pb-4'>
