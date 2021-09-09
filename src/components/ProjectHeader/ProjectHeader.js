@@ -12,6 +12,7 @@ const ProjectHeader = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [projectStatus, setProjectStatus] = useState(project?.StatusID);
     const [projectCopyName, setProjectCopyName] = useState(project?.ProjectName);
 
     const statusMap = {
@@ -168,8 +169,24 @@ const ProjectHeader = () => {
 
                 <div>
                     <div className='d-flex pt-3 justify-content-end'>
-                        <div className='pr-3 text'>
-                            Status: <span className='bold-text'>{statusMap[project?.StatusID]}</span>
+                        <div className='pt-1 text'>
+                            Status: 
+                        </div>
+                        <div className='select status-dropdown pr-2'>
+                            <Form.Control 
+                                as='select'
+                                value={projectStatus}
+                                onChange={(event) => setProjectStatus(parseInt(event.target.value))}    
+                            >
+                                {Object.keys(statusMap)?.map((status, index) => (
+                                    <option 
+                                        key={index} 
+                                        value={status}
+                                    >
+                                        {statusMap[status]}
+                                    </option>
+                                ))}
+                            </Form.Control>
                         </div>
                         <button className='snapshot-btn'>Project Snapshot</button>
                     </div>

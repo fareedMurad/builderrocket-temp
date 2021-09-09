@@ -17,6 +17,17 @@
         font-weight: bold;
     }
 
+    .status-dropdown {
+        select {
+            padding-right: 0;
+            padding-bottom: .15rem;
+        }
+
+        option {
+            font-weight: bold;
+        }
+    }
+
     .project-name {
         font-size: 21px;
         font-weight: 600;

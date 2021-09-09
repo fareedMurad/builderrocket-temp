@@ -98,9 +98,9 @@ const ProjectInformation = (props) => {
                             <FileUpload 
                                 short 
                                 label='Project Image' 
+                                fileURL={projectInformation?.ThumbnailURL}
                                 onFileChange={(event) => onFileChange(event)}
                                 placeholder={projectInformation?.ThumbnailName}
-                                fileURL={projectInformation?.ThumbnailURL}
                             />
                         </div>
                         <div className='form-col pb-4'>
