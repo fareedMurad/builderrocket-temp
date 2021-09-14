@@ -57,7 +57,6 @@ const FileUpload = (props) => {
 
         setSelectedInput(fileID);
     }
-    console.log('PLACE HOLDER', placeholder);
 
     return (
         <div className='file-upload'>

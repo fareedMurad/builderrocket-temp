@@ -13,6 +13,12 @@ import CustomerModal from '../CustomerModal';
 import MarketingBlock from '../MarketingBlock';
 import ClearChangesModal from '../ClearChangesModal';
 
+const projectStatusMap = {
+    1: 'Open',
+    2: 'Completed',
+    3: 'Closed'
+}
+
 const ProjectInformation = (props) => {
     const dispatch = useDispatch();
 
@@ -22,30 +28,31 @@ const ProjectInformation = (props) => {
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showCustomerModal, setShowCustomerModal] = useState(false);
-    const [projectInformation, setProjectInformation] = useState({
-        ...project, 
-        CloseDate: project?.CloseDate
-    });
+    const [projectInformation, setProjectInformation] = useState(project);
 
     useEffect(() => {
         dispatch(getSubdivisions());
     }, [dispatch]);
 
     const onFileChange = (event) => {
-        // Save new thumbnail
+        setIsLoading(true);
+
         const formData = new FormData();
-
+        
         formData.append('File', event.target?.files?.[0]);
-        console.log('FORM DATA', formData);
+        
+        // Save new thumbnail - update component state with updated data
+        dispatch(uploadProjectThumbnail(project?.ID, formData))
+            .then((updatedProject) => {
+                setProjectInformation(updatedProject);
 
-        dispatch(uploadProjectThumbnail(project?.ID, formData));
+                setIsLoading(false);
+            })
     }
 
     const clearChanges = () => {
-        setProjectInformation({
-            ...project, 
-            CloseDate: project?.CloseDate
-        });
+        // Reset component state with redux project state 
+        setProjectInformation({ ...project });
 
         setShowModal(false);
     }
@@ -57,22 +64,15 @@ const ProjectInformation = (props) => {
     const saveChanges = () => {
         setIsLoading(true);
 
-        const projectInformationFinal = {
-            ...projectInformation,
-            CloseDate: projectInformation?.CloseDate
-        };
-
         // Save Project then navigate to documents tab
-        dispatch(saveProject(projectInformationFinal))
+        dispatch(saveProject(projectInformation))
             .then(() => {
                 setIsLoading(false);
                 dispatch(setSelectedProjectTab('documents'));
             });
     }
-
+    console.log('HELLO', projectInformation);
     const customerFullName = `${projectInformation?.Customers?.[0]?.FirstName} ${projectInformation?.Customers?.[0]?.LastName}`;
-
-    console.log('project', projectInformation);
 
     return (
         <div className='d-flex project-information'> 
@@ -135,18 +135,27 @@ const ProjectInformation = (props) => {
                                 })}
                             />
                         </div>
-                        <div className='form-col pb-4'>
+                        <div className='form-col select pb-4'>
                             <Form.Label className='input-label'>
                                 Project Status
                             </Form.Label>
-                            <Form.Control
-                                className='input-gray'
-                                value={projectInformation?.Status}
-                                onChange={(event) => setProjectInformation({
+                            <Form.Control 
+                                as='select'
+                                value={projectInformation?.StatusID}
+                                onChange={(event) => setProjectInformation({ 
                                     ...projectInformation,
-                                    Status: event.target.value
-                                })}
-                            />
+                                    StatusID: parseInt(event.target.value)
+                                })}    
+                            >
+                                {Object.keys(projectStatusMap)?.map((status, index) => (
+                                    <option 
+                                        key={index} 
+                                        value={status}
+                                    >
+                                        {projectStatusMap[status]}
+                                    </option>
+                                ))}
+                            </Form.Control>
                         </div>
                         <div className='form-col pb-3 select'>
                             <Form.Label className='input-label'>
@@ -248,7 +257,7 @@ const ProjectInformation = (props) => {
                             </Form.Label>
                             <DatePicker 
                                 className='input-gray date-picker'
-                                onChange={(date) => setProjectInformation({ ...projectInformation, CloseDate: date})}
+                                onChange={(date) => setProjectInformation({ ...projectInformation, CloseDate: date })}
                                 selected={new Date(projectInformation?.CloseDate)}
                             />
                         </div>
@@ -275,7 +284,7 @@ const ProjectInformation = (props) => {
                         <Spinner 
                            animation='border'
                            variant='primary' 
-                       />
+                        />
                     ) : (
                         <>
                             <Button 
