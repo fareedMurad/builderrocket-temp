@@ -285,11 +285,13 @@ const Products = (props) => {
                                     let isApproved = !!(templateItem?.IsApproved);
                                     let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
                                     let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
+                                    let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
 
                                     if (!isEmpty(tempTemplateItem)) {
+                                        quantity = tempTemplateItem.Quantity;
                                         isApproved = tempTemplateItem.IsApproved;
-                                        isRoughIn = tempTemplateItem?.RoughInTrimOutEnum === 'RoughIn';
-                                        isTrimOut = tempTemplateItem?.RoughInTrimOutEnum === 'TrimOut';
+                                        isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
+                                        isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
                                     }
 
                                     return (
@@ -380,7 +382,7 @@ const Products = (props) => {
                                                         type='number'
                                                         id={`quantity-${templateItem?.ID}`}
                                                         disabled={!templateItem?.Quantity}
-                                                        defaultValue={templateItem?.Quantity ? templateItem?.Quantity : 1}
+                                                        defaultValue={quantity}
                                                         onChange={(e) => handleQuantity(templateItem, e.target.value)}
                                                     >
                                                     </Form.Control>
