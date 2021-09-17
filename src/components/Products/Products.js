@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedRoom } from '../../actions/roomActions';
-import { Button, Form, Table, Modal } from 'react-bootstrap';
 import { setProduct, getCategories } from '../../actions/productActions';
-import { handleProductForProject } from '../../actions/projectActions';
+import { editProduct, handleProductForProject } from '../../actions/projectActions';
+import { Button, Form, Table, Modal, Spinner } from 'react-bootstrap';
+import { setSelectedRoom } from '../../actions/roomActions';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
 import './Products.scss';
 
@@ -17,6 +17,7 @@ const Products = (props) => {
     const selectedRoom = useSelector(state => state.room.selectedRoom);
 
     const [showModal, setShowModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [tempProduct, setTempProduct] = useState({});
     const [templateItems, setTemplateItems] = useState({});
     const [isAddProducts, setIsAddProducts] = useState(false);
@@ -112,6 +113,7 @@ const Products = (props) => {
             setTemplateItems({ 
                 ...templateItems, 
                 [incomingItem?.ID]: {
+                    ...incomingItem,
                     TemplateItemID: incomingItem?.ID,
                     CategoryID: incomingItem?.CategoryID,
                     IsApproved: false,
@@ -130,6 +132,25 @@ const Products = (props) => {
             })
         }
         
+    }
+
+    const saveProducts = () => {
+        if (isEmpty(templateItems)) return;
+
+        setIsLoading(true);
+
+        const updatedItems = Object.keys(templateItems)?.map((itemKey) => {
+            return {
+                ID: parseInt(itemKey),
+                ProjectRoomID: selectedRoom.ID,
+                ...templateItems[itemKey]
+            };
+        });
+
+        dispatch(editProduct(updatedItems))
+            .then(() => {
+                setIsLoading(false);
+            });
     }
 
     const deleteModal = () => {
@@ -167,7 +188,7 @@ const Products = (props) => {
             .then(dispatch(setProduct({})))
             .then(setIsAddProducts(true));
     }
-    // console.log('Project', project, selectedRoom);       
+    console.log('Project', selectedRoom, templateItems);       
 
     return (
         <div className='d-flex products'>
@@ -259,9 +280,17 @@ const Products = (props) => {
                             </thead>
                             <tbody>
                                 {selectedRoom?.Items?.map((templateItem, index) => {
-                                    const isApproved = !!(templateItem?.IsApproved);
-                                    const isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
-                                    const isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
+                                    const tempTemplateItem = templateItems?.[templateItem?.ID];
+
+                                    let isApproved = !!(templateItem?.IsApproved);
+                                    let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
+                                    let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
+
+                                    if (!isEmpty(tempTemplateItem)) {
+                                        isApproved = tempTemplateItem.IsApproved;
+                                        isRoughIn = tempTemplateItem?.RoughInTrimOutEnum === 'RoughIn';
+                                        isTrimOut = tempTemplateItem?.RoughInTrimOutEnum === 'TrimOut';
+                                    }
 
                                     return (
                                         <tr key={index}>
@@ -375,6 +404,31 @@ const Products = (props) => {
                             </tbody>
 
                         </Table>
+                    </div>
+
+                    <div className='d-flex justify-content-center pt-5'>
+                        {isLoading ? (
+                            <Spinner 
+                                animation='border'
+                                variant='primary' 
+                            />
+                        ) : (
+                            <>
+                                {/* <Button 
+                                    variant='link' 
+                                    className='cancel'
+                                    // onClick={() => setShowModal(true)}
+                                >
+                                    Cancel
+                                </Button> */}
+                                <Button 
+                                    onClick={saveProducts}
+                                    className='primary-gray-btn next-btn ml-3'
+                                >
+                                    Save
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </div>
             ) : (

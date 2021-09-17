@@ -278,9 +278,35 @@ export const uploadProjectThumbnail = (projectID, thumbnail) => async dispatch =
             data: thumbnail
         });
         if (response.status === 200) {
-            console.log('THUMBNAIL RESPONSE', response);
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
             return response.data;
         }
     } catch (error) { }
+}
+
+/**
+ * 
+ * @param {Array} items - product items to be updated
+ * @returns Project 
+ */
+export const editProduct = (items) => dispatch => {
+    const URL = '/Project/Room/Product';
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: items
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
 }
