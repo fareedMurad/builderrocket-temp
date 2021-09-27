@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { renameDocument } from '../../actions/documentActions';
-import { getProjectByProjectNumber } from '../../actions/projectActions';
+import { getProjectByProjectID } from '../../actions/projectActions';
 import './FileUpload.scss';
 
 const FileUpload = (props) => {
@@ -42,7 +42,7 @@ const FileUpload = (props) => {
 
         dispatch(renameDocument(fileID, fileNameObj))
             .then(() => clearInput())
-            .then(() => dispatch(getProjectByProjectNumber(project.ProjectNumber)))
+            .then(() => dispatch(getProjectByProjectID(project.ID)))
             .then(() => setIsLoading(false));
     }
 

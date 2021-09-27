@@ -3,7 +3,7 @@ import { Modal, Form, Row, Col, Button } from 'react-bootstrap';
 import './CustomerModal.scss';
 
 const CustomerModal = ({ show, setShow, setCustomer, project }) => {    
-    const customer = project.Customers?.[0];
+    const customer = project?.Customers?.[0];
 
     const [editedCustomer, setEditedCustomer] = useState({ 
         FirstName: customer?.FirstName, 

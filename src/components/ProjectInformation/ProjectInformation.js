@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
-import { saveProject, setSelectedProjectTab, uploadProjectThumbnail } from '../../actions/projectActions';
+import { 
+    saveProject, 
+    createProject,
+    setSelectedProjectTab, 
+    uploadProjectThumbnail, 
+} from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
@@ -22,6 +27,7 @@ const projectStatusMap = {
 const ProjectInformation = (props) => {
     const dispatch = useDispatch();
 
+    const user = useSelector(state => state.user.user);
     const project = useSelector(state => state.project.project);
     const subdivisions = useSelector(state => state.subdivision.subdivisions);
 
@@ -34,7 +40,13 @@ const ProjectInformation = (props) => {
         dispatch(getSubdivisions());
     }, [dispatch]);
 
+    useEffect(() => {
+        // setProjectInformation(project);
+    }, [project]);
+
     const onFileChange = (event) => {
+        if (!project?.ID) return;
+
         setIsLoading(true);
 
         const formData = new FormData();
@@ -50,6 +62,7 @@ const ProjectInformation = (props) => {
             })
     }
 
+
     const clearChanges = () => {
         // Reset component state with redux project state 
         setProjectInformation({ ...project });
@@ -64,16 +77,42 @@ const ProjectInformation = (props) => {
     const saveChanges = () => {
         setIsLoading(true);
 
-        // Save Project then navigate to documents tab
-        dispatch(saveProject(projectInformation))
-            .then(() => {
-                setIsLoading(false);
-                dispatch(setSelectedProjectTab('documents'));
-            });
-    }
-    console.log('HELLO', projectInformation);
-    const customerFullName = `${projectInformation?.Customers?.[0]?.FirstName} ${projectInformation?.Customers?.[0]?.LastName}`;
+        if (project?.ID) {
+            // Save Project then navigate to documents tab
+            dispatch(saveProject(projectInformation))
+                .then(() => {
+                    setIsLoading(false);
+                    dispatch(setSelectedProjectTab('documents'));
+                });
+        } else {
+            const newProject = { 
+                ...projectInformation,
+                DateCreated: new Date(),
+                UserID: user.UserID,
+            }
 
+            dispatch(createProject(newProject))
+                .then(() => {
+                    setIsLoading(false);
+                })
+        }
+    }
+
+    const customerFullName = () => {
+        let customerName = '';
+
+        if (projectInformation?.Customers?.[0]?.FirstName && !projectInformation?.Customers?.[0]?.LastName) {
+            customerName = projectInformation?.Customers?.[0]?.FirstName;
+        } 
+
+        if (projectInformation?.Customers?.[0]?.FirstName && projectInformation?.Customers?.[0]?.LastName) {
+            customerName = projectInformation?.Customers?.[0]?.FirstName + projectInformation?.Customers?.[0]?.LastName;
+        } 
+        
+        return customerName;
+    }
+
+    console.log('PROJECT', project);
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 
@@ -110,7 +149,7 @@ const ProjectInformation = (props) => {
                             <Form.Control
                                 readOnly
                                 className='input-gray'
-                                value={customerFullName}
+                                value={customerFullName()}
                                 onClick={() => setShowCustomerModal(true)}
                             />
                         </div>
@@ -258,7 +297,7 @@ const ProjectInformation = (props) => {
                             <DatePicker 
                                 className='input-gray date-picker'
                                 onChange={(date) => setProjectInformation({ ...projectInformation, CloseDate: date })}
-                                selected={new Date(projectInformation?.CloseDate)}
+                                selected={projectInformation?.CloseDate ? new Date(projectInformation?.CloseDate) : ''}
                             />
                         </div>
 

@@ -59,6 +59,31 @@ export const getProjectByProjectNumber = (projectNumber) => dispatch => {
     });
 }
 
+/**
+ * Get project by project ID  
+ * @param {String} projectID 
+ *
+ */
+ export const getProjectByProjectID = (projectID) => dispatch => {
+    const URL = `/Project/${projectID}`;
+
+    return api({
+        method: 'GET', 
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_PROJECT, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+}
+
 export const setSelectedProject = (selectedProject) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
@@ -310,3 +335,31 @@ export const editProduct = (items) => dispatch => {
             dispatch({ type: LOGOUT }); 
     });
 }
+
+/**
+ * 
+ * @param {Object} newProject 
+ * @returns 
+ */
+export const createProject = (newProject) => dispatch => {
+    const URL = '/Project';
+
+    return api({
+        method: 'POST', 
+        url: URL, 
+        data: newProject
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        console.log('ERROR', error);
+
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    })
+} 

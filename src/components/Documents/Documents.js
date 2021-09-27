@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addDocument, getDocumentTypes, deleteDocument } from '../../actions/documentActions';
-import { getProjectByProjectNumber, saveProject, setSelectedProjectTab } from '../../actions/projectActions';
+import { getProjectByProjectID, saveProject, setSelectedProjectTab } from '../../actions/projectActions';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -40,7 +40,7 @@ const Documents = () => {
 
         dispatch(addDocument(project.ID, formData))
             .then(() => {
-                dispatch(getProjectByProjectNumber(project.ProjectNumber));
+                dispatch(getProjectByProjectID(project.ID));
             });
     }
 
@@ -58,7 +58,7 @@ const Documents = () => {
         // delete document by document ID then refresh project
         dispatch(deleteDocument(documentID))
             .then(() => {
-                dispatch(getProjectByProjectNumber(project.ProjectNumber));
+                dispatch(getProjectByProjectID(project.ID));
             });
     }
 
@@ -146,7 +146,7 @@ const Documents = () => {
                             </Form.Label>
                             <DatePicker 
                                 className='input-gray date-picker'
-                                selected={new Date(documentsInfo?.OccupencyDate)}
+                                selected={documentsInfo?.OccupencyDate ? new Date(documentsInfo?.OccupencyDate) : ''}
                                 onChange={(date) => setDocumentsInfo({ ...documentsInfo, OccupencyDate: date })}
                             />
                         </div>
@@ -156,7 +156,7 @@ const Documents = () => {
                             </Form.Label>
                             <DatePicker 
                                 className='input-gray date-picker'
-                                selected={new Date(documentsInfo?.PermitDate)}
+                                selected={documentsInfo?.PermitDate ? new Date(documentsInfo?.PermitDate) : ''} 
                                 onChange={(date) => setDocumentsInfo({ ...documentsInfo, PermitDate: date })}
                             />
                         </div>

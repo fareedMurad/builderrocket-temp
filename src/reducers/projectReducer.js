@@ -14,6 +14,7 @@ const intialState = {
         BuildingRiskPolicy: '',
         City: '',
         CloseDate: '',
+        Contractors: {},
         Customers: [],
         DateCreated: '',
         Documents: [],

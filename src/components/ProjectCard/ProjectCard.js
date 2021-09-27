@@ -1,7 +1,7 @@
 import React from 'react';
 import { } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { getProjectByProjectNumber } from '../../actions/projectActions';
+import { getProjectByProjectID } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectCard.scss';
 
@@ -11,7 +11,7 @@ const ProjectCard = (props) => {
     const dispatch = useDispatch();
     
     const goToProject = () => {
-        dispatch(getProjectByProjectNumber(project?.ProjectNumber))
+        dispatch(getProjectByProjectID(project?.ID))
             .then(() => {
                 history.push(`/project/${project?.ProjectNumber}`)
             });
