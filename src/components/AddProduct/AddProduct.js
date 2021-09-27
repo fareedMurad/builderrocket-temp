@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleProductForProject } from '../../actions/projectActions';
-import { searchProducts, setCategories, setProduct } from '../../actions/productActions';
+import { getCategories, searchProducts, setCategories, setProduct } from '../../actions/productActions';
+import { isEmpty } from 'lodash';
 import './AddProduct.scss';
 
 // components 
@@ -20,6 +21,8 @@ const AddProduct = (props) => {
 
     const [showModal, setShowModal] = useState(false);
 
+    console.log('PRODUCTS CATERGORIES', productCategories); 
+
     useEffect(() => {
         window.scrollTo(0, 0);
 
@@ -27,6 +30,11 @@ const AddProduct = (props) => {
             dispatch(setCategories([]));
         }
     }, [dispatch]);
+
+    useEffect(() => {
+        if (isEmpty(productCategories))
+            dispatch(getCategories(product?.CategoryID));
+    }, [dispatch, productCategories])
     
     useEffect(() => {
         if (product.CategoryID) {
@@ -92,17 +100,26 @@ const AddProduct = (props) => {
       setShowModal(false);
     }
 
-    const Category = ({ category }) => {
+    const Category = ({ category, type }) => {
         // recursive method to list all categories and children categories
         const nestedCategories = (category.Children || []).map(category => {
+            console.log('CATEHFHFHFHF', category);
+
             return <Category key={category.ID} category={category} type='child' />
         });
-
+        console.log('CAT', category, type);
         return (
-            <>
-                <option value={category?.ID}>
-                    {category?.Name}
-                </option>
+            <> 
+                {/* {type ==='child' ? (
+                    
+                    <option value={category?.ID}>
+                        &nbsp;{category?.Name}
+                    </option>
+                ) : ( */}
+                    <option value={category?.ID}>
+                    &nbsp;{category?.Name}
+                    </option>
+                {/* )} */}
 
                 {nestedCategories}
             </>

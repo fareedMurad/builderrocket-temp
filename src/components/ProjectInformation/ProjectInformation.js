@@ -41,7 +41,7 @@ const ProjectInformation = (props) => {
     }, [dispatch]);
 
     useEffect(() => {
-        // setProjectInformation(project);
+        setProjectInformation(project);
     }, [project]);
 
     const onFileChange = (event) => {
@@ -75,6 +75,8 @@ const ProjectInformation = (props) => {
     }
 
     const saveChanges = () => {
+        if (!projectInformation.ProjectName) return;
+
         setIsLoading(true);
 
         if (project?.ID) {
@@ -106,13 +108,13 @@ const ProjectInformation = (props) => {
         } 
 
         if (projectInformation?.Customers?.[0]?.FirstName && projectInformation?.Customers?.[0]?.LastName) {
-            customerName = projectInformation?.Customers?.[0]?.FirstName + projectInformation?.Customers?.[0]?.LastName;
+            customerName = projectInformation?.Customers?.[0]?.FirstName + ' ' + projectInformation?.Customers?.[0]?.LastName;
         } 
         
         return customerName;
     }
 
-    console.log('PROJECT', project);
+    // console.log('PROJECT', project);
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 

@@ -188,7 +188,6 @@ const Products = (props) => {
             .then(dispatch(setProduct({})))
             .then(setIsAddProducts(true));
     }
-    console.log('Project', selectedRoom, templateItems);       
 
     return (
         <div className='d-flex products'>
