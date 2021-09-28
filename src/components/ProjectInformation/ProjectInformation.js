@@ -96,6 +96,7 @@ const ProjectInformation = (props) => {
             dispatch(createProject(newProject))
                 .then(() => {
                     setIsLoading(false);
+                    window.scrollTo(0, 0);
                 })
         }
     }
@@ -114,7 +115,6 @@ const ProjectInformation = (props) => {
         return customerName;
     }
 
-    // console.log('PROJECT', project);
     return (
         <div className='d-flex project-information'> 
             <div className='information-form-container'> 
