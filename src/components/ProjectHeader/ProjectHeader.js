@@ -157,7 +157,7 @@ const ProjectHeader = () => {
                         <div className='bold-text pr-3'>
                             Closed On 
                             {'    '}
-                            {Utils.formatDateDashes (project?.CloseDate)}
+                            {Utils.formatDateDashes(project?.CloseDate)}
                         </div>
 
                         {(project?.StatusID !== 2 && project?.BuildTime === null) &&

@@ -20,8 +20,8 @@ const Home = (props) => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [filteredProjects, setFilteredProjects] = useState(projects);
     const [projectsStatus, setProjectsStatus] = useState('Active');
+    const [filteredProjects, setFilteredProjects] = useState(projects);
     
     useEffect(() => {
         if (isSignedIn) {
@@ -45,9 +45,18 @@ const Home = (props) => {
             const filter = projects?.filter(project => 
                 project?.ProjectName?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
                 project?.ProjectNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+                project?.Subdivision?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
                 project?.LotNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
                 project?.StreetAddress1?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.Customers?.find(customer => customer?.FirstName?.toLowerCase().includes(searchTerm?.toLowerCase()))
+                project?.StreetAddress2?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.State?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.City?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.Zip?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.Customers?.find(customer => customer?.Email?.toLocaleLowerCase().includes(searchTerm?.toLowerCase())) ||
+                project?.Customers?.find(customer => customer?.Phone?.toLocaleLowerCase().includes(searchTerm?.toLowerCase())) ||
+                project?.Customers?.find(customer => customer?.FirstName?.toLowerCase().includes(searchTerm?.toLowerCase())) ||
+                project?.Customers?.find(customer => customer?.LastName?.toLowerCase().includes(searchTerm?.toLowerCase())) ||
+                project?.Customers?.find(customer => `${customer?.FirstName} ${customer?.LastName}`.toLocaleLowerCase().includes(searchTerm?.toLocaleLowerCase())) 
         );
 
             setFilteredProjects(filter);
@@ -65,7 +74,7 @@ const Home = (props) => {
             ? parseInt(project?.StatusID) !== 3 
             : parseInt(project?.StatusID) === 3);
     }
-
+    console.log('projects', projects);
     return (
         <div className='home'>
             <Container>

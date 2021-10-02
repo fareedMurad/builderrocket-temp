@@ -11,7 +11,7 @@ import {
 } from './types';
 
 /**
- * Get users projects
+ * Get users projects for user logged in
  * 
  */
 export const getProjects = () => dispatch => {
@@ -180,6 +180,11 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
     });
 }
 
+/**
+ * 
+ * @param {*} product 
+ * @returns 
+ */
 export const handleProductForProject = (product) => dispatch => {
     const URL = `/Project/Room/product`;
 
