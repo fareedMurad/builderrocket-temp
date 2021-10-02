@@ -74,7 +74,7 @@ const Home = (props) => {
             ? parseInt(project?.StatusID) !== 3 
             : parseInt(project?.StatusID) === 3);
     }
-    console.log('projects', projects);
+    
     return (
         <div className='home'>
             <Container>

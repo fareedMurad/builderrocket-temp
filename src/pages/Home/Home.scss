@@ -1,8 +1,8 @@
 @import '../../assets/styles/variables';
 
 .home {   
-    padding: 1rem 0;
-    min-height: 100vh;
+    padding         : 1rem 0;
+    min-height      : 100vh;
     background-color: $lightgray;
 
     .container {
@@ -12,23 +12,23 @@
     .title-container {
              
         #home-title {
-            font-size: 22px;
-            font-weight: 600;
+            font-size     : 22px;
+            font-weight   : 600;
             letter-spacing: -0.5px;
-            line-height: 30px;
+            line-height   : 30px;
         }
 
         .link-btn {
-            color: #2D4DA6;
+            color      : #2D4DA6;
             margin-left: 15px;
-            margin-top: 10px;
+            margin-top : 10px;
         }
     }
 
     
     .project-tabs {
-        margin-bottom: 24px;
-        margin-top: 16px;
+        margin-bottom : 24px;
+        margin-top    : 16px;
 
         .btn {
             box-shadow: none;
@@ -50,8 +50,8 @@
     }
 
     #splitter {
-        margin-top: .2rem;
-        padding-left: .1rem;
+        margin-top   : .2rem;
+        padding-left : .1rem;
         padding-right: .1rem;
     }
 
