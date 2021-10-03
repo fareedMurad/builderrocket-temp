@@ -101,28 +101,8 @@ const AddProduct = (props) => {
     }
 
     const Category = ({ category, type }) => {
-        // recursive method to list all categories and children categories
-        const nestedCategories = (category.Children || []).map(category => {
-            console.log('CATEHFHFHFHF', category);
-
-            return <Category key={category.ID} category={category} type='child' />
-        });
-        console.log('CAT', category, type);
         return (
-            <> 
-                {/* {type ==='child' ? (
-                    
-                    <option value={category?.ID}>
-                        &nbsp;{category?.Name}
-                    </option>
-                ) : ( */}
-                    <option value={category?.ID}>
-                    &nbsp;{category?.Name}
-                    </option>
-                {/* )} */}
-
-                {nestedCategories}
-            </>
+            <option value={category?.ID} dangerouslySetInnerHTML={{__html: category?.Name}}></option>
         )
     }
 
