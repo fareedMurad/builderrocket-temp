@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUtilities, getUtilityTypes } from '../../actions/utilityActions';
 import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
@@ -22,6 +22,11 @@ const Utilities = () => {
     const [showUtilityModal, setShowUtilityModal] = useState(false);
     const [utilitiesInfo, setUtilitiesInfo] = useState(project.Utilities);
     const [locatePermitNumber, setLocatePermitNumber] = useState(project.LocatePermitNumber);
+
+     // Ref to access changes on unmount 
+    const projectRef = useRef();
+    const utilitiesRef = useRef();
+    const locatePermitNumberRef = useRef();
 
     useEffect(() => {
         dispatch(getUtilityTypes());
@@ -89,6 +94,24 @@ const Utilities = () => {
                 dispatch(setSelectedProjectTab('contractors'));
             });
     }
+
+    useEffect(() => {
+        // reference latest changes 
+        projectRef.current = project;
+        utilitiesRef.current = utilitiesInfo;
+        locatePermitNumberRef.current = locatePermitNumber;
+    }, [utilitiesInfo, locatePermitNumber, project]);
+
+    useEffect(() => {
+        return () => {
+            // save any changes when navigating away
+            dispatch(saveProject({
+                ...projectRef.current, 
+                Utilities: utilitiesRef.current,
+                LocatePermitNumber: locatePermitNumberRef.current
+            }))
+        }
+    }, [dispatch]);
 
     return (
         <div className='d-flex utilities'>

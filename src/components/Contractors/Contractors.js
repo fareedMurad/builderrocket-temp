@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContractors, getContractorTypes } from '../../actions/contractorActions';
 import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
@@ -21,6 +21,10 @@ const Contractors = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showContractorModal, setShowContractorModal] = useState(false);
     const [contractorsInfo, setContractorsInfo] = useState(project.Contractors);
+
+     // Ref to access changes on unmount 
+    const contractorsRef = useRef();
+    const projectRef = useRef();
 
     useEffect(() => {
         dispatch(getContractors());
@@ -84,6 +88,22 @@ const Contractors = () => {
                 dispatch(setSelectedProjectTab('drawings'));
             });
     }
+
+    useEffect(() => {
+        // reference latest changes
+        contractorsRef.current = contractorsInfo;
+        projectRef.current = project;
+    }, [contractorsInfo, project]);
+
+    useEffect(() => {
+        return () => {
+            // save any changes when navigating away
+            dispatch(saveProject({
+                ...projectRef.current, 
+                Contractors: contractorsRef.current
+            }));
+        }
+    }, [dispatch]);
 
     return (
         <div className='d-flex contractors'>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { addDocument, getDocumentTypes, deleteDocument } from '../../actions/documentActions';
 import { getProjectByProjectID, saveProject, setSelectedProjectTab } from '../../actions/projectActions';
 import { Form, Button, Spinner } from 'react-bootstrap';
@@ -26,6 +26,9 @@ const Documents = () => {
         ...project, 
         PermitDate: Utils.formatShortDateUS(project?.PermitDate)
     });
+
+    // Ref to access changes on unmount 
+    const documentsRef = useRef();
 
     useEffect(() => {
         dispatch(getDocumentTypes());
@@ -85,6 +88,21 @@ const Documents = () => {
                 dispatch(setSelectedProjectTab('utilities'));
             });
     }
+
+    useEffect(() => {
+        // reference latest changes
+        documentsRef.current = documentsInfo;
+    }, [documentsInfo]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(saveProject({
+                ...documentsRef.current,
+                PermitDate: Utils.formatDate(documentsRef.current?.PermitDate),
+                OccupencyDate: Utils.formatDate(documentsRef.current?.OccupencyDate)
+            }));
+        }
+    }, [dispatch]);
 
     return (
         <div className='d-flex documents'>

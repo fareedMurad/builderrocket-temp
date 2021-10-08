@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
 import { 
     saveProject, 
     createProject,
     setSelectedProjectTab, 
-    uploadProjectThumbnail, 
+    uploadProjectThumbnail,
 } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -35,6 +35,9 @@ const ProjectInformation = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showCustomerModal, setShowCustomerModal] = useState(false);
     const [projectInformation, setProjectInformation] = useState(project);
+
+     // Ref to access changes on unmount 
+    const valueRef = useRef();
 
     useEffect(() => {
         dispatch(getSubdivisions());
@@ -100,6 +103,18 @@ const ProjectInformation = (props) => {
                 })
         }
     }
+
+    useEffect(() => {
+        // reference latest changes
+        valueRef.current = projectInformation;
+    }, [projectInformation]);
+
+    useEffect(() => {
+        return () => {
+              // save any changes when navigating away
+            dispatch(saveProject(valueRef.current));
+        }
+    }, [dispatch]);
 
     const customerFullName = () => {
         let customerName = '';

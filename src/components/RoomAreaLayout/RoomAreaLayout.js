@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRoomTypes } from '../../actions/roomActions';
 import { addRoomsToProject, deleteRoomsFromProject, setSelectedProjectTab } from '../../actions/projectActions';
@@ -21,6 +21,11 @@ const RoomAreaLayout = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [deleteRoomList, setDeleteRoomList] = useState([]);
     const [isLoadingRoomTypes, setIsLoadingRoomTypes] = useState(false);
+
+    // Ref to access changes on unmount 
+    const roomsRef = useRef();
+    const deleteRoomsRef = useRef();
+    const projectIDRef = useRef();
 
     useEffect(() => {
         setIsLoadingRoomTypes(true);
@@ -128,6 +133,35 @@ const RoomAreaLayout = () => {
             setIsLoadingRoomTypes(false);
         }, 250);
     }
+
+    useEffect(() => {
+        // reference latest changes
+        roomsRef.current = roomList;
+        projectIDRef.current = project?.ID;
+        deleteRoomsRef.current = deleteRoomList;
+    }, [roomList, deleteRoomList, project]);
+
+    useEffect(() => {
+        return () => {
+            // save any changes when navigating away
+            dispatch(addRoomsToProject(
+                projectIDRef.current,
+                { RoomIDs: roomsRef.current }
+            ));
+        }
+    }, [dispatch]);
+
+    useEffect(() => {
+        return () => {
+            // save any changes when navigating away
+            dispatch(deleteRoomsFromProject(
+                projectIDRef.current,
+                { IDs: deleteRoomsRef.current }
+            ));
+        }
+    }, [dispatch]);
+
+    console.log('This one');
 
     return (
         <div className='d-flex room-area-layout'>
