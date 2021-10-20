@@ -104,6 +104,8 @@ const AddProduct = (props) => {
         )
     }
 
+    console.log('Filters', products?.CustomFilters);
+
     return (
         <div className='add-product-container'>
             <div className='d-flex'>
@@ -158,7 +160,7 @@ const AddProduct = (props) => {
 
             <div className='add-products-body d-flex'>
                 <div className='checkbox-filter'>
-                    {products?.CustomFilters && Object.keys(products?.CustomFilters)?.map((filter, index) => (
+                    {products?.CustomFilters && Object.keys(products?.CustomFilters)?.reverse()?.map((filter, index) => (
                         <div 
                             key={index} 
                             className='mt-3 mb-5'
