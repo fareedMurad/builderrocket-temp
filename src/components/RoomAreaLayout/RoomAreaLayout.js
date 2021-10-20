@@ -161,8 +161,6 @@ const RoomAreaLayout = () => {
         }
     }, [dispatch]);
 
-    console.log('This one');
-
     return (
         <div className='d-flex room-area-layout'>
             <div className='container'>

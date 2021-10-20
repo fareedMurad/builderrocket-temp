@@ -188,7 +188,7 @@ const Products = (props) => {
             .then(dispatch(setProduct({})))
             .then(setIsAddProducts(true));
     }
-
+    console.log('SELECTED ROOM', selectedRoom);
     return (
         <div className='d-flex products'>
             {!isAddProducts ? (
@@ -322,7 +322,7 @@ const Products = (props) => {
                                                     <div>
                                                         <Button 
                                                             variant='link' 
-                                                            className='link-btn'
+                                                            className='link-btn item-button'
                                                             onClick={() => handleSelectedCategoryID(templateItem)}
                                                         >
                                                             {templateItem?.IsTemplate ? 
@@ -332,22 +332,22 @@ const Products = (props) => {
                                                                 </>
                                                             : 
                                                                 <>
-                                                                    {templateItem?.ShortDescription}
+                                                                    {templateItem?.ProductName}
                                                                 </>
                                                             }
                                                         </Button>
 
                                                         {!templateItem?.IsTemplate && (
-                                                            <div>
+                                                            <div className='model-number'>
                                                                 Model: {templateItem?.ModelNumber}
                                                             </div>
                                                         )} 
                                                     </div>
                                                 </div>  
                                             </td>
-                                            <td></td>
+                                            <td>{templateItem?.ShortDescription}</td>
                                             <td>{templateItem?.CategoryName}</td>
-                                            <td></td>
+                                            <td>{templateItem?.UnitOfMeasure}</td>
                                             <td>
                                                 <Form className='d-flex justify-content-center'>
                                                     <Form.Check 

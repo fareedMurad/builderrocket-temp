@@ -21,8 +21,6 @@ const AddProduct = (props) => {
 
     const [showModal, setShowModal] = useState(false);
 
-    console.log('PRODUCTS CATERGORIES', productCategories); 
-
     useEffect(() => {
         window.scrollTo(0, 0);
 
@@ -34,7 +32,7 @@ const AddProduct = (props) => {
     useEffect(() => {
         if (isEmpty(productCategories))
             dispatch(getCategories(product?.CategoryID));
-    }, [dispatch, productCategories])
+    }, [dispatch, productCategories, product])
     
     useEffect(() => {
         if (product.CategoryID) {
