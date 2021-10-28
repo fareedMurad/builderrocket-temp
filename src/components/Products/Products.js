@@ -9,6 +9,7 @@ import './Products.scss';
 
 // components 
 import AddProduct from '../../components/AddProduct';
+import ProductDetail from '../ProductDetail/ProductDetail';
 
 const Products = (props) => {
     const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const Products = (props) => {
     const [tempProduct, setTempProduct] = useState({});
     const [templateItems, setTemplateItems] = useState({});
     const [isAddProducts, setIsAddProducts] = useState(false);
+    const [isProductDetail, setIsProductDetail] = useState(false);
     
     useEffect(() => {
         if (isEmpty(selectedRoom))
@@ -188,10 +190,15 @@ const Products = (props) => {
             .then(dispatch(setProduct({})))
             .then(setIsAddProducts(true));
     }
-    console.log('SELECTED ROOM', selectedRoom);
+
+    const goToProductDetails = () => {
+        setIsAddProducts(false);
+        setIsProductDetail(true);
+    }
+    
     return (
         <div className='d-flex products'>
-            {!isAddProducts ? (
+            {(!isAddProducts && !isProductDetail) && (
                 <div className='products-container'>
                     <div className='d-flex justify-content-between'>
                         <div>
@@ -432,8 +439,12 @@ const Products = (props) => {
                         )}
                     </div>
                 </div>
-            ) : (
-                <AddProduct handleShow={setIsAddProducts} />
+            )}
+            {isAddProducts && (
+                <AddProduct handleShow={setIsAddProducts} goToProductDetails={goToProductDetails} />
+            )}
+            {isProductDetail && (
+                <ProductDetail />
             )}
         </div>
     );

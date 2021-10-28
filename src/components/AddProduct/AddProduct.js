@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Table } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState, useRef } from 'react';
+import { 
+    getCategories, 
+    searchProducts, 
+    setCategories, 
+    setProduct, 
+    setProductDetails
+} from '../../actions/productActions';
 import { handleProductForProject } from '../../actions/projectActions';
-import { getCategories, searchProducts, setCategories, setProduct } from '../../actions/productActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Form, Table } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import './AddProduct.scss';
 
 // components 
 import ProductModal from '../ProductModal';
 
-const AddProduct = (props) => {
-    const { handleShow } = props;
+const AddProduct = ({ handleShow, goToProductDetails }) => {
     
     const dispatch = useDispatch();
 
@@ -20,6 +25,14 @@ const AddProduct = (props) => {
     const productCategories = useSelector(state => state.product.productCategories);
 
     const [showModal, setShowModal] = useState(false);
+
+    const productRef = useRef();
+    
+        console.log('products', products);
+
+    useEffect(() => {
+        productRef.current = product;
+    }, [product]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -31,8 +44,8 @@ const AddProduct = (props) => {
 
     useEffect(() => {
         if (isEmpty(productCategories))
-            dispatch(getCategories(product?.CategoryID));
-    }, [dispatch, productCategories, product])
+            dispatch(getCategories(productRef.current?.CategoryID));
+    }, [dispatch, productCategories]);
     
     useEffect(() => {
         if (product.CategoryID) {
@@ -104,7 +117,12 @@ const AddProduct = (props) => {
         )
     }
 
-    console.log('Filters', products?.CustomFilters);
+    const handleSelectedProductDetails = (productDetails) => {
+        dispatch(setProductDetails(productDetails))
+            .then(() => {
+                goToProductDetails(productDetails);
+            });
+    }
 
     return (
         <div className='add-product-container'>
@@ -207,9 +225,24 @@ const AddProduct = (props) => {
                                         />
                                     </td>
                                     <td>
-                                        {product?.BrandName}
-                                        {' '}
-                                        {product?.ProductName}
+                                        <div className='add-btn-product-details'>
+                                            <Button 
+                                                variant='link' 
+                                                className='link-btn item-button'
+                                                onClick={() => handleSelectedProductDetails(product)}
+                                            >
+                                                {product?.ProductName}
+                                            </Button>
+
+                                            <div className='d-flex mt-2'>
+                                                <div className='model-number'>
+                                                    Model: {product?.ModelNumber}
+                                                </div>
+                                                <div>
+                                                    Part: 
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td></td>
                                     <td>{product?.ColorFinish}</td>
