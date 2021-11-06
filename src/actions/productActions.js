@@ -140,3 +140,26 @@ export const setCategories = (categories) => dispatch => {
         }
     });
 }
+
+export const getProductDetails = (productID) => dispatch => {
+    if (!productID) return;
+
+    const URL = `/Product/${productID}/details`;
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            dispatch({ type: SET_PRODUCT_DETAIL, payload: response.data });
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+
+}

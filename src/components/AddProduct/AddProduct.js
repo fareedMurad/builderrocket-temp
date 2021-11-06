@@ -8,8 +8,8 @@ import {
     setProducts,
 } from '../../actions/productActions';
 import { handleProductForProject } from '../../actions/projectActions';
+import { Button, Form, Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Form, Table } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import './AddProduct.scss';
 
@@ -25,6 +25,7 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
     const productCategories = useSelector(state => state.product.productCategories);
 
     const [showModal, setShowModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [searchObject, setSearchObject] = useState({
         CategoryID: '',
         ModelName: null,
@@ -61,9 +62,13 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
     
     useEffect(() => {
         if (productRef.current?.CategoryID) {
-            dispatch(searchProducts(productRef.current?.CategoryID));
+            dispatch(searchProducts(productRef.current?.CategoryID))
+                .then(setIsLoading(false))
+                .catch(setIsLoading(false));
         } else {
-            dispatch(searchProducts());
+            dispatch(searchProducts())
+                .then(setIsLoading(false))
+                .catch(setIsLoading(false));
         }
     }, [dispatch, product]);
 
@@ -232,75 +237,84 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
                 </div>
 
                 <div className='add-product-table'>
-                    <Table hover responsive>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Product Name</th>
-                                <th>Project Status</th>
-                                <th>Color/Finish</th>
-                                <th>Distributor</th>
-                                <th>Price</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {products?.Products?.slice(0, 25)?.map((product, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        <img
-                                            alt='product' 
-                                            width='50'
-                                            height='50'
-                                            src={product?.ThumbnailURL}
-                                        />
-                                    </td>
-                                    <td>
-                                        <div className='add-btn-product-details'>
-                                            <Button 
-                                                variant='link' 
-                                                className='link-btn item-button'
-                                                onClick={() => handleSelectedProductDetails(product)}
-                                            >
-                                                {product?.ProductName}
-                                            </Button>
+                {isLoading ? (
+                    <div className='add-products-spinner d-flex justify-content-center'>
+                        <Spinner 
+                            animation='border'
+                            variant='primary' 
+                        />
+                    </div>
+                ) : (
+                        <Table hover responsive>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Product Name</th>
+                                    <th>Project Status</th>
+                                    <th>Color/Finish</th>
+                                    <th>Distributor</th>
+                                    <th>Price</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {products?.Products?.slice(0, 25)?.map((product, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <img
+                                                alt='product' 
+                                                width='50'
+                                                height='50'
+                                                src={product?.ThumbnailURL}
+                                            />
+                                        </td>
+                                        <td>
+                                            <div className='add-btn-product-details'>
+                                                <Button 
+                                                    variant='link' 
+                                                    className='link-btn item-button'
+                                                    onClick={() => handleSelectedProductDetails(product)}
+                                                >
+                                                    {product?.ProductName}
+                                                </Button>
 
-                                            <div className='d-flex mt-2'>
-                                                <div className='model-number'>
-                                                    Model: {product?.ModelNumber}
-                                                </div>
-                                                <div>
-                                                    Part: 
+                                                <div className='d-flex mt-2'>
+                                                    <div className='model-number'>
+                                                        Model: {product?.ModelNumber}
+                                                    </div>
+                                                    <div>
+                                                        Part: 
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td></td>
-                                    <td>{product?.ColorFinish}</td>
-                                    <td>
-                                        <div className='distributor-select'>
-                                            <Form.Control as='select'>
-                                            </Form.Control>
-                                            <div>Available from x vendors</div>
-                                        </div>
-                                    </td>
-                                    <td>${product?.MSRP}</td>
-                                    <td>
-                                        <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                    </td>
-                                    <td>
-                                        <Button
-                                            className='add-product-btn'
-                                            onClick={() => addProduct(product?.ID)}
-                                        >
-                                            Add
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                                        </td>
+                                        <td></td>
+                                        <td>{product?.ColorFinish}</td>
+                                        <td>
+                                            <div className='distributor-select'>
+                                                <Form.Control as='select'>
+                                                </Form.Control>
+                                                <div>Available from x vendors</div>
+                                            </div>
+                                        </td>
+                                        <td>${product?.MSRP}</td>
+                                        <td>
+                                            <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                        </td>
+                                        <td>
+                                            <Button
+                                                className='add-product-btn'
+                                                onClick={() => addProduct(product?.ID)}
+                                            >
+                                                Add
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    )}
                 </div>
             </div>
 

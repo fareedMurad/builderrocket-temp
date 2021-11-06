@@ -171,7 +171,7 @@ const RoomAreaLayout = () => {
                 </div>
 
                 {isLoadingRoomTypes ? (
-                    <div className='spinner d-flex justify-content-center'>
+                    <div className='room-area-layout-spinner d-flex justify-content-center'>
                         <Spinner 
                             animation='border'
                             variant='primary' 
@@ -213,9 +213,9 @@ const RoomAreaLayout = () => {
                <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
                         <Spinner 
-                           animation='border'
-                           variant='primary' 
-                       />
+                            animation='border'
+                            variant='primary' 
+                        />
                     ) : (
                         <>
                             <Button 

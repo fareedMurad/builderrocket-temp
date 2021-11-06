@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import './ProductDetail.scss';
 
 const ProductDetail = ( ) => {
+    const dispatch = useDispatch();
 
     const productDetail = useSelector(state => state.product.productDetail);
+
+    useEffect(() => {
+
+    }, [dispatch]);
     console.log('product detail', productDetail);
 
     return (
