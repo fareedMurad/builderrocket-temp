@@ -14,10 +14,31 @@
         font-size: 14px;
     }
 
-    .page-title {
+    .title {
         font-size: 14px;
-        padding-left: 0;
-        line-height: 24px;
-        padding-top: 1.2rem;
+        padding-left: .25rem;
+    }
+
+    .details-container {
+        padding: 2.5rem 3rem;
+        
+        .details-image {
+            width: 45%;
+
+            img {
+                height: 375px;
+                width: 400px;
+            }
+
+        }
+        
+        .details {
+            width: 55%;
+
+            .details-title {
+                font-size: 24px;
+                font-weight: bold;
+            }       
+        }
     }
 }

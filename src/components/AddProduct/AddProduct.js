@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { 
-    getCategories, 
-    searchProducts, 
-    setCategories, 
     setProduct, 
-    setProductDetails
+    getCategories, 
+    setCategories, 
+    searchProducts, 
+    setProductDetail,
+    setProducts,
 } from '../../actions/productActions';
 import { handleProductForProject } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,8 +16,7 @@ import './AddProduct.scss';
 // components 
 import ProductModal from '../ProductModal';
 
-const AddProduct = ({ handleShow, goToProductDetails }) => {
-    
+const AddProduct = ({ handleShow, goToProductDetail }) => {
     const dispatch = useDispatch();
 
     const product = useSelector(state => state.product.product);
@@ -25,31 +25,43 @@ const AddProduct = ({ handleShow, goToProductDetails }) => {
     const productCategories = useSelector(state => state.product.productCategories);
 
     const [showModal, setShowModal] = useState(false);
+    const [searchObject, setSearchObject] = useState({
+        CategoryID: '',
+        ModelName: null,
+        Description: null, 
+        CustomFilters: {}
+    });
 
     const productRef = useRef();
+    const searchRef = useRef('');
+    const productCategoriesRef = useRef();
     
-        console.log('products', products);
+    // console.log('product', product);
+    // console.log('products', products);
+    // console.log('searchRef', searchRef);
 
     useEffect(() => {
         productRef.current = product;
-    }, [product]);
+        productCategoriesRef.current = productCategories;
+    }, [product, productCategories]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
 
         return () => {
             dispatch(setCategories([]));
+            dispatch(setProducts([]));
         }
     }, [dispatch]);
 
     useEffect(() => {
-        if (isEmpty(productCategories))
+        if (isEmpty(productCategoriesRef.current))
             dispatch(getCategories(productRef.current?.CategoryID));
-    }, [dispatch, productCategories]);
+    }, [dispatch]);
     
     useEffect(() => {
-        if (product.CategoryID) {
-            dispatch(searchProducts(product?.CategoryID));
+        if (productRef.current?.CategoryID) {
+            dispatch(searchProducts(productRef.current?.CategoryID));
         } else {
             dispatch(searchProducts());
         }
@@ -79,14 +91,15 @@ const AddProduct = ({ handleShow, goToProductDetails }) => {
 
         updatedFilters[filterType][filterChildIndex] = updatedFilterChild;
  
-        const searchObject = {
+        const search = {
             CategoryID: product?.CategoryID,
             ModelName: null,
-            Description: null, 
+            Description: searchObject.Description, 
             CustomFilters: updatedFilters
         }
 
-        dispatch(searchProducts(product?.CategoryID, searchObject));
+        dispatch(searchProducts(product?.CategoryID, search));
+        setSearchObject(search);
     }
 
     const addProduct = (productID) => {
@@ -117,11 +130,21 @@ const AddProduct = ({ handleShow, goToProductDetails }) => {
         )
     }
 
-    const handleSelectedProductDetails = (productDetails) => {
-        dispatch(setProductDetails(productDetails))
+    const handleSelectedProductDetails = (productDetail) => {
+        dispatch(setProductDetail(productDetail))
             .then(() => {
-                goToProductDetails(productDetails);
+                goToProductDetail(productDetail);
             });
+    }
+
+    const handleSearch = () => {
+        const updatedSearch = {
+            ...searchObject,
+            Description: searchRef.current.value
+        }
+
+        dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch));
+        setSearchObject(updatedSearch);
     }
 
     return (
@@ -160,10 +183,19 @@ const AddProduct = ({ handleShow, goToProductDetails }) => {
                     <div className='d-flex'>
                         <Form.Control 
                             placeholder='Search Keywords'
-                            // onChange={(e) => setSearchTerm(e.target.value)}    
+                            ref={searchRef}
+                            // onChange={(event) => setSearchObject({ 
+                            //     ...searchObject, 
+                            //     Description: event.target.value
+                            // })}    
                         >
                         </Form.Control>
-                        <Button className='primary-gray-btn search-btn ml-3'>Search</Button>
+                        <Button 
+                            onClick={handleSearch}
+                            className='primary-gray-btn search-btn ml-3'
+                        >
+                                Search
+                        </Button>
                     </div>
                     <div>
                     </div>

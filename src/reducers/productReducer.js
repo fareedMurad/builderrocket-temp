@@ -1,8 +1,9 @@
 import { 
     SET_PRODUCT,
+    SET_PRODUCTS,
     GET_CATEGORIES, 
     SEARCH_PRODUCTS, 
-    SET_PRODUCT_DETAILS,
+    SET_PRODUCT_DETAIL,
     SET_SELECTED_CATEGORY_ID
 } from '../actions/types';
 
@@ -10,7 +11,7 @@ const intialState = {
     products: [],
     productCategories: [],
     selectedCategoryID: '',
-    productDetails: {}
+    productDetail: {}
 }
 
 const productReducer = (state = intialState, action) => {
@@ -39,10 +40,16 @@ const productReducer = (state = intialState, action) => {
                 product: action.payload
             }
         }
-        case SET_PRODUCT_DETAILS: {
+        case SET_PRODUCTS: {
             return {
                 ...state, 
-                productDetails: action.payload
+                products: action.payload
+            }
+        }
+        case SET_PRODUCT_DETAIL: {
+            return {
+                ...state, 
+                productDetail: action.payload
             }
         }
         default: 

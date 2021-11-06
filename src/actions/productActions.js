@@ -1,9 +1,10 @@
 import { 
     LOGOUT,
     SET_PRODUCT,
+    SET_PRODUCTS,
     GET_CATEGORIES,
     SEARCH_PRODUCTS,
-    SET_PRODUCT_DETAILS,
+    SET_PRODUCT_DETAIL,
     GET_CHILD_CATEGORIES,
     SET_SELECTED_CATEGORY_ID
 } from '../actions/types';
@@ -56,7 +57,11 @@ export const getChildCategories = (categoryID) => dispatch => {
 }
 
 export const searchProducts = (categoryID, searchObject) => dispatch => {
-    const URL = `/Product/${categoryID ? categoryID : 'Search'}`;
+    let URL = '/Product'; 
+    
+    if (categoryID) {
+        URL = `${URL}/${categoryID}`;
+    }  
     
     return api({
         method: 'POST',
@@ -100,12 +105,24 @@ export const setProduct = (product) => dispatch => {
     });
 }
 
-export const setProductDetails = (productDetails) => dispatch => {
+export const setProducts = (products) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
-            dispatch({ type: SET_PRODUCT_DETAILS, payload: productDetails });
+            dispatch({ type: SET_PRODUCTS, payload: products });
 
-            resolve(productDetails);
+            resolve(products);
+        } catch (error) {
+
+        }
+    });
+}
+
+export const setProductDetail = (productDetail) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_PRODUCT_DETAIL, payload: productDetail });
+
+            resolve(productDetail);
         } catch (error) {
             reject(error);
         }

@@ -54,7 +54,8 @@ const Products = (props) => {
 
             dispatch(setProduct(product))
                 .then(dispatch(getCategories(product?.CategoryID)))
-                .then(setIsAddProducts(true));
+                .then(setIsAddProducts(true))
+                .catch(() => {});
         }
 
     }
@@ -188,14 +189,15 @@ const Products = (props) => {
     const showProducts = () => {
         dispatch(getCategories(''))
             .then(dispatch(setProduct({})))
-            .then(setIsAddProducts(true));
+            .then(setIsAddProducts(true))
+            .catch(() => {});
     }
 
-    const goToProductDetails = () => {
+    const showProductDetail = () => {
         setIsAddProducts(false);
         setIsProductDetail(true);
     }
-    
+    console.log('selected room', selectedRoom);
     return (
         <div className='d-flex products'>
             {(!isAddProducts && !isProductDetail) && (
@@ -441,7 +443,7 @@ const Products = (props) => {
                 </div>
             )}
             {isAddProducts && (
-                <AddProduct handleShow={setIsAddProducts} goToProductDetails={goToProductDetails} />
+                <AddProduct handleShow={setIsAddProducts} goToProductDetail={showProductDetail} />
             )}
             {isProductDetail && (
                 <ProductDetail />
