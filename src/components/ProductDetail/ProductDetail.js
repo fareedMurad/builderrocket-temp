@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import { Button } from 'react-bootstrap';
+import React, { useEffect, useRef } from 'react';
+import { getProductDetails } from '../../actions/productActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'react-bootstrap';
 import './ProductDetail.scss';
 
 const ProductDetail = ( ) => {
@@ -8,10 +9,15 @@ const ProductDetail = ( ) => {
 
     const productDetail = useSelector(state => state.product.productDetail);
 
-    useEffect(() => {
+    const productDetailRef = useRef();
 
+    useEffect(() => {
+        productDetail.current = productDetail;
+    }, [productDetail]);
+
+    useEffect(() => {
+        dispatch(getProductDetails(productDetailRef.current?.ID));
     }, [dispatch]);
-    console.log('product detail', productDetail);
 
     return (
         <div className='product-detail'>

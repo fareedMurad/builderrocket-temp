@@ -6,7 +6,8 @@ import {
     SEARCH_PRODUCTS,
     SET_PRODUCT_DETAIL,
     GET_CHILD_CATEGORIES,
-    SET_SELECTED_CATEGORY_ID
+    SET_SELECTED_CATEGORY_ID,
+    SET_SELECTED_PRODUCT_TAB,
 } from '../actions/types';
 import api from '../api';
 
@@ -161,5 +162,18 @@ export const getProductDetails = (productID) => dispatch => {
         if (error?.response?.status === 401) 
             dispatch({ type: LOGOUT });
     });
+}
 
+export const setSelectedProductTab = (selectedProductTab) => dispatch => {
+    if (!selectedProductTab) return;
+
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_SELECTED_PRODUCT_TAB, payload: selectedProductTab });
+
+            resolve(selectedProductTab);
+        } catch (error) {
+            reject(error);
+        }
+    })
 }

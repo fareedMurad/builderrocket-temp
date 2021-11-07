@@ -1,8 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { getRoomTypes } from '../../actions/roomActions';
-import { addRoomsToProject, deleteRoomsFromProject, setSelectedProjectTab } from '../../actions/projectActions';
 import { Form, Spinner, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+    addRoomsToProject, 
+    setSelectedProjectTab, 
+    deleteRoomsFromProject, 
+} from '../../actions/projectActions';
 import { isEmpty } from 'lodash';
 import './RoomAreaLayout.scss';
 

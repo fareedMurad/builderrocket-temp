@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { setProduct, getCategories } from '../../actions/productActions';
+import { setProduct, getCategories, setSelectedProductTab } from '../../actions/productActions';
 import { editProduct, handleProductForProject } from '../../actions/projectActions';
 import { Button, Form, Table, Modal, Spinner } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
@@ -190,12 +190,16 @@ const Products = (props) => {
         dispatch(getCategories(''))
             .then(dispatch(setProduct({})))
             .then(setIsAddProducts(true))
+            .then(dispatch(setSelectedProductTab('addProduct')))
             .catch(() => {});
     }
 
     const showProductDetail = () => {
-        setIsAddProducts(false);
-        setIsProductDetail(true);
+        dispatch(setSelectedProductTab('addProduct'))
+            .then(() => {
+                setIsAddProducts(false);
+                setIsProductDetail(true);
+            });
     }
     console.log('selected room', selectedRoom);
     return (

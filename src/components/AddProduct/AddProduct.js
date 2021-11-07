@@ -30,6 +30,7 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
         CategoryID: '',
         ModelName: null,
         Description: null, 
+        Filter: null,
         CustomFilters: {}
     });
 
@@ -97,9 +98,10 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
         updatedFilters[filterType][filterChildIndex] = updatedFilterChild;
  
         const search = {
-            CategoryID: product?.CategoryID,
+            CategoryID: product?.CategoryID, 
             ModelName: null,
-            Description: searchObject.Description, 
+            Description: null, 
+            Filter: searchObject.Filter, 
             CustomFilters: updatedFilters
         }
 
@@ -145,7 +147,7 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
     const handleSearch = () => {
         const updatedSearch = {
             ...searchObject,
-            Description: searchRef.current.value
+            Filter: searchRef.current.value
         }
 
         dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch));
@@ -188,11 +190,7 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
                     <div className='d-flex'>
                         <Form.Control 
                             placeholder='Search Keywords'
-                            ref={searchRef}
-                            // onChange={(event) => setSearchObject({ 
-                            //     ...searchObject, 
-                            //     Description: event.target.value
-                            // })}    
+                            ref={searchRef} 
                         >
                         </Form.Control>
                         <Button 
