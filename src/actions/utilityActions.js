@@ -95,5 +95,9 @@ export const deleteUtility = (utilityID) => dispatch => {
 }
 
 export const setSelectedUtility = (utility) => dispatch => {
-    dispatch({ type: SET_SELECTED_UTILITY, payload: utility });
+    return new Promise((resolve, reject) => {
+        dispatch({ type: SET_SELECTED_UTILITY, payload: utility });
+
+        resolve();
+    })
 }

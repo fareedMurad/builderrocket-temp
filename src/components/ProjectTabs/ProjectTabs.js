@@ -9,18 +9,33 @@ import Drawings from '../Drawings';
 import Products from '../Products';
 import Documents from '../Documents';
 import Utilities from '../Utilities';
+import AddProduct from '../AddProduct';
 import Contractors from '../Contractors';
+import ProductDetail from '../ProductDetail';
 import RoomAreaLayout from '../RoomAreaLayout';
 import ProjectInformation from '../ProjectInformation';
-
 
 const ProjectTabs = (props) => {
     const dispatch = useDispatch();
 
     const selectedProjectTab = useSelector(state => state.project.selectedProjectTab);
+    const selectedProductTab = useSelector(state => state.product.selectedProductTab);
 
     const handleSelectedTab = (tab) => {
         dispatch(setSelectedProjectTab(tab));
+    }
+
+    const handleProductsTabs = () => {
+        switch(selectedProductTab) {
+            case 'products': 
+                return <Products />;
+            case 'addProduct': 
+                return <AddProduct />;
+            case 'productDetail':
+                return <ProductDetail />;
+            default:
+                return <Products />;
+        }
     }
 
     return (
@@ -31,39 +46,39 @@ const ProjectTabs = (props) => {
                 transition={false}
             >
                 <Tab eventKey='projectInformation' title='Project Information'>
-                    {selectedProjectTab === 'projectInformation' &&
+                    {selectedProjectTab === 'projectInformation' && (
                         <ProjectInformation />
-                    }
+                    )}
                 </Tab>
                 <Tab eventKey='documents' title='Documents'>
-                    {selectedProjectTab === 'documents' &&
+                    {selectedProjectTab === 'documents' && (
                         <Documents />
-                    }
+                    )}
                 </Tab>
                 <Tab eventKey='utilities' title='Utilities'>
-                    {selectedProjectTab === 'utilities' &&
+                    {selectedProjectTab === 'utilities' && (
                         <Utilities />
-                    }
+                    )}
                 </Tab>
                 <Tab eventKey='contractors' title='Contractors'>
-                    {selectedProjectTab === 'contractors' &&
+                    {selectedProjectTab === 'contractors' && (
                         <Contractors />
-                    }
+                    )}
                 </Tab>
                 <Tab eventKey='drawings' title='Drawings'>
-                    {selectedProjectTab === 'drawings' &&
+                    {selectedProjectTab === 'drawings' && (
                         <Drawings />
-                    }
+                    )}
                 </Tab>
                 <Tab eventKey='roomAreaLayout' title='Room/Area Layout'>
-                    {selectedProjectTab === 'roomAreaLayout' &&
+                    {selectedProjectTab === 'roomAreaLayout' && (
                         <RoomAreaLayout />
-                    }
+                    )}
                 </Tab>
                 <Tab eventKey='products' title='Products'>
-                    {selectedProjectTab === 'products' &&
-                        <Products />
-                    }
+                    {selectedProjectTab === 'products' && (
+                        handleProductsTabs()
+                    )}
                 </Tab>
             </Tabs>
         </div>

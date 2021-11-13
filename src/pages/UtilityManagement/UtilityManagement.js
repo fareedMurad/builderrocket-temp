@@ -41,7 +41,7 @@ const UtilityManagement = () => {
         );
 
             setFilteredUtilities(filter);
-        }, 1000);
+        }, 500);
 
         return () => clearTimeout(timer);
     }, [searchTerm, utilities]);
@@ -77,6 +77,13 @@ const UtilityManagement = () => {
         dispatch(setSelectedUtility(utility));
     }
 
+    const handleAddUtility = () => {
+        dispatch(setSelectedUtility({}))
+            .then(() => {
+                setShowUtilityModal(true);
+            });
+    }
+
     const deleteUtilityModal = () => {
         return (
             <Modal
@@ -87,11 +94,9 @@ const UtilityManagement = () => {
             >
                 <Modal.Body>
                     <div className='page-title'>Delete Utility</div>
-
                     <div className='d-flex justify-content-center'>
                         Are you sure you want to delete this utility?
                     </div>
-
                     <div className='d-flex justify-content-center pt-5'>
                         <Button 
                             onClick={cancelDeletion} 
@@ -121,7 +126,7 @@ const UtilityManagement = () => {
                         <Button 
                             variant='link' 
                             className='link-btn'
-                            onClick={() => setShowUtilityModal(true)}    
+                            onClick={handleAddUtility}    
                         >
                             + Add Utility
                         </Button>
@@ -187,12 +192,12 @@ const UtilityManagement = () => {
                 </div>
             </div>
 
-            {showUtilityModal && 
+            {showUtilityModal && (
                 <AddUtility 
                     show={showUtilityModal} 
                     handleClose={() => setShowUtilityModal(false)} 
                 />
-            }
+            )}
             {deleteUtilityModal()}
         </div>
     );

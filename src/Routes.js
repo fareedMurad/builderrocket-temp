@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory, Redirect } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
@@ -45,6 +45,8 @@ const Routes = (props) => {
                     <Route path='/project/:project' component={Project} />
                     <Route path='/utility-management' component={UtilityManagement} />
                     <Route path='/contractor-management' component={ContractorManagement} />
+
+                    <Redirect to='/' />
                 </Switch>
             </ScrollToTop>
         </Suspense>

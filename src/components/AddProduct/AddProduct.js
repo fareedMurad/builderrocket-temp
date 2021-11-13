@@ -6,6 +6,7 @@ import {
     searchProducts, 
     setProductDetail,
     setProducts,
+    setSelectedProductTab,
 } from '../../actions/productActions';
 import { handleProductForProject } from '../../actions/projectActions';
 import { Button, Form, Table, Spinner } from 'react-bootstrap';
@@ -16,7 +17,7 @@ import './AddProduct.scss';
 // components 
 import ProductModal from '../ProductModal';
 
-const AddProduct = ({ handleShow, goToProductDetail }) => {
+const AddProduct = () => {
     const dispatch = useDispatch();
 
     const product = useSelector(state => state.product.product);
@@ -37,10 +38,6 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
     const productRef = useRef();
     const searchRef = useRef('');
     const productCategoriesRef = useRef();
-    
-    // console.log('product', product);
-    // console.log('products', products);
-    // console.log('searchRef', searchRef);
 
     useEffect(() => {
         productRef.current = product;
@@ -122,12 +119,11 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
 
         dispatch(handleProductForProject([newProduct]))
             .then(
-                handleShow(false)
+                dispatch(setSelectedProductTab('products'))
             );
     }
 
     const handleClose = () => {
-      handleShow(false);
       setShowModal(false);
     }
 
@@ -140,7 +136,7 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
     const handleSelectedProductDetails = (productDetail) => {
         dispatch(setProductDetail(productDetail))
             .then(() => {
-                goToProductDetail(productDetail);
+                dispatch(setSelectedProductTab('productDetail'));
             });
     }
 
@@ -154,6 +150,10 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
         setSearchObject(updatedSearch);
     }
 
+    const handleGoToProducts = () => {
+        dispatch(setSelectedProductTab('products'));
+    }
+
     return (
         <div className='add-product-container'>
             <div className='d-flex'>
@@ -161,12 +161,12 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
                     <Button 
                         variant='link' 
                         className='link-btn'
-                        onClick={() => handleShow(false)}
+                        onClick={handleGoToProducts}
                     >
                         Products /
                     </Button>
                 </div>  
-                <div className='page-title'>Add Products</div>
+                <div className='page-title'>Add Products - {selectedRoom?.RoomName}</div>
             </div>
 
             <div className='filter-section'>
@@ -198,6 +198,13 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
                             className='primary-gray-btn search-btn ml-3'
                         >
                                 Search
+                        </Button>
+                        <Button 
+                            variant='link' 
+                            className='cancel ml-3'
+                            onClick={handleGoToProducts}
+                        >
+                            Cancel
                         </Button>
                     </div>
                     <div>
@@ -320,13 +327,12 @@ const AddProduct = ({ handleShow, goToProductDetail }) => {
                 <Button 
                     variant='link' 
                     className='cancel'
-                    onClick={() => handleShow(false)}
+                    onClick={handleGoToProducts}
                 >
                     Cancel
                 </Button>
             </div>
         
-
             <ProductModal 
                 show={showModal} 
                 handleClose={handleClose} 

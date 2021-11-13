@@ -59,8 +59,6 @@ const AddUtility = ({ show, handleClose }) => {
             });
     }
 
-    console.log('utility', utility)
-
     const title = isEmpty(utility) ? 'Add Utility' : 'Edit Utility';
 
     return (
@@ -108,7 +106,7 @@ const AddUtility = ({ show, handleClose }) => {
                     </Col>
                     <Col md={6}>
                         <div className='pb-4'>
-                            <Form.Label className='input-label'>Phone</Form.Label>
+                            <Form.Label className='input-label'>Phone*</Form.Label>
                             <Form.Control
                                 type='email'
                                 className='input-gray'

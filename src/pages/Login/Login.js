@@ -25,7 +25,7 @@ const Login = (props) => {
 
     return (
         <Row className='justify-content-center pt-5'>
-            <Col md={4}>
+            <Col sm={10} md={6} lg={6} xl={4}>
                 <h2>Login</h2>
                 <br/>
                 <Form>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { getProductDetails } from '../../actions/productActions';
+import { getProductDetails, setSelectedProductTab } from '../../actions/productActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import './ProductDetail.scss';
@@ -19,6 +19,10 @@ const ProductDetail = ( ) => {
         dispatch(getProductDetails(productDetailRef.current?.ID));
     }, [dispatch]);
 
+    const handleNavigation = (selectedTab) => {
+        dispatch(setSelectedProductTab(selectedTab));
+    }
+
     return (
         <div className='product-detail'>
             <div className='d-flex title'>
@@ -26,7 +30,7 @@ const ProductDetail = ( ) => {
                     <Button 
                         variant='link' 
                         className='link-btn'
-                        // onClick={() => handleShow(false)}
+                        onClick={() => handleNavigation('products')}
                     >
                         Products /
                     </Button>
@@ -35,9 +39,9 @@ const ProductDetail = ( ) => {
                     <Button 
                         variant='link' 
                         className='link-btn'
-                        // onClick={() => handleShow(false)}
+                        onClick={() => handleNavigation('addProduct')}
                     >
-                        Products /
+                        Add Product /
                     </Button>
                 </div>  
                 <div>
