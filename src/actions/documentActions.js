@@ -40,10 +40,10 @@ export const addDocument = (projectID, document) => dispatch => {
     })
     .then((response) => {
         if (response?.status === 200) {
-            console.log('Add Document', response);
-
             return response.data;
         }
+
+        return;
     })
     .catch((error) => {
 
@@ -64,10 +64,10 @@ export const deleteDocument = (documentID) => dispatch => {
     })
     .then((response) => {
         if (response?.status === 200) {
-            console.log('Deleted Document', response);
-
             return response.data;
-        }
+        } 
+
+        return;
     })
     .catch((error) => {
 
@@ -90,10 +90,10 @@ export const renameDocument = (documentID, documentNameObj) => dispatch => {
     })
     .then((response) => {
         if (response?.status === 200) {
-            console.log('Document Name Updated', response);
-
             return response.data;
         }
+
+        return;
     })
     .catch((error) => {
 

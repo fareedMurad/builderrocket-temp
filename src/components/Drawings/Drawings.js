@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Button, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Spinner, Form } from 'react-bootstrap';
 import { addDocument, deleteDocument, renameDocument } from '../../actions/documentActions';
 import { getProjectByProjectID } from '../../actions/projectActions';
 import './Drawings.scss';
@@ -30,7 +30,7 @@ const Drawings = (props) => {
             return document.DocumentTypeName === 'Drawings';
         });
 
-        if (drawings.length > 0) return drawings;
+        if (drawings?.length > 0) return drawings;
 
         return [];
     }
@@ -56,13 +56,13 @@ const Drawings = (props) => {
             .catch(() => {
                 alert('Something went wrong uploading drawing, please try again');
                 setIsLoading(false);
-            })
+            });
     }
 
     const updateFileName = (drawingID) => {
         if (!drawingID) return;
 
-        setIsLoading(true);
+        setIsLoadingDrawing(true);
 
         const drawingNameObj = {
             userFileName: newDrawingName
@@ -71,10 +71,10 @@ const Drawings = (props) => {
         dispatch(renameDocument(drawingID, drawingNameObj))
             .then(() => clearInput())
             .then(() => dispatch(getProjectByProjectID(project.ID)))
-            .then(() => setIsLoading(false))
+            .then(() => setIsLoadingDrawing(false))
             .catch(() => {
                 alert('Something went wrong updating document name');
-                setIsLoading(false)
+                setIsLoadingDrawing(false);
             });
     }
 
@@ -84,7 +84,6 @@ const Drawings = (props) => {
     }
 
     const handleDrawingDelete = (drawingID) => {
-        console.log('YUH', project);
         if (!project?.ID) return;
 
         setIsLoading(true);
@@ -97,7 +96,7 @@ const Drawings = (props) => {
             .catch(() => {
                 alert('Something went wrong deleting drawing try again');
                 setIsLoading(false);
-            })
+            });
     }
 
     return (
@@ -146,7 +145,13 @@ const Drawings = (props) => {
                                     </div>
 
                                     {selectedDrawing === drawing?.ID ? (
-                                        <>
+                                        <div className='d-flex justify-content-between edit-drawings-container'>
+                                            <div className='file-input'>
+                                                <Form.Control 
+                                                    value={newDrawingName}
+                                                    onChange={(event) => setNewDrawingName(event.target.value)}
+                                                />
+                                            </div>
                                             {isLoadingDrawing ? (
                                                 <div className='icon-container'>
                                                     <Spinner 
@@ -160,7 +165,7 @@ const Drawings = (props) => {
                                                     <div className='icon-container'></div>
                                                     <div 
                                                         className='icon-container'
-                                                        // onClick={() => updateFileName(drawing?.ID)}
+                                                        onClick={() => updateFileName(drawing?.ID)}
                                                     >
                                                         <i className='fa fa-check'></i>
                                                     </div>
@@ -172,11 +177,16 @@ const Drawings = (props) => {
                                                     </div>
                                                 </>
                                             )}
-                                        </>
+                                        </div>
                                     ) : (
                                         <>
-                                            <div className='drawing-name'>{drawing?.FileName}</div>
-                                            <div className='icon'><i className='far fa-pencil-alt'></i></div>
+                                            <div className='drawing-name'>{drawing?.UserFileName}</div>
+                                            <div 
+                                                className='icon'
+                                                onClick={() => setSelectedDrawing(drawing?.ID)}
+                                            >
+                                                    <i className='far fa-pencil-alt'></i>
+                                            </div>
                                             <div className='icon'><i className='fa fa-share-square'></i></div>
                                             <div className='icon'>
                                                 <i 

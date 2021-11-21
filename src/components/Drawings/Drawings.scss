@@ -18,6 +18,7 @@
     .drawing {
         width: 50%;
         font-size: 12px;
+        min-height: 28px;
         margin-bottom: 1rem;
 
         i {
@@ -26,7 +27,7 @@
         }
 
         .drawing-image {
-            margin-right: 3rem;
+            margin-right: 2rem;
         }
 
         .drawing-name { 
@@ -38,6 +39,27 @@
             margin-top: 1rem;
             margin-left: .5rem;
             margin-right: .5rem;
+        }
+    }
+
+    .edit-drawings-container {
+        width: 100%;
+        height: auto;
+        min-height: 28px;
+        border-radius: 2px;
+        margin-top: .5rem;
+        padding-right: .5rem;
+
+        .file-input {
+            width: 75%;
+
+            .form-control {
+                height: 28px;
+            }
+        }
+
+        .icon-container {
+            margin-top: .25rem;
         }
     }
 }
