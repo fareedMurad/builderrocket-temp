@@ -43,7 +43,11 @@ const FileUpload = (props) => {
         dispatch(renameDocument(fileID, fileNameObj))
             .then(() => clearInput())
             .then(() => dispatch(getProjectByProjectID(project.ID)))
-            .then(() => setIsLoading(false));
+            .then(() => setIsLoading(false))
+            .catch(() => {
+                alert('Something went wrong updating document name');
+                setIsLoading(false)
+            });
     }
 
     const clearInput = () => {
@@ -138,21 +142,21 @@ const FileUpload = (props) => {
                                             />
                                         </div>
                                     ) : (
-                                    <>
-                                        <div className='icon-container'></div>
-                                        <div 
-                                            className='icon-container'
-                                            onClick={() => updateFileName(file?.ID)}
-                                        >
-                                            <i className='fa fa-check'></i>
-                                        </div>
-                                        <div 
-                                            className='icon-container'
-                                            onClick={clearInput}
-                                        >
-                                            <i className='fa fa-times'></i>
-                                        </div>
-                                    </>
+                                        <>
+                                            <div className='icon-container'></div>
+                                            <div 
+                                                className='icon-container'
+                                                onClick={() => updateFileName(file?.ID)}
+                                            >
+                                                <i className='fa fa-check'></i>
+                                            </div>
+                                            <div 
+                                                className='icon-container'
+                                                onClick={clearInput}
+                                            >
+                                                <i className='fa fa-times'></i>
+                                            </div>
+                                        </>
                                     )}
                                 </>
                             ) : (
@@ -165,7 +169,10 @@ const FileUpload = (props) => {
                                     </div>
                                     <div className='icon-container'><i className='fa fa-share-square'></i></div>
                                     <div className='icon-container'>
-                                        <i onClick={() => handleDocumentDelete(file?.ID)} className='far fa-trash-alt'></i>
+                                        <i 
+                                            onClick={() => handleDocumentDelete(file?.ID)} 
+                                            className='far fa-trash-alt'
+                                        ></i>
                                     </div>
                                 </>
                             )}

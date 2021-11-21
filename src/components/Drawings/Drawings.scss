@@ -18,19 +18,20 @@
     .drawing {
         width: 50%;
         font-size: 12px;
+        margin-bottom: 1rem;
 
         i {
             font-size: 15px;
             cursor: pointer;
         }
 
-        .file-image {
+        .drawing-image {
             margin-right: 3rem;
         }
 
-        .file-name { 
+        .drawing-name { 
             margin-top: 1rem;
-            margin-right: 3rem;
+            width: 50%;
         }
 
         .icon {
