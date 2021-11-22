@@ -180,7 +180,15 @@ const Drawings = (props) => {
                                         </div>
                                     ) : (
                                         <>
-                                            <div className='drawing-name'>{drawing?.UserFileName}</div>
+                                            <div className='drawing-name'>
+                                                <a 
+                                                    href={drawing?.URL} 
+                                                    target='_blank'
+                                                    rel='noreferrer'
+                                                >
+                                                    {drawing?.UserFileName}
+                                                </a>
+                                            </div>
                                             <div 
                                                 className='icon'
                                                 onClick={() => setSelectedDrawing(drawing?.ID)}

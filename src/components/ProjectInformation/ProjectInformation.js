@@ -88,7 +88,11 @@ const ProjectInformation = (props) => {
                 .then(() => {
                     setIsLoading(false);
                     dispatch(setSelectedProjectTab('documents'));
-                });
+                })
+                .catch(() => {
+                    setIsLoading(false);
+                    alert('Something went wrong saving project try again');
+                })
         } else {
             const newProject = { 
                 ...projectInformation,
@@ -100,6 +104,11 @@ const ProjectInformation = (props) => {
                 .then(() => {
                     setIsLoading(false);
                     window.scrollTo(0, 0);
+                })
+                .catch(() => {
+                    setIsLoading(false);
+                    window.scrollTo(0, 0);
+                    alert('Something went wrong creating project try again');
                 })
         }
     }

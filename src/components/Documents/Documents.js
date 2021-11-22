@@ -148,17 +148,6 @@ const Documents = () => {
                             />
                         </div>
                         <div className='form-col pb-2'>
-                            <FileUpload 
-                                short 
-                                label={findDocumentType(7)?.Name}     
-                                files={findDocumentTypeFiles(7)}
-                                selectedInput={selectedInput}
-                                setSelectedInput={setSelectedInput}
-                                handleDocumentDelete={handleDocumentDelete}
-                                onFileChange={(event) => onFileChange(7, event)}
-                            />
-                        </div>
-                        <div className='form-col pb-2'>
                             <Form.Label className='input-label'>
                                 C.O. Date
                             </Form.Label>
@@ -273,6 +262,7 @@ const Documents = () => {
                                 onFileChange={(event) => onFileChange(4, event)}
                             />
                         </div>
+                        <div className='form-col pb-2'></div>
                     </div>
                 </Form>
 
