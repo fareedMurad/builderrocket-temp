@@ -209,7 +209,6 @@ const Drawings = (props) => {
                         </>
                     )}
                 </div>
-
             </div>
 
             <MarketingBlock />
