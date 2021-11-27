@@ -43,12 +43,23 @@
 
         .drawing-name { 
             margin-top: 1rem;
+            width: 50px;
         }
 
         .icon {
             margin-top: 1rem;
             margin-left: .5rem;
             margin-right: .5rem;
+        }
+
+        .drawing-image-icon {
+            width: 50px;
+            text-align: center;
+
+            > i {
+                margin-top: .5rem;
+                font-size: 32px;
+            }
         }
     }
 
@@ -70,10 +81,6 @@
 
         .spinner-container {
             margin-top: .25rem;
-        }
-
-        .icon-container {
-            
         }
     }
 

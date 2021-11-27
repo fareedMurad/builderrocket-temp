@@ -99,6 +99,22 @@ const Drawings = () => {
             });
     }
 
+    const handleRenderImage = (drawing) => {
+        console.log('IN 1', drawing);
+
+        if (
+            drawing?.FileName.endsWith('.png')
+            || drawing?.FileName.endsWith('.jpg')
+            || drawing?.FileName.endsWith('.pdf')
+            || drawing?.FileName.endsWith('.bmp')
+        ) {
+            return true;
+        }
+
+        return;
+    }
+
+    console.log('DRAWINGS', returnDrawings());
     return (
         <div className='d-flex drawings'>
             <div className='drawings-container'>
@@ -136,12 +152,18 @@ const Drawings = () => {
                             {returnDrawings()?.map((drawing, index) => (
                                 <div key={index} className='d-flex drawing'>
                                     <div className='drawing-image'>       
-                                        <img 
-                                            alt='drawing' 
-                                            height='45' 
-                                            width='50' 
-                                            src={drawing?.URL}
-                                        />
+                                        {handleRenderImage(drawing) ? (
+                                            <img 
+                                                alt='drawing' 
+                                                height='45' 
+                                                width='50' 
+                                                src={drawing?.URL}
+                                            />
+                                        ) : (
+                                            <div className='drawing-image-icon'>
+                                                <i className={`far fa-${drawing?.Icon}`}></i>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {selectedDrawing === drawing?.ID ? (
