@@ -21,6 +21,10 @@
         min-height: 661px;
         justify-content: space-evenly;
         padding: 0 5rem;
+
+        @include media-breakpoint-down(lg) {
+            padding: 0 2rem;
+        }
     }
 
     .drawing {
@@ -39,7 +43,6 @@
 
         .drawing-name { 
             margin-top: 1rem;
-            width: 50%;
         }
 
         .icon {
@@ -65,8 +68,16 @@
             }
         }
 
-        .icon-container {
+        .spinner-container {
             margin-top: .25rem;
         }
+
+        .icon-container {
+            
+        }
+    }
+
+    .name-icons {
+        width: 100%;
     }
 }

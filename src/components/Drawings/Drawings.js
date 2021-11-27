@@ -153,7 +153,7 @@ const Drawings = () => {
                                                 />
                                             </div>
                                             {isLoadingDrawing ? (
-                                                <div className='icon-container'>
+                                                <div className='spinner-container'>
                                                     <Spinner 
                                                         size='sm' 
                                                         variant='primary'
@@ -161,7 +161,7 @@ const Drawings = () => {
                                                     />
                                                 </div>
                                             ) : (
-                                                <>
+                                                <div className='icon-container'>
                                                     <div className='icon-container'></div>
                                                     <div 
                                                         className='icon-container'
@@ -175,11 +175,11 @@ const Drawings = () => {
                                                     >
                                                         <i className='fa fa-times'></i>
                                                     </div>
-                                                </>
+                                                </div>
                                             )}
                                         </div>
                                     ) : (
-                                        <>
+                                        <div className='d-flex justify-content-between name-icons'>
                                             <div className='drawing-name'>
                                                 <a 
                                                     href={drawing?.URL} 
@@ -189,20 +189,22 @@ const Drawings = () => {
                                                     {drawing?.UserFileName}
                                                 </a>
                                             </div>
-                                            <div 
-                                                className='icon'
-                                                onClick={() => setSelectedDrawing(drawing?.ID)}
-                                            >
-                                                    <i className='far fa-pencil-alt'></i>
+                                            <div className='d-flex icon-container'>
+                                                <div 
+                                                    className='icon'
+                                                    onClick={() => setSelectedDrawing(drawing?.ID)}
+                                                >
+                                                        <i className='far fa-pencil-alt'></i>
+                                                </div>
+                                                <div className='icon'><i className='fa fa-share-square'></i></div>
+                                                <div className='icon'>
+                                                    <i 
+                                                        onClick={() => handleDrawingDelete(drawing?.ID)}
+                                                        className='far fa-trash-alt'
+                                                    ></i>
+                                                </div>
                                             </div>
-                                            <div className='icon'><i className='fa fa-share-square'></i></div>
-                                            <div className='icon'>
-                                                <i 
-                                                    onClick={() => handleDrawingDelete(drawing?.ID)}
-                                                    className='far fa-trash-alt'
-                                                ></i>
-                                            </div>
-                                        </>
+                                        </div>
                                     )}
                                 </div>
                             ))}
