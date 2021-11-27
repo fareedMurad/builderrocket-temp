@@ -1,15 +1,28 @@
+@import '../../assets/styles/variables';
 
 .room-area-layout {
+    @include media-breakpoint-down(md) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
     .container {
         width: 981px;
-        margin-right: 3rem;
-        padding-bottom: 2rem;
         background-color: white;
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+
+        @include media-breakpoint-up(lg) {
+            margin-right: 3rem;
+        }
     }
 
     .rooms {
         padding: 0 2.25rem;
+
+        @include media-breakpoint-down(md) {
+            padding: 0 1rem;
+        }
     }
 
     .page-title {
@@ -17,8 +30,14 @@
     }
 
     .room-type-container {
-        width: 25%;
+        @include media-breakpoint-up(lg) {
+            width: 25%;
+        }
         margin-bottom: 2rem;
+
+        @include media-breakpoint-down(md) {
+            padding: 0 1rem;
+        }
     }
 
     .room-type {

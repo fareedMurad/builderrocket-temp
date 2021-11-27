@@ -62,7 +62,8 @@ const Documents = () => {
         dispatch(deleteDocument(documentID))
             .then(() => {
                 dispatch(getProjectByProjectID(project.ID));
-            });
+            })
+            .catch(() => {});
     }
 
     const clearChanges = () => {
@@ -86,6 +87,9 @@ const Documents = () => {
             .then(() => {
                 setIsLoading(false);
                 dispatch(setSelectedProjectTab('utilities'));
+            })
+            .catch(() => {
+                setIsLoading(false);
             });
     }
 
@@ -103,6 +107,8 @@ const Documents = () => {
             }));
         }
     }, [dispatch]);
+
+    console.log('docs', project);
 
     return (
         <div className='d-flex documents'>

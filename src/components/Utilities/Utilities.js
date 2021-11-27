@@ -219,7 +219,7 @@ const Utilities = () => {
 
             <MarketingBlock />
 
-            <ClearChangesModal 
+            <ClearChangesModal
                 show={showModal} 
                 setShow={setShowModal} 
                 clearChanges={clearChanges}

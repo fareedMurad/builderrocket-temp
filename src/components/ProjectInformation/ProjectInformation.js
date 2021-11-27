@@ -24,7 +24,7 @@ const projectStatusMap = {
     3: 'Closed'
 }
 
-const ProjectInformation = (props) => {
+const ProjectInformation = () => {
     const dispatch = useDispatch();
 
     const user = useSelector(state => state.user.user);

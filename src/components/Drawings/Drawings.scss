@@ -1,12 +1,20 @@
 @import '../../assets/styles/variables';
 
 .drawings {
+    @include media-breakpoint-down(md) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
     
     .drawings-container {
         width: 981px;
         background-color: white;
-        margin-right: 3rem;
         padding-bottom: 2rem;
+        margin-bottom: 2rem;
+
+        @include media-breakpoint-up(lg) {
+            margin-right: 3rem;
+        }
     }
     
     .drawings-form {
@@ -16,7 +24,6 @@
     }
 
     .drawing {
-        width: 50%;
         font-size: 12px;
         min-height: 28px;
         margin-bottom: 1rem;

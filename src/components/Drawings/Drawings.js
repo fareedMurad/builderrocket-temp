@@ -8,7 +8,7 @@ import './Drawings.scss';
 // components
 import MarketingBlock from '../MarketingBlock';
 
-const Drawings = (props) => {
+const Drawings = () => {
     const dispatch = useDispatch();
 
     const project = useSelector(state => state.project.project);
