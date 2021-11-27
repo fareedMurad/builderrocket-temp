@@ -134,8 +134,8 @@ const ProjectHeader = () => {
 
                 {saveNewProjectModal()}
 
-                <div>
-                    <div className='bold-text pt-5'>
+                <div className='middle-section'>
+                    <div className='bold-text'>
                         {project?.Customers?.[0]?.FirstName}{' '}{project?.Customers?.[0]?.LastName}
                     </div>
                     <div className='d-flex'>
@@ -166,7 +166,7 @@ const ProjectHeader = () => {
                     </div>
                 </div>
 
-                <div>
+                <div className='end-section'>
                     <div className='d-flex pt-2 justify-content-end'>
                         <div className='pt-1 pr-3 text'>
                             Status: <span className='bold-text pl-1'>{projectStatusMap[project?.StatusID]}</span>

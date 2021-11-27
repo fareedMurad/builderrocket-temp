@@ -100,8 +100,6 @@ const Drawings = () => {
     }
 
     const handleRenderImage = (drawing) => {
-        console.log('IN 1', drawing);
-
         if (
             drawing?.FileName.endsWith('.png')
             || drawing?.FileName.endsWith('.jpg')
@@ -114,7 +112,6 @@ const Drawings = () => {
         return;
     }
 
-    console.log('DRAWINGS', returnDrawings());
     return (
         <div className='d-flex drawings'>
             <div className='drawings-container'>

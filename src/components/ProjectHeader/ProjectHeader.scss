@@ -6,6 +6,9 @@
     background-color: $lightgray;
     border: 1px solid $bordergray;
 
+    @include media-breakpoint-down(lg) {
+        height: auto;
+    }
 
     .project-image {
         box-sizing: border-box;
@@ -86,6 +89,14 @@
         border-radius: 3px;
         letter-spacing: -0.17px;
         background-color: $btngraytwo;
+    }
+
+    .middle-section {
+        padding-top: 3rem;
+
+        @include media-breakpoint-down(sm) {
+            padding-top: 1rem;
+        }
     }
 }
 
