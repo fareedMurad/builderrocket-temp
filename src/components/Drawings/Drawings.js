@@ -38,25 +38,36 @@ const Drawings = () => {
     const onFileChange = (event) => {
         if (!project?.ID) return alert('Select project and try again');
 
+        const files = [...event.target.files];
+
+        if (files.length === 0) return alert('No drawings were selected');
+
         setIsLoading(true);
 
         // Drawings Document TypeID
         const documentTypeID = 11;
-        // Save new file / document
-        const formData = new FormData();
 
-        formData.append('DocumentTypeID', documentTypeID);
-        formData.append('File', event.target?.files?.[0]);
+        files.forEach(async (file, index) => {
+            // Save new file / document
+            const formData = new FormData();
 
-        dispatch(addDocument(project.ID, formData))
-            .then(() => {
-                dispatch(getProjectByProjectID(project.ID));
-                setIsLoading(false);
-            })
-            .catch(() => {
-                alert('Something went wrong uploading drawing, please try again');
-                setIsLoading(false);
-            });
+            formData.append('DocumentTypeID', documentTypeID);
+            formData.append('File', file);
+
+            await dispatch(addDocument(project.ID, formData))
+                .then(() => {
+                    if (files.length === index + 1) {
+                        dispatch(getProjectByProjectID(project.ID));
+                        setIsLoading(false);
+                    }
+
+                    return;
+                })
+                .catch(() => {
+                    alert('Something went wrong uploading drawing, please try again');
+                    setIsLoading(false);
+                });
+        });
     }
 
     const updateFileName = (drawingID) => {
@@ -70,7 +81,7 @@ const Drawings = () => {
 
         dispatch(renameDocument(drawingID, drawingNameObj))
             .then(() => clearInput())
-            .then(() => dispatch(getProjectByProjectID(project.ID)))
+            .then(async () => await dispatch(getProjectByProjectID(project.ID)))
             .then(() => setIsLoadingDrawing(false))
             .catch(() => {
                 alert('Something went wrong updating document name');
@@ -83,15 +94,16 @@ const Drawings = () => {
         setSelectedDrawing();
     }
 
-    const handleDrawingDelete = (drawingID) => {
+    const handleDrawingDelete = async (drawingID) => {
         if (!project?.ID) return;
 
         setIsLoading(true);
         // delete document by document ID then refresh project
-        dispatch(deleteDocument(drawingID))
-            .then(() => {
-                dispatch(getProjectByProjectID(project.ID));
+        await dispatch(deleteDocument(drawingID))
+            .then(async () => {
+                await dispatch(getProjectByProjectID(project.ID));
                 setIsLoading(false);
+                return;
             })
             .catch(() => {
                 alert('Something went wrong deleting drawing try again');
@@ -103,6 +115,7 @@ const Drawings = () => {
         if (
             drawing?.FileName.endsWith('.png')
             || drawing?.FileName.endsWith('.jpg')
+            || drawing?.FileName.endsWith('.jpeg')
             || drawing?.FileName.endsWith('.pdf')
             || drawing?.FileName.endsWith('.bmp')
         ) {
@@ -128,7 +141,8 @@ const Drawings = () => {
                         </Button>
                         <input 
                             hidden 
-                            type='file' 
+                            multiple
+                            type='file'
                             id='actual-btn' 
                             ref={inputFile} 
                             onChange={onFileChange}
