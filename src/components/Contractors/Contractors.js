@@ -157,7 +157,7 @@ const Contractors = () => {
                                 </Form.Control>
                                     
                                 {contractorsInfo?.[contractorType?.ID]?.ContractorID && (
-                                    <div className='d-flex pt-1 pl-1'>
+                                    <div className='pt-1 pl-1'>
                                         {contractorsInfo?.[contractorType?.ID]?.PhoneNumber && (
                                             <div className='pr-3'>
                                                 <i className='fas fa-phone mr-2'></i> 
