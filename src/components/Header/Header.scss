@@ -9,18 +9,19 @@
         height: auto;
     }
 
-    .item {
-        color: white;
-
-        img {
-            height: 18px;
-        }
-        
-        i { 
+    .nav-collapse {
+        .item {
             color: white;
+
+            img {
+                height: 18px;
+            }
+            
+            i { 
+                color: white;
+            }
         }
     }
-
     
     .navbar-text {
         padding-right: 10px;

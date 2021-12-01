@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Col, Button, Modal, Form, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Button, Modal, Form, Spinner } from 'react-bootstrap';
 import { copyProject } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectHeader.scss';
@@ -12,6 +12,7 @@ const ProjectHeader = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingImg, setIsLoadingImg] = useState(false);
     const [projectCopyName, setProjectCopyName] = useState(project?.ProjectName);
 
     const projectStatusMap = {
@@ -19,6 +20,14 @@ const ProjectHeader = () => {
         2: 'Completed',
         3: 'Closed'
     }
+
+    useEffect(() => {
+        setIsLoadingImg(true);
+
+        setTimeout(() => {
+            setIsLoadingImg(false);
+        }, 500);
+    }, [project]);
 
     const cancelModal = () => {
         setProjectCopyName(project?.ProjectName);
@@ -38,7 +47,11 @@ const ProjectHeader = () => {
                 setProjectCopyName(project.ProjectName);
                 setIsLoading(false);
                 cancelModal();
-            });
+            })
+            .catch(() => {
+                setIsLoading(false);
+                alert('Something went wrong creating copy of project try again');
+            })
     }
 
     const saveNewProjectModal = () => {
@@ -93,19 +106,26 @@ const ProjectHeader = () => {
 
     return (
         <div className='project-header'>
-            <div className='d-flex flex-wrap justify-content-around'>
+            <div className='d-flex flex-wrap justify-content-between'>
                 <div className='d-flex pt-2'>
-                    <Col>   
-                        <div className='project-image d-flex'>
+                    <div className='project-image justify-content-center d-flex'>
+                        {isLoadingImg ? (
+                            <div className='spinner'>
+                                <Spinner
+                                    animation='border'
+                                    variant='primary' 
+                                />
+                            </div>
+                        ) : (
                             <img 
                                 alt='project' 
                                 height='119' 
                                 width='167' 
                                 src={project?.ThumbnailURL}
                             />
-                        </div>
-                    </Col>
-                    <Col md={8}>
+                        )}
+                    </div>
+                    <div>
                         <div className='text'>
                             {project?.ProjectNumber} 
                             <i className='fas fa-share-square ml-5 share-icon'></i>    
@@ -129,7 +149,7 @@ const ProjectHeader = () => {
                                 Save as New Project
                             </Button>
                         </div>
-                    </Col>
+                    </div>
                 </div>
 
                 {saveNewProjectModal()}

@@ -6,6 +6,7 @@ import {
     createProject,
     setSelectedProjectTab, 
     uploadProjectThumbnail,
+    getProjectByProjectID,
 } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -58,9 +59,12 @@ const ProjectInformation = () => {
         
         // Save new thumbnail - update component state with updated data
         dispatch(uploadProjectThumbnail(project?.ID, formData))
-            .then((updatedProject) => {
-                setProjectInformation(updatedProject);
+            .then(async (updatedProject) => {
+                await dispatch(getProjectByProjectID(project.ID));
 
+                setIsLoading(false);
+            })
+            .catch(() => {
                 setIsLoading(false);
             })
     }
@@ -163,6 +167,7 @@ const ProjectInformation = () => {
                             <FileUpload 
                                 short 
                                 label='Project Image' 
+                                buttonText='Upload Image'
                                 fileURL={projectInformation?.ThumbnailURL}
                                 onFileChange={(event) => onFileChange(event)}
                                 placeholder={projectInformation?.ThumbnailName}

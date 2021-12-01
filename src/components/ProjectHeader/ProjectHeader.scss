@@ -2,6 +2,7 @@
 
 .project-header {
     height: 144px;
+    padding: 0 3rem;
     box-sizing: border-box;
     background-color: $lightgray;
     border: 1px solid $bordergray;
@@ -11,8 +12,16 @@
     }
 
     .project-image {
+        width: 167px;
+        height: 119px;
         box-sizing: border-box;
         border: 1px solid $bordergray;
+        margin-right: 1.5rem;
+
+        .spinner {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
     }
 
     .bold-text {

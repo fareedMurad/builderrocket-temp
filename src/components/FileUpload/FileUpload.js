@@ -10,12 +10,13 @@ const FileUpload = (props) => {
         label, 
         short, 
         files, 
-        fileURL, 
+        fileURL,
+        buttonText,
         placeholder,
         onFileChange, 
         selectedInput, 
         setSelectedInput,
-        handleDocumentDelete,  
+        handleDocumentDelete,
     } = props;
 
     const dispatch = useDispatch();
@@ -73,7 +74,7 @@ const FileUpload = (props) => {
                             className='link-btn' 
                             onClick={browse}
                         >
-                            + Add File
+                            {buttonText ?? '+ Add File'}
                         </Button>
                         <input 
                             hidden 

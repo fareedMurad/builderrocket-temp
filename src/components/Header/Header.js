@@ -38,7 +38,7 @@ const Header = () => {
 
                 <Navbar.Toggle aria-controls='nav-bar' />
                 {isSignedIn &&
-                    <Navbar.Collapse className='justify-content-end' id='nav-bar'>
+                    <Navbar.Collapse className='justify-content-end nav-collapse' id='nav-bar'>
                         <Nav>
                         <Nav.Link className='item'>
                             {user?.AvatarURL ?
