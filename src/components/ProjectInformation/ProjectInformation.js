@@ -66,6 +66,7 @@ const ProjectInformation = () => {
             })
             .catch(() => {
                 setIsLoading(false);
+                alert('Something went wrong uploading thumbnail try again');
             })
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Form, Spinner } from 'react-bootstrap';
 import { copyProject } from '../../actions/projectActions';
@@ -9,10 +9,10 @@ const ProjectHeader = () => {
     const dispatch = useDispatch();
 
     const project = useSelector(state => state.project.project);
+    const refreshThumbnail = useSelector(state => state.project.refreshThumbnail);
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isLoadingImg, setIsLoadingImg] = useState(false);
     const [projectCopyName, setProjectCopyName] = useState(project?.ProjectName);
 
     const projectStatusMap = {
@@ -20,14 +20,6 @@ const ProjectHeader = () => {
         2: 'Completed',
         3: 'Closed'
     }
-
-    useEffect(() => {
-        setIsLoadingImg(true);
-
-        setTimeout(() => {
-            setIsLoadingImg(false);
-        }, 500);
-    }, [project]);
 
     const cancelModal = () => {
         setProjectCopyName(project?.ProjectName);
@@ -109,7 +101,7 @@ const ProjectHeader = () => {
             <div className='d-flex flex-wrap justify-content-between'>
                 <div className='d-flex pt-2'>
                     <div className='project-image justify-content-center d-flex'>
-                        {isLoadingImg ? (
+                        {refreshThumbnail ? (
                             <div className='spinner'>
                                 <Spinner
                                     animation='border'

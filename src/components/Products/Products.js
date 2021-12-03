@@ -103,7 +103,7 @@ const Products = (props) => {
 
         let newValue = value;
 
-        if (key === 'IsApproved')
+        if (key === 'RequiresApproval')
             newValue = !value;
 
         if (!templateItems?.[incomingItem?.ID]) {
@@ -114,7 +114,7 @@ const Products = (props) => {
                     ...incomingItem,
                     TemplateItemID: incomingItem?.ID,
                     CategoryID: incomingItem?.CategoryID,
-                    IsApproved: false,
+                    requiresApproval: false,
                     Quantity: 1,
                     [key]: newValue
                 }
@@ -278,17 +278,19 @@ const Products = (props) => {
                             {selectedRoom?.Items?.map((templateItem, index) => {
                                 const tempTemplateItem = templateItems?.[templateItem?.ID];
 
-                                let isApproved = !!(templateItem?.IsApproved);
+                                let requiresApproval = !!(templateItem?.RequiresApproval);
                                 let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
                                 let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
                                 let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
 
                                 if (!isEmpty(tempTemplateItem)) {
                                     quantity = tempTemplateItem.Quantity;
-                                    isApproved = tempTemplateItem.IsApproved;
+                                    requiresApproval = tempTemplateItem.RequiresApproval;
                                     isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
                                     isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
                                 }
+
+                                if (templateItem.IsTemplate === false) console.log('template', templateItem, requiresApproval);
 
                                 return (
                                     <tr key={index}>
@@ -297,10 +299,10 @@ const Products = (props) => {
                                                 <Form>
                                                     <Form.Check 
                                                         type='checkbox'
-                                                        checked={!(isApproved) ? false : isApproved}
-                                                        disabled={isUndefined(templateItem?.IsApproved) ? true : false}
+                                                        checked={!(requiresApproval) ? false : requiresApproval}
+                                                        disabled={isUndefined(templateItem?.RequiresApproval) ? true : false}
                                                         onChange={
-                                                            () => handleItems(templateItem, 'IsApproved', isApproved)
+                                                            () => handleItems(templateItem, 'RequiresApproval', requiresApproval)
                                                         }
                                                     />
                                                 </Form>

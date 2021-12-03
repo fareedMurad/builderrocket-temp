@@ -7,7 +7,8 @@ import {
     GET_PROJECTS, 
     GET_PROJECT, 
     RESET_PROJECT, 
-    LOGOUT
+    LOGOUT,
+    SET_REFRESH_THUMBNAIL
 } from './types';
 
 /**
@@ -301,6 +302,8 @@ export const uploadProjectThumbnail = (projectID, thumbnail) => async dispatch =
 
     const URL = `/Project/${projectID}/thumbnail`;
 
+    dispatch({ type: SET_REFRESH_THUMBNAIL, payload: true });
+
     try {
         const response = await api({
             method: 'POST',
@@ -309,8 +312,11 @@ export const uploadProjectThumbnail = (projectID, thumbnail) => async dispatch =
         });
         if (response.status === 200) {
             dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
-
+            dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
             return response.data;
+        } else {
+            dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
+            return;
         }
     } catch (error) { }
 }

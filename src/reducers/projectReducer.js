@@ -4,8 +4,9 @@ import {
     RESET_PROJECT,
     ADD_PROJECT_ROOMS,
     SET_SELECTED_PROJECT,
+    SET_REFRESH_THUMBNAIL,
     SET_SELECTED_PROJECT_TAB, 
-    DELETE_PROJECT_ROOMS
+    DELETE_PROJECT_ROOMS,
 } from '../actions/types';
 
 const intialState = {
@@ -42,7 +43,8 @@ const intialState = {
         Zip: '',
     },
     projects: [],
-    selectedProjectTab: 'projectInformation'
+    selectedProjectTab: 'projectInformation',
+    refreshThumbnail: false,
 };
 
 const projectReducer = (state = intialState, action) => {
@@ -87,6 +89,12 @@ const projectReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 project: action.payload
+            }
+        }
+        case SET_REFRESH_THUMBNAIL: {
+            return {
+                ...state, 
+                refreshThumbnail: action.payload,
             }
         }
         default:
