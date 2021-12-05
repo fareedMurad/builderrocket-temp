@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContractors, getContractorTypes } from '../../actions/contractorActions';
-import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
+import { saveProject, setSelectedProjectTab, saveProjectContractor } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
+import { getProductDetails, setSelectedProductTab } from '../../actions/productActions';
 import './Contractors.scss';
 
 // components
@@ -36,15 +37,24 @@ const Contractors = () => {
         return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.ID === id));
     }
 
-    const handleContractor = (id, contractorTypeID) => {
+    const handleContractor = (contractorID, contractorTypeID) => {
         if (!contractorTypeID) return;
 
-        let contractorID;
+        dispatch(saveProjectContractor(project.ID, contractorTypeID, contractorID))
+            .then((data) => {
+                console.log(data)
+    
+
+            dispatch(getProductDetails(projectRef.current?.ID))
+                .then(() => setIsLoading(false))
+                .catch(() => setIsLoading(false));
+            });
+
+
         let newContractorsMap;
         let selectedContractor;
 
-        if (id) {
-            contractorID = parseInt(id);
+        if (contractorID) {
             selectedContractor = contractors.find(contractor => contractor.ID === contractorID);
         
             // update the selected contractor TYPE with selected contractor
