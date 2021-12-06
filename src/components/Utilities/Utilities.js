@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUtilities, getUtilityTypes } from '../../actions/utilityActions';
-import { saveProject, setSelectedProjectTab } from '../../actions/projectActions';
+import { saveProject, setSelectedProjectTab, saveProjectUtility } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import './Utilities.scss';
 
@@ -41,12 +41,23 @@ const Utilities = () => {
     const handleUtility = (id, utilityTypeID) => {
         if (!utilityTypeID) return;
 
+
         let utilityID;
         let newUtilitiesMap;
         let selectedUtility;
 
+
+
+
         if (id) {
             utilityID = parseInt(id);
+
+
+        dispatch(saveProjectUtility(project.ID, utilityTypeID, utilityID))
+            .then((data) => {
+                console.log(data)
+            })    
+
             selectedUtility = utilities.find(utility => utility.ID === utilityID);
 
             // update the selected utility TYPE with selected utility

@@ -266,6 +266,32 @@ export const saveProjectContractor = (projectID, contractorTypeID, ContractorID)
     });
 }
 
+
+export const saveProjectUtility = (projectID, utilityTypeID, utilityID) => dispatch => {
+    if (!projectID) return;
+ 
+    const URL = `/Project/${projectID}/Utility`;
+
+    const json = {UtilityTypeID: utilityTypeID, UtilityID: utilityID}
+
+    return api({
+        method: 'POST', 
+        url: URL, 
+        data: json
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
+}
+
 /**
  * Update Project
  * @param {Object} project 
