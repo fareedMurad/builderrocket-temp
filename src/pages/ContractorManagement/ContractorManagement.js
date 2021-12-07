@@ -77,6 +77,7 @@ const ContractorManagement = () => {
                 setIsLoading(false);
                 setShowDeleteModal(false);
             })
+            .catch(() => {});
     }
 
     const deleteContractorConfirmation = (contractorID) => {

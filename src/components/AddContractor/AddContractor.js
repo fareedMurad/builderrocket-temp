@@ -70,7 +70,11 @@ const AddContractor = ({ show, handleClose }) => {
                 dispatch(setSelectedContractor({}));
                 setIsLoading(false);
                 handleClose();
-            });
+            })
+            .catch(() => {
+                setIsLoading(false); 
+                alert('Something went wrong creating contractor');
+            })
     }
 
     const title = isEmpty(contractor) ? 'Add Contractor' : 'Edit Contractor';
@@ -85,9 +89,8 @@ const AddContractor = ({ show, handleClose }) => {
         >
             <Modal.Body>
                 <div className='page-title'>{title}</div>
-
                 <Row>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>Company Name*</Form.Label>
                             <Form.Control
@@ -98,7 +101,7 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>Contractor Type*</Form.Label>
                             <Select 
@@ -113,7 +116,7 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>Contact Name</Form.Label>
                             <Form.Control
@@ -124,7 +127,7 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>Phone</Form.Label>
                             <Form.Control
@@ -136,7 +139,29 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
+                        <Form.Group>
+                            <Form.Label className='input-label'>Address 1</Form.Label>
+                            <Form.Control
+                                type='text'
+                                className='input-gray'
+                                onChange={(e) => setContractor({ ...contractor, Address1: e.target.value })}
+                                defaultValue={contractor?.Address1}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col md={12} lg={6}>
+                        <Form.Group>
+                            <Form.Label className='input-label'>Address 2</Form.Label>
+                            <Form.Control
+                                type='text'
+                                className='input-gray'
+                                onChange={(e) => setContractor({ ...contractor, Address2: e.target.value })}
+                                defaultValue={contractor?.Address2}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>City</Form.Label>
                             <Form.Control
@@ -146,7 +171,7 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>State</Form.Label>
                             <Form.Control
@@ -156,7 +181,7 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>   
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                         <Form.Label className='input-label'>ZIP Code</Form.Label>
                         <Form.Control
@@ -167,7 +192,7 @@ const AddContractor = ({ show, handleClose }) => {
                         />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>Email</Form.Label>
                             <Form.Control
@@ -179,7 +204,7 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                             <Form.Label className='input-label'>Categories</Form.Label>
                             <Form.Control
@@ -189,7 +214,7 @@ const AddContractor = ({ show, handleClose }) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={12} lg={6}>
                         <Form.Group>
                         <Form.Label className='input-label'>UOM</Form.Label>
                         <Form.Control
@@ -197,6 +222,19 @@ const AddContractor = ({ show, handleClose }) => {
                             className='input-gray'
                             onChange={(e) => setContractor({ ...contractor, UOM: e.target.value })}
                             defaultValue={contractor?.UOM}
+                        />
+                        </Form.Group>
+                    </Col>
+                    <Col md={12}>
+                        <Form.Group>
+                        <Form.Label className='input-label'>Notes</Form.Label>
+                        <Form.Control
+                            rows={4}
+                            type='text'
+                            as='textarea'
+                            className='input-gray'
+                            onChange={(e) => setContractor({ ...contractor, Notes: e.target.value })}
+                            defaultValue={contractor?.Notes}
                         />
                         </Form.Group>
                     </Col>
