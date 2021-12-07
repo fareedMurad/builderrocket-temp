@@ -36,6 +36,12 @@
             cursor: pointer;
             padding: 0 .5rem;
         }
+
+        .sticky-note-red {
+            i {
+                color: red;
+            }
+        }
     }
     
     .search-bar {

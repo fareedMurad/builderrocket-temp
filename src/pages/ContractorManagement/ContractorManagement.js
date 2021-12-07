@@ -108,11 +108,9 @@ const ContractorManagement = () => {
             >
                 <Modal.Body>
                     <div className='page-title'>Delete Contractor</div>
-
                     <div className='d-flex justify-content-center'>
                         Are you sure you want to delete this contractor?
                     </div>
-
                     <div className='d-flex justify-content-center pt-5'>
                         <Button 
                             onClick={cancelDeletion} 
@@ -143,12 +141,6 @@ const ContractorManagement = () => {
             return `${category.Name} `;
         })
     }
-
-    const renderTooltip = (props) => (
-        <Tooltip id='button-tooltip' {...props}>
-            Tooltip
-        </Tooltip>
-      );
 
     return (
         <div className='d-flex contractor-management'>
@@ -211,10 +203,14 @@ const ContractorManagement = () => {
                                         <td>{contractor?.EmailAddress}</td>
                                         <td width='15%'>{getContractorCategories(contractor.ContractorTypes)}</td>
                                         <td>{contractor?.UOM}</td>
-                                        <td>
+                                        <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
                                             <OverlayTrigger
                                                 placement='top'
-                                                overlay={renderTooltip}
+                                                overlay={
+                                                    <Tooltip id='button-tooltip'>
+                                                        {contractor?.Notes}
+                                                    </Tooltip>
+                                                }
                                                 delay={{ show: 250, hide: 400 }}
                                             >
                                                 <i className='far fa-sticky-note d-flex justify-content-center'></i>
