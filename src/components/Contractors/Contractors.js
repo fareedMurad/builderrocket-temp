@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getContractors, getContractorTypes } from '../../actions/contractorActions';
-import { saveProject, setSelectedProjectTab, saveProjectContractor } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
+import { getContractors, getContractorTypes } from '../../actions/contractorActions';
 import { getProductDetails, setSelectedProductTab } from '../../actions/productActions';
+import {
+    saveProject,
+    setSelectedProjectTab,
+    saveProjectContractor,
+} from '../../actions/projectActions';
 import './Contractors.scss';
 
 // components
@@ -146,7 +150,7 @@ const Contractors = () => {
 
                                 <Form.Control
                                     as='select'
-                                    value={contractorsInfo?.[contractorType?.ID]?.ContractorID ? contractorsInfo?.[contractorType?.ID]?.ContractorID : ''}
+                                    value={contractorsInfo?.[contractorType?.ID]?.ContractorID ?? ''}
                                     onChange={(event) => handleContractor(event.target.value, contractorType.ID)}
                                 >
                                     <option value=''>SELECT</option>
