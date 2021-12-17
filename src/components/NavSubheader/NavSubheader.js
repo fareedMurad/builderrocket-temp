@@ -1,45 +1,85 @@
-import React from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import './NavSubheader.scss';
 
 const NavSubheader = () => {
     const history = useHistory();
 
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+    const setDimension = () => {
+        setScreenWidth(window.innerWidth);
+    }
+    
+    useEffect(() => {
+        window.addEventListener('resize', setDimension);
+        
+        return(() => {
+            window.removeEventListener('resize', setDimension);
+        })
+    }, [screenWidth]);
+
+    if (screenWidth > 767 & screenWidth < 992) {
+        return (
+            <Navbar className='nav-bar-subheader'>
+                <Container>
+                    <Nav id='nav-dropdown'>
+                        <div 
+                            className='header-item' 
+                            onClick={() => history.push('/')}
+                        >
+                            Projects
+                        </div>
+                        <NavDropdown title='Management' id='management-dropdown'>
+                            <NavDropdown.Item>Rooms Management</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => history.push('/utility-management')}>Utility Management</NavDropdown.Item>
+                            <NavDropdown.Item>Vendor Management</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => history.push('/contractor-management')}>Contractor Management</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                </Container>
+            </Navbar>
+        )
+    }
+
     return (
-        <Navbar expand='lg' className='nav-bar'>
+        <Navbar collapseOnSelect expand='md' className='nav-bar-subheader'>
             <Container>
-                <Nav className='ml-4 pl-2 mr-auto'>
-                    <div 
-                        className='header-item' 
-                        onClick={() => history.push('/')}
-                    >
-                        <i className='far fa-images fa-sm tab-icon'></i>
-                        Projects
-                    </div>
-                    <div className='header-item'>
-                        <i className='far fa-border-none fa-sm tab-icon'></i>
-                        Rooms Management
-                    </div>
-                    <div 
-                        className='header-item' 
-                        onClick={() => history.push('/utility-management')}
-                    >
-                        <i className='far fa-lightbulb fa-sm tab-icon'></i>
-                        Utility Management
-                    </div>
-                    <div className='header-item'>
-                        <i className='far fa-bookmark fa-sm tab-icon'></i>
-                        Vendor Management
-                    </div>
-                    <div 
-                        className='header-item'
-                        onClick={() => history.push('/contractor-management')}
-                    >
-                        <i className='far fa-user-hard-hat fa-sm tab-icon'></i>
-                        Contractor Management
-                    </div>
-                </Nav>
+                <Navbar.Toggle aria-controls='nav-bar' />
+                <Navbar.Collapse>
+                    <Nav className='mr-auto'>
+                        <div 
+                            className='header-item' 
+                            onClick={() => history.push('/')}
+                        >
+                            <i className='far fa-images fa-sm tab-icon'></i>
+                            Projects
+                        </div>
+                        <div className='header-item'>
+                            <i className='far fa-border-none fa-sm tab-icon'></i>
+                            Rooms Management
+                        </div>
+                        <div 
+                            className='header-item' 
+                            onClick={() => history.push('/utility-management')}
+                        >
+                            <i className='far fa-lightbulb fa-sm tab-icon'></i>
+                            Utility Management
+                        </div>
+                        <div className='header-item'>
+                            <i className='far fa-bookmark fa-sm tab-icon'></i>
+                            Vendor Management
+                        </div>
+                        <div 
+                            className='header-item'
+                            onClick={() => history.push('/contractor-management')}
+                        >
+                            <i className='far fa-user-hard-hat fa-sm tab-icon'></i>
+                            Contractor Management
+                        </div>
+                    </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );

@@ -37,39 +37,39 @@ const Header = () => {
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls='nav-bar' />
-                {isSignedIn &&
+                {isSignedIn && (
                     <Navbar.Collapse className='justify-content-end nav-collapse' id='nav-bar'>
                         <Nav>
-                        <Nav.Link className='item'>
-                            {user?.AvatarURL ?
-                                <Image src={user?.AvatarURL} roundedCircle />
-                            :
-                                <i className='far fa-user-circle'></i>
-                            }
-                        </Nav.Link>
-                        <Nav.Link className='item'>
-                            <i className='far fa-cog'></i>
-                        </Nav.Link>
-                        {user?.FirstName ?
-                            <Navbar.Text className='item'>
-                                {user?.FirstName} {user?.LastName}
-                            </Navbar.Text>
-                        : 
-                            <Navbar.Text className='item'>
-                                {user?.Company}
-                            </Navbar.Text>
-                        }
-                        <Nav.Link className='item' onClick={handleLogout}>
-                            <i className='far fa-sign-out-alt'></i>
-                        </Nav.Link>
+                            <Nav.Link className='item'>
+                                {user?.AvatarURL ? (
+                                    <Image src={user?.AvatarURL} roundedCircle />
+                                ) : (
+                                    <i className='far fa-user-circle'></i>
+                                )}
+                            </Nav.Link>
+                            <Nav.Link className='item'>
+                                <i className='far fa-cog'></i>
+                            </Nav.Link>
+                            {user?.FirstName ? (
+                                <Navbar.Text className='item'>
+                                    {user?.FirstName} {user?.LastName}
+                                </Navbar.Text>
+                            ) : (
+                                <Navbar.Text className='item'>
+                                    {user?.Company}
+                                </Navbar.Text>
+                            )}
+                            <Nav.Link className='item' onClick={handleLogout}>
+                                <i className='far fa-sign-out-alt'></i>
+                            </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
-                }
+                )}
             </Navbar>
 
-            {isSignedIn && 
+            {isSignedIn && (
                 <NavSubheader />
-            }
+            )}
         </>
     )
 }
