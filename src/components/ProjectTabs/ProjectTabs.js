@@ -80,6 +80,11 @@ const ProjectTabs = (props) => {
                         handleProductsTabs()
                     )}
                 </Tab>
+                <Tab eventKey='reports' title='Reports'>
+                    {selectedProjectTab === 'reports' && (
+                        <RoomAreaLayout />
+                    )}
+                </Tab>
             </Tabs>
         </div>
     )
