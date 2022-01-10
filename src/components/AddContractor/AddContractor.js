@@ -168,6 +168,7 @@ const AddContractor = ({ show, handleClose }) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, City: e.target.value })}
+                                defaultValue={contractor?.City}
                             />
                         </Form.Group>
                     </Col>
@@ -178,6 +179,7 @@ const AddContractor = ({ show, handleClose }) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, State: e.target.value })}
+                                defaultValue={contractor?.State}
                             />
                         </Form.Group>
                     </Col>   
