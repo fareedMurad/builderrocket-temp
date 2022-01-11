@@ -240,68 +240,81 @@ const ContractorTable = ({
                 </tr>
             </thead>
             <tbody>
-                {filteredContractors?.map((contractor, index) => (
-                    <tr key={index}>
-                        <td width='15%'>{contractor?.CompanyName}</td>
-                        <td>{contractor?.FirstName}</td>
-                        <td>{contractor?.City} {contractor?.State}</td>
-                        <td>
-                            <a href={`tel:+1${contractor?.PhoneNumber}`}>
-                                {contractor?.PhoneNumber}
-                            </a>
-                        </td>
-                        <td>
-                            <a href={`mailto:${contractor?.EmailAddress}`}>
-                                {contractor?.EmailAddress}
-                            </a>
-                        </td>
-                        <td>
-                        <ReactStars
-                                edit={false}
-                                value={contractor?.Rating ? contractor?.Rating : 0}
-                                size={15}
-                                count={5}
-                                color="#aaa"
-                                activeColor="#ffd700"
-                            />
-                        </td>
-                        <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
-                            <OverlayTrigger
-                                placement='top'
-                                overlay={
-                                    <Tooltip id='button-tooltip'>
-                                        {contractor?.Notes}
-                                    </Tooltip>
-                                }
-                                delay={{ show: 250, hide: 400 }}
-                            >
-                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
-                            </OverlayTrigger>
-                        </td>
-                        <td width='5%'>
-                            {(isLoading && selectedContractorID === contractor.ID) ? (
-                                <Spinner 
-                                    size='sm'
-                                    className='justify-content-center d-flex'
-                                    animation='border'
-                                    variant='primary' 
-                                />
-                            ) : (
-                                <div className='d-flex justify-content-between'>
-                                    <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                    <i 
-                                        className='far fa-pencil-alt'
-                                        onClick={() => editContractor(contractor)}
-                                    ></i>
-                                    <i 
-                                        className='far fa-trash-alt' 
-                                        onClick={() => deleteContractorConfirmation(contractor.ID)}
-                                    ></i>
-                                </div>
-                            )}
-                        </td>
-                    </tr>
-                ))}
+                {contractorTypes?.map((type) => {
+                    if (handleContractors(type?.ID)?.length > 0) {
+                        return (
+                            <>
+                                <tr>
+                                    <td colSpan={7} className="contractor-type-name">{type.Name}</td>
+                                </tr>
+                                {handleContractors(type?.ID).map((contractor, index) => (
+                                    <tr key={index}>
+                                        <td width='15%'>{contractor?.CompanyName}</td>
+                                        <td>{contractor?.FirstName}</td>
+                                        <td>{contractor?.City} {contractor?.State}</td>
+                                        <td>
+                                            <a href={`tel:+1${contractor?.PhoneNumber}`}>
+                                                {contractor?.PhoneNumber}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href={`mailto:${contractor?.EmailAddress}`}>
+                                                {contractor?.EmailAddress}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <ReactStars
+                                                edit={false}
+                                                value={contractor?.Rating ? contractor?.Rating : 0}
+                                                size={15}
+                                                count={5}
+                                                color="#aaa"
+                                                activeColor="#ffd700"
+                                            />
+                                        </td>
+                                        <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
+                                            <OverlayTrigger
+                                                placement='top'
+                                                overlay={
+                                                    <Tooltip id='button-tooltip'>
+                                                        {contractor?.Notes}
+                                                    </Tooltip>
+                                                }
+                                                delay={{ show: 250, hide: 400 }}
+                                            >
+                                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                            </OverlayTrigger>
+                                        </td>
+                                        <td width='5%'>
+                                            {(isLoading && selectedContractorID === contractor.ID) ? (
+                                                <Spinner
+                                                    size='sm'
+                                                    className='justify-content-center d-flex'
+                                                    animation='border'
+                                                    variant='primary'
+                                                />
+                                            ) : (
+                                                <div className='d-flex justify-content-between'>
+                                                    <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                                    <i
+                                                        className='far fa-pencil-alt'
+                                                        onClick={() => editContractor(contractor)}
+                                                    ></i>
+                                                    <i
+                                                        className='far fa-trash-alt'
+                                                        onClick={() => deleteContractorConfirmation(contractor.ID)}
+                                                    ></i>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </>
+                        )
+                    }
+                    return null;
+                })}
+
             </tbody>
         </Table>
     )
