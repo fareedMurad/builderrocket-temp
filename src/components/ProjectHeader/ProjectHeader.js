@@ -4,6 +4,7 @@ import { Button, Modal, Form, Spinner } from 'react-bootstrap';
 import { copyProject } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectHeader.scss';
+import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
 
 const ProjectHeader = () => {
     const dispatch = useDispatch();
@@ -113,7 +114,7 @@ const ProjectHeader = () => {
                                 alt='project' 
                                 height='119' 
                                 width='167' 
-                                src={project?.ThumbnailURL}
+                                src={project?.ThumbnailUR || ProjectPlaceholder}
                             />
                         )}
                     </div>

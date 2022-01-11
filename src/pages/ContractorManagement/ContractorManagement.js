@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-    Form, 
-    Modal, 
-    Table, 
-    Button, 
+import {
+    Form,
+    Modal,
+    Table,
+    Button,
     Spinner,
-    Tooltip,    
+    Tooltip,
     FormControl,
-    OverlayTrigger, 
+    OverlayTrigger,
 } from 'react-bootstrap';
-import { 
-    getContractors, 
-    deleteContractor, 
+import {
+    getContractors,
+    deleteContractor,
     getContractorTypes,
     setSelectedContractor,
 } from '../../actions/contractorActions';
@@ -34,7 +34,7 @@ const ContractorManagement = () => {
     const [selectedContractorID, setSelectedContractorID] = useState();
     const [showContractorModal, setShowContractorModal] = useState(false);
     const [filteredContractors, setFilteredContractors] = useState(contractors);
-    
+
     useEffect(() => {
         setIsLoading(true);
 
@@ -43,15 +43,15 @@ const ContractorManagement = () => {
             .then(() => {
                 setIsLoading(false);
             })
-            .catch(() => { 
+            .catch(() => {
                 setIsLoading(false);
                 alert('Something went wrong getting contractors please try again');
             });
     }, [dispatch]);
-    
+
     useEffect(() => {
         const timer = setTimeout(() => {
-            const filter = contractors?.filter((contractor) => 
+            const filter = contractors?.filter((contractor) =>
                 contractor?.CompanyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.FirstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.LastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,7 +81,7 @@ const ContractorManagement = () => {
                 setIsLoading(false);
                 setShowDeleteModal(false);
             })
-            .catch(() => {});
+            .catch(() => { });
     }
 
     const deleteContractorConfirmation = (contractorID) => {
@@ -116,14 +116,14 @@ const ContractorManagement = () => {
                         Are you sure you want to delete this contractor?
                     </div>
                     <div className='d-flex justify-content-center pt-5'>
-                        <Button 
-                            onClick={cancelDeletion} 
-                            variant='link' 
+                        <Button
+                            onClick={cancelDeletion}
+                            variant='link'
                             className='cancel'
                         >
                             Cancel
                         </Button>
-                        <button 
+                        <button
                             className='primary-gray-btn next-btn ml-3'
                             onClick={handleDeleteContractor}
                         >
@@ -163,21 +163,21 @@ const ContractorManagement = () => {
                 <div className='d-flex'>
                     <div className='page-title'>Contractor Management</div>
                     <div className='ml-2'>
-                        <Button 
-                            variant='link' 
+                        <Button
+                            variant='link'
                             className='link-btn'
-                            onClick={() => setShowContractorModal(true)}    
+                            onClick={() => setShowContractorModal(true)}
                         >
                             + Add Contractor
                         </Button>
                     </div>
 
-                    <div className='d-flex search-bar'> 
+                    <div className='d-flex search-bar'>
                         <Form inline>
-                            <FormControl 
+                            <FormControl
                                 placeholder='Search Keywords'
                                 type='text'
-                                onChange={(e) => setSearchTerm(e.target.value)}    
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </Form>
                     </div>
@@ -191,29 +191,21 @@ const ContractorManagement = () => {
                     </div>
                 ) : (
                     <div className='contractor-management-table'>
-                        {contractorTypes?.map((type) => {
-                            if (handleContractors(type?.ID)?.length > 0) {
-                                return (
-                                    <div>
-                                        <div>{type?.Name}</div>
-                                        <ContractorTable
-                                            isLoading={isLoading}
-                                            editContractor={editContractor}
-                                            selectedContractorID={selectedContractorID}
-                                            filteredContractors={handleContractors(type?.ID)}
-                                            deleteContractorConfirmation={deleteContractorConfirmation}
-                                        />
-                                    </div>
-                                )
-                            }
-                            return null;
-                        })}
+                        <ContractorTable
+                            contractorTypes={contractorTypes}
+                            isLoading={isLoading}
+                            editContractor={editContractor}
+                            selectedContractorID={selectedContractorID}
+                            handleContractors={handleContractors}
+                            deleteContractorConfirmation={deleteContractorConfirmation}
+                        />
                     </div>
+
                 )}
             </div>
 
-            {showContractorModal && 
-                <AddContractor 
+            {showContractorModal &&
+                <AddContractor
                     show={showContractorModal}
                     handleClose={handleCloseContractorModal}
                 />
@@ -226,11 +218,14 @@ const ContractorManagement = () => {
 const ContractorTable = ({
     isLoading,
     editContractor,
-    filteredContractors,
     selectedContractorID,
     deleteContractorConfirmation,
+    handleContractors,
+    contractorTypes
 }) => {
+
     return (
+
         <Table hover responsive>
             <thead>
                 <tr>
