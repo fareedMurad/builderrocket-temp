@@ -18,6 +18,7 @@ import {
 } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
 
+import ReactStars from "react-rating-stars-component";
 // components
 import AddContractor from '../../components/AddContractor';
 
@@ -59,7 +60,6 @@ const ContractorManagement = () => {
                 contractor?.ZipCode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.PhoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.EmailAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.UOM?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 `${contractor?.FirstName} ${contractor?.LastName}`.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
                 contractor?.ContractorTypes.find((type) => type.Name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
             )
@@ -234,7 +234,7 @@ const ContractorTable = ({
                     <th>City/State</th>
                     <th>Phone</th>
                     <th>Email</th>
-                    <th>UOM/Labor Cost</th>
+                    <th>Rating</th>
                     <th>Notes</th>
                     <th></th>
                 </tr>
@@ -262,7 +262,16 @@ const ContractorTable = ({
                                                 {contractor?.EmailAddress}
                                             </a>
                                         </td>
-                                        <td>{contractor?.UOM}</td>
+                                        <td>
+                                            <ReactStars
+                                                edit={false}
+                                                value={contractor?.Rating ? contractor?.Rating : 0}
+                                                size={15}
+                                                count={5}
+                                                color="#aaa"
+                                                activeColor="#ffd700"
+                                            />
+                                        </td>
                                         <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
                                             <OverlayTrigger
                                                 placement='top'
