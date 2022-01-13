@@ -155,6 +155,7 @@
             font-weight: 600;
             font-size: 14px;
             background-color: $lightgray;
+            padding-top: 20px;
         }
         i {
             margin-right: .5rem;
@@ -194,6 +195,11 @@
                 line-height: 19px;
                 padding-left: .5rem;
                 letter-spacing: -0.32px;
+            }
+            .hide{ 
+                transition: 0.3s ease;
+                display: none;
+                overflow: hidden;
             }
     
             thead {

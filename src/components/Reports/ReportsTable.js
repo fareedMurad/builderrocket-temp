@@ -10,7 +10,7 @@ import Utils from '../../utils'
 import './Reports.scss';
 
 
-const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
+const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     const dispatch = useDispatch();
 
     const report = useSelector(state => state.project.report);
@@ -21,7 +21,6 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
 
     const [showModal, setShowModal] = useState(false);
     const [tempReport, setTempReport] = useState({});
-
     useEffect(() => {
         if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
@@ -87,9 +86,32 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
         )
     }
 
-    const renderTableBody = (item, index) => {
+
+    const renderHeader = () => {
         return (
-            <tr key={index}>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>
+                        Brand
+                    </th>
+                    <th>Model</th>
+                    <th>ProductName</th>
+                    <th>Description</th>
+                    <th>Vendor</th>
+                    <th>UOM</th>
+                    {!hideTotals && <th>Total Qty </th>}
+                    {!hideTotals && <th>Price</th>}
+                    {!hideTotals && <th>LineTotal</th>}
+                    <th></th>
+                </tr>
+            </thead>
+        )
+    }
+
+    const renderTableBody = (item, index, expend) => {
+        return (
+            <tr key={index} className={!expend ? "":"hide"}>
                 <td>
                     <img
                         width='50'
@@ -104,8 +126,8 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
                 <td>{Utils.textEllipsis(item?.ShortDescription, 150)}</td>
                 <td>{item?.VendorName}</td>
                 <td>{item?.UnitOfMeasure}</td>
-                {!hideTotals &&<td>{item?.Quantity}</td>}
-                {!hideTotals &&<td>{item?.Price}</td>}
+                {!hideTotals && <td>{item?.Quantity}</td>}
+                {!hideTotals && <td>{item?.Price}</td>}
                 {!hideTotals && <td>{item?.LineTotal}</td>}
                 <td>
                     <div className='d-flex justify-content-between'>
@@ -121,28 +143,6 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
         )
     }
 
-    const renderHeader = () => {
-        return (
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>
-                        Brand
-                    </th>
-                    <th>Model</th>
-                    <th>ProductName</th>
-                    <th>Description</th>
-                    <th>Vendor</th>
-                    <th>UOM</th>
-                    {!hideTotals &&<th>Total Qty </th>}
-                    {!hideTotals &&<th>Price</th>}
-                    {!hideTotals &&<th>LineTotal</th>}
-                    <th></th>
-                </tr>
-            </thead>
-        )
-    }
-
     const renderGroup = (data, item) => {
         return (
             <>
@@ -150,17 +150,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
                 <tbody>
                     {data?.Groups?.map((item, index) => {
                         return (
-                            <>
-                                <tr>
-                                    <td colSpan={11} className="contractor-type-name">{item.Name}</td>
-                                </tr>
-                                {item?.Items?.length ? 
-                                item?.Items?.map((item, index) => renderTableBody(item, index))
-                                : <tr>
-                                <td colSpan={11} className="no-items">There are no items found! for <b><i>{item.Name}</i></b></td>
-                            </tr>
-                            }
-                            </>
+                            <TableRow {...{ renderTableBody, item}}/>
                         )
                     })}
                 </tbody>
@@ -221,3 +211,26 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
 })
 
 export default ReportsTable;
+
+export const TableRow = ({item, renderTableBody}) => {
+
+
+    const [expend, setExpend] = useState(false);
+
+
+    return (
+        <>
+            <tr onClick={() => setExpend(!expend)}>
+                <td colSpan={11} className="contractor-type-name">{item.Name}</td>
+                <td className="contractor-type-name">
+                    <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
+                </td>
+            </tr>
+            {item?.Items?.length ? item?.Items?.map((item, index) => renderTableBody(item, index, expend))
+                : <tr className={!expend ? "":"hide"}>
+                    <td colSpan={11} className="no-items">There are no items found! for <b><i>{item.Name}</i></b></td>
+                </tr>
+            }
+        </>
+    )
+}

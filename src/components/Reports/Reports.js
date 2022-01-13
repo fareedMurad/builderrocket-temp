@@ -24,6 +24,7 @@ const Reports = (props) => {
     const ref = React.createRef();
 
     const report = useSelector(state => state.project.report);
+    const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
 
     const [showModal, setShowModal] = useState(false);
@@ -41,28 +42,28 @@ const Reports = (props) => {
     useEffect(() => {
         setIsLoading(true);
         if (layout?.value === "list") {
-            dispatch(getReportByProjectID(report?.ID))
+            dispatch(getReportByProjectID(project?.ID))
                 .then(() => {
                     setIsLoading(false);
                 })
                 .catch(() => setIsLoading(false));
         }
         else if (layout?.value === "category") {
-            dispatch(getCategorizedReportByProjectID(report?.ID))
+            dispatch(getCategorizedReportByProjectID(project?.ID))
                 .then(() => {
                     setIsLoading(false);
                 })
                 .catch(() => setIsLoading(false));
         }
         else if (layout?.value === "room") {
-            dispatch(getRoomReportByProjectID(report?.ID))
+            dispatch(getRoomReportByProjectID(project?.ID))
                 .then(() => {
                     setIsLoading(false);
                 })
                 .catch(() => setIsLoading(false));
         }
         else if (layout?.value === "vendor") {
-            dispatch(getVendorReportByProjectID(report?.ID))
+            dispatch(getVendorReportByProjectID(project?.ID))
                 .then(() => {
                     setIsLoading(false);
                 })
