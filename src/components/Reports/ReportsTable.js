@@ -154,7 +154,12 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
                                 <tr>
                                     <td colSpan={11} className="contractor-type-name">{item.Name}</td>
                                 </tr>
-                                {item?.Items?.map((item, index) => renderTableBody(item, index))}
+                                {item?.Items?.length ? 
+                                item?.Items?.map((item, index) => renderTableBody(item, index))
+                                : <tr>
+                                <td colSpan={11} className="no-items">There are no items found! for <b><i>{item.Name}</i></b></td>
+                            </tr>
+                            }
                             </>
                         )
                     })}
