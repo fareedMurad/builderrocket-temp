@@ -95,7 +95,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals}, ref) => {
                         width='50'
                         height='50'
                         alt='template item'
-                        src={report?.ProductThumbnailURl || ProjectPlaceholder}
+                        src={item?.ProductThumbnailURl || ProjectPlaceholder}
                     />
                 </td>
                 <td>{item?.BrandName}</td>
