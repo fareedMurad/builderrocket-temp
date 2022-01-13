@@ -14,6 +14,7 @@ import Contractors from '../Contractors';
 import ProductDetail from '../ProductDetail';
 import RoomAreaLayout from '../RoomAreaLayout';
 import ProjectInformation from '../ProjectInformation';
+import Reports from '../Reports';
 
 const ProjectTabs = (props) => {
     const dispatch = useDispatch();
@@ -79,6 +80,11 @@ const ProjectTabs = (props) => {
                 <Tab eventKey='products' title='Products' disabled={!project?.ID}>
                     {selectedProjectTab === 'products' && (
                         handleProductsTabs()
+                    )}
+                </Tab>
+                <Tab eventKey='reports' title='Reports'>
+                    {selectedProjectTab === 'reports' && (
+                       <Reports />
                     )}
                 </Tab>
             </Tabs>
