@@ -91,7 +91,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         return (
             <thead>
                 <tr>
-                    <th>Image</th>
+                    <th width="100">Image</th>
                     <th>
                         Brand
                     </th>
@@ -112,7 +112,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     const renderTableBody = (item, index, expend) => {
         return (
             <tr key={index} className={!expend ? "":"hide"}>
-                <td>
+                <td style={{paddingRight: '40px'}}>
                     <img
                         width='50'
                         height='50'
@@ -221,7 +221,7 @@ export const TableRow = ({item, renderTableBody}) => {
     return (
         <>
             <tr onClick={() => setExpend(!expend)}>
-                <td colSpan={11} className="contractor-type-name">{item.Name}</td>
+                <td colSpan={10} className="contractor-type-name">{item.Name}</td>
                 <td className="contractor-type-name">
                     <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
                 </td>
