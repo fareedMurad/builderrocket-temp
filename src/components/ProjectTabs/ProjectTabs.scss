@@ -5,11 +5,17 @@
         background-color: $lightgray;
         padding: 2rem 3rem;
         min-height: 100vh;
+        @include media-breakpoint-down(md) {
+            padding: 0;
+        }
     }
 
 
     .nav {
         padding: 0 3rem;
+        @include media-breakpoint-down(md) {
+            padding: 0;
+        }
     }
 
     .nav-item {

@@ -100,7 +100,7 @@ const ProjectHeader = () => {
     return (
         <div className='project-header'>
             <div className='d-flex flex-wrap justify-content-between'>
-                <div className='d-flex pt-2'>
+                <div className='d-flex pt-2 flex-wrap'>
                     <div className='project-image justify-content-center d-flex'>
                         {refreshThumbnail ? (
                             <div className='spinner'>
@@ -151,7 +151,7 @@ const ProjectHeader = () => {
                     <div className='bold-text'>
                         {project?.Customers?.[0]?.FirstName}{' '}{project?.Customers?.[0]?.LastName}
                     </div>
-                    <div className='d-flex'>
+                    <div className='d-flex flex-wrap'>
                         <div className='pr-3 text phone'>
                             <i className='fas fa-phone mr-2'></i>
                             <a href={`tel:+1${project?.Customers?.[0]?.Phone}`}>
