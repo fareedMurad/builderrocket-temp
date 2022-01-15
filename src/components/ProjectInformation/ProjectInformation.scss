@@ -13,6 +13,9 @@
         @include media-breakpoint-up(lg) {
             margin-right: 3rem;
         }
+        @include media-breakpoint-down(md) {
+            width: 100%;
+        }
         padding-bottom: 2rem;
         margin-bottom: 2rem;
     }
@@ -29,6 +32,12 @@
             }
 
             padding: 0 1rem;
+            @include media-breakpoint-down(md) {
+                padding: 0;
+            }
+            a{
+                word-break: break-all
+            }
         }
     }
 }

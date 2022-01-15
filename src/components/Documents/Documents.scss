@@ -12,6 +12,10 @@
         @include media-breakpoint-up(lg) {
             margin-right: 3rem;
         }
+
+        @include media-breakpoint-down(md) {
+            width: 100%;
+        }
         
         margin-bottom: 2rem;
         padding-bottom: 2rem;
@@ -28,6 +32,10 @@
             @include media-breakpoint-down(lg) {
                 width: 100%;
             }
+
+        @include media-breakpoint-down(md) {
+           padding: 0;
+        }
 
             padding: 0 1rem;
         }

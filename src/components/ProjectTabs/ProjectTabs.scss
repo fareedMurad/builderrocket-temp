@@ -18,6 +18,14 @@
         }
     }
 
+    .nav-tabs{
+
+        @include media-breakpoint-down(lg) {
+            flex-wrap: nowrap;
+            overflow-x: scroll;
+        }
+    }
+
     .nav-item {
         padding-left: 1.5rem;
         padding-right: 1.5rem;
@@ -26,6 +34,16 @@
         line-height: 19px;
         border: none;
         color: $tabblue;
+        background: transparent;
+
+        @include media-breakpoint-down(lg) {
+            min-width: fit-content;
+            align-items: center;
+            height: fit-content;
+            padding-left: 1rem;
+            padding-right: 1rem;
+
+        }
     }
 
     .nav-item.active {
