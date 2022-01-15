@@ -191,7 +191,7 @@ const Products = (props) => {
     return (
         <div className='d-flex products'>
             <div className='products-container'>
-                <div className='d-flex justify-content-between'>
+                <div className='d-flex justify-content-between flex-wrap'>
                     <div>
                         <div className='page-title'>Products - {selectedRoom?.RoomName ? selectedRoom?.RoomName : ''}</div>
                         <div className='subtext'>The products assinged to each room are displayed below.</div>
@@ -217,7 +217,7 @@ const Products = (props) => {
                 </div>
 
                 <div className='middle-section'>
-                    <div className='d-flex'>
+                    <div className='d-flex flex-wrap'>
                         <div>
                             <Form.Control 
                                 as='select'
@@ -254,7 +254,7 @@ const Products = (props) => {
 
                 <div className='products-table'>
                     <div className='table-title'>Title</div>
-                    <Table>
+                    <Table responsive>
                         <thead>
                             <tr>
                                 <th>Needs Approval</th>
