@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button, Spinner, Modal } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
 import {
     saveProject,
@@ -8,6 +8,7 @@ import {
     uploadProjectThumbnail,
     getProjectByProjectID,
 } from '../../actions/projectActions';
+import { addSubdivision } from '../../actions/subdivisionActions'
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
@@ -18,6 +19,7 @@ import FileUpload from '../FileUpload';
 import CustomerModal from '../CustomerModal';
 import MarketingBlock from '../MarketingBlock';
 import ClearChangesModal from '../ClearChangesModal';
+import { Link } from 'react-router-dom';
 
 const projectStatusMap = {
     1: 'Open',
@@ -30,13 +32,15 @@ const ProjectInformation = () => {
 
     const user = useSelector(state => state.user.user);
     const project = useSelector(state => state.project.project);
-    const subdivisions = useSelector(state => state.subdivision.subdivisions);
+    const subdivisions = useSelector(state => state.subdivision.subdivisions)?.filter(s => s.SubdivisionName != null);
 
     const [showModal, setShowModal] = useState(false);
+    const [showSubdivisionModal, setShowSubdivisionModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showCustomerModal, setShowCustomerModal] = useState(false);
     const [projectInformation, setProjectInformation] = useState(project);
     const [projectImage, setProjectImage] = useState(null);
+    const [newSubdivisionName, setNewSubdivisionName] = useState("");
 
     // Ref to access changes on unmount 
     const valueRef = useRef();
@@ -55,9 +59,9 @@ const ProjectInformation = () => {
         setIsLoading(true);
 
         const formData = new FormData();
-        
+
         formData.append('File', event.target?.files?.[0]);
-        
+
         // Save new thumbnail - update component state with updated data
         dispatch(uploadProjectThumbnail(project?.ID, formData))
             .then(async (updatedProject) => {
@@ -112,7 +116,7 @@ const ProjectInformation = () => {
                     setIsLoading(false);
                     window.scrollTo(0, 0);
                     console.log(res, 'response')
-                    if (res?.ID){
+                    if (res?.ID) {
                         uploadProjectImage(res?.ID)
                     }
 
@@ -126,9 +130,9 @@ const ProjectInformation = () => {
     }
 
     const uploadProjectImage = (projectId) => {
-        if(!projectImage) return;
+        if (!projectImage) return;
         const formData = new FormData();
-    
+
         formData.append('File', projectImage);
 
         // Save new thumbnail - update component state with updated data
@@ -168,6 +172,78 @@ const ProjectInformation = () => {
         }
 
         return customerName;
+    }
+
+    const cancelModal = () => {
+        setShowSubdivisionModal(false);
+    }
+
+    const saveAsNewSubdivision = () => {
+        if (!newSubdivisionName) return;
+
+        setIsLoading(true);
+
+        dispatch(addSubdivision({ subdivisionName: newSubdivisionName }))
+            .then((subdivisions) => {
+                setIsLoading(false);
+                setNewSubdivisionName(newSubdivisionName);
+                setProjectInformation({ ...projectInformation, Subdivision: subdivisions.find(d => d.SubdivisionName === newSubdivisionName)?.SubdivisionName })
+                cancelModal();
+            })
+            .catch(() => {
+                setIsLoading(false);
+                alert('Something went wrong creating a subdivision try again');
+            })
+    }
+
+    const saveNewSubdivisionModal = () => {
+        return (
+            <Modal
+                size='md'
+                centered
+                show={showSubdivisionModal}
+                className='new-subdivision-modal'
+                onHide={() => setShowSubdivisionModal(false)}
+            >
+                <Modal.Body className='modal-container'>
+                    <div className='page-title'>Add Subdivision</div>
+                    <Form>
+                        <Form.Label className='input-label'>
+                            Subdivision Name
+                        </Form.Label>
+                        <Form.Control
+                            className='input-gray'
+                            value={newSubdivisionName}
+                            onChange={(e) => setNewSubdivisionName(e.target.value)}
+                        />
+                    </Form>
+                    <div className='d-flex justify-content-center mt-3'>
+                        {isLoading ? (
+                            <Spinner
+                                animation='border'
+                                variant='primary'
+                            />
+                        ) : (
+                            <>
+                                <Button
+                                    variant='link'
+                                    className='cancel'
+                                    onClick={cancelModal}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    className='primary-gray-btn next-btn ml-3'
+                                    onClick={saveAsNewSubdivision}
+                                >
+                                    Save
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                </Modal.Body>
+            </Modal>
+        )
     }
 
     return (
@@ -254,6 +330,7 @@ const ProjectInformation = () => {
                                 ))}
                             </Form.Control>
                         </div>
+                        {saveNewSubdivisionModal()}
                         <div className='form-col pb-3 select'>
                             <Form.Label className='input-label'>
                                 Subdivision
@@ -261,14 +338,32 @@ const ProjectInformation = () => {
                             <Form.Control
                                 as='select'
                                 value={projectInformation?.Subdivision}
-                                onChange={(event) => setProjectInformation({
-                                    ...projectInformation,
-                                    Subdivision: event.target.value
-                                })}
+                                onChange={(event) => {
+                                    event.target.value === 'Add New Subdivision' ?
+                                        setShowSubdivisionModal(true)
+                                        : setProjectInformation({
+                                            ...projectInformation,
+                                            Subdivision: event.target.value
+                                        })
+                                }}
                             >
-                                <option></option>
+                                <option
+                                    className='link-btn'
+                                    value="Add New Subdivision"
+                                    selected={false}
+                                >
+                                    + Add New Subdivision
+                                </option>
+                                <option
+                                    hidden
+                                    selected={!newSubdivisionName}
+                                >
+
+                                </option>
+
                                 {subdivisions?.map((subdivision, index) => (
                                     <option
+                                        selected={projectInformation?.Subdivision?.SubdivisionName === subdivision?.SubdivisionName}
                                         key={index}
                                         value={subdivision.SubdivisionName}
                                     >
@@ -400,10 +495,10 @@ const ProjectInformation = () => {
                         </>
                     )}
                 </div>
-            </div>
+            </div >
 
             <MarketingBlock />
-        </div>
+        </div >
     )
 }
 
