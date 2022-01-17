@@ -4,6 +4,10 @@
     min-height: 29px;
     background-color: $gray;
 
+    @include media-breakpoint-down(md) {
+        display: none !important;
+    }
+
     .header-item {
         color: #fff;
         font-size: 14px;
@@ -32,6 +36,7 @@
     @include media-breakpoint-down(md) {
         min-height: 30px;
         margin-bottom: 0;
+
     }
 
     #management-dropdown {
