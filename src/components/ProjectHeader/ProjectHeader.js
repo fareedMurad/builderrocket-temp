@@ -70,20 +70,20 @@ const ProjectHeader = () => {
                     </Form>
                     <div className='d-flex justify-content-center mt-3'>
                         {isLoading ? (
-                            <Spinner 
-                               animation='border'
-                               variant='primary' 
-                           />
+                            <Spinner
+                                animation='border'
+                                variant='primary'
+                            />
                         ) : (
                             <>
-                                <Button 
-                                    variant='link' 
+                                <Button
+                                    variant='link'
                                     className='cancel'
                                     onClick={cancelModal}
                                 >
-                                        Cancel
+                                    Cancel
                                 </Button>
-                                <Button 
+                                <Button
                                     className='primary-gray-btn next-btn ml-3'
                                     onClick={saveAsNewProject}
                                 >
@@ -100,41 +100,41 @@ const ProjectHeader = () => {
     return (
         <div className='project-header'>
             <div className='d-flex flex-wrap justify-content-between'>
-                <div className='d-flex pt-2'>
+                <div className='d-flex pt-2 flex-wrap'>
                     <div className='project-image justify-content-center d-flex'>
                         {refreshThumbnail ? (
                             <div className='spinner'>
                                 <Spinner
                                     animation='border'
-                                    variant='primary' 
+                                    variant='primary'
                                 />
                             </div>
                         ) : (
-                            <img 
-                                alt='project' 
-                                height='119' 
-                                width='167' 
-                                src={project?.ThumbnailUR || ProjectPlaceholder}
+                            <img
+                                alt='project'
+                                height='119'
+                                width='167'
+                                src={project?.ThumbnailURL || ProjectPlaceholder}
                             />
                         )}
                     </div>
                     <div>
                         <div className='text'>
-                            {project?.ProjectNumber} 
-                            <i className='fas fa-share-square ml-5 share-icon'></i>    
+                            {project?.ProjectNumber}
+                            <i className='fas fa-share-square ml-5 share-icon'></i>
                         </div>
 
                         <div className='pt-2 d-flex'>
-                            <div className='project-name'>{project?.ProjectName}</div>   
+                            <div className='project-name'>{project?.ProjectName}</div>
                         </div>
 
-                        <div className='d-flex'> 
+                        <div className='d-flex'>
                             {project?.StreetAddress1}
                         </div>
 
                         <div className='mt-1 d-flex'>
-                            <Button 
-                                variant='link' 
+                            <Button
+                                variant='link'
                                 className='link-btn'
                                 onClick={() => setShowModal(true)}
                             >
@@ -151,24 +151,24 @@ const ProjectHeader = () => {
                     <div className='bold-text'>
                         {project?.Customers?.[0]?.FirstName}{' '}{project?.Customers?.[0]?.LastName}
                     </div>
-                    <div className='d-flex'>
+                    <div className='d-flex flex-wrap'>
                         <div className='pr-3 text phone'>
                             <i className='fas fa-phone mr-2'></i>
                             <a href={`tel:+1${project?.Customers?.[0]?.Phone}`}>
                                 {project?.Customers?.[0]?.Phone}
-                            </a>    
+                            </a>
                         </div>
-                        
+
                         <div className='text email'>
-                            <i className='fas fa-envelope mr-2'></i> 
-                            <a href={`mailto:${project?.Customers?.[0]?.Email}`}> 
+                            <i className='fas fa-envelope mr-2'></i>
+                            <a href={`mailto:${project?.Customers?.[0]?.Email}`}>
                                 {project?.Customers?.[0]?.Email}
                             </a>
                         </div>
                     </div>
                     <div className='d-flex pt-3'>
                         <div className='bold-text pr-3'>
-                            Closed On 
+                            Closed On
                             {'    '}
                             {Utils.formatDateDashes(project?.CloseDate)}
                         </div>

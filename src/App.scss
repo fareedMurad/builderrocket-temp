@@ -3,6 +3,9 @@
   height: 40vmin;
   pointer-events: none;
 }
+.blur{
+  filter: blur(2px);
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
