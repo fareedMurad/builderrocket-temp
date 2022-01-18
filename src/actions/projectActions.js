@@ -431,3 +431,56 @@ export const createProject = (newProject) => dispatch => {
             dispatch({ type: LOGOUT }); 
     })
 } 
+
+
+export const updateRequiresApproval = (projectId, productId, approval) => dispatch => {
+    const URL = `/Project/${projectId}/Product/${productId}`;
+
+    const data = [{
+            op:"replace",
+            path:"/RequiresApproval",
+            value: approval
+    }]
+
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data:data
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
+
+}
+
+export const updateQuantity = (projectId, productId, quantity) => dispatch => {
+    const URL = `/Project/${projectId}/Product/${productId}`;
+
+    const data = [{
+            op:"replace",
+            path:"/Quantity",
+            value: quantity
+    }]
+
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data:data
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
+
+}
