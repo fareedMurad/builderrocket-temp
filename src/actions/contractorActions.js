@@ -95,3 +95,29 @@ export const deleteContractor = (contractorID) => dispatch => {
 export const setSelectedContractor = (contractor) => dispatch => {
     dispatch({ type: SET_SELECTED_CONTRACTOR, payload: contractor });
 }
+
+export const updateIsFavorite = (contractor, IsFavorite) => dispatch => {
+    const URL = `/contractor/${contractor?.ID}`;
+
+    const data = [{
+            op:"replace",
+            path:"/IsFavorite",
+            value: IsFavorite
+    }]
+
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data:data
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_CONTRACTORS, payload: response.data });
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
+}
