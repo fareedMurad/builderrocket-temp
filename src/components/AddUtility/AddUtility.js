@@ -117,7 +117,7 @@ const AddUtility = ({ show, handleClose }) => {
                     </Col>
                     <Col md={6}>
                         <div className='pb-4'>
-                            <Form.Label className='input-label'>Region</Form.Label>
+                            <Form.Label className='input-label'>Areas served</Form.Label>
                             <Form.Control
                                 type='email'
                                 className='input-gray'
