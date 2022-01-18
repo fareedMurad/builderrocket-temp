@@ -7,7 +7,7 @@ import {
     Spinner, 
     FormControl, 
 } from 'react-bootstrap';
-import { deleteUtility, getUtilities, setSelectedUtility } from '../../actions/utilityActions';
+import { deleteUtility, getUtilities, setSelectedUtility, updateIsFavorite } from '../../actions/utilityActions';
 import { useDispatch, useSelector } from 'react-redux';
 import './UtilityManagement.scss';
 
@@ -21,6 +21,7 @@ const UtilityManagement = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isIsFavoriteLoading, setIsIsFavoriteLoading] = useState(false);
     const [selectedUtilityID, setSelectedUtilityID] = useState();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showUtilityModal, setShowUtilityModal] = useState(false);
@@ -83,6 +84,17 @@ const UtilityManagement = () => {
                 setShowUtilityModal(true);
             });
     }
+
+    const handleFavorite = (utility) => {
+        if(!isIsFavoriteLoading){
+            setIsIsFavoriteLoading(true)
+            dispatch(updateIsFavorite(utility, !utility?.IsFavorite))
+            .then(() => {
+                setIsIsFavoriteLoading(false)
+            });
+        }
+    }
+
 
     const deleteUtilityModal = () => {
         return (
@@ -170,12 +182,15 @@ const UtilityManagement = () => {
                                                 variant='primary' 
                                                 animation='border'
                                                 className='justify-content-center d-flex'
-                                            />
+                                              />
                                         ) : (
                                             <div className='d-flex justify-content-between'>
-                                                <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                                 <i 
-                                                    className='far fa-pencil-alt'
+                                                    className={`text-danger ${utility.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
+                                                    onClick={() => handleFavorite(utility)}
+                                                ></i>
+                                                <i 
+                                                    className='far fa-pencil-alt mx-2'
                                                     onClick={() => editUtillity(utility)}
                                                 ></i>
                                                 <i 
