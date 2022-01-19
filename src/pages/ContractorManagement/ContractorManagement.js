@@ -15,6 +15,7 @@ import {
     deleteContractor,
     getContractorTypes,
     setSelectedContractor,
+    updateIsFavorite
 } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
 
@@ -34,6 +35,7 @@ const ContractorManagement = () => {
     const [selectedContractorID, setSelectedContractorID] = useState();
     const [showContractorModal, setShowContractorModal] = useState(false);
     const [filteredContractors, setFilteredContractors] = useState(contractors);
+    const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
@@ -151,6 +153,16 @@ const ContractorManagement = () => {
     //     })
     // }
 
+    const handleFavorite = (contractor) => {
+        if(!isFavoriteLoading){
+            setIsFavoriteLoading(true)
+            dispatch(updateIsFavorite(contractor, !contractor?.IsFavorite))
+            .then(() => {
+                setIsFavoriteLoading(false)
+            });
+        }
+    }
+
     const handleContractors = (contractorTypeID) => {
         const contractorsByType = filteredContractors.filter((contractor) => {
             return contractor.ContractorTypes.find((type) => type.ID === contractorTypeID);
@@ -205,6 +217,7 @@ const ContractorManagement = () => {
                             selectedContractorID={selectedContractorID}
                             handleContractors={handleContractors}
                             deleteContractorConfirmation={deleteContractorConfirmation}
+                            handleFavorite={handleFavorite}
                         />
                     </div>
 
@@ -228,7 +241,8 @@ const ContractorTable = ({
     selectedContractorID,
     deleteContractorConfirmation,
     handleContractors,
-    contractorTypes
+    contractorTypes,
+    handleFavorite
 }) => {
 
     return (
@@ -313,7 +327,10 @@ const ContractorTable = ({
                                                 />
                                             ) : (
                                                 <div className='d-flex justify-content-between'>
-                                                    <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                                    <i
+                                                        className={`text-danger ${contractor.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
+                                                        onClick={() => handleFavorite(contractor)}
+                                                    ></i>
                                                     <i
                                                         className='far fa-pencil-alt'
                                                         onClick={() => editContractor(contractor)}
