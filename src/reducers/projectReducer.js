@@ -1,5 +1,6 @@
 import { 
     GET_PROJECT,
+    GET_REPORT,
     GET_PROJECTS, 
     RESET_PROJECT,
     ADD_PROJECT_ROOMS,
@@ -7,6 +8,9 @@ import {
     SET_REFRESH_THUMBNAIL,
     SET_SELECTED_PROJECT_TAB, 
     DELETE_PROJECT_ROOMS,
+    GET_CATEGORIZED_REPORT,
+    GET_ROOM_REPORT,
+    GET_VENDOR_REPORT
 } from '../actions/types';
 
 const intialState = {
@@ -59,6 +63,30 @@ const projectReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 project: action.payload
+            }
+        }
+        case GET_REPORT: {
+            return {
+                ...state, 
+                report: action.payload
+            }
+        }
+        case GET_CATEGORIZED_REPORT: {
+            return {
+                ...state, 
+                reportByCategory: action.payload
+            }
+        }
+        case GET_VENDOR_REPORT: {
+            return {
+                ...state, 
+                reportsByVendor: action.payload
+            }
+        }
+        case GET_ROOM_REPORT: {
+            return {
+                ...state, 
+                reportByRoom: action.payload
             }
         }
         case SET_SELECTED_PROJECT: {
