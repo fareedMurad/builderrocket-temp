@@ -49,7 +49,9 @@ const ProjectInformation = () => {
     }, [project]);
 
     const onFileChange = (event) => {
-        setProjectImage(event.target?.files?.[0])
+        let file = event.target?.files?.[0];
+        setProjectInformation({...projectInformation, ThumbnailName: file?.name})
+        setProjectImage(file)
         if (!project?.ID) return;
 
         setIsLoading(true);
