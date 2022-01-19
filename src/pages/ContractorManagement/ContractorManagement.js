@@ -287,6 +287,7 @@ const ContractorTable = ({
                                                 count={5}
                                                 color="#aaa"
                                                 activeColor="#ffd700"
+                                                classNames="rating-stars"
                                             />
                                         </td>
                                         <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
