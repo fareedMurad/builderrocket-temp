@@ -151,7 +151,7 @@ const UtilityManagement = () => {
                                 <th>Type</th>
                                 <th>Phone</th>
                                 <th>Email</th>
-                                <th>Region</th>
+                                <th>Areas served</th>
                                 <th></th>
                             </tr>
                         </thead>
