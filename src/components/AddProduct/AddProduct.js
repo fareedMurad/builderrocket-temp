@@ -12,6 +12,8 @@ import { handleProductForProject } from '../../actions/projectActions';
 import { Button, Form, Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css'; // This only needs to be imported once in our app
 import './AddProduct.scss';
 
 // components 
@@ -27,6 +29,9 @@ const AddProduct = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isOpenLightBox, setOpenLightBox] = useState(false)
+    const [photoIndex, setPhotoIndex] = useState(0)
+    const [lightBoxImages, setLightBoxImages] = useState([])
     const [searchObject, setSearchObject] = useState({
         CategoryID: '',
         ModelName: null,
@@ -255,7 +260,7 @@ const AddProduct = () => {
                                 <tr>
                                     <th></th>
                                     <th>Product Name</th>
-                                    <th>Project Status</th>
+                                    <th>Model Number</th>
                                     <th>Color/Finish</th>
                                     <th>Distributor</th>
                                     <th>Price</th>
@@ -271,7 +276,12 @@ const AddProduct = () => {
                                                 alt='product' 
                                                 width='50'
                                                 height='50'
+                                                style={{cursor: "pointer"}}
                                                 src={product?.ThumbnailURL}
+                                                onClick={() =>{
+                                                    setLightBoxImages([product?.ThumbnailURL])
+                                                    setOpenLightBox(true)
+                                                }}
                                             />
                                         </td>
                                         <td>
@@ -294,7 +304,7 @@ const AddProduct = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td></td>
+                                        <td>{product?.ModelNumber}</td>
                                         <td>{product?.ColorFinish}</td>
                                         <td>
                                             <div className='distributor-select'>
@@ -338,6 +348,16 @@ const AddProduct = () => {
                 handleClose={handleClose} 
                 handleCloseModal={() => setShowModal(false)} 
             />
+            {isOpenLightBox && (
+          <Lightbox
+            mainSrc={lightBoxImages[photoIndex]}
+            nextSrc={lightBoxImages[(photoIndex + 1) % lightBoxImages.length]}
+            prevSrc={lightBoxImages[(photoIndex + lightBoxImages.length - 1) % lightBoxImages.length]}
+            onCloseRequest={() => setOpenLightBox(false)}
+            onMovePrevRequest={() => setPhotoIndex((photoIndex + lightBoxImages.length - 1) % lightBoxImages.length)}
+            onMoveNextRequest={() => setPhotoIndex(((photoIndex + 1) % lightBoxImages.length))}
+          />
+        )}
         </div>
     );
 }
