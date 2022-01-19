@@ -15,6 +15,7 @@ import {
     deleteContractor,
     getContractorTypes,
     setSelectedContractor,
+    updateIsFavorite
 } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
 
@@ -34,6 +35,7 @@ const ContractorManagement = () => {
     const [selectedContractorID, setSelectedContractorID] = useState();
     const [showContractorModal, setShowContractorModal] = useState(false);
     const [filteredContractors, setFilteredContractors] = useState(contractors);
+    const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
@@ -62,7 +64,12 @@ const ContractorManagement = () => {
                 contractor?.EmailAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 `${contractor?.FirstName} ${contractor?.LastName}`.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
                 contractor?.ContractorTypes.find((type) => type.Name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
-            )
+            )?.map(c => {
+                return {
+                    ...c,
+                    ContractorTypes: c.ContractorTypes.filter(t => t.Name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+                }
+            })
 
             setFilteredContractors(filter)
         }, 1000);
@@ -146,6 +153,16 @@ const ContractorManagement = () => {
     //     })
     // }
 
+    const handleFavorite = (contractor) => {
+        if(!isFavoriteLoading){
+            setIsFavoriteLoading(true)
+            dispatch(updateIsFavorite(contractor, !contractor?.IsFavorite))
+            .then(() => {
+                setIsFavoriteLoading(false)
+            });
+        }
+    }
+
     const handleContractors = (contractorTypeID) => {
         const contractorsByType = filteredContractors.filter((contractor) => {
             return contractor.ContractorTypes.find((type) => type.ID === contractorTypeID);
@@ -160,16 +177,18 @@ const ContractorManagement = () => {
     return (
         <div className='d-flex contractor-management'>
             <div className='contractor-management-container'>
-                <div className='d-flex'>
-                    <div className='page-title'>Contractor Management</div>
-                    <div className='ml-2'>
-                        <Button
-                            variant='link'
-                            className='link-btn'
-                            onClick={() => setShowContractorModal(true)}
-                        >
-                            + Add Contractor
-                        </Button>
+                <div className='d-flex justify-content-between pr-2 '>
+                    <div className="d-flex flex-wrap">
+                        <div className='page-title'>Contractor Management</div>
+                        <div className='ml-2'>
+                            <Button
+                                variant='link'
+                                className='link-btn'
+                                onClick={() => setShowContractorModal(true)}
+                            >
+                                + Add Contractor
+                            </Button>
+                        </div>
                     </div>
 
                     <div className='d-flex search-bar'>
@@ -198,6 +217,7 @@ const ContractorManagement = () => {
                             selectedContractorID={selectedContractorID}
                             handleContractors={handleContractors}
                             deleteContractorConfirmation={deleteContractorConfirmation}
+                            handleFavorite={handleFavorite}
                         />
                     </div>
 
@@ -221,7 +241,8 @@ const ContractorTable = ({
     selectedContractorID,
     deleteContractorConfirmation,
     handleContractors,
-    contractorTypes
+    contractorTypes,
+    handleFavorite
 }) => {
 
     return (
@@ -229,13 +250,13 @@ const ContractorTable = ({
         <Table hover responsive>
             <thead>
                 <tr>
-                    <th>Company Name</th>
-                    <th>Contact Name</th>
-                    <th>City/State</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Rating</th>
-                    <th>Notes</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
@@ -244,8 +265,18 @@ const ContractorTable = ({
                     if (handleContractors(type?.ID)?.length > 0) {
                         return (
                             <>
-                                <tr>
+                                <tr className="contractor-type-row">
                                     <td colSpan={7} className="contractor-type-name">{type.Name}</td>
+                                </tr>
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Contact Name</th>
+                                    <th>City/State</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Rating</th>
+                                    <th>Notes</th>
+                                    <th></th>
                                 </tr>
                                 {handleContractors(type?.ID).map((contractor, index) => (
                                     <tr key={index}>
@@ -270,6 +301,7 @@ const ContractorTable = ({
                                                 count={5}
                                                 color="#aaa"
                                                 activeColor="#ffd700"
+                                                classNames="rating-stars"
                                             />
                                         </td>
                                         <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
@@ -295,7 +327,10 @@ const ContractorTable = ({
                                                 />
                                             ) : (
                                                 <div className='d-flex justify-content-between'>
-                                                    <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                                    <i
+                                                        className={`text-danger ${contractor.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
+                                                        onClick={() => handleFavorite(contractor)}
+                                                    ></i>
                                                     <i
                                                         className='far fa-pencil-alt'
                                                         onClick={() => editContractor(contractor)}

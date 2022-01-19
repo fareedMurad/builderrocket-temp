@@ -30,6 +30,10 @@
             font-size: 12px;
             letter-spacing: -0.27px;
             line-height: 17px;
+
+            .rating-stars{
+                width: 66px;
+            }
         }
 
         i {
@@ -42,6 +46,18 @@
                 color: red;
             }
         }
+        
+        .contractor-type-row{
+            .contractor-type-name{
+                padding-top: 50px;
+            }
+        }
+        .contractor-type-row:first-child{
+            .contractor-type-name{
+                padding-top: 0;
+            }
+        }
+
 
         .contractor-type-name {
             width: 100%;
@@ -51,7 +67,7 @@
     }
     
     .search-bar {
-        margin-left: 50%;
+        // margin-left: 50%;
 
         .form-control {
             height: 28px;

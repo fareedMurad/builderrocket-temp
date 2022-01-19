@@ -24,8 +24,6 @@ function App() {
         })
     }, []);
 
-    useEffect
-
     return (
         <div>
             <Header expanded={expandedNav} setExpanded={setExpandedNav}/>

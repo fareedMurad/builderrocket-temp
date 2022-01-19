@@ -6,6 +6,10 @@ import {
     ADD_PROJECT_ROOMS,
     GET_PROJECTS, 
     GET_PROJECT, 
+    GET_REPORT,
+    GET_CATEGORIZED_REPORT,
+    GET_ROOM_REPORT,
+    GET_VENDOR_REPORT,
     RESET_PROJECT, 
     LOGOUT,
     SET_REFRESH_THUMBNAIL
@@ -432,7 +436,6 @@ export const createProject = (newProject) => dispatch => {
     })
 } 
 
-
 export const updateRequiresApproval = (projectId, productId, approval) => dispatch => {
     const URL = `/Project/${projectId}/Product/${productId}`;
 
@@ -482,5 +485,107 @@ export const updateQuantity = (projectId, productId, quantity) => dispatch => {
         if (error?.response?.status === 401) 
             dispatch({ type: LOGOUT });
     })
+}
+/**
+ * Get report by project ID  
+ * @param {String} projectID 
+ *
+ */
+ export const getReportByProjectID = (projectID) => dispatch => {
+    const URL = `/Project/${projectID}/report`;
 
+    return api({
+        method: 'GET', 
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_REPORT, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+}
+
+
+/**
+ * Get categorized report by project ID  
+ * @param {String} projectID 
+ *
+ */
+ export const getCategorizedReportByProjectID = (projectID) => dispatch => {
+    const URL = `/Project/${projectID}/report/category`;
+
+    return api({
+        method: 'GET', 
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_CATEGORIZED_REPORT, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+}
+
+
+
+/**
+ * Get room report by project ID  
+ * @param {String} projectID 
+ *
+ */
+ export const getRoomReportByProjectID = (projectID) => dispatch => {
+    const URL = `/Project/${projectID}/report/room`;
+
+    return api({
+        method: 'GET', 
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_ROOM_REPORT, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+}
+
+
+/**
+ * Get vendor report by project ID  
+ * @param {String} projectID 
+ *
+ */
+ export const getVendorReportByProjectID = (projectID) => dispatch => {
+    const URL = `/Project/${projectID}/report/vendor`;
+
+    return api({
+        method: 'GET', 
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_ROOM_REPORT, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
 }
