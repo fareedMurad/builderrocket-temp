@@ -7,10 +7,12 @@ export const CustomPrinter = React.forwardRef((props, ref) => {
     const onBeforeGetContentResolve = React.useRef(null);
 
     const handleAfterPrint = React.useCallback(() => {
+        props.handleAfterPrint?.();
 
     }, []);
 
     const handleBeforePrint = React.useCallback(() => {
+        props.handleBeforePrint?.();
         console.log("`onBeforePrint` called");
     }, []);
 
@@ -34,6 +36,7 @@ export const CustomPrinter = React.forwardRef((props, ref) => {
     }, [onBeforeGetContentResolve.current]);
 
     const reactToPrintContent = React.useCallback(() => {
+        props.handleBeforePrint?.();
         return ref.current;
     }, [ref.current]);
 

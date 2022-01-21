@@ -121,9 +121,15 @@ const Reports = (props) => {
                             icon="fas fa-share-alt" 
                             title="Share to Distributor" 
                         />
-                        <CustomPrinter 
+                        <CustomPrinter
+                            handleAfterPrint={() =>
+                                setHideTotals(false)
+                            }
+                            handleBeforePrint={() =>
+                                setHideTotals(true)
+                            }
                             ref={componentRef} 
-                            icon="fa-share-square" 
+                            icon="fas fa-share-square" 
                             title="Share to Customer"
                         />
                         <Button variant='link' className='link-btn'>
