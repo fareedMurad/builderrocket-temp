@@ -100,20 +100,12 @@ const Header = ({expanded, setExpanded}) => {
                                 <i className='far fa-images fa-sm tab-icon'></i>
                                 Projects
                             </div>
-                            <div className='header-item'>
-                                <i className='far fa-border-none fa-sm tab-icon'></i>
-                                Rooms Management
-                            </div>
                             <div
                                 className='header-item'
                                 onClick={() => handleRouteChange('/utility-management')}
                             >
                                 <i className='far fa-lightbulb fa-sm tab-icon'></i>
                                 Utility Management
-                            </div>
-                            <div className='header-item'>
-                                <i className='far fa-bookmark fa-sm tab-icon'></i>
-                                Vendor Management
                             </div>
                             <div
                                 className='header-item'
@@ -122,6 +114,16 @@ const Header = ({expanded, setExpanded}) => {
                                 <i className='far fa-user-hard-hat fa-sm tab-icon'></i>
                                 Contractor Management
                             </div>
+                            <div className='header-item'>
+                                <i className='far fa-border-none fa-sm tab-icon'></i>
+                                Rooms Management
+                            </div>
+                           
+                            <div className='header-item'>
+                                <i className='far fa-bookmark fa-sm tab-icon'></i>
+                                Vendor Management
+                            </div>
+                            
 
                             {showTabLinks && <div
                                 className='header-item tabs'

@@ -101,3 +101,30 @@ export const setSelectedUtility = (utility) => dispatch => {
         resolve();
     })
 }
+
+export const updateIsFavorite = (utality, IsFavorite) => dispatch => {
+    const URL = `/utility/${utality?.ID}`;
+
+    const data = [{
+            op:"replace",
+            path:"/IsFavorite",
+            value: IsFavorite
+    }]
+
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data:data
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_UTILITIES, payload: response.data });
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
+
+}

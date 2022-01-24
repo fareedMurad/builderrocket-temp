@@ -111,20 +111,6 @@ const Drawings = () => {
             });
     }
 
-    const handleRenderImage = (drawing) => {
-        if (
-            drawing?.FileName.endsWith('.png')
-            || drawing?.FileName.endsWith('.jpg')
-            || drawing?.FileName.endsWith('.jpeg')
-            || drawing?.FileName.endsWith('.pdf')
-            || drawing?.FileName.endsWith('.bmp')
-        ) {
-            return true;
-        }
-
-        return;
-    }
-
     return (
         <div className='d-flex drawings'>
             <div className='drawings-container'>
@@ -163,7 +149,7 @@ const Drawings = () => {
                             {returnDrawings()?.map((drawing, index) => (
                                 <div key={index} className='d-flex drawing'>
                                     <div className='drawing-image'>       
-                                        {handleRenderImage(drawing) ? (
+                                        {drawing?.IsImage ? (
                                             <img 
                                                 alt='drawing' 
                                                 height='45' 
