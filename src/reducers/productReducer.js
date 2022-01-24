@@ -1,5 +1,6 @@
 import { 
     SET_PRODUCT,
+    SET_REPLACE_PRODUCT,
     SET_PRODUCTS,
     GET_CATEGORIES, 
     SEARCH_PRODUCTS, 
@@ -40,6 +41,13 @@ const productReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 product: action.payload
+            }
+        }
+
+        case SET_REPLACE_PRODUCT: {
+            return {
+                ...state, 
+                replaceProduct: action.payload
             }
         }
         case SET_PRODUCTS: {

@@ -1,6 +1,7 @@
 import { 
     LOGOUT,
     SET_PRODUCT,
+    SET_REPLACE_PRODUCT,
     SET_PRODUCTS,
     GET_CATEGORIES,
     SEARCH_PRODUCTS,
@@ -106,6 +107,18 @@ export const setProduct = (product) => dispatch => {
     });
 }
 
+export const setReplaceProduct = (product) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_REPLACE_PRODUCT, payload: product });
+
+            resolve(product);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
 export const setProducts = (products) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
@@ -164,6 +177,28 @@ export const getProductDetails = (productID) => dispatch => {
     });
 }
 
+export const getReplaceProduct = (productID) => dispatch => {
+    if (!productID) return;
+
+    const URL = `/Product/${productID}/details`;
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            dispatch({ type: SET_REPLACE_PRODUCT, payload: response.data });
+
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+}
+
 export const setSelectedProductTab = (selectedProductTab) => dispatch => {
     if (!selectedProductTab) return;
 
@@ -176,4 +211,25 @@ export const setSelectedProductTab = (selectedProductTab) => dispatch => {
             reject(error);
         }
     })
+}
+
+export const replaceProductService = (projectId, data) => dispatch => {
+    let URL = `Project/${projectId}/product/replace`; 
+    
+    return api({
+        method: 'POST',
+        url: URL,
+        data: data
+    })
+    .then((response) => {
+        if (response.status === 200) {
+
+            console.log(response)
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
 }
