@@ -1,4 +1,6 @@
 import api from '../api';
+import { SET_USER, LOGOUT } from './types';
+
 import {
     GET_SUBDIVISIONS,
     ADD_SUBDIVISION

@@ -4,10 +4,10 @@ import {
     editProduct, handleProductForProject, updateRequiresApproval,
     setSelectedProject, updateQuantity
 } from '../../actions/projectActions';
-import { Button, Form, Table, Modal, Spinner } from 'react-bootstrap';
 
-//import { editProduct, handleProductForProject } from '../../actions/projectActions';
-//import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
+
+
+import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
 
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
