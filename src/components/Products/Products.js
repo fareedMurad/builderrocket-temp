@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { setProduct, getCategories, setSelectedProductTab } from '../../actions/productActions';
 import { editProduct, handleProductForProject } from '../../actions/projectActions';
-import { Button, Form, Table, Modal, Spinner } from 'react-bootstrap';
+import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
@@ -180,14 +180,63 @@ const Products = (props) => {
         )
     }
 
+    const renderApproval = (templateItem) => {
+        let status = {}
+
+        if (!templateItem?.RequiresApproval)
+            return;
+
+        switch (templateItem?.ApprovalStatusID) {
+            case 0 | null: {
+                status = {
+                    label: "",
+                    className: ""
+                }
+            }
+                break;
+            case -1: {
+                status = {
+                    label: "Rejected",
+                    className: "bg-danger"
+                }
+            }
+                break;
+
+            case 0: {
+                status = {
+                    label: "Approved",
+                    className: "bg-success"
+                }
+            }
+                break;
+
+            default: {
+                status = {}
+            }
+        }
+
+        return (
+            templateItem?.DateApproved ? <OverlayTrigger
+                placement='top'
+                overlay={
+                    <Tooltip id='button-tooltip'>
+                        {templateItem?.DateApproved}
+                    </Tooltip>
+                }
+                delay={{ show: 250, hide: 400 }}
+            >
+                <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
+            </OverlayTrigger> : <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
+
+        )
+    }
+
     const showProducts = () => {
         dispatch(getCategories(''))
             .then(dispatch(setProduct({})))
             .then(dispatch(setSelectedProductTab('addProduct')))
             .catch(() => { });
     }
-
-    console.log('selected room', selectedRoom);
     return (
         <div className='d-flex products'>
             <div className='products-container'>
@@ -387,7 +436,9 @@ const Products = (props) => {
                                             </div>
                                         </td>
                                         <td></td>
-                                        <td></td>
+                                        <td>
+                                            {renderApproval(templateItem)}
+                                        </td>
                                         <td>
                                             <div className='d-flex justify-content-between'>
                                                 <i className='fas fa-retweet'></i>
