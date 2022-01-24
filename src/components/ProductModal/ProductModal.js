@@ -44,12 +44,16 @@ const ProductModal = (props) => {
     }
 
     const addToRooms = () => {
+        console.log(roomList)
         if (roomList.length === 0) return;
         dispatch(replaceProductService(project?.ID, {
             OldProductID: product?.TemplateItemID,
             NewProductID: replaceProduct?.ID,
-            ProjectRoomIDs: includedRooms(replaceProduct?.ProductID)
+            ProjectRoomIDs: roomList
         }))
+        .then(() => {
+            handleCloseModal()
+        })
     }
 
     const includedRooms = (ProductID) => {
@@ -138,7 +142,7 @@ const ProductModal = (props) => {
                                         type='checkbox'
                                         // checked={room?.ProductID === replaceProduct?.ID ? true : false}
                                         defaultChecked={includedRooms(replaceProduct?.ProductID)?.includes(room.ID)}
-                                        onChange={() => includedRooms(replaceProduct?.ProductID)?.includes(room.ID) ?  handleCheckBox(room?.ID): {}}
+                                        onChange={() =>  handleCheckBox(room?.ID)}
                                         label={`${room?.Name}`}
                                     />
                                 </div>

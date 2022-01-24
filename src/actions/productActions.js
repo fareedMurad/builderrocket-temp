@@ -1,6 +1,7 @@
 import { 
     LOGOUT,
     SET_PRODUCT,
+    SET_SELECTED_PROJECT,
     SET_REPLACE_PRODUCT,
     SET_PRODUCTS,
     GET_CATEGORIES,
@@ -223,8 +224,7 @@ export const replaceProductService = (projectId, data) => dispatch => {
     })
     .then((response) => {
         if (response.status === 200) {
-
-            console.log(response)
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
             return response.data;
         }
     })
