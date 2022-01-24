@@ -22,6 +22,7 @@ export const GET_USER_PROFILE = 'GET_USER_PROFILE';
 
 // subdivision
 export const GET_SUBDIVISIONS = 'GET_SUBDIVISIONS';
+export const ADD_SUBDIVISION = 'ADD_SUBDIVISION';
 
 // utility
 export const GET_UTILITIES = 'GET_UTILITIES';
