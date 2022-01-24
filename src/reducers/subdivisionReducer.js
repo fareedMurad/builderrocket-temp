@@ -1,5 +1,6 @@
 import {
-    GET_SUBDIVISIONS
+    GET_SUBDIVISIONS,
+    ADD_SUBDIVISION
 } from '../actions/types';
 
 const intialState = {
@@ -11,6 +12,12 @@ const subdivisionReducer = (state = intialState, action) => {
         case GET_SUBDIVISIONS: {
             return {
                 ...state, 
+                subdivisions: action.payload
+            }
+        }
+        case ADD_SUBDIVISION: {
+            return {
+                ...state,
                 subdivisions: action.payload
             }
         }

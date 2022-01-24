@@ -18,8 +18,7 @@ import {
     updateIsFavorite
 } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
-
-import ReactStars from "react-rating-stars-component";
+import StarRatings from 'react-star-ratings';
 // components
 import AddContractor from '../../components/AddContractor';
 
@@ -294,15 +293,18 @@ const ContractorTable = ({
                                             </a>
                                         </td>
                                         <td>
-                                            <ReactStars
-                                                edit={false}
-                                                value={contractor?.Rating ? contractor?.Rating : 0}
-                                                size={15}
-                                                count={5}
-                                                color="#aaa"
-                                                activeColor="#ffd700"
-                                                classNames="rating-stars"
-                                            />
+                                            <div className="star-ratings">
+                                                <StarRatings
+                                                    rating={contractor?.Rating ? contractor?.Rating : 0}
+                                                    starRatedColor="#ffd700"
+                                                    starSpacing="0"
+                                                    numberOfStars={5}
+                                                    starDimension="12px"
+                                                    name='rating'
+                                                    starEmptyColor="#aaa"
+                                                />
+                                            </div>
+
                                         </td>
                                         <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
                                             <OverlayTrigger
