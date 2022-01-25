@@ -8,6 +8,7 @@ import {
 } from '../../actions/contractorActions';
 import Select from 'react-select';
 import { isEmpty } from 'lodash';
+import ReactStars from "react-rating-stars-component";
 import './AddContractor.scss';
 
 const AddContractor = ({ show, handleClose }) => {
@@ -168,6 +169,7 @@ const AddContractor = ({ show, handleClose }) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, City: e.target.value })}
+                                defaultValue={contractor?.City}
                             />
                         </Form.Group>
                     </Col>
@@ -178,6 +180,7 @@ const AddContractor = ({ show, handleClose }) => {
                                 type='text'
                                 className='input-gray'
                                 onChange={(e) => setContractor({ ...contractor, State: e.target.value })}
+                                defaultValue={contractor?.State}
                             />
                         </Form.Group>
                     </Col>   
@@ -206,23 +209,26 @@ const AddContractor = ({ show, handleClose }) => {
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group>
-                            <Form.Label className='input-label'>Categories</Form.Label>
-                            <Form.Control
-                                type='text'
-                                className='input-gray'
-                                // onChange={(e) => setContractor({ ...contractor, Region: e.target.value })}
-                            />
+                        <Form.Label className='input-label'>Website</Form.Label>
+                        <Form.Control
+                            type='text'
+                            className='input-gray'
+                            onChange={(e) => setContractor({ ...contractor, Website: e.target.value })}
+                            defaultValue={contractor?.Website}
+                        />
                         </Form.Group>
                     </Col>
                     <Col md={12} lg={6}>
                         <Form.Group>
-                        <Form.Label className='input-label'>UOM</Form.Label>
-                        <Form.Control
-                            type='text'
-                            className='input-gray'
-                            onChange={(e) => setContractor({ ...contractor, UOM: e.target.value })}
-                            defaultValue={contractor?.UOM}
-                        />
+                        <Form.Label className='input-label'>Rating</Form.Label>
+                        {contractor.ID && <ReactStars
+                                value={contractor?.Rating ? contractor?.Rating : 0}
+                                onChange={count => setContractor({ ...contractor, Rating: count })}
+                                size={30}
+                                count={5}
+                                color="#aaa"
+                                activeColor="#ffd700"
+                            />}
                         </Form.Group>
                     </Col>
                     <Col md={12}>

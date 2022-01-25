@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Button, Spinner } from 'react-bootstrap';
+import { Form, Button, Spinner, Modal } from 'react-bootstrap';
 import { getSubdivisions } from '../../actions/subdivisionActions';
-import { 
-    saveProject, 
+import {
+    saveProject,
     createProject,
-    setSelectedProjectTab, 
+    setSelectedProjectTab,
     uploadProjectThumbnail,
     getProjectByProjectID,
 } from '../../actions/projectActions';
+import { addSubdivision } from '../../actions/subdivisionActions'
 import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
@@ -18,6 +19,7 @@ import FileUpload from '../FileUpload';
 import CustomerModal from '../CustomerModal';
 import MarketingBlock from '../MarketingBlock';
 import ClearChangesModal from '../ClearChangesModal';
+import { Link } from 'react-router-dom';
 
 const projectStatusMap = {
     1: 'Open',
@@ -30,16 +32,18 @@ const ProjectInformation = () => {
 
     const user = useSelector(state => state.user.user);
     const project = useSelector(state => state.project.project);
-    const subdivisions = useSelector(state => state.subdivision.subdivisions);
+    const subdivisions = useSelector(state => state.subdivision.subdivisions)?.filter(s => s.SubdivisionName != null);
 
     const [showModal, setShowModal] = useState(false);
+    const [showSubdivisionModal, setShowSubdivisionModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showCustomerModal, setShowCustomerModal] = useState(false);
     const [projectInformation, setProjectInformation] = useState(project);
+    const [projectImage, setProjectImage] = useState(null);
+    const [newSubdivisionName, setNewSubdivisionName] = useState("");
 
-     // Ref to access changes on unmount 
+    // Ref to access changes on unmount 
     const valueRef = useRef();
-
     useEffect(() => {
         dispatch(getSubdivisions());
     }, [dispatch]);
@@ -49,14 +53,17 @@ const ProjectInformation = () => {
     }, [project]);
 
     const onFileChange = (event) => {
+        let file = event.target?.files?.[0];
+        setProjectInformation({...projectInformation, ThumbnailName: file?.name})
+        setProjectImage(file)
         if (!project?.ID) return;
 
         setIsLoading(true);
 
         const formData = new FormData();
-        
+
         formData.append('File', event.target?.files?.[0]);
-        
+
         // Save new thumbnail - update component state with updated data
         dispatch(uploadProjectThumbnail(project?.ID, formData))
             .then(async (updatedProject) => {
@@ -99,16 +106,22 @@ const ProjectInformation = () => {
                     alert('Something went wrong saving project try again');
                 })
         } else {
-            const newProject = { 
+            const newProject = {
                 ...projectInformation,
                 DateCreated: new Date(),
                 UserID: user.UserID,
+                StatusID: projectInformation?.StatusID || 1
             }
 
             dispatch(createProject(newProject))
-                .then(() => {
+                .then((res) => {
                     setIsLoading(false);
                     window.scrollTo(0, 0);
+                    console.log(res, 'response')
+                    if (res?.ID) {
+                        uploadProjectImage(res?.ID)
+                    }
+
                 })
                 .catch(() => {
                     setIsLoading(false);
@@ -118,6 +131,25 @@ const ProjectInformation = () => {
         }
     }
 
+    const uploadProjectImage = (projectId) => {
+        if (!projectImage) return;
+        const formData = new FormData();
+
+        formData.append('File', projectImage);
+
+        // Save new thumbnail - update component state with updated data
+        dispatch(uploadProjectThumbnail(projectId, formData))
+            .then(async (updatedProject) => {
+                await dispatch(getProjectByProjectID(projectId));
+
+                setIsLoading(false);
+            })
+            .catch(() => {
+                setIsLoading(false);
+                alert('Something went wrong uploading thumbnail try again');
+            })
+    }
+
     useEffect(() => {
         // reference latest changes
         valueRef.current = projectInformation;
@@ -125,7 +157,7 @@ const ProjectInformation = () => {
 
     useEffect(() => {
         return () => {
-              // save any changes when navigating away
+            // save any changes when navigating away
             dispatch(saveProject(valueRef.current));
         }
     }, [dispatch]);
@@ -135,18 +167,90 @@ const ProjectInformation = () => {
 
         if (projectInformation?.Customers?.[0]?.FirstName && !projectInformation?.Customers?.[0]?.LastName) {
             customerName = projectInformation?.Customers?.[0]?.FirstName;
-        } 
+        }
 
         if (projectInformation?.Customers?.[0]?.FirstName && projectInformation?.Customers?.[0]?.LastName) {
             customerName = projectInformation?.Customers?.[0]?.FirstName + ' ' + projectInformation?.Customers?.[0]?.LastName;
-        } 
-        
+        }
+
         return customerName;
     }
 
+    const cancelModal = () => {
+        setShowSubdivisionModal(false);
+    }
+
+    const saveAsNewSubdivision = () => {
+        if (!newSubdivisionName) return;
+
+        setIsLoading(true);
+
+        dispatch(addSubdivision({ subdivisionName: newSubdivisionName }))
+            .then((subdivisions) => {
+                setIsLoading(false);
+                setNewSubdivisionName(newSubdivisionName);
+                setProjectInformation({ ...projectInformation, Subdivision: subdivisions.find(d => d.SubdivisionName === newSubdivisionName)?.SubdivisionName })
+                cancelModal();
+            })
+            .catch(() => {
+                setIsLoading(false);
+                alert('Something went wrong creating a subdivision try again');
+            })
+    }
+
+    const saveNewSubdivisionModal = () => {
+        return (
+            <Modal
+                size='md'
+                centered
+                show={showSubdivisionModal}
+                className='new-subdivision-modal'
+                onHide={() => setShowSubdivisionModal(false)}
+            >
+                <Modal.Body className='modal-container'>
+                    <div className='page-title'>Add Subdivision</div>
+                    <Form>
+                        <Form.Label className='input-label'>
+                            Subdivision Name
+                        </Form.Label>
+                        <Form.Control
+                            className='input-gray'
+                            value={newSubdivisionName}
+                            onChange={(e) => setNewSubdivisionName(e.target.value)}
+                        />
+                    </Form>
+                    <div className='d-flex justify-content-center mt-3'>
+                        {isLoading ? (
+                            <Spinner
+                                animation='border'
+                                variant='primary'
+                            />
+                        ) : (
+                            <>
+                                <Button
+                                    variant='link'
+                                    className='cancel'
+                                    onClick={cancelModal}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    className='primary-gray-btn next-btn ml-3'
+                                    onClick={saveAsNewSubdivision}
+                                >
+                                    Save
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                </Modal.Body>
+            </Modal>
+        )
+    }
+
     return (
-        <div className='d-flex project-information'> 
-            <div className='information-form-container'> 
+        <div className='d-flex project-information'>
+            <div className='information-form-container'>
                 <div className='page-title'>Project Information</div>
 
                 <Form>
@@ -165,9 +269,9 @@ const ProjectInformation = () => {
                             />
                         </div>
                         <div className='form-col pb-4'>
-                            <FileUpload 
-                                short 
-                                label='Project Image' 
+                            <FileUpload
+                                short
+                                label='Project Image'
                                 buttonText='Upload Image'
                                 fileURL={projectInformation?.ThumbnailURL}
                                 onFileChange={(event) => onFileChange(event)}
@@ -210,17 +314,17 @@ const ProjectInformation = () => {
                             <Form.Label className='input-label'>
                                 Project Status
                             </Form.Label>
-                            <Form.Control 
+                            <Form.Control
                                 as='select'
                                 value={projectInformation?.StatusID}
-                                onChange={(event) => setProjectInformation({ 
+                                onChange={(event) => setProjectInformation({
                                     ...projectInformation,
                                     StatusID: parseInt(event.target.value)
-                                })}    
+                                })}
                             >
                                 {Object.keys(projectStatusMap)?.map((status, index) => (
-                                    <option 
-                                        key={index} 
+                                    <option
+                                        key={index}
                                         value={status}
                                     >
                                         {projectStatusMap[status]}
@@ -228,6 +332,7 @@ const ProjectInformation = () => {
                                 ))}
                             </Form.Control>
                         </div>
+                        {saveNewSubdivisionModal()}
                         <div className='form-col pb-3 select'>
                             <Form.Label className='input-label'>
                                 Subdivision
@@ -235,14 +340,32 @@ const ProjectInformation = () => {
                             <Form.Control
                                 as='select'
                                 value={projectInformation?.Subdivision}
-                                onChange={(event) => setProjectInformation({
-                                    ...projectInformation,
-                                    Subdivision: event.target.value
-                                })}
+                                onChange={(event) => {
+                                    event.target.value === 'Add New Subdivision' ?
+                                        setShowSubdivisionModal(true)
+                                        : setProjectInformation({
+                                            ...projectInformation,
+                                            Subdivision: event.target.value
+                                        })
+                                }}
                             >
-                                <option></option>
+                                <option
+                                    className='link-btn'
+                                    value="Add New Subdivision"
+                                    selected={false}
+                                >
+                                    + Add New Subdivision
+                                </option>
+                                <option
+                                    hidden
+                                    selected={!newSubdivisionName}
+                                >
+
+                                </option>
+
                                 {subdivisions?.map((subdivision, index) => (
-                                    <option 
+                                    <option
+                                        selected={projectInformation?.Subdivision?.SubdivisionName === subdivision?.SubdivisionName}
                                         key={index}
                                         value={subdivision.SubdivisionName}
                                     >
@@ -254,7 +377,7 @@ const ProjectInformation = () => {
 
                         <div className='form-col pb-5'></div>
 
-                        <div className='form-col pb-2'> 
+                        <div className='form-col pb-2'>
                             <Form.Label className='input-label'>
                                 Street Address 1
                             </Form.Label>
@@ -326,7 +449,7 @@ const ProjectInformation = () => {
                             <Form.Label className='input-label'>
                                 Closing Date
                             </Form.Label>
-                            <DatePicker 
+                            <DatePicker
                                 className='input-gray date-picker'
                                 onChange={(date) => setProjectInformation({ ...projectInformation, CloseDate: date })}
                                 selected={projectInformation?.CloseDate ? new Date(projectInformation?.CloseDate) : ''}
@@ -337,13 +460,13 @@ const ProjectInformation = () => {
                     </div>
                 </Form>
 
-                <ClearChangesModal 
+                <ClearChangesModal
                     show={showModal}
                     setShow={setShowModal}
                     clearChanges={clearChanges}
                 />
 
-                <CustomerModal 
+                <CustomerModal
                     show={showCustomerModal}
                     setShow={handleShowCustomerModal}
                     setCustomer={setProjectInformation}
@@ -352,20 +475,20 @@ const ProjectInformation = () => {
 
                 <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
-                        <Spinner 
-                           animation='border'
-                           variant='primary' 
+                        <Spinner
+                            animation='border'
+                            variant='primary'
                         />
                     ) : (
                         <>
-                            <Button 
-                                variant='link' 
+                            <Button
+                                variant='link'
                                 className='cancel'
                                 onClick={() => setShowModal(true)}
                             >
                                 Cancel
                             </Button>
-                            <Button 
+                            <Button
                                 onClick={saveChanges}
                                 className='primary-gray-btn next-btn ml-3'
                             >
@@ -374,10 +497,10 @@ const ProjectInformation = () => {
                         </>
                     )}
                 </div>
-            </div>
+            </div >
 
             <MarketingBlock />
-        </div>
+        </div >
     )
 }
 

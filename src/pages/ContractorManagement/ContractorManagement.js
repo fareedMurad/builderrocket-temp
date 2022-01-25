@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-    Form, 
-    Modal, 
-    Table, 
-    Button, 
+import {
+    Form,
+    Modal,
+    Table,
+    Button,
     Spinner,
-    Tooltip,    
+    Tooltip,
     FormControl,
-    OverlayTrigger, 
+    OverlayTrigger,
 } from 'react-bootstrap';
-import { 
-    getContractors, 
-    deleteContractor, 
+import {
+    getContractors,
+    deleteContractor,
     getContractorTypes,
     setSelectedContractor,
+    updateIsFavorite
 } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
-
+import StarRatings from 'react-star-ratings';
 // components
 import AddContractor from '../../components/AddContractor';
 
@@ -33,7 +34,8 @@ const ContractorManagement = () => {
     const [selectedContractorID, setSelectedContractorID] = useState();
     const [showContractorModal, setShowContractorModal] = useState(false);
     const [filteredContractors, setFilteredContractors] = useState(contractors);
-    
+    const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+
     useEffect(() => {
         setIsLoading(true);
 
@@ -42,15 +44,15 @@ const ContractorManagement = () => {
             .then(() => {
                 setIsLoading(false);
             })
-            .catch(() => { 
+            .catch(() => {
                 setIsLoading(false);
                 alert('Something went wrong getting contractors please try again');
             });
     }, [dispatch]);
-    
+
     useEffect(() => {
         const timer = setTimeout(() => {
-            const filter = contractors?.filter((contractor) => 
+            const filter = contractors?.filter((contractor) =>
                 contractor?.CompanyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.FirstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.LastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,10 +61,14 @@ const ContractorManagement = () => {
                 contractor?.ZipCode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.PhoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 contractor?.EmailAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.UOM?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 `${contractor?.FirstName} ${contractor?.LastName}`.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
                 contractor?.ContractorTypes.find((type) => type.Name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
-            )
+            )?.map(c => {
+                return {
+                    ...c,
+                    ContractorTypes: c.ContractorTypes.filter(t => t.Name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+                }
+            })
 
             setFilteredContractors(filter)
         }, 1000);
@@ -81,7 +87,7 @@ const ContractorManagement = () => {
                 setIsLoading(false);
                 setShowDeleteModal(false);
             })
-            .catch(() => {});
+            .catch(() => { });
     }
 
     const deleteContractorConfirmation = (contractorID) => {
@@ -116,14 +122,14 @@ const ContractorManagement = () => {
                         Are you sure you want to delete this contractor?
                     </div>
                     <div className='d-flex justify-content-center pt-5'>
-                        <Button 
-                            onClick={cancelDeletion} 
-                            variant='link' 
+                        <Button
+                            onClick={cancelDeletion}
+                            variant='link'
                             className='cancel'
                         >
                             Cancel
                         </Button>
-                        <button 
+                        <button
                             className='primary-gray-btn next-btn ml-3'
                             onClick={handleDeleteContractor}
                         >
@@ -146,6 +152,16 @@ const ContractorManagement = () => {
     //     })
     // }
 
+    const handleFavorite = (contractor) => {
+        if(!isFavoriteLoading){
+            setIsFavoriteLoading(true)
+            dispatch(updateIsFavorite(contractor, !contractor?.IsFavorite))
+            .then(() => {
+                setIsFavoriteLoading(false)
+            });
+        }
+    }
+
     const handleContractors = (contractorTypeID) => {
         const contractorsByType = filteredContractors.filter((contractor) => {
             return contractor.ContractorTypes.find((type) => type.ID === contractorTypeID);
@@ -160,24 +176,26 @@ const ContractorManagement = () => {
     return (
         <div className='d-flex contractor-management'>
             <div className='contractor-management-container'>
-                <div className='d-flex'>
-                    <div className='page-title'>Contractor Management</div>
-                    <div className='ml-2'>
-                        <Button 
-                            variant='link' 
-                            className='link-btn'
-                            onClick={() => setShowContractorModal(true)}    
-                        >
-                            + Add Contractor
-                        </Button>
+                <div className='d-flex justify-content-between pr-2 '>
+                    <div className="d-flex flex-wrap">
+                        <div className='page-title'>Contractor Management</div>
+                        <div className='ml-2'>
+                            <Button
+                                variant='link'
+                                className='link-btn'
+                                onClick={() => setShowContractorModal(true)}
+                            >
+                                + Add Contractor
+                            </Button>
+                        </div>
                     </div>
 
-                    <div className='d-flex search-bar'> 
+                    <div className='d-flex search-bar'>
                         <Form inline>
-                            <FormControl 
+                            <FormControl
                                 placeholder='Search Keywords'
                                 type='text'
-                                onChange={(e) => setSearchTerm(e.target.value)}    
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </Form>
                     </div>
@@ -191,29 +209,22 @@ const ContractorManagement = () => {
                     </div>
                 ) : (
                     <div className='contractor-management-table'>
-                        {contractorTypes?.map((type) => {
-                            if (handleContractors(type?.ID)?.length > 0) {
-                                return (
-                                    <div>
-                                        <div>{type?.Name}</div>
-                                        <ContractorTable
-                                            isLoading={isLoading}
-                                            editContractor={editContractor}
-                                            selectedContractorID={selectedContractorID}
-                                            filteredContractors={handleContractors(type?.ID)}
-                                            deleteContractorConfirmation={deleteContractorConfirmation}
-                                        />
-                                    </div>
-                                )
-                            }
-                            return null;
-                        })}
+                        <ContractorTable
+                            contractorTypes={contractorTypes}
+                            isLoading={isLoading}
+                            editContractor={editContractor}
+                            selectedContractorID={selectedContractorID}
+                            handleContractors={handleContractors}
+                            deleteContractorConfirmation={deleteContractorConfirmation}
+                            handleFavorite={handleFavorite}
+                        />
                     </div>
+
                 )}
             </div>
 
-            {showContractorModal && 
-                <AddContractor 
+            {showContractorModal &&
+                <AddContractor
                     show={showContractorModal}
                     handleClose={handleCloseContractorModal}
                 />
@@ -226,78 +237,121 @@ const ContractorManagement = () => {
 const ContractorTable = ({
     isLoading,
     editContractor,
-    filteredContractors,
     selectedContractorID,
     deleteContractorConfirmation,
+    handleContractors,
+    contractorTypes,
+    handleFavorite
 }) => {
+
     return (
+
         <Table hover responsive>
             <thead>
                 <tr>
-                    <th>Company Name</th>
-                    <th>Contact Name</th>
-                    <th>City/State</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>UOM/Labor Cost</th>
-                    <th>Notes</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {filteredContractors?.map((contractor, index) => (
-                    <tr key={index}>
-                        <td width='15%'>{contractor?.CompanyName}</td>
-                        <td>{contractor?.FirstName}</td>
-                        <td>{contractor?.City} {contractor?.State}</td>
-                        <td>
-                            <a href={`tel:+1${contractor?.PhoneNumber}`}>
-                                {contractor?.PhoneNumber}
-                            </a>
-                        </td>
-                        <td>
-                            <a href={`mailto:${contractor?.EmailAddress}`}>
-                                {contractor?.EmailAddress}
-                            </a>
-                        </td>
-                        <td>{contractor?.UOM}</td>
-                        <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
-                            <OverlayTrigger
-                                placement='top'
-                                overlay={
-                                    <Tooltip id='button-tooltip'>
-                                        {contractor?.Notes}
-                                    </Tooltip>
-                                }
-                                delay={{ show: 250, hide: 400 }}
-                            >
-                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
-                            </OverlayTrigger>
-                        </td>
-                        <td width='5%'>
-                            {(isLoading && selectedContractorID === contractor.ID) ? (
-                                <Spinner 
-                                    size='sm'
-                                    className='justify-content-center d-flex'
-                                    animation='border'
-                                    variant='primary' 
-                                />
-                            ) : (
-                                <div className='d-flex justify-content-between'>
-                                    <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                    <i 
-                                        className='far fa-pencil-alt'
-                                        onClick={() => editContractor(contractor)}
-                                    ></i>
-                                    <i 
-                                        className='far fa-trash-alt' 
-                                        onClick={() => deleteContractorConfirmation(contractor.ID)}
-                                    ></i>
-                                </div>
-                            )}
-                        </td>
-                    </tr>
-                ))}
+                {contractorTypes?.map((type) => {
+                    if (handleContractors(type?.ID)?.length > 0) {
+                        return (
+                            <>
+                                <tr className="contractor-type-row">
+                                    <td colSpan={7} className="contractor-type-name">{type.Name}</td>
+                                </tr>
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Contact Name</th>
+                                    <th>City/State</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Rating</th>
+                                    <th>Notes</th>
+                                    <th></th>
+                                </tr>
+                                {handleContractors(type?.ID).map((contractor, index) => (
+                                    <tr key={index}>
+                                        <td width='15%'>{contractor?.CompanyName}</td>
+                                        <td>{contractor?.FirstName}</td>
+                                        <td>{contractor?.City} {contractor?.State}</td>
+                                        <td>
+                                            <a href={`tel:+1${contractor?.PhoneNumber}`}>
+                                                {contractor?.PhoneNumber}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href={`mailto:${contractor?.EmailAddress}`}>
+                                                {contractor?.EmailAddress}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div className="star-ratings">
+                                                <StarRatings
+                                                    rating={contractor?.Rating ? contractor?.Rating : 0}
+                                                    starRatedColor="#ffd700"
+                                                    starSpacing="0"
+                                                    numberOfStars={5}
+                                                    starDimension="12px"
+                                                    name='rating'
+                                                    starEmptyColor="#aaa"
+                                                />
+                                            </div>
+
+                                        </td>
+                                        <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
+                                            <OverlayTrigger
+                                                placement='top'
+                                                overlay={
+                                                    <Tooltip id='button-tooltip'>
+                                                        {contractor?.Notes}
+                                                    </Tooltip>
+                                                }
+                                                delay={{ show: 250, hide: 400 }}
+                                            >
+                                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                            </OverlayTrigger>
+                                        </td>
+                                        <td width='5%'>
+                                            {(isLoading && selectedContractorID === contractor.ID) ? (
+                                                <Spinner
+                                                    size='sm'
+                                                    className='justify-content-center d-flex'
+                                                    animation='border'
+                                                    variant='primary'
+                                                />
+                                            ) : (
+                                                <div className='d-flex justify-content-between'>
+                                                    <i
+                                                        className={`text-danger ${contractor.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
+                                                        onClick={() => handleFavorite(contractor)}
+                                                    ></i>
+                                                    <i
+                                                        className='far fa-pencil-alt'
+                                                        onClick={() => editContractor(contractor)}
+                                                    ></i>
+                                                    <i
+                                                        className='far fa-trash-alt'
+                                                        onClick={() => deleteContractorConfirmation(contractor.ID)}
+                                                    ></i>
+                                                </div>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </>
+                        )
+                    }
+                    return null;
+                })}
+
             </tbody>
         </Table>
     )

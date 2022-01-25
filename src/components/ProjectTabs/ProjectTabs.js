@@ -14,12 +14,14 @@ import Contractors from '../Contractors';
 import ProductDetail from '../ProductDetail';
 import RoomAreaLayout from '../RoomAreaLayout';
 import ProjectInformation from '../ProjectInformation';
+import Reports from '../Reports';
 
 const ProjectTabs = (props) => {
     const dispatch = useDispatch();
 
     const selectedProjectTab = useSelector(state => state.project.selectedProjectTab);
     const selectedProductTab = useSelector(state => state.product.selectedProductTab);
+    const project = useSelector(state => state.project.project);
 
     const handleSelectedTab = (tab) => {
         dispatch(setSelectedProjectTab(tab));
@@ -50,32 +52,32 @@ const ProjectTabs = (props) => {
                         <ProjectInformation />
                     )}
                 </Tab>
-                <Tab eventKey='documents' title='Documents'>
+                <Tab eventKey='documents' title='Documents' disabled={!project?.ID}>
                     {selectedProjectTab === 'documents' && (
                         <Documents />
                     )}
                 </Tab>
-                <Tab eventKey='utilities' title='Utilities'>
+                <Tab eventKey='utilities' title='Utilities' disabled={!project?.ID}>
                     {selectedProjectTab === 'utilities' && (
                         <Utilities />
                     )}
                 </Tab>
-                <Tab eventKey='contractors' title='Contractors'>
+                <Tab eventKey='contractors' title='Contractors' disabled={!project?.ID}>
                     {selectedProjectTab === 'contractors' && (
                         <Contractors />
                     )}
                 </Tab>
-                <Tab eventKey='drawings' title='Drawings'>
+                <Tab eventKey='drawings' title='Drawings' disabled={!project?.ID}>
                     {selectedProjectTab === 'drawings' && (
                         <Drawings />
                     )}
                 </Tab>
-                <Tab eventKey='roomAreaLayout' title='Room/Area Layout'>
+                <Tab eventKey='roomAreaLayout' title='Room/Area Layout' disabled={!project?.ID}>
                     {selectedProjectTab === 'roomAreaLayout' && (
                         <RoomAreaLayout />
                     )}
                 </Tab>
-                <Tab eventKey='products' title='Products'>
+                <Tab eventKey='products' title='Products' disabled={!project?.ID}>
                     {selectedProjectTab === 'products' && (
                         handleProductsTabs()
                     )}
