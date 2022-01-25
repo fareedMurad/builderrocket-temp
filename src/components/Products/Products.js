@@ -1,14 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { setProduct, getCategories, setSelectedProductTab } from '../../actions/productActions';
-import {
-    editProduct, handleProductForProject, updateRequiresApproval,
-    setSelectedProject, updateQuantity
-} from '../../actions/projectActions';
-
-
-
 import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
 
+import { setProduct, getCategories, setSelectedProductTab, getProductDetails } from '../../actions/productActions';
+import { editProduct, handleProductForProject, updateRequiresApproval, setSelectedProject, updateQuantity } from '../../actions/projectActions';
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
@@ -49,6 +43,7 @@ const Products = (props) => {
 
         if (templateItem) {
             const product = {
+                ID: templateItem?.ID,
                 Quantity: 1,
                 TemplateItemID: templateItem.ID,
                 CategoryID: templateItem.CategoryID,
@@ -58,7 +53,16 @@ const Products = (props) => {
 
             dispatch(setProduct(product))
                 .then(dispatch(getCategories(product?.CategoryID)))
-                .then(dispatch(setSelectedProductTab('addProduct')))
+                .then(() => {
+                    dispatch(getProductDetails(templateItem.ID))
+                        .then(() => {
+                            if (templateItem?.IsTemplate) {
+                                dispatch(setSelectedProductTab('addProduct'))
+                            } else {
+                                dispatch(setSelectedProductTab('replaceProduct'))
+                            }
+                        })
+                })
                 .catch(() => { });
         }
 
@@ -470,14 +474,14 @@ const Products = (props) => {
                                             {renderApproval(templateItem)}
                                         </td>
                                         <td>
-                                            <div className='d-flex justify-content-between'>
+                                            {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
                                                 <i className='fas fa-retweet'></i>
                                                 <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
                                                 <i
                                                     className='far fa-trash-alt'
                                                     onClick={() => handleOpenModal(templateItem)}
                                                 ></i>
-                                            </div>
+                                            </div>}
                                         </td>
                                     </tr>
                                 )

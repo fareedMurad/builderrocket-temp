@@ -10,6 +10,7 @@ import Products from '../Products';
 import Documents from '../Documents';
 import Utilities from '../Utilities';
 import AddProduct from '../AddProduct';
+import ReplaceProduct from '../ReplaceProduct'
 import Contractors from '../Contractors';
 import ProductDetail from '../ProductDetail';
 import RoomAreaLayout from '../RoomAreaLayout';
@@ -28,11 +29,13 @@ const ProjectTabs = (props) => {
     }
 
     const handleProductsTabs = () => {
-        switch(selectedProductTab) {
-            case 'products': 
+        switch (selectedProductTab) {
+            case 'products':
                 return <Products />;
-            case 'addProduct': 
+            case 'addProduct':
                 return <AddProduct />;
+            case 'replaceProduct':
+                return <ReplaceProduct />;
             case 'productDetail':
                 return <ProductDetail />;
             default:
@@ -84,7 +87,7 @@ const ProjectTabs = (props) => {
                 </Tab>
                 <Tab eventKey='reports' title='Reports'>
                     {selectedProjectTab === 'reports' && (
-                       <Reports />
+                        <Reports />
                     )}
                 </Tab>
             </Tabs>
