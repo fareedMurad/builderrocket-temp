@@ -1,0 +1,30 @@
+@import '../../assets/styles/variables';
+
+.project-information {
+    @include media-breakpoint-down(md) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .information-form-container {
+        width: 981px;
+        background-color: white;
+        @include media-breakpoint-up(lg) {
+            margin-right: 3rem;
+        }
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .information-form {
+        justify-content: space-evenly;
+        padding: 0 1.5rem;
+        .form-col {
+            width: 45%;
+            @include media-breakpoint-down(lg) {
+                width: 100%;
+            }
+            padding: 0 1rem;
+        }
+    }
+}

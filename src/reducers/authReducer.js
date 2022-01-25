@@ -1,4 +1,4 @@
-import { LOGIN, SET_USER } from '../actions/types';
+import { LOGIN, SET_USER, SET_CUSTOMER_PROJECT } from '../actions/types';
 
 const intialState = {
     token: null,
@@ -20,6 +20,13 @@ const authReducer = (state = intialState, action) => {
                     ...state,
                     token: action.payload,
                     isSignedIn: true
+                }
+            }
+        case SET_CUSTOMER_PROJECT:
+            {
+                return {
+                    ...state,
+                    customerproject: action.payload
                 }
             }
         default:
