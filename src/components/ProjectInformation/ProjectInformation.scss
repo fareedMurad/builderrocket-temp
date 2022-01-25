@@ -1,6 +1,9 @@
 @import '../../assets/styles/variables';
 
 .project-information {
+    .link-btn {
+        font-size: 16px;
+    }
     @include media-breakpoint-down(md) {
         flex-wrap: wrap;
         justify-content: center;
@@ -38,6 +41,20 @@
             a{
                 word-break: break-all
             }
+        }
+    }
+}
+
+
+.new-subdivision-modal {
+
+    .modal-container {
+        .page-title {
+            padding: 0;
+        }
+
+        form {
+            padding: 1rem 1.5rem;
         }
     }
 }

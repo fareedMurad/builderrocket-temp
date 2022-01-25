@@ -1,7 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { setProduct, getCategories, setSelectedProductTab } from '../../actions/productActions';
-import { editProduct, handleProductForProject, updateProjectProdcutNotes } from '../../actions/projectActions';
-import { Button, Form, Table, Modal, Spinner, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import {
+    editProduct, handleProductForProject, updateRequiresApproval,
+    setSelectedProject, updateQuantity, updateProjectProdcutNotes
+} from '../../actions/projectActions';
+
+
+
+import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
+
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
@@ -18,6 +25,8 @@ const Products = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [tempProduct, setTempProduct] = useState({});
     const [templateItems, setTemplateItems] = useState({});
+    const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({ loading: false });
+    const [isQuantityLoading, setIsQuantityLoading] = useState({ loading: false });
 
     const [isNotesLoading, setIsNotesLoading] = useState(false);
     const [notes, setNotes] = useState(' ');
@@ -91,16 +100,26 @@ const Products = (props) => {
         setShowModal(false);
     }
 
-    const handleQuantity = (incomingItem, value) => {
-        const itemQuantity = parseInt(value);
-
-        if (!incomingItem?.ID || !itemQuantity || itemQuantity < 0) {
-            document.getElementById(`quantity-${incomingItem?.ID}`).value = '';
-
-            return;
+    const handleRequiresApproval = (templateItem, RequiresApproval) => {
+        if (!isRequiresApprovalLoading?.loading) {
+            setIsRequiresApprovalLoading({ loading: true, ID: templateItem?.ID })
+            dispatch(updateRequiresApproval(project?.ID, templateItem?.ID, RequiresApproval))
+                .then((project) => {
+                    dispatch(setSelectedProject(project))
+                    setIsRequiresApprovalLoading({ loading: false })
+                });
         }
+    }
 
-        handleItems(incomingItem, 'Quantity', itemQuantity);
+    const handleQuantity = (templateItem, quantity) => {
+        if (!isQuantityLoading?.loading) {
+            setIsQuantityLoading({ loading: true, ID: templateItem?.ID })
+            dispatch(updateQuantity(project?.ID, templateItem?.ID, quantity))
+                .then((project) => {
+                    dispatch(setSelectedProject(project))
+                    setIsQuantityLoading({ loading: false })
+                });
+        }
     }
 
     const handleItems = (incomingItem, key, value) => {
@@ -182,6 +201,60 @@ const Products = (props) => {
                     </div>
                 </Modal.Body>
             </Modal>
+        )
+    }
+    const itemLoading = (templateItem, loadingObj) => {
+        return loadingObj?.loading && loadingObj?.ID === templateItem?.ID
+    }
+
+    const renderApproval = (templateItem) => {
+        let status = {}
+
+        if (!templateItem?.RequiresApproval)
+            return;
+
+        switch (templateItem?.ApprovalStatusID) {
+            case 0 | null: {
+                status = {
+                    label: "",
+                    className: ""
+                }
+            }
+                break;
+            case -1: {
+                status = {
+                    label: "Rejected",
+                    className: "bg-danger"
+                }
+            }
+                break;
+
+            case 0: {
+                status = {
+                    label: "Approved",
+                    className: "bg-success"
+                }
+            }
+                break;
+
+            default: {
+                status = {}
+            }
+        }
+
+        return (
+            templateItem?.DateApproved ? <OverlayTrigger
+                placement='top'
+                overlay={
+                    <Tooltip id='button-tooltip'>
+                        {templateItem?.DateApproved}
+                    </Tooltip>
+                }
+                delay={{ show: 250, hide: 400 }}
+            >
+                <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
+            </OverlayTrigger> : <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
+
         )
     }
 
@@ -379,20 +452,24 @@ const Products = (props) => {
                                     isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
                                     isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
                                 }
-
                                 return (
                                     <tr key={index}>
                                         <td className='approval-checkbox'>
                                             <div className='d-flex justify-content-center'>
                                                 <Form>
-                                                    <Form.Check
+                                                    {itemLoading(templateItem, isRequiresApprovalLoading) ? <Spinner
+                                                        animation='border'
+                                                        variant='primary'
+                                                    /> : <Form.Check
                                                         type='checkbox'
-                                                        checked={!(requiresApproval) ? false : requiresApproval}
+                                                        checked={templateItem?.RequiresApproval}
                                                         disabled={isUndefined(templateItem?.RequiresApproval) ? true : false}
                                                         onChange={
-                                                            () => handleItems(templateItem, 'RequiresApproval', requiresApproval)
+                                                            () => handleRequiresApproval(templateItem, !templateItem?.RequiresApproval)
                                                         }
-                                                    />
+                                                    />}
+
+
                                                 </Form>
                                             </div>
                                         </td>
@@ -463,15 +540,20 @@ const Products = (props) => {
                                         </td>
                                         <td>
                                             <div className='qty-input'>
-                                                <Form.Control
-                                                    min='0'
-                                                    type='number'
-                                                    id={`quantity-${templateItem?.ID}`}
-                                                    disabled={!templateItem?.Quantity}
-                                                    defaultValue={quantity}
-                                                    onChange={(e) => handleQuantity(templateItem, e.target.value)}
-                                                >
-                                                </Form.Control>
+                                                {itemLoading(templateItem, isQuantityLoading) ? <Spinner
+                                                    animation='border'
+                                                    variant='primary'
+                                                /> :
+                                                    <Form.Control
+                                                        min='0'
+                                                        type='number'
+                                                        id={`quantity-${templateItem?.ID}`}
+                                                        disabled={!templateItem?.Quantity}
+                                                        defaultValue={quantity}
+                                                        onBlur={(e) => handleQuantity(templateItem, e.target.value)}
+                                                    >
+                                                    </Form.Control>
+                                                }
                                             </div>
                                         </td>
                                         <td></td>
@@ -488,7 +570,10 @@ const Products = (props) => {
                                             >
                                                 <i className='far fa-sticky-note d-flex justify-content-center'></i>
                                             </OverlayTrigger>
-                                        </td> : <tb />}
+                                        </td> : <td />}
+                                        <td>
+                                            {renderApproval(templateItem)}
+                                        </td>
                                         <td>
                                             <div className='d-flex justify-content-between'>
                                                 <i className='fas fa-retweet'></i>
