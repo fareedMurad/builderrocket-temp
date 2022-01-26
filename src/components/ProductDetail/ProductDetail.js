@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductDetails, setSelectedProductTab } from '../../actions/productActions';
 import { handleProductForProject } from '../../actions/projectActions';
 import './ProductDetail.scss';
+import { useHistory } from 'react-router'
 
-const ProductDetail = ( ) => {
+const ProductDetail = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const product = useSelector(state => state.product.product);
+    const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productDetail = useSelector(state => state.product.productDetail);
 
@@ -27,14 +30,14 @@ const ProductDetail = ( ) => {
     }, [dispatch]);
 
     const handleNavigation = (selectedTab) => {
-        dispatch(setSelectedProductTab(selectedTab));
+        history.push(`/project/${project.ProjectNumber}/product/${selectedTab}`)
     }
 
     const addProduct = () => {
         if (!productDetailRef.current?.ID || !selectedRoom.ID) return;
 
         const newProduct = {
-            ...product, 
+            ...product,
             ProductID: productDetailRef.current.ID,
             ProjectRoomID: selectedRoom.ID
         }
@@ -43,7 +46,7 @@ const ProductDetail = ( ) => {
 
         dispatch(handleProductForProject([newProduct]))
             .then(
-                dispatch(setSelectedProductTab('products'))
+                history.push(`/project/${project.ProjectNumber}/products`)
             );
     }
     console.log('Product Details', productDetail);
@@ -52,46 +55,46 @@ const ProductDetail = ( ) => {
         <div className='product-detail'>
             <div className='d-flex title'>
                 <div>
-                    <Button 
-                        variant='link' 
+                    <Button
+                        variant='link'
                         className='link-btn'
                         onClick={() => handleNavigation('products')}
                     >
                         Products /
                     </Button>
-                </div>  
+                </div>
                 <div>
-                    <Button 
-                        variant='link' 
+                    <Button
+                        variant='link'
                         className='link-btn'
                         onClick={() => handleNavigation('addProduct')}
                     >
                         Add Product /
                     </Button>
-                </div>  
+                </div>
                 <div>
-                    <Button 
-                        variant='link' 
+                    <Button
+                        variant='link'
                         className='link-btn'
-                        // onClick={() => handleShow(false)}
+                    // onClick={() => handleShow(false)}
                     >
                         Products
                     </Button>
-                </div>  
+                </div>
             </div>
 
             {isLoading ? (
                 <div className='spinner d-flex justify-content-center'>
                     <Spinner
                         animation='border'
-                        variant='primary' 
+                        variant='primary'
                     />
                 </div>
             ) : (
                 <div className='d-flex justify-content-between details-container'>
                     <div className='details-image'>
                         <img
-                            alt='product details' 
+                            alt='product details'
                             src={productDetail?.ThumbnailURL}
                         />
                     </div>
@@ -101,7 +104,7 @@ const ProductDetail = ( ) => {
                                 <div className='details-title'>{productDetail?.ProductName}</div>
                                 <div className='description'>{productDetail?.ShortDescription}</div>
                             </div>
-                            <button 
+                            <button
                                 className='add-button'
                                 onClick={addProduct}
                             >

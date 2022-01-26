@@ -42,7 +42,7 @@ const Routes = (props) => {
                     <Route path='/' exact component={Home} />
                     <Route exact path='/login' component={Login} /> 
                     <Route exact path='/project' component={Project} />
-                    <Route path='/project/:project' component={Project} />
+                    <Route path='/project/:project/:tab' component={Project} />
                     <Route path='/utility-management' component={UtilityManagement} />
                     <Route path='/contractor-management' component={ContractorManagement} />
 

@@ -33,7 +33,7 @@ const Header = ({expanded, setExpanded}) => {
     },[location])
 
     const handleSelectedTab = (tab) => {
-        dispatch(setSelectedProjectTab(tab));
+        history.push(`/project/${project.ProjectNumber}/${tab}`)
     }
 
     const handleLogout = () => {

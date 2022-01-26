@@ -125,7 +125,7 @@ export const setSelectedProjectTab = (tab) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
             dispatch({ type: SET_SELECTED_PROJECT_TAB, payload: tab });
-
+            
             resolve();
         } catch (error) {
             reject(error);

@@ -17,6 +17,7 @@ import { isEmpty } from 'lodash';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 import './ReplaceProduct.scss';
+import { useHistory } from 'react-router';
 
 // components 
 import ProductModal from '../ProductModal';
@@ -24,6 +25,7 @@ import testUtils from 'react-dom/test-utils';
 
 const ReplaceProduct = () => {
     const dispatch = useDispatch();
+    const history = useHistory()
 
     const product = useSelector(state => state.product.product);
     const project = useSelector(state => state.project.project);
@@ -146,7 +148,7 @@ const ReplaceProduct = () => {
     const handleSelectedProductDetails = (productDetail) => {
         dispatch(setProductDetail(productDetail))
             .then(() => {
-                dispatch(setSelectedProductTab('productDetail'));
+                history.push(`/project/${project.ProjectNumber}/product/productDetail`)
             });
     }
 
@@ -161,7 +163,7 @@ const ReplaceProduct = () => {
     }
 
     const handleGoToProducts = () => {
-        dispatch(setSelectedProductTab('products'));
+        history.push(`/project/${project.ProjectNumber}/products`)
     }
 
     const includedRooms = (ProductID) => {
