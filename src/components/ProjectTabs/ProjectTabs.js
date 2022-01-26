@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedProjectTab } from '../../actions/projectActions';
+import { setSelectedProductTab } from '../../actions/productActions';
 import './ProjectTabs.scss';
 
 // components 
@@ -26,6 +27,9 @@ const ProjectTabs = (props) => {
 
     const handleSelectedTab = (tab) => {
         dispatch(setSelectedProjectTab(tab));
+        if(tab === 'products') {
+            dispatch(setSelectedProductTab(tab))
+        }
     }
 
     const handleProductsTabs = () => {
