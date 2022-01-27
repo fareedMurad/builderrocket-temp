@@ -65,6 +65,78 @@ export const getProjectByProjectNumber = (projectNumber) => dispatch => {
 }
 
 /**
+ * Get Customer project by project ID  
+ * @param {String} projectID 
+ *
+ */
+ export const getCustomerProjectByProjectID = (projectID) => dispatch => {
+    const URL = `/customer-portal/${projectID}`;
+
+    return api({
+        method: 'GET', 
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_PROJECT, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    });
+}
+/**
+ * Customer Approval project Single
+ * @param {String} projectID 
+ *
+ */
+export const customerSingleApproval = (projectID, items) => dispatch => {
+    const URL = `/customer-portal/${projectID}/approval`;
+    return api({
+        method: 'POST',
+        url: URL,
+        data: items
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            dispatch({ type: GET_PROJECT, payload: response.data });
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
+}
+
+/**
+ * Customer Approval project All
+ * @param {String} projectID 
+ *
+ */
+ export const customerAllApproval = (projectID, items) => dispatch => {
+    const URL = `/customer-portal/${projectID}/approval`;
+    return api({
+        method: 'POST',
+        url: URL,
+        data: items
+    })
+    .then((response) => {
+        if (response.status === 200) {
+            dispatch({ type: GET_PROJECT, payload: response.data });
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT }); 
+    });
+}
+
+/**
  * Get project by project ID  
  * @param {String} projectID 
  *

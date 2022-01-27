@@ -105,7 +105,7 @@ const ProjectTabs = (props) => {
                 </Tab>
                 <Tab eventKey='reports' title='Reports'>
                     {selectedProjectTab === 'reports' && (
-                        <Reports />
+                        <RoomAreaLayout />
                     )}
                 </Tab>
             </Tabs>

@@ -3,6 +3,9 @@ export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const SET_USER = 'SET_USER';
 
+//customer Project
+export const SET_CUSTOMER_PROJECT = 'SET_CUSTOMER_PROJECT';
+
 // projects
 export const GET_PROJECT = 'GET_PROJECT';
 export const GET_PROJECTS = 'GET_PROJECTS';
@@ -55,3 +58,5 @@ export const SET_PRODUCT_DETAIL = 'SET_PRODUCT_DETAIL';
 export const GET_CHILD_CATEGORIES = 'GET_CHILD_CATEGORIES';
 export const SET_SELECTED_PRODUCT_TAB = 'SET_SELECTED_PRODUCT_TAB';
 export const SET_SELECTED_CATEGORY_ID = 'SET_SELECTED_CATEGORY_ID';
+
+
