@@ -7,10 +7,12 @@ import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
 import './Products.scss';
+import { useHistory } from 'react-router'
 
 
 const Products = (props) => {
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
@@ -62,9 +64,9 @@ const Products = (props) => {
                     dispatch(getProductDetails(templateItem.ID))
                         .then(() => {
                             if (templateItem?.IsTemplate) {
-                                dispatch(setSelectedProductTab('addProduct'))
+                                history.push(`/project/${project.ProjectNumber}/product/addProduct`)
                             } else {
-                                dispatch(setSelectedProductTab('replaceProduct'))
+                                history.push(`/project/${project.ProjectNumber}/product/replaceProduct`)
                             }
                         })
                 })
@@ -348,7 +350,9 @@ const Products = (props) => {
     const showProducts = () => {
         dispatch(getCategories(''))
             .then(dispatch(setProduct({})))
-            .then(dispatch(setSelectedProductTab('addProduct')))
+            .then(() => {
+                history.push(`/project/${project.ProjectNumber}/product/addProduct`)
+            })
             .catch(() => { });
     }
 

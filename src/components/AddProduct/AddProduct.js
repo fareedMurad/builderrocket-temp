@@ -15,14 +15,17 @@ import { isEmpty } from 'lodash';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in our app
 import './AddProduct.scss';
+import { useHistory } from 'react-router';
 
 // components 
 import ProductModal from '../ProductModal';
 
 const AddProduct = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const product = useSelector(state => state.product.product);
+    const project = useSelector(state => state.project.project);
     const products = useSelector(state => state.product.products);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productCategories = useSelector(state => state.product.productCategories);
@@ -124,7 +127,7 @@ const AddProduct = () => {
 
         dispatch(handleProductForProject([newProduct]))
             .then(
-                dispatch(setSelectedProductTab('products'))
+                history.push(`/project/${project.ProjectNumber}/products`)
             );
     }
 
@@ -141,7 +144,7 @@ const AddProduct = () => {
     const handleSelectedProductDetails = (productDetail) => {
         dispatch(setProductDetail(productDetail))
             .then(() => {
-                dispatch(setSelectedProductTab('productDetail'));
+                history.push(`/project/${project.ProjectNumber}/product/productDetail`)
             });
     }
 
@@ -156,7 +159,7 @@ const AddProduct = () => {
     }
 
     const handleGoToProducts = () => {
-        dispatch(setSelectedProductTab('products'));
+        history.push(`/project/${project.ProjectNumber}/products`)
     }
 
     return (

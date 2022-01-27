@@ -13,7 +13,7 @@ const ProjectCard = (props) => {
     const goToProject = () => {
         dispatch(getProjectByProjectID(project?.ID))
             .then(() => {
-                history.push(`/project/${project?.ProjectNumber}`)
+                history.push(`/project/${project?.ProjectNumber}/projectInformation`)
             });
     }
 

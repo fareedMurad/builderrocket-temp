@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router';
 import { setSelectedProjectTab } from '../../actions/projectActions';
 import { setSelectedProductTab } from '../../actions/productActions';
 import './ProjectTabs.scss';
@@ -20,16 +21,29 @@ import Reports from '../Reports';
 
 const ProjectTabs = (props) => {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const history = useHistory();
 
     const selectedProjectTab = useSelector(state => state.project.selectedProjectTab);
     const selectedProductTab = useSelector(state => state.product.selectedProductTab);
     const project = useSelector(state => state.project.project);
 
-    const handleSelectedTab = (tab) => {
-        dispatch(setSelectedProjectTab(tab));
-        if(tab === 'products') {
-            dispatch(setSelectedProductTab(tab))
+    useEffect(() => {
+        let tabs = location.pathname.split('/');
+        let tab = tabs[tabs.length - 1]
+        if (tabs.length > 4) {
+            dispatch(setSelectedProductTab(tab));
+            dispatch(setSelectedProjectTab('products'));
+        } else {
+            dispatch(setSelectedProjectTab(tab));
+            if (tab.includes('products')) {
+                dispatch(setSelectedProductTab('products'));
+            }
         }
+    }, [location])
+
+    const handleSelectedTab = (tab) => {
+        history.push(`/project/${project.ProjectNumber}/${tab}`)
     }
 
     const handleProductsTabs = () => {
