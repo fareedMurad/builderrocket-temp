@@ -1,16 +1,16 @@
 import api from '../api';
-import { 
+import {
     SET_SELECTED_PROJECT_TAB,
-    SET_SELECTED_PROJECT, 
+    SET_SELECTED_PROJECT,
     DELETE_PROJECT_ROOMS,
     ADD_PROJECT_ROOMS,
-    GET_PROJECTS, 
-    GET_PROJECT, 
+    GET_PROJECTS,
+    GET_PROJECT,
     GET_REPORT,
     GET_CATEGORIZED_REPORT,
     GET_ROOM_REPORT,
     GET_VENDOR_REPORT,
-    RESET_PROJECT, 
+    RESET_PROJECT,
     LOGOUT,
     SET_REFRESH_THUMBNAIL
 } from './types';
@@ -23,20 +23,20 @@ export const getProjects = () => dispatch => {
     const URL = '/Project';
 
     return api({
-        method: 'GET', 
+        method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_PROJECTS, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_PROJECTS, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    })
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        })
 }
 
 /**
@@ -48,20 +48,20 @@ export const getProjectByProjectNumber = (projectNumber) => dispatch => {
     const URL = `/Project/${projectNumber}`;
 
     return api({
-        method: 'GET', 
+        method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_PROJECT, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_PROJECT, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -141,24 +141,24 @@ export const customerSingleApproval = (projectID, items) => dispatch => {
  * @param {String} projectID 
  *
  */
- export const getProjectByProjectID = (projectID) => dispatch => {
+export const getProjectByProjectID = (projectID) => dispatch => {
     const URL = `/Project/${projectID}`;
 
     return api({
-        method: 'GET', 
+        method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_PROJECT, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_PROJECT, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 export const setSelectedProject = (selectedProject) => dispatch => {
@@ -197,7 +197,7 @@ export const setSelectedProjectTab = (tab) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
             dispatch({ type: SET_SELECTED_PROJECT_TAB, payload: tab });
-
+            
             resolve();
         } catch (error) {
             reject(error);
@@ -218,17 +218,17 @@ export const addRoomsToProject = (projectID, rooms) => dispatch => {
         url: URL,
         data: rooms
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: ADD_PROJECT_ROOMS, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: ADD_PROJECT_ROOMS, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -244,17 +244,17 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
         url: URL,
         data: rooms
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: DELETE_PROJECT_ROOMS, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: DELETE_PROJECT_ROOMS, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -266,21 +266,21 @@ export const handleProductForProject = (product) => dispatch => {
     const URL = `/Project/Room/product`;
 
     return api({
-        method: 'POST', 
+        method: 'POST',
         url: URL,
         data: product
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -290,25 +290,25 @@ export const handleProductForProject = (product) => dispatch => {
  */
 export const saveProject = (project) => dispatch => {
     if (!project.ID) return;
- 
+
     const URL = `/Project/${project.ID}`;
 
     return api({
-        method: 'POST', 
-        url: URL, 
+        method: 'POST',
+        url: URL,
         data: project
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 
@@ -319,53 +319,53 @@ export const saveProject = (project) => dispatch => {
  */
 export const saveProjectContractor = (projectID, contractorTypeID, ContractorID) => dispatch => {
     if (!projectID) return;
- 
+
     const URL = `/Project/${projectID}/Contractor`;
 
-    const json = {ContractorTypeID: contractorTypeID, ContractorID: ContractorID}
+    const json = { ContractorTypeID: contractorTypeID, ContractorID: ContractorID }
 
     return api({
-        method: 'POST', 
-        url: URL, 
+        method: 'POST',
+        url: URL,
         data: json
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 
 export const saveProjectUtility = (projectID, utilityTypeID, utilityID) => dispatch => {
     if (!projectID) return;
- 
+
     const URL = `/Project/${projectID}/Utility`;
 
-    const json = {UtilityTypeID: utilityTypeID, UtilityID: utilityID}
+    const json = { UtilityTypeID: utilityTypeID, UtilityID: utilityID }
 
     return api({
-        method: 'POST', 
-        url: URL, 
+        method: 'POST',
+        url: URL,
         data: json
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -375,25 +375,25 @@ export const saveProjectUtility = (projectID, utilityTypeID, utilityID) => dispa
  */
 export const updateProject = (project) => dispatch => {
     if (!project.ID) return;
- 
+
     const URL = `/Project/${project.ID}`;
 
     return api({
-        method: 'PATCH', 
-        url: URL, 
+        method: 'PATCH',
+        url: URL,
         data: project
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -408,20 +408,20 @@ export const copyProject = (projectID, projectName) => dispatch => {
 
     return api({
         method: 'POST',
-        url: URL, 
+        url: URL,
         data: projectName
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -467,17 +467,17 @@ export const editProduct = (items) => dispatch => {
         url: URL,
         data: items
     })
-    .then((response) => {
-        if (response.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 /**
@@ -489,24 +489,24 @@ export const createProject = (newProject) => dispatch => {
     const URL = '/Project';
 
     return api({
-        method: 'POST', 
-        url: URL, 
+        method: 'POST',
+        url: URL,
         data: newProject
     })
-    .then((response) => {
-        if (response.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
-            return response.data;
-        }
-    })
-    .catch((error) => {
-        console.log('ERROR', error);
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            console.log('ERROR', error);
 
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT }); 
-    })
-} 
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        })
+}
 
 export const updateRequiresApproval = (projectId, productId, approval) => dispatch => {
     const URL = `/Project/${projectId}/Product/${productId}`;
@@ -563,24 +563,24 @@ export const updateQuantity = (projectId, productId, quantity) => dispatch => {
  * @param {String} projectID 
  *
  */
- export const getReportByProjectID = (projectID) => dispatch => {
+export const getReportByProjectID = (projectID) => dispatch => {
     const URL = `/Project/${projectID}/report`;
 
     return api({
-        method: 'GET', 
+        method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_REPORT, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_REPORT, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 
@@ -589,24 +589,24 @@ export const updateQuantity = (projectId, productId, quantity) => dispatch => {
  * @param {String} projectID 
  *
  */
- export const getCategorizedReportByProjectID = (projectID) => dispatch => {
+export const getCategorizedReportByProjectID = (projectID) => dispatch => {
     const URL = `/Project/${projectID}/report/category`;
 
     return api({
-        method: 'GET', 
+        method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_CATEGORIZED_REPORT, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_CATEGORIZED_REPORT, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 
@@ -616,24 +616,24 @@ export const updateQuantity = (projectId, productId, quantity) => dispatch => {
  * @param {String} projectID 
  *
  */
- export const getRoomReportByProjectID = (projectID) => dispatch => {
+export const getRoomReportByProjectID = (projectID) => dispatch => {
     const URL = `/Project/${projectID}/report/room`;
 
     return api({
-        method: 'GET', 
+        method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_ROOM_REPORT, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_ROOM_REPORT, payload: response?.data });
 
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 
@@ -642,22 +642,61 @@ export const updateQuantity = (projectId, productId, quantity) => dispatch => {
  * @param {String} projectID 
  *
  */
- export const getVendorReportByProjectID = (projectID) => dispatch => {
+export const getVendorReportByProjectID = (projectID) => dispatch => {
     const URL = `/Project/${projectID}/report/vendor`;
 
     return api({
-        method: 'GET', 
+        method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_ROOM_REPORT, payload: response?.data });
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_ROOM_REPORT, payload: response?.data });
 
-            return response?.data;
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
+/**
+ * Update Project Product Notes
+ * @param {string} projectId 
+ * @param {string} productId 
+ * @param {string} notes 
+ * @returns 
+ */
+export const updateProjectProdcutNotes = (projectId, productId, notes) => dispatch => {
+    if (!projectId) return;
+
+    const URL = `/Project/${projectId}/Product/${productId}`;
+
+    let data = [
+        {
+            "op": "replace",
+            "path": "/Notes",
+            "value": notes
         }
+    ]
+
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data: data
     })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+        .then((response) => {
+            if (response?.status === 200) {
+                console.log(response)
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }

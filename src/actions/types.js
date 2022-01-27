@@ -50,6 +50,7 @@ export const SET_SELECTED_ROOM = 'SET_SELECTED_ROOM';
 
 // product 
 export const SET_PRODUCT = 'SET_PRODUCT';
+export const SET_REPLACE_PRODUCT = 'SET_REPLACE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 export const GET_CATEGORIES = 'GET_CATEGORIES';
 export const SEARCH_PRODUCTS = 'SEARCH_PRODUCTS';

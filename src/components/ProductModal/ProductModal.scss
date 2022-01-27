@@ -28,7 +28,36 @@
         }
 
         .product-details-text { 
-            width: 40%;
+            // width: 40%;
+            font-size: 12px;
+            line-height: 17px;
+            letter-spacing: -0.27px;
+        }
+
+        img {
+            margin-right: .75rem;
+        }
+    }
+
+    .replce-product-header-container {
+        padding: 0 1rem;
+        .product-details {
+            padding: 1.25rem 2.5rem;
+            @include media-breakpoint-down(md) {
+                padding: .5rem 1rem;
+            }
+        }
+        
+        .product-details-header {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 19px;
+            letter-spacing: -0.32px;
+            padding-bottom: 1rem;
+        }
+
+        .product-details-text { 
+            // width: 40%;
             font-size: 12px;
             line-height: 17px;
             letter-spacing: -0.27px;
@@ -42,11 +71,16 @@
     .product-modal-body {
         padding: 1rem 1rem;
 
-        .body-header {
-            font-size: 14px;
-            letter-spacing: -0.32px;
-            line-height: 16px;
-            color: rgba(0,0,0,0.85);
+    }
+    .body-header {
+        padding: 0 3.5rem;
+        margin-top: 2rem;
+        font-size: 14px;
+        letter-spacing: -0.32px;
+        line-height: 16px;
+        color: rgba(0,0,0,0.85);
+        @include media-breakpoint-down(md) {
+            padding: .5rem 1rem;
         }
     }
 
