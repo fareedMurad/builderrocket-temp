@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
 
 import { setProduct, getCategories, setSelectedProductTab, getProductDetails } from '../../actions/productActions';
-import { editProduct, handleProductForProject, updateRequiresApproval, setSelectedProject, updateQuantity } from '../../actions/projectActions';
+import { editProduct, handleProductForProject, updateRequiresApproval, setSelectedProject, updateQuantity, updateProjectProdcutNotes } from '../../actions/projectActions';
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
@@ -23,6 +23,11 @@ const Products = (props) => {
     const [templateItems, setTemplateItems] = useState({});
     const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({ loading: false });
     const [isQuantityLoading, setIsQuantityLoading] = useState({ loading: false });
+
+    const [isNotesLoading, setIsNotesLoading] = useState(false);
+    const [notes, setNotes] = useState(' ');
+    const [showNotesModal, setShowNotesModal] = useState(false);
+    const [selectedProductItem, setSelectedProductItem] = useState({});
 
     useEffect(() => {
         if (isEmpty(selectedRoom))
@@ -259,6 +264,89 @@ const Products = (props) => {
         )
     }
 
+
+
+    const cancelNotesModal = () => {
+        setShowNotesModal(false);
+        setNotes(selectedProductItem?.Notes)
+    }
+
+    const handleOpenNotesModal = (item) => {
+        setSelectedProductItem(item)
+        setNotes(item?.Notes)
+        setShowNotesModal(true);
+    }
+
+    const saveAsNewNotes = () => {
+        if (!selectedProductItem?.ProductID)
+            return;
+        setIsNotesLoading(true)
+
+        dispatch(updateProjectProdcutNotes(project?.ID, selectedProductItem?.ID, notes))
+            .then((project) => {
+                setIsNotesLoading(false)
+                cancelNotesModal();
+            })
+            .catch(() => {
+                alert('Something went wrong creating copy of project try again');
+            })
+    }
+
+
+
+    const saveNotesModal = () => {
+        return (
+            <Modal
+                size='md'
+                centered
+                show={showNotesModal}
+                className='notes-modal'
+                onHide={() => setShowNotesModal(false)}
+            >
+                <Modal.Body className='modal-container'>
+                    <Form>
+                        <Form.Label className='input-label'>
+                            Product Notes
+                        </Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
+                            className='input-gray'
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                        />
+                    </Form>
+                    <div className='d-flex justify-content-center mt-3'>
+                        {isNotesLoading ? (
+                            <Spinner
+                                animation='border'
+                                variant='primary'
+                            />
+                        ) : (
+                            <>
+                                <Button
+                                    variant='link'
+                                    className='cancel'
+                                    onClick={cancelNotesModal}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    className='primary-gray-btn next-btn ml-3'
+                                    onClick={saveAsNewNotes}
+                                >
+                                    Save
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                </Modal.Body>
+            </Modal>
+        )
+    }
+
+
+
     const showProducts = () => {
         dispatch(getCategories(''))
             .then(dispatch(setProduct({})))
@@ -332,6 +420,8 @@ const Products = (props) => {
 
                 {deleteModal()}
 
+                {saveNotesModal()}
+
                 <div className='products-table'>
                     <div className='table-title'>Title</div>
                     <Table responsive>
@@ -351,6 +441,7 @@ const Products = (props) => {
                                 <th>QTY</th>
                                 <th>Price</th>
                                 <th>Customer Approval</th>
+                                <th>Notes</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -474,6 +565,20 @@ const Products = (props) => {
                                             </div>
                                         </td>
                                         <td></td>
+                                        <td></td>
+                                        {!templateItem?.IsTemplate ? <td className={`${templateItem?.Notes && 'sticky-note-red'}`} onClick={() => handleOpenNotesModal(templateItem)}>
+                                            <OverlayTrigger
+                                                placement='top'
+                                                overlay={
+                                                    <Tooltip id='button-tooltip'>
+                                                        {templateItem?.Notes}
+                                                    </Tooltip>
+                                                }
+                                                delay={{ show: 250, hide: 400 }}
+                                            >
+                                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                            </OverlayTrigger>
+                                        </td> : <td />}
                                         <td>
                                             {renderApproval(templateItem)}
                                         </td>
