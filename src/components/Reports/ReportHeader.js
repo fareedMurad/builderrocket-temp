@@ -20,7 +20,7 @@ const ReportHeader = ({ hideTotals }) => {
 
 
     return (
-        <div className='report-header'>
+        <div className='report-header p-2'>
             <div className='d-flex justify-content-between flex-wrap'>
                 <div className='d-flex pt-2 flex-wrap'>
                     <div className='report-image justify-content-center d-flex'>
@@ -40,7 +40,7 @@ const ReportHeader = ({ hideTotals }) => {
                             />
                         )}
                     </div>
-                    <div>
+                    <div className="ml-2">
                         <div className='text'>
                             {report?.ProjectNumber}
                         </div>
