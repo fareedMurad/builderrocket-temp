@@ -352,7 +352,7 @@ const Products = (props) => {
                                                 <Form.Check
                                                     type='radio'
                                                     checked={isRoughIn}
-                                                    disabled={isUndefined(templateItem?.IsTemplate)}
+                                                    disabled={templateItem?.IsTemplate}
                                                     onChange={
                                                         () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
                                                     }
@@ -360,7 +360,7 @@ const Products = (props) => {
                                                 <Form.Check
                                                     type='radio'
                                                     checked={isTrimOut}
-                                                    disabled={isUndefined(templateItem?.IsTemplate)}
+                                                    disabled={templateItem?.IsTemplate}
                                                     onChange={
                                                         () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
                                                     }
