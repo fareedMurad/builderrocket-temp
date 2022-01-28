@@ -23,7 +23,7 @@ export const CustomPrinter = React.forwardRef((props, ref) => {
 
             setTimeout(() => {
                 resolve();
-            }, 2000);
+            },500);
         });
     }, []);
 

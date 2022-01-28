@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash';
 import ReportsHeader from './ReportHeader';
 import Select from 'react-select';
 import ReportsTable from './ReportsTable'
-import {CustomPrinter} from '../../components/PDF'
+import { CustomPrinter } from '../../components/PDF'
 
 import './Reports.scss';
 
@@ -30,6 +30,7 @@ const Reports = (props) => {
     const [layout, setLayout] = useState(LayoutOptions[0]);
 
     const [hideTotals, setHideTotals] = useState(false)
+    const [hideReportsHeader, setHideReportsHeader] = useState(true);
     useEffect(() => {
         if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
@@ -89,9 +90,9 @@ const Reports = (props) => {
 
     return (
         <div className='d-flex products'>
-            <div className='reports-container'>
-                <ReportsHeader hideTotals={hideTotals} />
-                <div className='d-flex justify-content-between flex-wrap'>
+            <div className='reports-container' ref={componentRef}>
+                {!hideReportsHeader && <ReportsHeader hideTotals={hideTotals} />}
+               {hideReportsHeader && <div className='d-flex justify-content-between flex-wrap'>
                     <div className="mx-5 my-3">
                         <Form>
                             <Form.Check
@@ -111,25 +112,39 @@ const Reports = (props) => {
                         />
                     </div>
                     <div>
-                        <CustomPrinter 
-                            ref={componentRef} 
-                            icon="fas fa-download" 
-                            title="Download Report" 
-                        />
-                        <CustomPrinter 
-                            ref={componentRef} 
-                            icon="fas fa-share-alt" 
-                            title="Share to Distributor" 
+                        <CustomPrinter
+                            ref={componentRef}
+                            icon="fas fa-download"
+                            title="Download Report"
+                            handleAfterPrint={() => {
+                                setHideReportsHeader(true)
+                            }}
+                            handleBeforePrint={() => {
+                                setHideReportsHeader(false)
+                            }}
                         />
                         <CustomPrinter
-                            handleAfterPrint={() =>
+                            ref={componentRef}
+                            icon="fas fa-share-alt"
+                            title="Share to Distributor"
+                            handleAfterPrint={() => {
+                                setHideReportsHeader(true)
+                            }}
+                            handleBeforePrint={() => {
+                                setHideReportsHeader(false)
+                            }}
+                        />
+                        <CustomPrinter
+                            handleAfterPrint={() => {
                                 setHideTotals(false)
-                            }
-                            handleBeforePrint={() =>
+                                setHideReportsHeader(true)
+                            }}
+                            handleBeforePrint={() => {
                                 setHideTotals(true)
-                            }
-                            ref={componentRef} 
-                            icon="fas fa-share-square" 
+                                setHideReportsHeader(false)
+                            }}
+                            ref={componentRef}
+                            icon="fas fa-share-square"
                             title="Share to Customer"
                         />
                         <Button variant='link' className='link-btn'>
@@ -137,9 +152,9 @@ const Reports = (props) => {
                             Category Layout
                         </Button>
                     </div>
-                </div>
+                </div>}
 
-                <ReportsTable layout={layout} hideTotals={hideTotals} ref={componentRef} />
+                <ReportsTable layout={layout} hideTotals={hideTotals} />
                 <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
                         <Spinner
