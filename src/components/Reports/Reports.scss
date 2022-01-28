@@ -146,6 +146,10 @@
         width: 100%;
         padding-bottom: 2rem;
         background-color: white;
+        table{
+            border-collapse:separate;
+            border-spacing:0 1px;
+        }
         .layout-select {
             width: 200px;
             margin: 13px 10px;
@@ -154,8 +158,26 @@
             width: 100%;
             font-weight: 600;
             font-size: 14px;
-            background-color: $lightgray;
-            padding-top: 20px;
+        }
+        tr.contractor-type-name{
+            height: fit-content !important;
+            margin-bottom: 5px;
+        }
+        td.contractor-type-name:first-child{
+            color: white;
+            border-bottom-left-radius: 30px;
+            background: #000;
+            border-top-left-radius: 30px;
+            padding: 0;
+            padding-left: .7rem;
+            align-items: center;
+            padding-top: 10px;
+        }
+        td.contractor-type-name:nth-child(2){
+            color: #fff;
+            background: #000;
+            border-bottom-right-radius: 30px;
+            border-top-right-radius: 30px;
         }
         i {
             margin-right: .5rem;
