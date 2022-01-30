@@ -1,9 +1,103 @@
 @import '../../assets/styles/variables';
+iframe{
+    display: none;
+}
+.popover{
+    width: 200px;
+    padding: 10px 10px;
+    background-color: #343a40 !important;
+    span{
+        color: $lightgray;
+        font-size: 16px;
+    }
+    .user-name{
+        font-weight: bold;
+        font-size: 20px;
+    }
+    i{
+        margin-right: 10px;
+        font-size: 16px;
+        color: $lightgray;
+    }
+
+    .arrow::after, .bs-popover-auto[x-placement^="bottom"] > .arrow::after{
+        top: 2px !important;
+        border-bottom-color: #343a40 !important;
+    }
+
+}
+
+.active-link{
+    font-weight: bold !important;
+    color: blue !important;
+}
+
+.profile-dropdown{
+    @include media-breakpoint-up(lg) {
+        display: none !important;
+    }
+
+}
 
 .header {
+    z-index: 99;
     background-color: rgba(0,0,0,0.85);
     color: white;
     height: 46px;
+
+    .navbar-toggler{
+        border: none;
+        span{
+            // background: $lightgray;
+            color: #343a40;
+            background-image: url(../../assets/images/icon-park-outline_hamburger-button.png);
+        }
+    }
+
+    .nav-bar-subheader{
+        @include media-breakpoint-down(md) {
+            max-width: 100%;
+            position: absolute;
+            padding-left: 16px !important;
+            top: 69px;
+            left: 0;
+            background-color: #343a40;
+            min-height: auto !important;
+            i, .header-item{
+                font-size: 16px;
+            }
+            .header-item{
+                margin: 5px;
+            }
+            .navbar-collapse{
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+
+    .tabs{
+        max-width: calc(100% - 30px);
+        .accordion-item{
+            background: #343a40;
+            border: none !important;
+            .accordion-button{
+                font-weight: bold;
+                background: #fff;
+                border: none;
+            }
+        }
+
+        .page-tabs{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            :focus, :active{
+                outline: none;
+                box-shadow: none !important;
+            }
+    }
+    }
+    }
 
     @include media-breakpoint-down(md) {
         height: auto;

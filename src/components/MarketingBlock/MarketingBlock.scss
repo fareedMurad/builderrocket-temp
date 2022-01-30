@@ -2,9 +2,15 @@
 
 .marketing-block {
 
+    @include media-breakpoint-down(md) {
+        width: 100%
+    }
     .marketing-block-body {
         width: 343px;
         background-color: white;
+        @include media-breakpoint-down(md) {
+            width: 100%
+        }
     }
     .fade-in {
         transition: opacity 3s ease;

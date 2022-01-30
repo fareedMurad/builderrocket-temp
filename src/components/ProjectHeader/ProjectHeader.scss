@@ -10,6 +10,9 @@
     @include media-breakpoint-down(lg) {
         height: auto;
     }
+    @include media-breakpoint-down(md) {
+        padding: 0 12px;
+    }
 
     .project-image {
         width: 167px;
@@ -17,7 +20,15 @@
         box-sizing: border-box;
         border: 1px solid $bordergray;
         margin-right: 1.5rem;
-
+        @include media-breakpoint-down(md) {
+            margin-right: 0;
+            width: 100%;
+            height: auto;
+            img{
+                width: 100%;
+                height: auto;
+            }
+        }
         .spinner {
             margin-top: auto;
             margin-bottom: auto;

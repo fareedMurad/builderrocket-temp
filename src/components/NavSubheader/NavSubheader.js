@@ -83,6 +83,8 @@ const NavSubheader = () => {
             </Container>
         </Navbar>
     );
+
+    return null
 }
 
 export default NavSubheader;

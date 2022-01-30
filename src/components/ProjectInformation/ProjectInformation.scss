@@ -1,6 +1,9 @@
 @import '../../assets/styles/variables';
 
 .project-information {
+    .link-btn {
+        font-size: 16px;
+    }
     @include media-breakpoint-down(md) {
         flex-wrap: wrap;
         justify-content: center;
@@ -12,6 +15,9 @@
         
         @include media-breakpoint-up(lg) {
             margin-right: 3rem;
+        }
+        @include media-breakpoint-down(md) {
+            width: 100%;
         }
         padding-bottom: 2rem;
         margin-bottom: 2rem;
@@ -29,6 +35,26 @@
             }
 
             padding: 0 1rem;
+            @include media-breakpoint-down(md) {
+                padding: 0;
+            }
+            a{
+                word-break: break-all
+            }
+        }
+    }
+}
+
+
+.new-subdivision-modal {
+
+    .modal-container {
+        .page-title {
+            padding: 0;
+        }
+
+        form {
+            padding: 1rem 1.5rem;
         }
     }
 }

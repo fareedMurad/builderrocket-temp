@@ -88,7 +88,7 @@ const Home = (props) => {
                         + Add Project
                     </Link>
                 </div>
-                <div className='d-flex project-tabs'>
+                <div className='d-flex project-tabs flex-wrap'>
                     <div className='d-flex'> 
                         <div>
                             <Button     

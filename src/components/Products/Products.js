@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { setProduct, getCategories, setSelectedProductTab } from '../../actions/productActions';
-import { editProduct, handleProductForProject } from '../../actions/projectActions';
-import { Button, Form, Table, Modal, Spinner } from 'react-bootstrap';
+import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
+
+import { setProduct, getCategories, setSelectedProductTab, getProductDetails } from '../../actions/productActions';
+import { editProduct, handleProductForProject, updateRequiresApproval, setSelectedProject, updateQuantity, updateProjectProdcutNotes } from '../../actions/projectActions';
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
 import './Products.scss';
+import { useHistory } from 'react-router'
 
 
 const Products = (props) => {
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
@@ -18,15 +21,22 @@ const Products = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [tempProduct, setTempProduct] = useState({});
     const [templateItems, setTemplateItems] = useState({});
-    
+    const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({ loading: false });
+    const [isQuantityLoading, setIsQuantityLoading] = useState({ loading: false });
+
+    const [isNotesLoading, setIsNotesLoading] = useState(false);
+    const [notes, setNotes] = useState(' ');
+    const [showNotesModal, setShowNotesModal] = useState(false);
+    const [selectedProductItem, setSelectedProductItem] = useState({});
+
     useEffect(() => {
         if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(project?.ProjectRooms?.[0]));
     }, [dispatch, project, selectedRoom]);
- 
+
     const handleSelectedRoom = useCallback((roomID) => {
         const selectedRoomObj = project?.ProjectRooms?.find((room) => room.ID === parseInt(roomID));
-        
+
         dispatch(setSelectedRoom(selectedRoomObj));
     }, [dispatch, project]);
 
@@ -34,13 +44,14 @@ const Products = (props) => {
         if (!isEmpty(selectedRoom))
             handleSelectedRoom(selectedRoom?.ID);
     }, [project, selectedRoom, handleSelectedRoom]);
-    
+
     const handleSelectedCategoryID = (templateItem) => {
         if (!templateItem) return;
 
         if (templateItem) {
             const product = {
-                Quantity: 1, 
+                ID: templateItem?.ID,
+                Quantity: 1,
                 TemplateItemID: templateItem.ID,
                 CategoryID: templateItem.CategoryID,
                 RoughInTrimOutEnum: 'RoughIn',
@@ -49,15 +60,24 @@ const Products = (props) => {
 
             dispatch(setProduct(product))
                 .then(dispatch(getCategories(product?.CategoryID)))
-                .then(dispatch(setSelectedProductTab('addProduct')))
-                .catch(() => {});
+                .then(() => {
+                    dispatch(getProductDetails(templateItem.ID))
+                        .then(() => {
+                            if (templateItem?.IsTemplate) {
+                                history.push(`/project/${project.ProjectNumber}/product/addProduct`)
+                            } else {
+                                history.push(`/project/${project.ProjectNumber}/product/replaceProduct`)
+                            }
+                        })
+                })
+                .catch(() => { });
         }
 
     }
 
     const handleDeleteProduct = (product) => {
         if (!product || !selectedRoom?.ID) return;
- 
+
         const productDeleteObj = {
             ID: product.ID,
             Quantity: 0,
@@ -68,7 +88,7 @@ const Products = (props) => {
             TemplateItemID: product.TemplateID,
             RequiredApproval: product.RequiredApproval,
             RoughInTrimOutEnum: product.RoughInTrimOutEnum
-        } 
+        }
 
         dispatch(handleProductForProject([productDeleteObj]))
             .then(setShowModal(false));
@@ -86,16 +106,26 @@ const Products = (props) => {
         setShowModal(false);
     }
 
-    const handleQuantity = (incomingItem, value) => {
-        const itemQuantity = parseInt(value);   
-        
-        if (!incomingItem?.ID || !itemQuantity || itemQuantity < 0) {
-            document.getElementById(`quantity-${incomingItem?.ID}`).value = '';
-
-            return;
+    const handleRequiresApproval = (templateItem, RequiresApproval) => {
+        if (!isRequiresApprovalLoading?.loading) {
+            setIsRequiresApprovalLoading({ loading: true, ID: templateItem?.ID })
+            dispatch(updateRequiresApproval(project?.ID, templateItem?.ID, RequiresApproval))
+                .then((project) => {
+                    dispatch(setSelectedProject(project))
+                    setIsRequiresApprovalLoading({ loading: false })
+                });
         }
+    }
 
-        handleItems(incomingItem, 'Quantity', itemQuantity);
+    const handleQuantity = (templateItem, quantity) => {
+        if (!isQuantityLoading?.loading) {
+            setIsQuantityLoading({ loading: true, ID: templateItem?.ID })
+            dispatch(updateQuantity(project?.ID, templateItem?.ID, quantity))
+                .then((project) => {
+                    dispatch(setSelectedProject(project))
+                    setIsQuantityLoading({ loading: false })
+                });
+        }
     }
 
     const handleItems = (incomingItem, key, value) => {
@@ -108,8 +138,8 @@ const Products = (props) => {
 
         if (!templateItems?.[incomingItem?.ID]) {
 
-            setTemplateItems({ 
-                ...templateItems, 
+            setTemplateItems({
+                ...templateItems,
                 [incomingItem?.ID]: {
                     ...incomingItem,
                     TemplateItemID: incomingItem?.ID,
@@ -122,14 +152,14 @@ const Products = (props) => {
 
         } else {
             setTemplateItems({
-                ...templateItems, 
+                ...templateItems,
                 [incomingItem?.ID]: {
                     ...templateItems?.[incomingItem?.ID],
                     [key]: newValue
                 }
             })
         }
-        
+
     }
 
     const saveProducts = () => {
@@ -161,17 +191,17 @@ const Products = (props) => {
                     <b>Delete Product</b>
                 </div>
                 <Modal.Body>
-                    Are you sure you want to delete this product? 
+                    Are you sure you want to delete this product?
 
                     <div className='d-flex justify-content-center pt-5'>
-                        <Button 
-                            variant='link' 
+                        <Button
+                            variant='link'
                             className='cancel'
                             onClick={handleCloseModal}
                         >
                             Cancel
                         </Button>
-                        <Button 
+                        <Button
                             className='primary-gray-btn next-btn ml-3'
                             onClick={() => handleDeleteProduct(tempProduct)}>Delete</Button>
                     </div>
@@ -179,19 +209,157 @@ const Products = (props) => {
             </Modal>
         )
     }
+    const itemLoading = (templateItem, loadingObj) => {
+        return loadingObj?.loading && loadingObj?.ID === templateItem?.ID
+    }
+
+    const renderApproval = (templateItem) => {
+        let status = {}
+
+        if (!templateItem?.RequiresApproval)
+            return;
+
+        switch (templateItem?.ApprovalStatusID) {
+            case 0 | null: {
+                status = {
+                    label: "",
+                    className: ""
+                }
+            }
+                break;
+            case -1: {
+                status = {
+                    label: "Rejected",
+                    className: "bg-danger"
+                }
+            }
+                break;
+
+            case 0: {
+                status = {
+                    label: "Approved",
+                    className: "bg-success"
+                }
+            }
+                break;
+
+            default: {
+                status = {}
+            }
+        }
+
+        return (
+            templateItem?.DateApproved ? <OverlayTrigger
+                placement='top'
+                overlay={
+                    <Tooltip id='button-tooltip'>
+                        {templateItem?.DateApproved}
+                    </Tooltip>
+                }
+                delay={{ show: 250, hide: 400 }}
+            >
+                <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
+            </OverlayTrigger> : <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
+
+        )
+    }
+
+
+
+    const cancelNotesModal = () => {
+        setShowNotesModal(false);
+        setNotes(selectedProductItem?.Notes)
+    }
+
+    const handleOpenNotesModal = (item) => {
+        setSelectedProductItem(item)
+        setNotes(item?.Notes)
+        setShowNotesModal(true);
+    }
+
+    const saveAsNewNotes = () => {
+        if (!selectedProductItem?.ProductID)
+            return;
+        setIsNotesLoading(true)
+
+        dispatch(updateProjectProdcutNotes(project?.ID, selectedProductItem?.ID, notes))
+            .then((project) => {
+                setIsNotesLoading(false)
+                cancelNotesModal();
+            })
+            .catch(() => {
+                alert('Something went wrong creating copy of project try again');
+            })
+    }
+
+
+
+    const saveNotesModal = () => {
+        return (
+            <Modal
+                size='md'
+                centered
+                show={showNotesModal}
+                className='notes-modal'
+                onHide={() => setShowNotesModal(false)}
+            >
+                <Modal.Body className='modal-container'>
+                    <Form>
+                        <Form.Label className='input-label'>
+                            Product Notes
+                        </Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
+                            className='input-gray'
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                        />
+                    </Form>
+                    <div className='d-flex justify-content-center mt-3'>
+                        {isNotesLoading ? (
+                            <Spinner
+                                animation='border'
+                                variant='primary'
+                            />
+                        ) : (
+                            <>
+                                <Button
+                                    variant='link'
+                                    className='cancel'
+                                    onClick={cancelNotesModal}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    className='primary-gray-btn next-btn ml-3'
+                                    onClick={saveAsNewNotes}
+                                >
+                                    Save
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                </Modal.Body>
+            </Modal>
+        )
+    }
+
+
 
     const showProducts = () => {
         dispatch(getCategories(''))
             .then(dispatch(setProduct({})))
-            .then(dispatch(setSelectedProductTab('addProduct')))
-            .catch(() => {});
+            .then(() => {
+                history.push(`/project/${project.ProjectNumber}/product/addProduct`)
+            })
+            .catch(() => { });
     }
 
-    console.log('selected room', selectedRoom);
     return (
         <div className='d-flex products'>
             <div className='products-container'>
-                <div className='d-flex justify-content-between'>
+                <div className='d-flex justify-content-between flex-wrap'>
                     <div>
                         <div className='page-title'>Products - {selectedRoom?.RoomName ? selectedRoom?.RoomName : ''}</div>
                         <div className='subtext'>The products assinged to each room are displayed below.</div>
@@ -217,16 +385,16 @@ const Products = (props) => {
                 </div>
 
                 <div className='middle-section'>
-                    <div className='d-flex'>
+                    <div className='d-flex flex-wrap'>
                         <div>
-                            <Form.Control 
+                            <Form.Control
                                 as='select'
                                 value={selectedRoom?.ID}
                                 onChange={(e) => handleSelectedRoom(e.target.value)}
                             >
                                 {project?.ProjectRooms?.map((projectRoom, index) => (
-                                    <option 
-                                        key={index} 
+                                    <option
+                                        key={index}
                                         value={projectRoom?.ID}
                                     >
                                         {projectRoom.RoomName}
@@ -236,14 +404,14 @@ const Products = (props) => {
                         </div>
 
                         <div className='ml-1'>
-                            <Button 
-                                variant='link' 
+                            <Button
+                                variant='link'
                                 className='link-btn'
                                 onClick={showProducts}
                             >
                                 + Add Products
                             </Button>
-                        </div>  
+                        </div>
                     </div>
                     <div className='total'>
                         Total: $0.00
@@ -252,9 +420,11 @@ const Products = (props) => {
 
                 {deleteModal()}
 
+                {saveNotesModal()}
+
                 <div className='products-table'>
                     <div className='table-title'>Title</div>
-                    <Table>
+                    <Table responsive>
                         <thead>
                             <tr>
                                 <th>Needs Approval</th>
@@ -271,6 +441,7 @@ const Products = (props) => {
                                 <th>QTY</th>
                                 <th>Price</th>
                                 <th>Customer Approval</th>
+                                <th>Notes</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -289,47 +460,49 @@ const Products = (props) => {
                                     isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
                                     isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
                                 }
-
-                                if (templateItem.IsTemplate === false) console.log('template', templateItem, requiresApproval);
-
                                 return (
                                     <tr key={index}>
                                         <td className='approval-checkbox'>
                                             <div className='d-flex justify-content-center'>
                                                 <Form>
-                                                    <Form.Check 
+                                                    {itemLoading(templateItem, isRequiresApprovalLoading) ? <Spinner
+                                                        animation='border'
+                                                        variant='primary'
+                                                    /> : <Form.Check
                                                         type='checkbox'
-                                                        checked={!(requiresApproval) ? false : requiresApproval}
+                                                        checked={templateItem?.RequiresApproval}
                                                         disabled={isUndefined(templateItem?.RequiresApproval) ? true : false}
                                                         onChange={
-                                                            () => handleItems(templateItem, 'RequiresApproval', requiresApproval)
+                                                            () => handleRequiresApproval(templateItem, !templateItem?.RequiresApproval)
                                                         }
-                                                    />
+                                                    />}
+
+
                                                 </Form>
                                             </div>
                                         </td>
                                         <td>
                                             <div className='d-flex add-btn-templateItem'>
                                                 {templateItem?.ProductThumbnailURl && (
-                                                    <img 
-                                                        width='50' 
-                                                        height='50' 
-                                                        alt='template item' 
-                                                        src={templateItem?.ProductThumbnailURl} 
+                                                    <img
+                                                        width='50'
+                                                        height='50'
+                                                        alt='template item'
+                                                        src={templateItem?.ProductThumbnailURl}
                                                     />
                                                 )}
                                                 <div>
-                                                    <Button 
-                                                        variant='link' 
+                                                    <Button
+                                                        variant='link'
                                                         className='link-btn item-button'
                                                         onClick={() => handleSelectedCategoryID(templateItem)}
                                                     >
-                                                        {templateItem?.IsTemplate ? 
+                                                        {templateItem?.IsTemplate ?
                                                             <>
                                                                 <i className='fas fa-plus-circle plus-circle'></i>
-                                                                {templateItem?.AddLabel} 
+                                                                {templateItem?.AddLabel}
                                                             </>
-                                                        : 
+                                                            :
                                                             <>
                                                                 {templateItem?.ProductName}
                                                             </>
@@ -340,27 +513,27 @@ const Products = (props) => {
                                                         <div className='model-number'>
                                                             Model: {templateItem?.ModelNumber}
                                                         </div>
-                                                    )} 
+                                                    )}
                                                 </div>
-                                            </div>  
+                                            </div>
                                         </td>
                                         <td>{templateItem?.ShortDescription}</td>
                                         <td>{templateItem?.CategoryName}</td>
                                         <td>{templateItem?.UnitOfMeasure}</td>
                                         <td>
                                             <Form className='d-flex justify-content-center'>
-                                                <Form.Check 
+                                                <Form.Check
                                                     type='radio'
                                                     checked={isRoughIn}
-                                                    disabled={isUndefined(templateItem?.RoughInTrimOutEnum)}
+                                                    disabled={templateItem?.IsTemplate}
                                                     onChange={
                                                         () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
                                                     }
                                                 />
-                                                <Form.Check 
+                                                <Form.Check
                                                     type='radio'
                                                     checked={isTrimOut}
-                                                    disabled={isUndefined(templateItem?.RoughInTrimOutEnum)}
+                                                    disabled={templateItem?.IsTemplate}
                                                     onChange={
                                                         () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
                                                     }
@@ -373,33 +546,55 @@ const Products = (props) => {
                                                 </Form.Control>
                                             </div>
                                         </td>
-                                        <td>  
+                                        <td>
                                             <div className='qty-input'>
-                                                <Form.Control 
-                                                    min='0'
-                                                    type='number'
-                                                    id={`quantity-${templateItem?.ID}`}
-                                                    disabled={!templateItem?.Quantity}
-                                                    defaultValue={quantity}
-                                                    onChange={(e) => handleQuantity(templateItem, e.target.value)}
-                                                >
-                                                </Form.Control>
+                                                {itemLoading(templateItem, isQuantityLoading) ? <Spinner
+                                                    animation='border'
+                                                    variant='primary'
+                                                /> :
+                                                    <Form.Control
+                                                        min='0'
+                                                        type='number'
+                                                        id={`quantity-${templateItem?.ID}`}
+                                                        disabled={!templateItem?.Quantity}
+                                                        defaultValue={quantity}
+                                                        onBlur={(e) => handleQuantity(templateItem, e.target.value)}
+                                                    >
+                                                    </Form.Control>
+                                                }
                                             </div>
                                         </td>
                                         <td></td>
                                         <td></td>
+                                        {!templateItem?.IsTemplate ? <td className={`${templateItem?.Notes && 'sticky-note-red'}`} onClick={() => handleOpenNotesModal(templateItem)}>
+                                            <OverlayTrigger
+                                                placement='top'
+                                                overlay={
+                                                    <Tooltip id='button-tooltip'>
+                                                        {templateItem?.Notes}
+                                                    </Tooltip>
+                                                }
+                                                delay={{ show: 250, hide: 400 }}
+                                            >
+                                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                            </OverlayTrigger>
+                                        </td> : <td />}
                                         <td>
-                                            <div className='d-flex justify-content-between'>
+                                            {renderApproval(templateItem)}
+                                        </td>
+                                        <td>
+                                            {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
                                                 <i className='fas fa-retweet'></i>
                                                 <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
-                                                <i 
+                                                <i
                                                     className='far fa-trash-alt'
                                                     onClick={() => handleOpenModal(templateItem)}
                                                 ></i>
-                                            </div>
+                                            </div>}
                                         </td>
                                     </tr>
-                                )}
+                                )
+                            }
                             )}
                         </tbody>
 
@@ -408,9 +603,9 @@ const Products = (props) => {
 
                 <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
-                        <Spinner 
+                        <Spinner
                             animation='border'
-                            variant='primary' 
+                            variant='primary'
                         />
                     ) : (
                         <>
@@ -421,7 +616,7 @@ const Products = (props) => {
                             >
                                 Cancel
                             </Button> */}
-                            <Button 
+                            <Button
                                 onClick={saveProducts}
                                 className='primary-gray-btn next-btn ml-3'
                             >
