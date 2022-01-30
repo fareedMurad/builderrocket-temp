@@ -8,9 +8,11 @@ import {
     SET_REFRESH_THUMBNAIL,
     SET_SELECTED_PROJECT_TAB, 
     DELETE_PROJECT_ROOMS,
+    GET_LOGOS,
     GET_CATEGORIZED_REPORT,
     GET_ROOM_REPORT,
     GET_VENDOR_REPORT
+
 } from '../actions/types';
 
 const intialState = {
@@ -49,10 +51,17 @@ const intialState = {
     projects: [],
     selectedProjectTab: 'projectInformation',
     refreshThumbnail: false,
+    logos: [],
 };
 
 const projectReducer = (state = intialState, action) => {
     switch (action.type) {
+        case GET_LOGOS: {
+            return {
+                ...state, 
+                logos: action.payload
+            }
+        }
         case GET_PROJECTS: {
             return {
                 ...state, 

@@ -12,14 +12,39 @@ import {
     GET_VENDOR_REPORT,
     RESET_PROJECT,
     LOGOUT,
+    GET_LOGOS,
     SET_REFRESH_THUMBNAIL
 } from './types';
+
+/**
+ * Get logos for user logged in
+ * 
+ */
+export const getLogos = () => dispatch => {
+    const URL = '/marketing/logos';
+
+    return api({
+        method: 'GET', 
+        url: URL
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            dispatch({ type: GET_LOGOS, payload: response?.data });
+
+            return response?.data;
+        }
+    })
+    .catch((error) => {
+        if (error.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
+}
 
 /**
  * Get users projects for user logged in
  * 
  */
-export const getProjects = () => dispatch => {
+ export const getProjects = () => dispatch => {
     const URL = '/Project';
 
     return api({
