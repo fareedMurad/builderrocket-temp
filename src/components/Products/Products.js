@@ -521,7 +521,7 @@ const Products = (props) => {
                                         <td>{templateItem?.CategoryName}</td>
                                         <td>{templateItem?.UnitOfMeasure}</td>
                                         <td>
-                                            <Form className='d-flex justify-content-center'>
+                                            {!templateItem?.IsTemplate &&<Form className='d-flex justify-content-center'>
                                                 <Form.Check
                                                     type='radio'
                                                     checked={isRoughIn}
@@ -538,16 +538,16 @@ const Products = (props) => {
                                                         () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
                                                     }
                                                 />
-                                            </Form>
+                                            </Form>}
                                         </td>
                                         <td>
-                                            <div className='distributor-select'>
+                                            {!templateItem?.IsTemplate &&<div className='distributor-select'>
                                                 <Form.Control as='select'>
                                                 </Form.Control>
-                                            </div>
+                                            </div>}
                                         </td>
                                         <td>
-                                            <div className='qty-input'>
+                                            {!templateItem?.IsTemplate &&<div className='qty-input'>
                                                 {itemLoading(templateItem, isQuantityLoading) ? <Spinner
                                                     animation='border'
                                                     variant='primary'
@@ -562,7 +562,7 @@ const Products = (props) => {
                                                     >
                                                     </Form.Control>
                                                 }
-                                            </div>
+                                            </div>}
                                         </td>
                                         <td></td>
                                         <td></td>
