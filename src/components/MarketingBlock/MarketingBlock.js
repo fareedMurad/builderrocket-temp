@@ -44,7 +44,7 @@ const MarketingBlock = () => {
         
         <div className='marketing-block'>
             {logos?.map((logo, index) => (
-                <div className={`marketing-block-body p-3 justify-content-center ${fadeProp.fade}`}>
+                <div className={`marketing-block-body justify-content-center ${fadeProp.fade}`}>
                     <img src={logo} className='img-fluid img-thumbnail fitcontent'/>
                 </div> 
             ))}
