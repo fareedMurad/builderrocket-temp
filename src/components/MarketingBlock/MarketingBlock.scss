@@ -19,4 +19,17 @@
         opacity: 0;
         //transition: opacity 2s ease;
     }
+    .fitcontent{
+        width: 100%;
+    }
+}
+@media screen and (min-device-width: 992px) and (max-device-width: 1200px){
+    .marketing-block {
+        width: 20%;
+    }
+    .marketing-block-body {
+        width: 100% !important;
+        background-color: white;
+    }
+    
 }

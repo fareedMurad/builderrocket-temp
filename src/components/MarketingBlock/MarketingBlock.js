@@ -19,7 +19,7 @@ const MarketingBlock = () => {
                  } 
                  dispatch(getLogos())
             } ,
-            10000
+            60000
           );
           return () => clearTimeout(timer);
     });
@@ -39,22 +39,15 @@ const MarketingBlock = () => {
           return () => clearTimeout(timer);
     },[fadeProp]);
     
-    
-
-    console.log("looooogooo1111", logos)
 
     return (
         
         <div className='marketing-block'>
-            <div className='marketing-block-body p-3 justify-content-center'>
-                {logos?.map((logo, index) => (
-                    <div className={`border border-secondary p-1 mb-2 ${fadeProp.fade}`}>
-                        <img src={logo} className='img-fluid'/>
-                    </div>
-                    
-                ))}
-                
-            </div>
+            {logos?.map((logo, index) => (
+                <div className={`marketing-block-body p-3 justify-content-center ${fadeProp.fade}`}>
+                    <img src={logo} className='img-fluid img-thumbnail fitcontent'/>
+                </div> 
+            ))}
         </div>
     );
 }
