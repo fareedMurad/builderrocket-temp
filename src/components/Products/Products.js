@@ -567,17 +567,19 @@ const Products = (props) => {
                                         <td></td>
                                         <td></td>
                                         {!templateItem?.IsTemplate ? <td className={`${templateItem?.Notes && 'sticky-note-red'}`} onClick={() => handleOpenNotesModal(templateItem)}>
-                                            <OverlayTrigger
-                                                placement='top'
-                                                overlay={
-                                                    <Tooltip id='button-tooltip'>
-                                                        {templateItem?.Notes}
-                                                    </Tooltip>
-                                                }
-                                                delay={{ show: 250, hide: 400 }}
-                                            >
-                                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
-                                            </OverlayTrigger>
+                                            {templateItem?.Notes ?
+                                                <OverlayTrigger
+                                                    placement='top'
+                                                    overlay={ 
+                                                            <Tooltip id='button-tooltip'>
+                                                                {templateItem?.Notes}
+                                                            </Tooltip> 
+                                                        
+                                                    }
+                                                    delay={{ show: 250, hide: 400 }}
+                                                >
+                                                    <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                                </OverlayTrigger> : <i className='far fa-sticky-note d-flex justify-content-center'></i> }
                                         </td> : <td />}
                                         <td>
                                             {renderApproval(templateItem)}
