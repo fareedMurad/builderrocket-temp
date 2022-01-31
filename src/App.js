@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Routes from './Routes';
 import { Container } from 'react-bootstrap';
 import './App.scss';
+import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
 
 // components
 import Header from './components/Header';

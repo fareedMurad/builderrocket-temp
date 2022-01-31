@@ -4,6 +4,7 @@ import { Button, Spinner, Form } from 'react-bootstrap';
 import { addDocument, deleteDocument, renameDocument } from '../../actions/documentActions';
 import { getProjectByProjectID } from '../../actions/projectActions';
 import './Drawings.scss';
+import CustomLightbox from '../Lightbox';
 
 // components
 import MarketingBlock from '../MarketingBlock';
@@ -118,44 +119,39 @@ const Drawings = () => {
                     <div className='page-title'>Drawings</div>
 
                     <div className='ml-1'>
-                        <Button 
-                            variant='link' 
+                        <Button
+                            variant='link'
                             className='link-btn'
                             onClick={browse}
                         >
                             + Add Drawings
                         </Button>
-                        <input 
-                            hidden 
+                        <input
+                            hidden
                             multiple
                             type='file'
-                            id='actual-btn' 
-                            ref={inputFile} 
+                            id='actual-btn'
+                            ref={inputFile}
                             onChange={onFileChange}
                         />
-                    </div> 
+                    </div>
                 </div>
 
                 <div className='drawings-form'>
                     {isLoading ? (
                         <div className='spinner d-flex justify-content-center'>
-                            <Spinner 
+                            <Spinner
                                 animation='border'
-                                variant='primary' 
+                                variant='primary'
                             />
                         </div>
                     ) : (
                         <>
                             {returnDrawings()?.map((drawing, index) => (
                                 <div key={index} className='d-flex drawing'>
-                                    <div className='drawing-image'>       
+                                    <div className='drawing-image'>
                                         {drawing?.IsImage ? (
-                                            <img 
-                                                alt='drawing' 
-                                                height='45' 
-                                                width='50' 
-                                                src={drawing?.URL}
-                                            />
+                                            <CustomLightbox images={[drawing?.URL]} />
                                         ) : (
                                             <div className='drawing-image-icon'>
                                                 <i className={`far fa-${drawing?.Icon}`}></i>
@@ -166,29 +162,29 @@ const Drawings = () => {
                                     {selectedDrawing === drawing?.ID ? (
                                         <div className='d-flex justify-content-between edit-drawings-container'>
                                             <div className='file-input'>
-                                                <Form.Control 
+                                                <Form.Control
                                                     value={newDrawingName}
                                                     onChange={(event) => setNewDrawingName(event.target.value)}
                                                 />
                                             </div>
                                             {isLoadingDrawing ? (
                                                 <div className='spinner-container'>
-                                                    <Spinner 
-                                                        size='sm' 
+                                                    <Spinner
+                                                        size='sm'
                                                         variant='primary'
-                                                        animation='border' 
+                                                        animation='border'
                                                     />
                                                 </div>
                                             ) : (
                                                 <div className='icon-container'>
                                                     <div className='icon-container'></div>
-                                                    <div 
+                                                    <div
                                                         className='icon-container'
                                                         onClick={() => updateFileName(drawing?.ID)}
                                                     >
                                                         <i className='fa fa-check'></i>
                                                     </div>
-                                                    <div 
+                                                    <div
                                                         className='icon-container'
                                                         onClick={clearInput}
                                                     >
@@ -200,8 +196,8 @@ const Drawings = () => {
                                     ) : (
                                         <div className='d-flex justify-content-between name-icons'>
                                             <div className='drawing-name'>
-                                                <a 
-                                                    href={drawing?.URL} 
+                                                <a
+                                                    href={drawing?.URL}
                                                     target='_blank'
                                                     rel='noreferrer'
                                                 >
@@ -209,15 +205,15 @@ const Drawings = () => {
                                                 </a>
                                             </div>
                                             <div className='d-flex icon-container'>
-                                                <div 
+                                                <div
                                                     className='icon'
                                                     onClick={() => setSelectedDrawing(drawing?.ID)}
                                                 >
-                                                        <i className='far fa-pencil-alt'></i>
+                                                    <i className='far fa-pencil-alt'></i>
                                                 </div>
                                                 <div className='icon'><i className='fa fa-share-square'></i></div>
                                                 <div className='icon'>
-                                                    <i 
+                                                    <i
                                                         onClick={() => handleDrawingDelete(drawing?.ID)}
                                                         className='far fa-trash-alt'
                                                     ></i>

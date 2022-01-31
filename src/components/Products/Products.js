@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
 import './Products.scss';
 import { useHistory } from 'react-router'
+import CustomLightbox from '../Lightbox';
 
 
 const Products = (props) => {
@@ -484,12 +485,7 @@ const Products = (props) => {
                                         <td>
                                             <div className='d-flex add-btn-templateItem'>
                                                 {templateItem?.ProductThumbnailURl && (
-                                                    <img
-                                                        width='50'
-                                                        height='50'
-                                                        alt='template item'
-                                                        src={templateItem?.ProductThumbnailURl}
-                                                    />
+                                                    <CustomLightbox images={[templateItem?.ProductThumbnailURl]} />
                                                 )}
                                                 <div>
                                                     <Button

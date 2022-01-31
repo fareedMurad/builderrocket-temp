@@ -17,6 +17,8 @@ import 'react-image-lightbox/style.css'; // This only needs to be imported once 
 import './AddProduct.scss';
 import { useHistory } from 'react-router';
 
+import CustomLightbox from '../Lightbox';
+
 // components 
 import ProductModal from '../ProductModal';
 
@@ -32,9 +34,6 @@ const AddProduct = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [isOpenLightBox, setOpenLightBox] = useState(false)
-    const [photoIndex, setPhotoIndex] = useState(0)
-    const [lightBoxImages, setLightBoxImages] = useState([])
     const [searchObject, setSearchObject] = useState({
         CategoryID: '',
         ModelName: null,
@@ -275,17 +274,7 @@ const AddProduct = () => {
                                 {products?.Products?.slice(0, 25)?.map((product, index) => (
                                     <tr key={index}>
                                         <td>
-                                            <img
-                                                alt='product' 
-                                                width='50'
-                                                height='50'
-                                                style={{cursor: "pointer"}}
-                                                src={product?.ThumbnailURL}
-                                                onClick={() =>{
-                                                    setLightBoxImages([product?.ThumbnailURL])
-                                                    setOpenLightBox(true)
-                                                }}
-                                            />
+                                             <CustomLightbox images={[product?.ThumbnailURL]} />
                                         </td>
                                         <td>
                                             <div className='add-btn-product-details'>
@@ -351,16 +340,6 @@ const AddProduct = () => {
                 handleClose={handleClose} 
                 handleCloseModal={() => setShowModal(false)} 
             />
-            {isOpenLightBox && (
-          <Lightbox
-            mainSrc={lightBoxImages[photoIndex]}
-            nextSrc={lightBoxImages[(photoIndex + 1) % lightBoxImages.length]}
-            prevSrc={lightBoxImages[(photoIndex + lightBoxImages.length - 1) % lightBoxImages.length]}
-            onCloseRequest={() => setOpenLightBox(false)}
-            onMovePrevRequest={() => setPhotoIndex((photoIndex + lightBoxImages.length - 1) % lightBoxImages.length)}
-            onMoveNextRequest={() => setPhotoIndex(((photoIndex + 1) % lightBoxImages.length))}
-          />
-        )}
         </div>
     );
 }
