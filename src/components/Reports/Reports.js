@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { getReportByProjectID, getCategorizedReportByProjectID, getRoomReportByProjectID, getVendorReportByProjectID } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
+import { setReportFilter } from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import ReportsHeader from './ReportHeader';
@@ -18,6 +19,7 @@ const LayoutOptions = [
     { value: "vendor", label: "Vendor" },
 ]
 
+
 const Reports = (props) => {
     const dispatch = useDispatch();
     const componentRef = React.useRef(null);
@@ -25,16 +27,25 @@ const Reports = (props) => {
     const report = useSelector(state => state.project.report);
     const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const reportByCategory = useSelector(state => state.project.reportByCategory);
 
     const [isLoading, setIsLoading] = useState(false);
     const [layout, setLayout] = useState(LayoutOptions[0]);
+    const [groupLayout, setGroupLayout] = useState(null)
 
     const [hideTotals, setHideTotals] = useState(false)
     const [hideReportsHeader, setHideReportsHeader] = useState(true);
     useEffect(() => {
         if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
-    }, [dispatch, report, selectedRoom]);
+        if (groupLayout) {
+            dispatch(setReportFilter(groupLayout))
+        } else if(layout) {
+            dispatch(setReportFilter(layout))
+        }
+    }, [dispatch, report, selectedRoom, groupLayout, layout]);
+
+
 
     useEffect(() => {
         setIsLoading(true);
@@ -92,7 +103,7 @@ const Reports = (props) => {
         <div className='d-flex products'>
             <div className='reports-container' ref={componentRef}>
                 {!hideReportsHeader && <ReportsHeader hideTotals={hideTotals} />}
-               {hideReportsHeader && <div className='d-flex justify-content-between flex-wrap'>
+                {hideReportsHeader && <div className='d-flex justify-content-between flex-wrap'>
                     <div className="mx-5 my-3">
                         <Form>
                             <Form.Check
@@ -104,12 +115,33 @@ const Reports = (props) => {
                             />
                         </Form>
                     </div>
-                    <div className="layout-select">
-                        <Select
-                            options={LayoutOptions}
-                            value={layout}
-                            onChange={setLayout}
-                        />
+                    <div className="d-flex">
+                        <div className="layout-select">
+                            <Select
+                                options={LayoutOptions}
+                                value={layout}
+                                onChange={setLayout}
+                                placeholder="Room Filter"
+                            />
+                        </div>
+                        {
+                            reportByCategory?.Groups.length &&
+                            <div className="d-flex align-items-center">
+                                <label>Group By:</label>
+                                <div className="layout-select">
+                                    <Select
+                                        isMulti
+                                        closeMenuOnSelect={false}
+                                        getOptionLabel={(item) => item.Name}
+                                        getOptionValue={(item) => item.Name}
+                                        options={reportByCategory?.Groups}
+                                        value={groupLayout}
+                                        onChange={setGroupLayout}
+                                        placeholder="Group Filter"
+                                    />
+                                </div>
+                            </div>
+                        }
                     </div>
                     <div>
                         <CustomPrinter

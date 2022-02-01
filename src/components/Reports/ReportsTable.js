@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
+import { getReportFilter } from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
@@ -11,12 +12,13 @@ import './Reports.scss';
 
 const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     const dispatch = useDispatch();
-
     const report = useSelector(state => state.project.report);
     const reportByRoom = useSelector(state => state.project.reportByRoom);
     const reportByCategory = useSelector(state => state.project.reportByCategory);
     const reportsByVendor = useSelector(state => state.project.reportsByVendor);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const reportFilter = useSelector(state => state.reportFilter.reportFilters);
+
     useEffect(() => {
         if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
@@ -47,8 +49,8 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
     const renderTableBody = (item, index, expend) => {
         return (
-            <tr key={index} className={!expend ? "":"hide"}>
-                <td style={{paddingRight: '40px'}}>
+            <tr key={index} className={!expend ? "" : "hide"}>
+                <td style={{ paddingRight: '40px' }}>
                     <img
                         width='50'
                         height='50'
@@ -75,9 +77,9 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             <>
                 {renderHeader()}
                 <tbody>
-                    {data?.Groups?.map((item, index) => {
+                    {data.length && data?.map((item, index) => {
                         return (
-                            item.Items?.length ? <TableRow {...{ renderTableBody, item}}/>: null
+                            item ? <TableRow {...{ renderTableBody, item }} /> : null
                         )
                     })}
                 </tbody>
@@ -87,38 +89,64 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
     const renderTableByLayout = () => {
         let table = null
-        switch (layout.value) {
-            case 'list' || 'vendor': {
+        // switch (layout.value) {
+        //     case 'list' || 'vendor': {
+        //         table = (
+        //             <>
+        //                 {renderHeader()}
+        //                 <tbody>
+        //                     {report?.Items?.map((item, index) => renderTableBody(item, index))}
+        //                 </tbody>
+        //             </>
+        //         )
+        //     }
+        //         break;
+        //     case 'category': {
+        //         table = renderGroup(reportByCategory)
+        //     }
+        //         break;
+        //     case 'room': {
+        //         table = renderGroup(reportByRoom)
+        //     }
+        //         break;
+
+        //     default: {
+        //         return (
+        //             <>
+        //                 {renderHeader()}
+        //                 <tbody>
+        //                     {report?.Items?.map((item, index) => renderTableBody(item, index))}
+        //                 </tbody>
+        //             </>
+        //         )
+        //     }
+        // }
+
+        // if (reportFilter?.value == 'list' || 'vendor') {
+        //     table = (
+        //         <>
+        //             {renderHeader()}
+        //             <tbody>
+        //                 {report?.Items?.map((item, index) => renderTableBody(item, index))}
+        //             </tbody>
+        //         </>
+        //     )
+        // } else 
+        if (reportFilter) {
+            if (reportFilter.length) {
+                table = renderGroup(reportFilter)
+            } else {
                 table = (
                     <>
                         {renderHeader()}
                         <tbody>
-                            {report?.Items?.map((item, index) => renderTableBody(item, index))}
-                        </tbody>
-                    </>
-                )
-            }
-                break;
-            case 'category': {
-                table = renderGroup(reportByCategory)
-            }
-                break;
-            case 'room': {
-                table = renderGroup(reportByRoom)
-            }
-                break;
-
-            default: {
-                return (
-                    <>
-                        {renderHeader()}
-                        <tbody>
-                            {report?.Items?.map((item, index) => renderTableBody(item, index))}
+                            {reportFilter?.Items?.map((item, index) => renderTableBody(item, index))}
                         </tbody>
                     </>
                 )
             }
         }
+
 
         return (
             <Table responsive>
@@ -138,7 +166,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
 export default ReportsTable;
 
-export const TableRow = ({item, renderTableBody}) => {
+export const TableRow = ({ item, renderTableBody }) => {
 
 
     const [expend, setExpend] = useState(false);
@@ -153,7 +181,7 @@ export const TableRow = ({item, renderTableBody}) => {
                 </td>
             </tr>
             {item?.Items?.length ? item?.Items?.map((item, index) => renderTableBody(item, index, expend))
-                : <tr className={!expend ? "":"hide"}>
+                : <tr className={!expend ? "" : "hide"}>
                     <td colSpan={11} className="no-items">There are no items found! for <b><i>{item.Name}</i></b></td>
                 </tr>
             }
