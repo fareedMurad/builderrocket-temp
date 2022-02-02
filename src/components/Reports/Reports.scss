@@ -152,6 +152,12 @@
         .layout-select {
             width: 300px;
             margin: 13px 10px;
+            position: relative;
+            .custom-placeholder{
+                position: absolute;
+                top: 8px;
+                left: 8px;
+            }
         }
 
 
@@ -302,5 +308,8 @@
     }
 
     
+    .search-wrapper.searchWrapper .chip{
+        display: none;
+    } 
 
 }

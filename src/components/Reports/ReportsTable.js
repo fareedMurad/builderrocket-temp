@@ -77,7 +77,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             <>
                 {renderHeader()}
                 <tbody>
-                    {data.length && data?.map((item, index) => {
+                    {data?.Groups?.length && data?.Groups?.map((item, index) => {
                         return (
                             item ? <TableRow {...{ renderTableBody, item }} /> : null
                         )
@@ -89,58 +89,33 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
     const renderTableByLayout = () => {
         let table = null
-        // switch (layout.value) {
-        //     case 'list' || 'vendor': {
-        //         table = (
-        //             <>
-        //                 {renderHeader()}
-        //                 <tbody>
-        //                     {report?.Items?.map((item, index) => renderTableBody(item, index))}
-        //                 </tbody>
-        //             </>
-        //         )
-        //     }
-        //         break;
-        //     case 'category': {
-        //         table = renderGroup(reportByCategory)
-        //     }
-        //         break;
-        //     case 'room': {
-        //         table = renderGroup(reportByRoom)
-        //     }
-        //         break;
-
-        //     default: {
-        //         return (
-        //             <>
-        //                 {renderHeader()}
-        //                 <tbody>
-        //                     {report?.Items?.map((item, index) => renderTableBody(item, index))}
-        //                 </tbody>
-        //             </>
-        //         )
-        //     }
-        // }
-
-        // if (reportFilter?.value == 'list' || 'vendor') {
-        //     table = (
-        //         <>
-        //             {renderHeader()}
-        //             <tbody>
-        //                 {report?.Items?.map((item, index) => renderTableBody(item, index))}
-        //             </tbody>
-        //         </>
-        //     )
-        // } else 
-        if (reportFilter) {
-            if (reportFilter.length) {
-                table = renderGroup(reportFilter)
-            } else {
+        switch (layout?.value) {
+            case 'list' || 'vendor': {
                 table = (
                     <>
                         {renderHeader()}
                         <tbody>
-                            {reportFilter?.Items?.map((item, index) => renderTableBody(item, index))}
+                            {report?.Items?.map((item, index) => renderTableBody(item, index))}
+                        </tbody>
+                    </>
+                )
+            }
+                break;
+            case 'category': {
+                table =  reportFilter.map(item => <TableRow {...{ renderTableBody, item }} />)
+            }
+                break;
+            case 'room': {
+                table = renderGroup(reportByRoom)
+            }
+                break;
+
+            default: {
+                return (
+                    <>
+                        {renderHeader()}
+                        <tbody>
+                            {report?.Items?.map((item, index) => renderTableBody(item, index))}
                         </tbody>
                     </>
                 )
@@ -158,7 +133,6 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     return (
 
         <div className='reports-table' ref={ref}>
-            {/* <div className='table-title'>Title</div> */}
             {renderTableByLayout()}
         </div>
     );
@@ -181,9 +155,7 @@ export const TableRow = ({ item, renderTableBody }) => {
                 </td>
             </tr>
             {item?.Items?.length ? item?.Items?.map((item, index) => renderTableBody(item, index, expend))
-                : <tr className={!expend ? "" : "hide"}>
-                    <td colSpan={11} className="no-items">There are no items found! for <b><i>{item.Name}</i></b></td>
-                </tr>
+                : null
             }
         </>
     )
