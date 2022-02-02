@@ -147,8 +147,8 @@ export const TableRow = ({item, renderTableBody}) => {
     return (
         <>
             <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
-                <td colSpan={10} className="contractor-type-name text-dark">{item.Name}</td>
-                <td className="contractor-type-name d-flex justify-content-end h-full text-dark">
+                <td colSpan={10} className="contractor-type-name bg-dark">{item.Name}</td>
+                <td className="contractor-type-name bg-dark">
                     <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
                 </td>
             </tr>
