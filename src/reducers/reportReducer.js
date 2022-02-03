@@ -5,7 +5,7 @@ import {
 } from "../actions/types";
 
 const intialState = {
-     reportFilters: {}
+     reportFilters: []
 }
 
 const reportReducer = (state = intialState, action) => {

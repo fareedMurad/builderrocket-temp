@@ -102,7 +102,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             }
                 break;
             case 'category': {
-                table =  reportFilter.map(item => <TableRow {...{ renderTableBody, item }} />)
+                table =  reportFilter?.map?.(item => <TableRow {...{ renderTableBody, item }} />)
             }
                 break;
             case 'room': {

@@ -68,7 +68,7 @@ const Reports = (props) => {
                     name: a.Name,
                     value: a.ID
                 }
-            })))
+            })) || [])
             dispatch(getCategorizedReportByProjectID(project?.ID))
                 .then(() => {
                     setIsLoading(false);
@@ -111,6 +111,15 @@ const Reports = (props) => {
         }
     }
 
+    const downloadReportURL = btoa(JSON.stringify({
+        projectID: project.ID,
+        groupIDs: reportFilter?.map?.(r => r.ID),
+        filter: layout.value
+    }));
+
+    console.log(downloadReportURL, atob(downloadReportURL))
+    
+
     return (
         <div className='d-flex products'>
             <div className='reports-container' ref={componentRef}>
@@ -127,7 +136,8 @@ const Reports = (props) => {
                             />
                         </Form>
                     </div>
-                    <div className="d-flex">
+                    <div className="d-flex align-items-center">
+                        <span>Group By:</span>
                         <div className="layout-select">
                             <Select
                                 options={LayoutOptions}
@@ -139,11 +149,10 @@ const Reports = (props) => {
                         {
                             layout?.value == "category" &&
                             <div className="d-flex align-items-center">
-                                <span>Group By:</span>
                                 <div className="layout-select">
                                     <span>
                                     {reportFilter?.length ? <span className="custom-placeholder">
-                                        {reportFilter.filter(p => p.value !== 'select_all').length} of {reportByCategory?.Groups?.length} selected
+                                        {reportFilter?.filter(p => p.value !== 'select_all')?.length} of {reportByCategory?.Groups?.length} selected
                                     </span> : null}
                                     </span>
                                     <Multiselect
