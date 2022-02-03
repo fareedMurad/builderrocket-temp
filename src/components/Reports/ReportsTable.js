@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
+import { getReportFilter } from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
@@ -11,12 +12,13 @@ import './Reports.scss';
 
 const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     const dispatch = useDispatch();
-
     const report = useSelector(state => state.project.report);
     const reportByRoom = useSelector(state => state.project.reportByRoom);
     const reportByCategory = useSelector(state => state.project.reportByCategory);
     const reportsByVendor = useSelector(state => state.project.reportsByVendor);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const reportFilter = useSelector(state => state.reportFilter.reportFilters);
+
     useEffect(() => {
         if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
@@ -47,8 +49,8 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
     const renderTableBody = (item, index, expend) => {
         return (
-            <tr key={index} className={!expend ? "":"hide"}>
-                <td style={{paddingRight: '40px'}}>
+            <tr key={index} className={!expend ? "" : "hide"}>
+                <td style={{ paddingRight: '40px' }}>
                     <img
                         width='50'
                         height='50'
@@ -75,9 +77,9 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             <>
                 {renderHeader()}
                 <tbody>
-                    {data?.Groups?.map((item, index) => {
+                    {data?.Groups?.length && data?.Groups?.map((item, index) => {
                         return (
-                            item.Items?.length ? <TableRow {...{ renderTableBody, item}}/>: null
+                            item ? <TableRow {...{ renderTableBody, item }} /> : null
                         )
                     })}
                 </tbody>
@@ -87,7 +89,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
     const renderTableByLayout = () => {
         let table = null
-        switch (layout.value) {
+        switch (layout?.value) {
             case 'list' || 'vendor': {
                 table = (
                     <>
@@ -100,7 +102,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             }
                 break;
             case 'category': {
-                table = renderGroup(reportByCategory)
+                table =  reportFilter?.map?.(item => <TableRow {...{ renderTableBody, item }} />)
             }
                 break;
             case 'room': {
@@ -120,6 +122,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             }
         }
 
+
         return (
             <Table responsive>
                 {table}
@@ -130,7 +133,6 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     return (
 
         <div className='reports-table' ref={ref}>
-            {/* <div className='table-title'>Title</div> */}
             {renderTableByLayout()}
         </div>
     );
@@ -138,7 +140,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
 export default ReportsTable;
 
-export const TableRow = ({item, renderTableBody}) => {
+export const TableRow = ({ item, renderTableBody }) => {
 
 
     const [expend, setExpend] = useState(false);
@@ -147,15 +149,13 @@ export const TableRow = ({item, renderTableBody}) => {
     return (
         <>
             <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
-                <td colSpan={10} className="contractor-type-name bg-dark">{item.Name}</td>
-                <td className="contractor-type-name bg-dark">
+                <td colSpan={10} className="contractor-type-name text-dark">{item.Name}</td>
+                <td className="contractor-type-name d-flex justify-content-end h-full text-dark">
                     <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
                 </td>
             </tr>
             {item?.Items?.length ? item?.Items?.map((item, index) => renderTableBody(item, index, expend))
-                : <tr className={!expend ? "":"hide"}>
-                    <td colSpan={11} className="no-items">There are no items found! for <b><i>{item.Name}</i></b></td>
-                </tr>
+                : null
             }
         </>
     )

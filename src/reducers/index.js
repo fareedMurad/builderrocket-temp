@@ -11,6 +11,7 @@ import utilityReducer from './utilityReducer';
 import documentReducer from './documentReducer';
 import contractorReducer from './contractorReducer';
 import subdivisionReducer from './subdivisionReducer';
+import reportReducer from './reportReducer';
 
 const appReducer = combineReducers({
     auth: authReducer,
@@ -21,7 +22,8 @@ const appReducer = combineReducers({
     utility: utilityReducer,
     document: documentReducer,
     contractor: contractorReducer,
-    subdivision: subdivisionReducer
+    subdivision: subdivisionReducer,
+    reportFilter: reportReducer,
 })
 
 const rootReducer = (state, action) => {

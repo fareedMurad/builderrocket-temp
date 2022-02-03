@@ -150,8 +150,14 @@
             border-spacing:0 1px;
         }
         .layout-select {
-            width: 200px;
+            width: 300px;
             margin: 13px 10px;
+            position: relative;
+            .custom-placeholder{
+                position: absolute;
+                top: 8px;
+                left: 8px;
+            }
         }
 
 
@@ -302,5 +308,8 @@
     }
 
     
+    .search-wrapper.searchWrapper .chip{
+        display: none;
+    } 
 
 }

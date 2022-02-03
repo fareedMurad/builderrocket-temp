@@ -2,10 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { getReportByProjectID, getCategorizedReportByProjectID, getRoomReportByProjectID, getVendorReportByProjectID } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
+import { setReportFilter } from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import ReportsHeader from './ReportHeader';
 import Select from 'react-select';
+import Multiselect from 'multiselect-react-dropdown';
+import CheckedSelect from 'react-select-checked';
 import ReportsTable from './ReportsTable'
 import { CustomPrinter } from '../../components/PDF'
 
@@ -18,6 +21,9 @@ const LayoutOptions = [
     { value: "vendor", label: "Vendor" },
 ]
 
+const options = [{ name: 'Option 1️⃣', id: 1 }, { name: 'Option 2️⃣', id: 2 }]
+
+
 const Reports = (props) => {
     const dispatch = useDispatch();
     const componentRef = React.useRef(null);
@@ -25,16 +31,26 @@ const Reports = (props) => {
     const report = useSelector(state => state.project.report);
     const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const reportByCategory = useSelector(state => state.project.reportByCategory);
 
     const [isLoading, setIsLoading] = useState(false);
     const [layout, setLayout] = useState(LayoutOptions[0]);
+    // const [groupLayout, setGroupLayout] = useState(null)
+    const reportFilter = useSelector(state => state.reportFilter.reportFilters);
 
     const [hideTotals, setHideTotals] = useState(false)
     const [hideReportsHeader, setHideReportsHeader] = useState(true);
     useEffect(() => {
         if (isEmpty(selectedRoom))
             dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
+        // if (groupLayout?.length > 0) {
+        //     dispatch(setReportFilter(groupLayout))
+        // } else if (layout) {
+        //     dispatch(setReportFilter(layout))
+        // }
     }, [dispatch, report, selectedRoom]);
+
+
 
     useEffect(() => {
         setIsLoading(true);
@@ -46,6 +62,13 @@ const Reports = (props) => {
                 .catch(() => setIsLoading(false));
         }
         else if (layout?.value === "category") {
+            dispatch(setReportFilter(reportByCategory?.Groups?.map(a => {
+                return {
+                    ...a,
+                    name: a.Name,
+                    value: a.ID
+                }
+            })) || [])
             dispatch(getCategorizedReportByProjectID(project?.ID))
                 .then(() => {
                     setIsLoading(false);
@@ -88,11 +111,20 @@ const Reports = (props) => {
         }
     }
 
+    const downloadReportURL = btoa(JSON.stringify({
+        projectID: project.ID,
+        groupIDs: reportFilter?.map?.(r => r.ID),
+        filter: layout.value
+    }));
+
+    console.log(downloadReportURL, atob(downloadReportURL))
+    
+
     return (
         <div className='d-flex products'>
             <div className='reports-container' ref={componentRef}>
                 {!hideReportsHeader && <ReportsHeader hideTotals={hideTotals} />}
-               {hideReportsHeader && <div className='d-flex justify-content-between flex-wrap'>
+                {hideReportsHeader && <div className='d-flex justify-content-between flex-wrap'>
                     <div className="mx-5 my-3">
                         <Form>
                             <Form.Check
@@ -104,12 +136,70 @@ const Reports = (props) => {
                             />
                         </Form>
                     </div>
-                    <div className="layout-select">
-                        <Select
-                            options={LayoutOptions}
-                            value={layout}
-                            onChange={setLayout}
-                        />
+                    <div className="d-flex align-items-center">
+                        <span>Group By:</span>
+                        <div className="layout-select">
+                            <Select
+                                options={LayoutOptions}
+                                value={layout}
+                                onChange={setLayout}
+                                placeholder="Room Filter"
+                            />
+                        </div>
+                        {
+                            layout?.value == "category" &&
+                            <div className="d-flex align-items-center">
+                                <div className="layout-select">
+                                    <span>
+                                    {reportFilter?.length ? <span className="custom-placeholder">
+                                        {reportFilter?.filter(p => p.value !== 'select_all')?.length} of {reportByCategory?.Groups?.length} selected
+                                    </span> : null}
+                                    </span>
+                                    <Multiselect
+                                        options={[
+                                            {
+                                                name: "Select All",
+                                                value: "select_all"
+                                            },
+                                            ...reportByCategory?.Groups?.map(a => {
+                                                return {
+                                                    ...a,
+                                                    name: a.Name,
+                                                    value: a.ID,
+                                                }
+                                            })]}
+                                        selectedValues={reportFilter}
+                                        onSelect={(arr, current) => {
+                                            if (current.value === 'select_all') {
+                                                dispatch(setReportFilter(
+                                                    [
+                                                        {
+                                                            name: "Select All",
+                                                            value: "select_all"
+                                                        },
+                                                        ...reportByCategory?.Groups?.map(a => {
+                                                            return {
+                                                                ...a,
+                                                                name: a.Name,
+                                                                value: a.ID,
+                                                            }
+                                                        })]
+                                                ))
+                                            } else
+                                                dispatch(setReportFilter(arr))
+                                        }}
+                                        onRemove={(arr) => {
+                                            dispatch(setReportFilter(arr.filter(p => p.value !== 'select_all')))
+                                        }}
+                                        displayValue="name"
+                                        placeholder="Group Filter"
+                                        showCheckbox={true}
+                                        keepSearchTerm={false}
+                                        hidePlaceholder={true}
+                                    />
+                                </div>
+                            </div>
+                        }
                     </div>
                     <div>
                         <CustomPrinter
