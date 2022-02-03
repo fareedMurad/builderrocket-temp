@@ -9,7 +9,7 @@ const CustomLightbox = ({ images, size }) => {
 
 
     return (
-        <div>
+        <div style={{marginTop: "-4px"}}>
             <img
                 width={size || '50'}
                 height={size || '50'}
