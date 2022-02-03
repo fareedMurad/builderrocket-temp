@@ -236,7 +236,7 @@ const Products = (props) => {
             }
                 break;
 
-            case 0: {
+            case 1: {
                 status = {
                     label: "Approved",
                     className: "bg-success"
