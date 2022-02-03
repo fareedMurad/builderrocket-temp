@@ -231,7 +231,7 @@ const Products = (props) => {
             case -1: {
                 status = {
                     label: "Rejected",
-                    className: "bg-danger"
+                    className: "text-danger"
                 }
             }
                 break;
@@ -239,7 +239,7 @@ const Products = (props) => {
             case 0: {
                 status = {
                     label: "Approved",
-                    className: "bg-success"
+                    className: "text-success"
                 }
             }
                 break;
@@ -250,17 +250,16 @@ const Products = (props) => {
         }
 
         return (
-            templateItem?.DateApproved ? <OverlayTrigger
-                placement='top'
-                overlay={
-                    <Tooltip id='button-tooltip'>
-                        {templateItem?.DateApproved}
-                    </Tooltip>
-                }
-                delay={{ show: 250, hide: 400 }}
-            >
-                <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
-            </OverlayTrigger> : <small className={`${status?.className} font-weight-bold rounded text-white p-1`}>{status?.label}</small>
+            templateItem?.DateApproved ?
+                <div className="d-flex flex-column align-items-center">
+                    <small className={`${status?.className} font-weight-bold`}>{status?.label}</small>
+                    <small className={`${status?.className} font-weight-bold`}>
+                        {
+                            new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(templateItem?.DateApproved))
+                        }
+                    </small></div>
+                :
+                <small className={`${status?.className} font-weight-bold p-1`}>{status?.label}</small>
 
         )
     }
@@ -537,13 +536,13 @@ const Products = (props) => {
                                             </Form>}
                                         </td>
                                         <td>
-                                            {!templateItem?.IsTemplate &&<div className='distributor-select'>
+                                            {!templateItem?.IsTemplate && <div className='distributor-select'>
                                                 <Form.Control as='select'>
                                                 </Form.Control>
                                             </div>}
                                         </td>
                                         <td>
-                                            {!templateItem?.IsTemplate &&<div className='qty-input'>
+                                            {!templateItem?.IsTemplate && <div className='qty-input'>
                                                 {itemLoading(templateItem, isQuantityLoading) ? <Spinner
                                                     animation='border'
                                                     variant='primary'
@@ -561,25 +560,24 @@ const Products = (props) => {
                                             </div>}
                                         </td>
                                         <td></td>
-                                        <td></td>
+                                        <td>
+                                            {renderApproval(templateItem)}
+                                        </td>
                                         {!templateItem?.IsTemplate ? <td className={`${templateItem?.Notes && 'sticky-note-red'}`} onClick={() => handleOpenNotesModal(templateItem)}>
                                             {templateItem?.Notes ?
                                                 <OverlayTrigger
                                                     placement='top'
-                                                    overlay={ 
-                                                            <Tooltip id='button-tooltip'>
-                                                                {templateItem?.Notes}
-                                                            </Tooltip> 
-                                                        
+                                                    overlay={
+                                                        <Tooltip id='button-tooltip'>
+                                                            {templateItem?.Notes}
+                                                        </Tooltip>
+
                                                     }
                                                     delay={{ show: 250, hide: 400 }}
                                                 >
                                                     <i className='far fa-sticky-note d-flex justify-content-center'></i>
-                                                </OverlayTrigger> : <i className='far fa-sticky-note d-flex justify-content-center'></i> }
+                                                </OverlayTrigger> : <i className='far fa-sticky-note d-flex justify-content-center'></i>}
                                         </td> : <td />}
-                                        <td>
-                                            {renderApproval(templateItem)}
-                                        </td>
                                         <td>
                                             {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
                                                 <i className='fas fa-retweet'></i>
