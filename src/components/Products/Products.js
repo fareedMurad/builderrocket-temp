@@ -219,7 +219,6 @@ const Products = (props) => {
 
         if (!templateItem?.RequiresApproval)
             return;
-
         switch (templateItem?.ApprovalStatusID) {
             case 0 | null: {
                 status = {
@@ -247,6 +246,9 @@ const Products = (props) => {
             default: {
                 status = {}
             }
+        }
+        if(!status?.label){
+            return null
         }
 
         return (
