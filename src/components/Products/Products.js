@@ -216,9 +216,10 @@ const Products = (props) => {
 
     const renderApproval = (templateItem) => {
         let status = {}
-
+        
         if (!templateItem?.RequiresApproval)
             return;
+        
         switch (templateItem?.ApprovalStatusID) {
             case 0 | null: {
                 status = {
@@ -235,7 +236,7 @@ const Products = (props) => {
             }
                 break;
 
-            case 0: {
+            case 1: {
                 status = {
                     label: "Approved",
                     className: "text-success"
@@ -247,13 +248,14 @@ const Products = (props) => {
                 status = {}
             }
         }
+
         if(!status?.label){
             return null
         }
 
         return (
             templateItem?.DateApproved ?
-                <div className="d-flex flex-column align-items-center">
+                <div className="d-flex flex-column align-items-left">
                     <small className={`${status?.className} font-weight-bold`}>{status?.label}</small>
                     <small className={`${status?.className} font-weight-bold`}>
                         {
