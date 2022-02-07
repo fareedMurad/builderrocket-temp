@@ -62,55 +62,53 @@ const ProjectTabs = (props) => {
     }
 
     return (
-        <div className='project-tabs'>
-            <Tabs
-                activeKey={selectedProjectTab}
-                onSelect={(tab) => handleSelectedTab(tab)}
-                transition={false}
+      <div className="project-tabs">
+        {project?.ID ? (
+          <Tabs
+            activeKey={selectedProjectTab}
+            onSelect={(tab) => handleSelectedTab(tab)}
+            transition={false}
+          >
+            <Tab eventKey="projectInformation" title="Project Information">
+              {selectedProjectTab === "projectInformation" && (
+                <ProjectInformation />
+              )}
+            </Tab>
+            <Tab eventKey="documents" title="Documents" disabled={!project?.ID}>
+              {selectedProjectTab === "documents" && <Documents />}
+            </Tab>
+            <Tab eventKey="utilities" title="Utilities" disabled={!project?.ID}>
+              {selectedProjectTab === "utilities" && <Utilities />}
+            </Tab>
+            <Tab
+              eventKey="contractors"
+              title="Contractors"
+              disabled={!project?.ID}
             >
-                <Tab eventKey='projectInformation' title='Project Information'>
-                    {selectedProjectTab === 'projectInformation' && (
-                        <ProjectInformation />
-                    )}
-                </Tab>
-                <Tab eventKey='documents' title='Documents' disabled={!project?.ID}>
-                    {selectedProjectTab === 'documents' && (
-                        <Documents />
-                    )}
-                </Tab>
-                <Tab eventKey='utilities' title='Utilities' disabled={!project?.ID}>
-                    {selectedProjectTab === 'utilities' && (
-                        <Utilities />
-                    )}
-                </Tab>
-                <Tab eventKey='contractors' title='Contractors' disabled={!project?.ID}>
-                    {selectedProjectTab === 'contractors' && (
-                        <Contractors />
-                    )}
-                </Tab>
-                <Tab eventKey='drawings' title='Drawings' disabled={!project?.ID}>
-                    {selectedProjectTab === 'drawings' && (
-                        <Drawings />
-                    )}
-                </Tab>
-                <Tab eventKey='roomAreaLayout' title='Room/Area Layout' disabled={!project?.ID}>
-                    {selectedProjectTab === 'roomAreaLayout' && (
-                        <RoomAreaLayout />
-                    )}
-                </Tab>
-                <Tab eventKey='products' title='Products' disabled={!project?.ID}>
-                    {selectedProjectTab === 'products' && (
-                        handleProductsTabs()
-                    )}
-                </Tab>
-                <Tab eventKey='reports' title='Reports'>
-                    {selectedProjectTab === 'reports' && (
-                        <Reports />
-                    )}
-                </Tab>
-            </Tabs>
-        </div>
-    )
+              {selectedProjectTab === "contractors" && <Contractors />}
+            </Tab>
+            <Tab eventKey="drawings" title="Drawings" disabled={!project?.ID}>
+              {selectedProjectTab === "drawings" && <Drawings />}
+            </Tab>
+            <Tab
+              eventKey="roomAreaLayout"
+              title="Room/Area Layout"
+              disabled={!project?.ID}
+            >
+              {selectedProjectTab === "roomAreaLayout" && <RoomAreaLayout />}
+            </Tab>
+            <Tab eventKey="products" title="Products" disabled={!project?.ID}>
+              {selectedProjectTab === "products" && handleProductsTabs()}
+            </Tab>
+            <Tab eventKey="reports" title="Reports">
+              {selectedProjectTab === "reports" && <Reports />}
+            </Tab>
+          </Tabs>
+        ) : (
+          <ProjectInformation />
+        )}
+      </div>
+    );
 }
 
 export default ProjectTabs;
