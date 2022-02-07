@@ -114,20 +114,20 @@ const ProjectInformation = () => {
             }
 
             dispatch(createProject(newProject))
-                .then((res) => {
-                    setIsLoading(false);
-                    window.scrollTo(0, 0);
-                    console.log(res, 'response')
-                    if (res?.ID) {
-                        uploadProjectImage(res?.ID)
-                    }
-
-                })
-                .catch(() => {
-                    setIsLoading(false);
-                    window.scrollTo(0, 0);
-                    alert('Something went wrong creating project try again');
-                })
+              .then((res) => {
+                setIsLoading(false);
+                window.scrollTo(0, 0);
+                console.log(res, "response");
+                if (res?.ID) {
+                  uploadProjectImage(res?.ID);
+                }
+              })
+              .catch(() => {
+                setIsLoading(false);
+                window.scrollTo(0, 0);
+                alert("Something went wrong creating project try again");
+              });
+            dispatch(setSelectedProjectTab("documents"));
         }
     }
 
