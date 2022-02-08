@@ -10,57 +10,63 @@ const Login = (props) => {
     const dispatch = useDispatch();
 
     const [login, setLogin] = useState({ email: 'ronbibb@gmail.com' });
+    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = () => {
-        setIsLoading(true);
+      setIsLoading(true);
 
-        if (!isEmpty(login))
-            dispatch(loginEmailPassword(login.email, login.password))
-                .then(() => {
-                    setIsLoading(false);
-                    history.push('/');
-                });
-    }
+      if (!isEmpty(login))
+        dispatch(loginEmailPassword(login.email, login.password)).then(
+          (response) => {
+            setIsLoading(false);
+            if (response) {
+              history.push("/");
+            } else {
+              setError("Please Enter valid email or password!");
+            }
+          }
+        );
+    };
 
     return (
-        <Row className='justify-content-center pt-5'>
-            <Col sm={10} md={6} lg={6} xl={4}>
-                <h2>Login</h2>
-                <br/>
-                <Form>
-                    <Form.Group>
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control
-                            type='email'
-                            placeholder='Email'
-                            value={login?.email}
-                            onChange={(e) => setLogin({ ...login, email: e.target.value })}
-                        />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type='password'
-                            autoComplete='true'
-                            placeholder='Password'
-                            onChange={(e) => setLogin({ ...login, password: e.target.value })}
-                        />
-                    </Form.Group>
-                    {isLoading ? 
-                        <div className='d-flex justify-content-center'>
-                            <Spinner 
-                                animation='border'
-                                variant='primary' 
-                            />
-                        </div>
-                    :
-                        <Button onClick={handleLogin}>Login</Button>
-                    }
-                </Form>
-            </Col>
-        </Row>
-    )
+      <Row className="justify-content-center pt-5">
+        <Col sm={10} md={6} lg={6} xl={4}>
+          <h2>Login</h2>
+          <br />
+          <Form>
+            <Form.Group>
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                value={login?.email}
+                onChange={(e) => setLogin({ ...login, email: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                autoComplete="true"
+                placeholder="Password"
+                onChange={(e) =>
+                  setLogin({ ...login, password: e.target.value })
+                }
+              />
+            </Form.Group>
+            {isLoading ? (
+              <div className="d-flex justify-content-center">
+                <Spinner animation="border" variant="primary" />
+              </div>
+            ) : (
+              <Button onClick={handleLogin}>Login</Button>
+            )}
+          </Form>
+          {error && <small className="text-danger">{error}</small>}
+        </Col>
+      </Row>
+    );
 }
 
 export default Login;
