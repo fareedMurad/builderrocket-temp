@@ -13,6 +13,7 @@ import {
 import { handleProductForProject } from '../../actions/projectActions';
 import { Button, Form, Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import Avatar from "../../assets/images/img-placeholder.png"
 import { isEmpty } from 'lodash';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
@@ -312,7 +313,7 @@ const ReplaceProduct = () => {
                                                 width='50'
                                                 height='50'
                                                 style={{ cursor: "pointer" }}
-                                                src={product?.ThumbnailURL}
+                                                src={product?.ThumbnailName ? product?.ThumbnailURL : Avatar}
                                                 onClick={() => {
                                                     setLightBoxImages([product?.ThumbnailURL])
                                                     setOpenLightBox(true)

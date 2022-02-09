@@ -12,6 +12,7 @@ import { handleProductForProject } from '../../actions/projectActions';
 import { Button, Form, Table, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+import Avatar from "../../assets/images/img-placeholder.png";
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in our app
 import './AddProduct.scss';
@@ -274,7 +275,7 @@ const AddProduct = () => {
                                 {products?.Products?.slice(0, 25)?.map((product, index) => (
                                     <tr key={index}>
                                         <td>
-                                             <CustomLightbox images={[product?.ThumbnailURL]} />
+                                             <CustomLightbox images={[product?.ThumbnailName ? product?.ThumbnailURL : Avatar]} />
                                         </td>
                                         <td>
                                             <div className='add-btn-product-details'>
