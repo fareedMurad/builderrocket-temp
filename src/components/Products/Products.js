@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Form, Table, Modal, Spinner, Tooltip, OverlayTrigger, } from 'react-bootstrap';
 
 import { setProduct, getCategories, setSelectedProductTab, getProductDetails, RoughInTrimOutEnum, setIsFavorite } from '../../actions/productActions';
-import { editProduct, handleProductForProject, updateRequiresApproval, setSelectedProject, updateQuantity, updateProjectProdcutNotes } from '../../actions/projectActions';
+import { editProduct, handleProductForProject, updateRequiresApproval, setSelectedProject, updateQuantity, updateProjectProdcutNotes, saveProject } from '../../actions/projectActions';
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
@@ -17,9 +17,8 @@ const Products = (props) => {
 
     const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
-    const isFavorite = useSelector(state => state.product)
-
-    console.log(isFavorite, "isFavorite")
+    const isFavorite = useSelector(state => state.product.isFavorite)
+    const roughtInTrimOut = useSelector(state => state.product.roughtInTrimOut)
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +26,6 @@ const Products = (props) => {
     const [templateItems, setTemplateItems] = useState({});
     const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({ loading: false });
     const [isQuantityLoading, setIsQuantityLoading] = useState({ loading: false });
-    // const [favorite, setFavorite] = useState(true)
 
     const [isNotesLoading, setIsNotesLoading] = useState(false);
     const [notes, setNotes] = useState(' ');
@@ -135,8 +133,8 @@ const Products = (props) => {
 
     const handleItems = (incomingItem, key, value) => {
 
-        dispatch(RoughInTrimOutEnum(incomingItem?.ID, incomingItem?.ProductID, value )).then((value) => {
-
+        dispatch(RoughInTrimOutEnum(project?.ID, incomingItem?.ID, value )).then(() => {
+            dispatch(saveProject(roughtInTrimOut))
         })
         if (!incomingItem?.ID) return;
 
@@ -171,10 +169,9 @@ const Products = (props) => {
 
     }
 
-    const handleIsFavorite = (item, value) => {
-        console.log(item?.IsFavorite, "item")
-        dispatch(setIsFavorite(item?.ID, item?.ProductID, item?.IsFavorite)).then(() => {
-            // setFavorite(!favorite)
+    const handleIsFavorite = (item) => {
+        dispatch(setIsFavorite(project?.ID, item?.ID, !item?.IsFavorite)).then(() => {
+            dispatch(saveProject(isFavorite))
         })
     }
 
@@ -472,6 +469,7 @@ const Products = (props) => {
                                 let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
                                 let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
                                 let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
+                                let isFav = templateItem?.IsFavorite
 
                                 if (!isEmpty(tempTemplateItem)) {
                                     quantity = tempTemplateItem.Quantity;
@@ -600,7 +598,7 @@ const Products = (props) => {
                                         <td>
                                             {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
                                                 <i className='fas fa-retweet'></i>
-                                                <i className={`far ${templateItem?.IsFavorite ? 'fa-heart' : 'fas fa-heart'}`} onClick={() => handleIsFavorite(templateItem)}></i>
+                                                <i className={`far ${isFav ? 'text-danger fas fa-heart' : 'fa-heart'}`} onClick={() => handleIsFavorite(templateItem)}></i>
                                                 <i
                                                     className='far fa-trash-alt'
                                                     onClick={() => handleOpenModal(templateItem)}

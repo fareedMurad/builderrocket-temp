@@ -252,7 +252,6 @@ export const RoughInTrimOutEnum = (projectId, productId, value) => dispatch => {
       header: "Content-Type: application/json"
     })
     .then((response) => {
-        console.log(response, "response")
      if (response?.status === 200) {
         dispatch({ type: ROUGHT_IN_TRIM_OUT, payload: response.data });
         return response.data;
@@ -283,7 +282,6 @@ export const RoughInTrimOutEnum = (projectId, productId, value) => dispatch => {
       header: "Content-Type: application/json"
     })
     .then((response) => {
-        console.log(response, "response")
      if (response?.status === 200) {
         dispatch({ type: IS_FAVORITE, payload: response.data });
         return response.data;
