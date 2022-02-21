@@ -156,7 +156,8 @@ const Reports = (props) => {
                                     </span> : null}
                                     </span>
                                     <Multiselect
-                                        options={[
+                                        options={
+                                            reportByCategory?.Groups?.length > 0 ? [
                                             {
                                                 name: "Select All",
                                                 value: "select_all"
@@ -167,12 +168,12 @@ const Reports = (props) => {
                                                     name: a.Name,
                                                     value: a.ID,
                                                 }
-                                            })]}
+                                            })] : []}
                                         selectedValues={reportFilter}
                                         onSelect={(arr, current) => {
                                             if (current.value === 'select_all') {
                                                 dispatch(setReportFilter(
-                                                    [
+                                                    reportByCategory?.Groups?.length > 0 ? [
                                                         {
                                                             name: "Select All",
                                                             value: "select_all"
@@ -183,7 +184,7 @@ const Reports = (props) => {
                                                                 name: a.Name,
                                                                 value: a.ID,
                                                             }
-                                                        })]
+                                                        })] : []
                                                 ))
                                             } else
                                                 dispatch(setReportFilter(arr))
