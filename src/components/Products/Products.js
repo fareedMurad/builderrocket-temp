@@ -361,6 +361,9 @@ const Products = (props) => {
         )
     }
 
+    const handleRefresh = () => {
+        window.location.reload();
+    }
 
 
     const showProducts = () => {
@@ -406,7 +409,10 @@ const Products = (props) => {
                             <Form.Control
                                 as='select'
                                 value={selectedRoom?.ID}
-                                onChange={(e) => handleSelectedRoom(e.target.value)}
+                                onChange={(e) => {
+                                    handleSelectedRoom(e.target.value)
+                                    handleRefresh()
+                                }}
                             >
                                 {project?.ProjectRooms?.map((projectRoom, index) => (
                                     <option
@@ -566,10 +572,10 @@ const Products = (props) => {
                                                 /> :
                                                     <Form.Control
                                                         min='0'
-                                                        type='number'
+                                                        type='text'
                                                         id={`quantity-${templateItem?.ID}`}
                                                         disabled={!templateItem?.Quantity}
-                                                        defaultValue={quantity}
+                                                        defaultValue={templateItem?.Quantity}
                                                         onBlur={(e) => handleQuantity(templateItem, e.target.value)}
                                                     >
                                                     </Form.Control>
