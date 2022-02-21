@@ -186,7 +186,7 @@ const UtilityManagement = () => {
                                         ) : (
                                             <div className='d-flex justify-content-between'>
                                                 <i 
-                                                    className={`text-danger ${utility.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
+                                                    className={`${utility.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
                                                     onClick={() => handleFavorite(utility)}
                                                 ></i>
                                                 <i 

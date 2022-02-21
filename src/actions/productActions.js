@@ -10,6 +10,8 @@ import {
     GET_CHILD_CATEGORIES,
     SET_SELECTED_CATEGORY_ID,
     SET_SELECTED_PRODUCT_TAB,
+    ROUGHT_IN_TRIM_OUT,
+    IS_FAVORITE
 } from '../actions/types';
 import api from '../api';
 
@@ -233,3 +235,61 @@ export const replaceProductService = (projectId, data) => dispatch => {
             dispatch({ type: LOGOUT });
     });
 }
+
+export const RoughInTrimOutEnum = (projectId, productId, value) => dispatch => {
+    const URL = `/Project/${projectId}/Product/${productId}`;
+
+    const data = [{
+        op:"replace",
+        path:"/RoughInTrimOutEnum",
+        value: value
+    }]
+
+      return api({
+      method: 'PATCH',
+      url: URL,
+      data:data,
+      header: "Content-Type: application/json"
+    })
+    .then((response) => {
+     if (response?.status === 200) {
+        dispatch({ type: ROUGHT_IN_TRIM_OUT, payload: response.data });
+        return response.data;
+     }
+    })
+    .catch((error) => {
+     if (error?.response?.status === 401) 
+        // dispatch({ type: LOGOUT });
+        console.log(error)
+     })
+
+   }
+
+   export const setIsFavorite = (projectId, productId, value) => dispatch => {
+       
+    const URL = `/Project/${projectId}/Product/${productId}`;
+
+    const data = [{
+        op:"replace",
+        path:"/IsFavorite",
+        value: value
+    }]
+
+      return api({
+      method: 'PATCH',
+      url: URL,
+      data:data,
+      header: "Content-Type: application/json"
+    })
+    .then((response) => {
+     if (response?.status === 200) {
+        dispatch({ type: IS_FAVORITE, payload: response.data });
+        return response.data;
+     }
+    })
+    .catch((error) => {
+     if (error?.response?.status === 401) 
+        // dispatch({ type: LOGOUT });
+        console.log(error)
+     })
+   }

@@ -330,7 +330,7 @@ const ContractorTable = ({
                                             ) : (
                                                 <div className='d-flex justify-content-between'>
                                                     <i
-                                                        className={`text-danger ${contractor.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
+                                                        className={`${contractor.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
                                                         onClick={() => handleFavorite(contractor)}
                                                     ></i>
                                                     <i
