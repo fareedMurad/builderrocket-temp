@@ -100,11 +100,11 @@ const Documents = () => {
 
     useEffect(() => {
         return () => {
-            dispatch(saveProject({
-                ...documentsRef.current,
-                PermitDate: Utils.formatDate(documentsRef.current?.PermitDate),
-                OccupencyDate: Utils.formatDate(documentsRef.current?.OccupencyDate)
-            }));
+            // dispatch(saveProject({
+            //     ...documentsRef.current,
+            //     PermitDate: Utils.formatDate(documentsRef.current?.PermitDate),
+            //     OccupencyDate: Utils.formatDate(documentsRef.current?.OccupencyDate)
+            // }));
         }
     }, [dispatch]);
 
