@@ -270,10 +270,9 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
         data: rooms
     })
         .then((response) => {
-            if (response?.status === 200) {
-                dispatch({ type: DELETE_PROJECT_ROOMS, payload: response?.data });
 
-                return response?.data;
+            if (response?.status === 204) {
+                return null;
             }
         })
         .catch((error) => {
