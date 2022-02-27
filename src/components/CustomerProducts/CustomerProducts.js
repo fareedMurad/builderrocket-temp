@@ -4,6 +4,7 @@ import {  Form, Table } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, isUndefined } from 'lodash';
+import moment from 'moment';
 import './CustomerProducts.scss';
 
 
@@ -120,7 +121,7 @@ const CustomerProducts = (props) => {
                                         Product Name
                                     </div>
                                 </th>
-                                <th>Description</th>
+                                <th width="30%">Description</th>
                                 <th>Category</th>
                                 <th>UOM</th>
                                 <th className='radios'>Rough In / Trim Out</th>
@@ -137,14 +138,15 @@ const CustomerProducts = (props) => {
                                 let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
                                 let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
                                 let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
+                                
 
                                 if (!isEmpty(tempTemplateItem)) {
                                     quantity = tempTemplateItem.Quantity;
                                     requiresApproval = tempTemplateItem.RequiresApproval;
                                     isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
                                     isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
+                                    
                                 }
-
                                 if (templateItem.IsTemplate === false) console.log('template', templateItem, requiresApproval);
 
                                 return (
@@ -160,7 +162,7 @@ const CustomerProducts = (props) => {
                                                         src={templateItem?.ProductThumbnailURl} 
                                                     />
                                                 )}
-                                                <div>
+                                                <div class="pl-1">
                                                     {templateItem?.ProductName}
                                                     {!templateItem?.IsTemplate && (
                                                         <div className='model-number'>
@@ -170,48 +172,22 @@ const CustomerProducts = (props) => {
                                                 </div>
                                             </div>  
                                         </td>
-                                        <td>{templateItem?.ShortDescription}</td>
+                                        <td width="30%">{templateItem?.ShortDescription ? templateItem?.ShortDescription : "-"}</td>
                                         <td>{templateItem?.CategoryName}</td>
-                                        <td>{templateItem?.UnitOfMeasure}{templateItem?.ID},{templateItem?.ProductID}</td>
-                                        <td>
-                                            <Form className='d-flex justify-content-center'>
-                                                <Form.Check 
-                                                    type='radio'
-                                                    checked={isRoughIn}
-                                                    disabled='true'
-                                                />
-                                                <Form.Check 
-                                                    type='radio'
-                                                    checked={isTrimOut}
-                                                    disabled={isUndefined(templateItem?.RoughInTrimOutEnum)}
-                                                    onChange={
-                                                        () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
-                                                    }
-                                                />
-                                            </Form>
-                                        </td>
+                                        <td>{templateItem?.UnitOfMeasure}{isRoughIn} {isTrimOut}</td>
+                                        <td>{templateItem?.RoughInTrimOutEnum ? templateItem?.RoughInTrimOutEnum : "-"}</td>
                                         
-                                        <td>  
-                                            <div className='qty-input'>
-                                                <Form.Control 
-                                                    min='0'
-                                                    type='number'
-                                                    id={`quantity-${templateItem?.ID}`}
-                                                    disabled='true'
-                                                    defaultValue={quantity}
-                                                >
-                                                </Form.Control>
-                                            </div>
-                                        </td>
+                                        <td>{quantity}</td>
                                         <td>
                                             <i 
-                                                className='fas fa-check-circle text-success'
+                                                className='fas fa-check-circle text-success approvicon'
                                                 onClick={() => approvalSingle(templateItem?.ID, "1")}
                                             ></i>
                                             <i 
-                                                className='fas fa-times-circle text-danger'
+                                                className='fas fa-times-circle text-danger approvicon'
                                                 onClick={() => approvalSingle(templateItem?.ID, "-1")}
-                                            ></i>
+                                            ></i><br/>
+                                            <small>{templateItem?.ApprovalStatusID === 0 ? "Pending" : templateItem?.ApprovalStatusID === 1 ? "Approved" : "Rejected"} {moment(templateItem?.DateApproved).format('MM/DD/Y')}</small>
                                         </td>
                                         <td>
                                             <div className='d-flex justify-content-between'>
