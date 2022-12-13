@@ -9,7 +9,7 @@ const Login = (props) => {
 
     const dispatch = useDispatch();
 
-    const [login, setLogin] = useState({ email: 'ronbibb@gmail.com' });
+    const [login, setLogin] = useState({ });
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
