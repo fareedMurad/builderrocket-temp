@@ -17,6 +17,7 @@ const FileUpload = (props) => {
         selectedInput, 
         setSelectedInput,
         handleDocumentDelete,
+        progress
     } = props;
 
     const dispatch = useDispatch();
@@ -181,6 +182,19 @@ const FileUpload = (props) => {
                     ))}
                 </div>
             )}
+            {progress && progress.loading ?
+                <div className="progress">
+                    <div
+                        className="progress-bar progress-bar-info progress-bar-striped"
+                        role="progressbar"
+                        aria-valuenow={progress.progress}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        style={{ width: progress.progress + "%" }}
+                    >
+                        {progress.progress}%
+                    </div>
+                </div> : null}
         </div>
     )
 }

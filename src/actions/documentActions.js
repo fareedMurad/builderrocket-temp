@@ -28,22 +28,22 @@ export const getDocumentTypes = () => dispatch => {
  * Add document to project
  * @param {*} projectID - Selected project ID
  * @param {*} document - document data
- *  
+ * @param onUploadProgress
  */
-export const addDocument = (projectID, document) => dispatch => {    
+export const addDocument = (projectID, document, onUploadProgress) => dispatch => {
     const URL = `/Project/${projectID}/document`;
 
     return api({
         method: 'POST',
         url: URL,
-        data: document
+        data: document,
+        onUploadProgress: onUploadProgress
     })
     .then((response) => {
         if (response?.status === 200) {
             return response.data;
         }
 
-        return;
     })
     .catch((error) => {
 

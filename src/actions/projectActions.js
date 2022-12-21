@@ -190,7 +190,7 @@ export const setSelectedProject = (selectedProject) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
             dispatch({ type: SET_SELECTED_PROJECT, payload: selectedProject });
-
+            console.log(selectedProject);
             resolve(selectedProject);
         } catch (error) {
             reject(error);

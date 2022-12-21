@@ -1,8 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { addDocument, getDocumentTypes, deleteDocument } from '../../actions/documentActions';
-import { getProjectByProjectID, saveProject, setSelectedProjectTab } from '../../actions/projectActions';
-import { Form, Button, Spinner } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect, useRef, useState} from 'react';
+import {addDocument, deleteDocument, getDocumentTypes} from '../../actions/documentActions';
+import {
+    getProjectByProjectID,
+    saveProject,
+    setSelectedProject,
+    setSelectedProjectTab
+} from '../../actions/projectActions';
+import {Button, Form, Spinner} from 'react-bootstrap';
+import {useDispatch, useSelector} from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Utils from '../../utils';
@@ -22,7 +27,8 @@ const Documents = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [selectedInput, setSelectedInput] = useState();
-    const [documentsInfo, setDocumentsInfo] = useState({ 
+    const [progress, setProgress] = useState({});
+    const [documentsInfo, setDocumentsInfo] = useState({
         ...project, 
         PermitDate: Utils.formatShortDateUS(project?.PermitDate)
     });
@@ -32,6 +38,7 @@ const Documents = () => {
 
     useEffect(() => {
         dispatch(getDocumentTypes());
+        dispatch(getProjectByProjectID(project.ID));
     }, [dispatch])
 
     const onFileChange = (documentTypeID, event) => {
@@ -40,28 +47,49 @@ const Documents = () => {
 
         formData.append('DocumentTypeID', documentTypeID);
         formData.append('File', event.target?.files?.[0]);
+        progress[documentTypeID] = {progress: 0, loading: false};
+        setProgress({...progress});
 
-        dispatch(addDocument(project.ID, formData))
-            .then(() => {
-                dispatch(getProjectByProjectID(project.ID));
-            });
+        dispatch(addDocument(project.ID, formData,  (event) => {
+            progress[documentTypeID] = {progress: Math.round((100 * event.loaded) / event.total), loading: true};
+            setProgress({...progress});
+            console.log(progress);
+        }))
+        .then((response) => {
+            progress[documentTypeID] = {progress: 0, loading: false};
+            setProgress({...progress});
+            if(response){
+                let documents = project?.Documents?.filter((d) => d?.DocumentTypeID !== documentTypeID);
+                documents = documents.concat(response.Documents?.filter((d) => d?.DocumentTypeID === documentTypeID));
+                project.Documents = documents;
+                dispatch(setSelectedProject({...project}));
+            }
+            //dispatch(getProjectByProjectID(project.ID));
+        });
     }
 
-    const findDocumentType = (id) => {
+    let findDocumentType = (id) => {
         // return document type to use for label
         return documentTypes?.find((documentType) => documentType?.ID === id);
     }
 
-    const findDocumentTypeFiles = (id) => {
+    let findDocumentTypeFiles = (id) => {
         // return document list based on type
-        return project?.Documents?.filter((document) => document?.DocumentTypeID === id);
+        return [...project?.Documents?.filter((d) => d?.DocumentTypeID === id)];
+    }
+    let fileProgress = (id) => {
+        if(!progress) return {};
+        return {...progress[id]};
     }
 
     const handleDocumentDelete = (documentID) => {
         // delete document by document ID then refresh project
         dispatch(deleteDocument(documentID))
-            .then(() => {
-                dispatch(getProjectByProjectID(project.ID));
+            .then((response) => {
+                if(response){
+                    project.Documents = project?.Documents?.filter((d) => d?.ID !== documentID);
+                    dispatch(setSelectedProject({...project}));
+                }
             })
             .catch(() => {});
     }
@@ -108,8 +136,6 @@ const Documents = () => {
         }
     }, [dispatch]);
 
-    console.log('docs', project);
-
     return (
         <div className='d-flex documents'>
             <div className='documents-container'>
@@ -119,7 +145,8 @@ const Documents = () => {
                     <div className='d-flex flex-wrap documents-form'>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                short 
+                                short
+                                progress={fileProgress(1)}
                                 label={findDocumentType(1)?.Name} 
                                 files={findDocumentTypeFiles(1)}
                                 selectedInput={selectedInput}
@@ -143,7 +170,8 @@ const Documents = () => {
                             />
                         </div>
                         <div className='form-col pb-2'>
-                            <FileUpload 
+                            <FileUpload
+                                progress={fileProgress(2)}
                                 short 
                                 label={findDocumentType(2)?.Name}     
                                 files={findDocumentTypeFiles(2)}
@@ -188,7 +216,8 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                short 
+                                short
+                                progress={fileProgress(3)}
                                 files={findDocumentTypeFiles(3)}
                                 label={findDocumentType(3)?.Name}     
                                 selectedInput={selectedInput}
@@ -224,9 +253,10 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                short 
+                                short
+                                progress={fileProgress(9)}
                                 files={findDocumentTypeFiles(9)}
-                                label={findDocumentType(9)?.Name}     
+                                label={findDocumentType(9)?.Name}
                                 selectedInput={selectedInput}
                                 setSelectedInput={setSelectedInput}
                                 handleDocumentDelete={handleDocumentDelete}
@@ -259,9 +289,10 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <FileUpload 
-                                short 
+                                short
+                                progress={fileProgress(4)}
                                 files={findDocumentTypeFiles(4)} 
-                                label={findDocumentType(4)?.Name}    
+                                label={findDocumentType(4)?.Name}
                                 selectedInput={selectedInput}
                                 setSelectedInput={setSelectedInput}
                                 handleDocumentDelete={handleDocumentDelete}
