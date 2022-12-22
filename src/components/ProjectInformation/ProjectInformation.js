@@ -21,13 +21,13 @@ import MarketingBlock from "../MarketingBlock";
 import ClearChangesModal from "../ClearChangesModal";
 import { Link } from "react-router-dom";
 
-const projectStatusMap = {
-  1: "Open",
-  4: "Pending",
-  5: "In Progress",
-  2: "Completed",
-  3: "Closed",
-};
+const projectStatusMap = [
+  {"id": 1, "text":"Open"},
+  {"id": 4, "text":"Pending"},
+  {"id": 5, "text":"In Progress"},
+  {"id": 2, "text":"Completed"},
+  {"id": 3, "text":"Closed"},
+]
 
 const ProjectInformation = () => {
   const dispatch = useDispatch();
@@ -330,9 +330,9 @@ const ProjectInformation = () => {
                   })
                 }
               >
-                {Object.keys(projectStatusMap)?.map((status, index) => (
-                  <option key={index} value={status}>
-                    {projectStatusMap[status]}
+                {projectStatusMap?.map((status, index) => (
+                  <option key={index} value={status.id}>
+                    {status.text}
                   </option>
                 ))}
               </Form.Control>
