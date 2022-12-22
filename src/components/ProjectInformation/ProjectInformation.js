@@ -23,6 +23,8 @@ import { Link } from "react-router-dom";
 
 const projectStatusMap = {
   1: "Open",
+  4: "Pending",
+  5: "In Progress",
   2: "Completed",
   3: "Closed",
 };
