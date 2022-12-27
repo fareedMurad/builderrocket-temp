@@ -13,7 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { withSwal } from 'react-sweetalert2';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+import toast, { Toaster } from 'react-hot-toast';
+
 import "./ProjectInformation.scss";
 
 // components
@@ -31,9 +32,9 @@ const projectStatusMap = [
   {"id": 3, "text":"Closed"},
 ]
 
+
 const ProjectInformation = withSwal((props) => {
   const { swal } = props;
-  const { addToast } = useToasts();
   const history = useHistory();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
@@ -41,6 +42,7 @@ const ProjectInformation = withSwal((props) => {
   const subdivisions = useSelector(
     (state) => state.subdivision.subdivisions
   )?.filter((s) => s.SubdivisionName != null);
+
 
   const [showModal, setShowModal] = useState(false);
   const [showSubdivisionModal, setShowSubdivisionModal] = useState(false);
@@ -74,10 +76,10 @@ const ProjectInformation = withSwal((props) => {
     if(result.isConfirmed){
       dispatch(deleteProject(project.ID)).then(result => {
         if(result.success){
-          addToast('Project deleted successfully', { appearance: 'success' });
+          toast.success('Project deleted successfully');
           history.push('/');
         }else{
-          addToast(result.message, { appearance: 'error' });
+          toast.error(result.message);
         }
       });
     }
