@@ -6,12 +6,14 @@ import {
   createProject,
   setSelectedProjectTab,
   uploadProjectThumbnail,
-  getProjectByProjectID,
+  getProjectByProjectID, deleteProject,
 } from "../../actions/projectActions";
 import { addSubdivision } from "../../actions/subdivisionActions";
 import { useDispatch, useSelector } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+import { withSwal } from 'react-sweetalert2';
+import { ToastProvider, useToasts } from 'react-toast-notifications';
 import "./ProjectInformation.scss";
 
 // components
@@ -19,19 +21,21 @@ import FileUpload from "../FileUpload";
 import CustomerModal from "../CustomerModal";
 import MarketingBlock from "../MarketingBlock";
 import ClearChangesModal from "../ClearChangesModal";
-import { Link } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 const projectStatusMap = [
   {"id": 1, "text":"Open"},
   {"id": 4, "text":"Pending"},
   {"id": 5, "text":"In Progress"},
-  {"id": 2, "text":"Completed"},
+  {"id": 2, "text":"Complete"},
   {"id": 3, "text":"Closed"},
 ]
 
-const ProjectInformation = () => {
+const ProjectInformation = withSwal((props) => {
+  const { swal } = props;
+  const { addToast } = useToasts();
+  const history = useHistory();
   const dispatch = useDispatch();
-
   const user = useSelector((state) => state.user.user);
   const project = useSelector((state) => state.project.project);
   const subdivisions = useSelector(
@@ -55,6 +59,29 @@ const ProjectInformation = () => {
   useEffect(() => {
     setProjectInformation(project);
   }, [project]);
+
+  function handleDelete(){
+    swal.fire({
+      title: 'Confirm Delete',
+      text: 'Deleting project will also delete all its files,documents & any related info, do you want to continue?',
+      icon: 'warning',
+      confirmButtonText: 'Yes',
+      showCancelButton: true
+    }).then((result) => handleConfirmDelete(result));
+  }
+
+  function handleConfirmDelete(result){
+    if(result.isConfirmed){
+      dispatch(deleteProject(project.ID)).then(result => {
+        if(result.success){
+          addToast('Project deleted successfully', { appearance: 'success' });
+          history.push('/');
+        }else{
+          addToast(result.message, { appearance: 'error' });
+        }
+      });
+    }
+  }
 
   const onFileChange = (event) => {
     let file = event.target?.files?.[0];
@@ -489,6 +516,13 @@ const ProjectInformation = () => {
               {project?.ID ? (
                 <>
                   <Button
+                      variant=""
+                      className="btn-outline-danger align-self-end"
+                      onClick={handleDelete.bind(this)}
+                  >
+                    Delete Project
+                  </Button>
+                  <Button
                     variant="link"
                     className="cancel"
                     onClick={() => setShowModal(true)}
@@ -517,7 +551,8 @@ const ProjectInformation = () => {
 
       <MarketingBlock />
     </div>
-  );
-};
 
-export default ProjectInformation;
+  );
+});
+
+export default withSwal(ProjectInformation);

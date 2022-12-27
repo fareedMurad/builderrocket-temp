@@ -724,3 +724,26 @@ export const updateProjectProdcutNotes = (projectId, productId, notes) => dispat
                 dispatch({ type: LOGOUT });
         });
 }
+
+/**
+ * Delete project by project ID
+ * @param {String} projectID
+ *
+ */
+export const deleteProject = (projectID) => dispatch => {
+    const URL = `/Project/${projectID}`;
+
+    return api({
+        method: 'DELETE',
+        url: URL
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
