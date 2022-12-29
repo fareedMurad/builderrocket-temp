@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { withSwal } from 'react-sweetalert2';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import "./ProjectInformation.scss";
 
@@ -23,6 +23,7 @@ import CustomerModal from "../CustomerModal";
 import MarketingBlock from "../MarketingBlock";
 import ClearChangesModal from "../ClearChangesModal";
 import {Link, useHistory} from "react-router-dom";
+import Toaster from "react-hot-toast";
 
 const projectStatusMap = [
   {"id": 1, "text":"Open"},
@@ -77,7 +78,9 @@ const ProjectInformation = withSwal((props) => {
       dispatch(deleteProject(project.ID)).then(result => {
         if(result.success){
           toast.success('Project deleted successfully');
-          history.push('/');
+          setTimeout(function (){
+            history.push('/');
+          },3000);
         }else{
           toast.error(result.message);
         }
@@ -552,6 +555,31 @@ const ProjectInformation = withSwal((props) => {
       </div>
 
       <MarketingBlock />
+      <Toaster
+          position="top-center"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
+            // Define default options
+            className: '',
+            duration: 5000,
+            style: {
+              background: '#363636',
+              color: '#fff',
+            },
+
+            // Default options for specific types
+            success: {
+              duration: 3000,
+              theme: {
+                primary: 'green',
+                secondary: 'black',
+              },
+            },
+          }}
+      />
     </div>
 
   );

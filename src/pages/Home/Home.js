@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Container, Form, FormControl, Spinner } from 'react-bootstrap';
-import { getProjects, resetProject } from '../../actions/projectActions.js';
+import {deleteProject, getProjects, resetProject} from '../../actions/projectActions.js';
 import { getUserProfile } from '../../actions/userActions.js';
 import { Link } from 'react-router-dom';
+import { withSwal } from 'react-sweetalert2';
+import toast from 'react-hot-toast';
 import './Home.scss';
 
 // components 
 import ProjectCard from '../../components/ProjectCard';
 import MarketingBlock from '../../components/MarketingBlock';
 
-const Home = (props) => {
-    const { history } = props;
+const Home = withSwal((props) => {
+    const { history,swal } = props;
 
     const dispatch = useDispatch();
 
@@ -73,6 +75,29 @@ const Home = (props) => {
         return filteredProjects.filter(project => projectsStatus === 'Active' 
             ? parseInt(project?.StatusID) !== 3 
             : parseInt(project?.StatusID) === 3);
+    }
+
+    function handleDelete(projectId){
+        swal.fire({
+            title: 'Confirm Delete',
+            text: 'Deleting project will also delete all its files,documents & any related info, do you want to continue?',
+            icon: 'warning',
+            confirmButtonText: 'Yes',
+            showCancelButton: true
+        }).then((result) => handleConfirmDelete(result, projectId));
+    }
+
+    function handleConfirmDelete(result, projectId){
+        if(result.isConfirmed){
+            dispatch(deleteProject(projectId)).then(result => {
+                if(result.success){
+                    toast.success('Project deleted successfully');
+                    history.push('/');
+                }else{
+                    toast.error(result.message);
+                }
+            });
+        }
     }
     
     return (
@@ -148,6 +173,6 @@ const Home = (props) => {
             )}
         </div>
     );
-}
+});
 
-export default Home;
+export default withSwal(Home);

@@ -1,12 +1,14 @@
 import React from 'react';
 import { } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { getProjectByProjectID } from '../../actions/projectActions';
+import { getProjectByProjectID, deleteProject } from '../../actions/projectActions';
+import { withSwal } from 'react-sweetalert2';
+import toast from 'react-hot-toast';
 import Utils from '../../utils';
 import './ProjectCard.scss';
 
-const ProjectCard = (props) => {
-    const { project, history } = props;
+const ProjectCard = withSwal((props) => {
+    const { project, history, swal } = props;
 
     const dispatch = useDispatch();
     
@@ -15,6 +17,31 @@ const ProjectCard = (props) => {
             .then(() => {
                 history.push(`/project/${project?.ProjectNumber}/projectInformation`)
             });
+    }
+
+    function handleDelete(e){
+        swal.fire({
+            title: 'Confirm Delete',
+            text: 'Deleting project will also delete all its files,documents & any related info, do you want to continue?',
+            icon: 'warning',
+            confirmButtonText: 'Yes',
+            showCancelButton: true
+        }).then((result) => handleConfirmDelete(result));
+        e.stopPropagation();
+        return false;
+    }
+
+    function handleConfirmDelete(result){
+        if(result.isConfirmed){
+            dispatch(deleteProject(project.ID)).then(result => {
+                if(result.success){
+                    toast.success('Project deleted successfully');
+                    window.location.reload(true);
+                }else{
+                    toast.error(result.message);
+                }
+            });
+        }
     }
 
     return (
@@ -30,7 +57,13 @@ const ProjectCard = (props) => {
         >
             <div className='card-container'>
                 <div className='top-section'>
-                    <div className='lot-number'>{project?.ProjectNumber}</div>
+                    <div className='lot-number'>
+                        {project?.ProjectNumber}
+                        <a onClick={handleDelete.bind(this)} className={'fa-stack pointer float-right mr-3 '}>
+                            <i className="fas fa-circle fa-stack-2x text-white-50"></i>
+                            <i className="fas fa-lg fa-trash text-danger fa-stack-1x fa-inverse"></i>
+                        </a>
+                    </div>
                     <div className='project-name'>{project?.ProjectName}</div>
                 </div>
                 
@@ -61,6 +94,6 @@ const ProjectCard = (props) => {
         </div>
     )
 
-}
+});
 
-export default ProjectCard;
+export default withSwal(ProjectCard);

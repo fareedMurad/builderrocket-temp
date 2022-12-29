@@ -114,7 +114,7 @@ const ProjectHeader = () => {
                                 alt='project'
                                 height='119'
                                 width='167'
-                                src={project?.ThumbnailURL || ProjectPlaceholder}
+                                src={project?.ThumbnailURL+ `?${new Date().getTime()}`  || ProjectPlaceholder}
                             />
                         )}
                     </div>
