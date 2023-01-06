@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Container, Form, FormControl, Spinner } from 'react-bootstrap';
-import {deleteProject, getProjects, resetProject} from '../../actions/projectActions.js';
+import {getProjects, resetProject} from '../../actions/projectActions.js';
 import { getUserProfile } from '../../actions/userActions.js';
 import { Link } from 'react-router-dom';
-import { withSwal } from 'react-sweetalert2';
-import toast from 'react-hot-toast';
 import './Home.scss';
 
 // components 
 import ProjectCard from '../../components/ProjectCard';
 import MarketingBlock from '../../components/MarketingBlock';
+import Multiselect from "multiselect-react-dropdown";
+import {ProjectStatus} from "../../utils/contants";
 
-const Home = withSwal((props) => {
-    const { history,swal } = props;
+const Home = (props) => {
+    const { history } = props;
 
     const dispatch = useDispatch();
 
@@ -22,6 +22,7 @@ const Home = withSwal((props) => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState(ProjectStatus.filter((item) => item.id === 1));
     const [projectsStatus, setProjectsStatus] = useState('Active');
     const [filteredProjects, setFilteredProjects] = useState(projects);
     
@@ -72,33 +73,15 @@ const Home = withSwal((props) => {
     }
 
     const filterProjects = () => {
-        return filteredProjects.filter(project => projectsStatus === 'Active' 
-            ? parseInt(project?.StatusID) !== 3 
-            : parseInt(project?.StatusID) === 3);
+        const selected = selectedStatus.map((item) => item.id);
+        return filteredProjects.filter(project => selected.indexOf(parseInt(project?.StatusID)) > -1);
     }
 
-    function handleDelete(projectId){
-        swal.fire({
-            title: 'Confirm Delete',
-            text: 'Deleting project will also delete all its files,documents & any related info, do you want to continue?',
-            icon: 'warning',
-            confirmButtonText: 'Yes',
-            showCancelButton: true
-        }).then((result) => handleConfirmDelete(result, projectId));
+    function onSelectStatus(selectedList, selectedItem) {
+        setSelectedStatus(selectedList);
     }
 
-    function handleConfirmDelete(result, projectId){
-        if(result.isConfirmed){
-            dispatch(deleteProject(projectId)).then(result => {
-                if(result.success){
-                    toast.success('Project deleted successfully');
-                    history.push('/');
-                }else{
-                    toast.error(result.message);
-                }
-            });
-        }
-    }
+
     
     return (
         <div className='home'>
@@ -114,26 +97,17 @@ const Home = withSwal((props) => {
                     </Link>
                 </div>
                 <div className='d-flex project-tabs flex-wrap'>
-                    <div className='d-flex'> 
-                        <div>
-                            <Button     
-                                variant='link' 
-                                className={`link-btn ${projectsStatus === 'Active' ? 'active' : 'closed'}`} 
-                                onClick={() => setProjectsStatus('Active')}
-                            >
-                                Active Projects
-                            </Button>
-                        </div>
-                        <div id='splitter'>{' | '}</div>
-                        <div>
-                            <Button 
-                                variant='link' 
-                                className={`link-btn ${projectsStatus === 'Closed' ? 'active' : 'closed'}`} 
-                                onClick={() => setProjectsStatus('Closed')}
-                            >
-                                Closed Projects
-                            </Button>
-                        </div>
+                    <div className='d-flex'>
+                        <Multiselect
+                            showCheckbox={true}
+                            placeholder="Select Status"
+                            hidePlaceholder={true}
+                            options={ProjectStatus.filter((item) => item.id !== -1)} // Options to display in the dropdown
+                            selectedValues={selectedStatus} // Preselected value to persist in dropdown
+                            onSelect={onSelectStatus} // Function will trigger on select event
+                            onRemove={onSelectStatus} // Function will trigger on remove event
+                            displayValue="text" // Property name to display in the dropdown options
+                        />
                     </div>
                     <div className='d-flex search-bar'> 
                         <Form inline>
@@ -173,6 +147,6 @@ const Home = withSwal((props) => {
             )}
         </div>
     );
-});
+};
 
-export default withSwal(Home);
+export default Home;

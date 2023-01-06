@@ -24,15 +24,8 @@ import CustomerModal from "../CustomerModal";
 import MarketingBlock from "../MarketingBlock";
 import ClearChangesModal from "../ClearChangesModal";
 import {useHistory} from "react-router-dom";
+import {ProjectStatus} from "../../utils/contants";
 
-const projectStatusMap = [
-    {"id": 1, "text": "Open"},
-    {"id": 4, "text": "Pending"},
-    {"id": 5, "text": "In Progress"},
-    {"id": 2, "text": "Complete"},
-    {"id": 3, "text": "Closed"},
-    {"id": -1, "text": "Delete"},
-]
 
 
 const ProjectInformation = withSwal((props) => {
@@ -383,7 +376,7 @@ const ProjectInformation = withSwal((props) => {
                                     handleUpdateStatus(parseInt(event.target.value))
                                 }
                             >
-                                {projectStatusMap?.filter((item) => project?.ID ? true : item.id !== -1).map((status, index) => (
+                                {ProjectStatus.filter((item) => project?.ID ? true : item.id !== -1).map((status, index) => (
                                     <option key={index} value={status.id}>
                                         {status.text}
                                     </option>

@@ -71,19 +71,8 @@
     }
 
     .search-bar {
-        margin-left: 42%;
+        margin-left: auto;
 
-        @include media-breakpoint-down(md) {
-            margin-left: 25%;
-        }
-
-        @include media-breakpoint-down(sm) {
-            margin-left: 5%;
-        }
-
-        @include media-breakpoint-down(xs) {
-            margin-left: 10%;
-        }
         @include media-breakpoint-down(md){
             width: 100% !important;
             margin-left: 0;
