@@ -1,0 +1,127 @@
+@import '../../assets/styles/variables';
+
+.product-modal {
+
+    .header-container {
+        padding: 1rem 1rem;
+        background-color: #222223;
+
+        .product-modal-header {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: -0.41px;
+            line-height: 24px;
+        }
+
+        .product-details {
+            padding: 1.25rem 2.5rem;
+            color: white;
+        }
+        
+        .product-details-header {
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 19px;
+            letter-spacing: -0.32px;
+            padding-bottom: 1rem;
+        }
+
+        .product-details-text { 
+            // width: 40%;
+            font-size: 12px;
+            line-height: 17px;
+            letter-spacing: -0.27px;
+        }
+
+        img {
+            margin-right: .75rem;
+        }
+    }
+
+    .replce-product-header-container {
+        padding: 0 1rem;
+        .product-details {
+            padding: 1.25rem 2.5rem;
+            @include media-breakpoint-down(md) {
+                padding: .5rem 1rem;
+            }
+        }
+        
+        .product-details-header {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 19px;
+            letter-spacing: -0.32px;
+            padding-bottom: 1rem;
+        }
+
+        .product-details-text { 
+            // width: 40%;
+            font-size: 12px;
+            line-height: 17px;
+            letter-spacing: -0.27px;
+        }
+
+        img {
+            margin-right: .75rem;
+        }
+    }
+
+    .product-modal-body {
+        padding: 1rem 1rem;
+
+    }
+    .body-header {
+        padding: 0 3.5rem;
+        margin-top: 2rem;
+        font-size: 14px;
+        letter-spacing: -0.32px;
+        line-height: 16px;
+        color: rgba(0,0,0,0.85);
+        @include media-breakpoint-down(md) {
+            padding: .5rem 1rem;
+        }
+    }
+
+    .rooms {
+        padding: 1.5rem 1.25rem;
+    
+        .room-type-container {
+            width: 25%;
+            margin-bottom: 2rem;
+        }
+    
+        .room-type {
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 14px;
+            letter-spacing: -0.27px;
+            margin-bottom: 1rem;
+        }
+    
+        .room-name {
+            font-size: 12px;
+            line-height: 24px;
+            letter-spacing: -0.27px;
+        }
+    }
+}
+
+.inverse-form{
+    .form-control{
+        background-color: transparent;
+        color: #fff;
+
+        option{
+            background-color: #222223;
+            color: inherit;
+        }
+    }
+}
+.color{
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}

@@ -1,14 +1,14 @@
-import { 
+import {
     SET_PRODUCT,
     SET_REPLACE_PRODUCT,
     SET_PRODUCTS,
-    GET_CATEGORIES, 
-    SEARCH_PRODUCTS, 
+    GET_CATEGORIES,
+    SEARCH_PRODUCTS,
     SET_PRODUCT_DETAIL,
     SET_SELECTED_CATEGORY_ID,
     SET_SELECTED_PRODUCT_TAB,
     ROUGHT_IN_TRIM_OUT,
-    IS_FAVORITE
+    IS_FAVORITE, GET_BRANDS
 } from '../actions/types';
 
 const intialState = {
@@ -23,6 +23,12 @@ const intialState = {
 
 const productReducer = (state = intialState, action) => {
     switch (action.type) {
+        case GET_BRANDS: {
+            return {
+                ...state,
+                brands: action.payload
+            }
+        }
         case GET_CATEGORIES: {
             return {
                 ...state, 

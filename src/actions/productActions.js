@@ -1,4 +1,4 @@
-import { 
+import {
     LOGOUT,
     SET_PRODUCT,
     SET_SELECTED_PROJECT,
@@ -11,10 +11,28 @@ import {
     SET_SELECTED_CATEGORY_ID,
     SET_SELECTED_PRODUCT_TAB,
     ROUGHT_IN_TRIM_OUT,
-    IS_FAVORITE
+    IS_FAVORITE, GET_SUBDIVISIONS, GET_BRANDS
 } from '../actions/types';
 import api from '../api';
 
+export const getBrands = () => dispatch => {
+    const URL = '/Product/Brands';
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_BRANDS, payload: response.data });
+
+                return response.data;
+            }
+        })
+        .catch((error) => {
+
+        });
+}
 export const getCategories = (categoryID) => dispatch => {
     let URL = '/Product/Category';
 

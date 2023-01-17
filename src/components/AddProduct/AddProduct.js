@@ -22,6 +22,7 @@ import CustomLightbox from '../Lightbox';
 
 // components 
 import ProductModal from '../ProductModal';
+import ColorProductModal from "../ColorProductModal";
 
 const AddProduct = () => {
     const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const AddProduct = () => {
     const productCategories = useSelector(state => state.product.productCategories);
 
     const [showModal, setShowModal] = useState(false);
+    const [showColorModal, setShowColorModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [searchObject, setSearchObject] = useState({
         CategoryID: '',
@@ -91,12 +93,7 @@ const AddProduct = () => {
     const handleFilters = (filterType, filterChild, filterChildIndex) => {
         let updatedFilterChild = filterChild;
 
-        if (updatedFilterChild.IsChecked) {
-
-            updatedFilterChild.IsChecked = false;
-        } else {
-            updatedFilterChild.IsChecked = true;
-        }
+        updatedFilterChild.IsChecked = !updatedFilterChild.IsChecked;
 
         let updatedFilters = products?.CustomFilters;
 
@@ -134,6 +131,9 @@ const AddProduct = () => {
     const handleClose = () => {
       setShowModal(false);
     }
+    const handleColorClose = () => {
+        setShowColorModal(false);
+    }
 
     const Category = ({ category, type }) => {
         return (
@@ -144,7 +144,8 @@ const AddProduct = () => {
     const handleSelectedProductDetails = (productDetail) => {
         dispatch(setProductDetail(productDetail))
             .then(() => {
-                history.push(`/project/${project.ProjectNumber}/product/productDetail`)
+                setShowColorModal(true);
+                //history.push(`/project/${project.ProjectNumber}/product/productDetail`)
             });
     }
 
@@ -308,7 +309,7 @@ const AddProduct = () => {
                                         </td>
                                         <td>${product?.MSRP}</td>
                                         <td>
-                                            <i className={`far ${true ? 'fa-heart' : 'fas-heart'}`}></i>
+                                            <i className={`far fa-heart`}></i>
                                         </td>
                                         <td>
                                             <Button
@@ -340,6 +341,11 @@ const AddProduct = () => {
                 show={showModal} 
                 handleClose={handleClose} 
                 handleCloseModal={() => setShowModal(false)} 
+            />
+            <ColorProductModal
+                show={showColorModal}
+                handleClose={handleColorClose}
+                handleCloseModal={() => setShowColorModal(false)}
             />
         </div>
     );
