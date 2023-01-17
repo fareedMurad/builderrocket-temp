@@ -197,7 +197,7 @@ const ColorProductModal = (props) => {
                                 <a className='btn primary-gray-btn mr-5' onClick={handleFindProduct}>Find Paint</a>
                             </div>
                         </div>
-                        <div className={'col-6' + (selectedPaint ? '' : 'd-flex justify-content-center align-items-center')}>
+                        <div className={'col-6' + (selectedPaint ? '' : ' d-flex justify-content-center align-items-center')}>
                             {selectedPaint ?
                                 <div className='row'>
                                 <div className='col-sm-3 pt-1'>
