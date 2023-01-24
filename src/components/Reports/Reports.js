@@ -169,7 +169,10 @@ const Reports = (props) => {
                                                     value: a.ID,
                                                 }
                                             })] : []}
-                                        selectedValues={reportFilter}
+                                        selectedValues={reportFilter?.length === reportByCategory?.Groups?.length ? [{
+                                            name: "Select All",
+                                            value: "select_all"
+                                        }, ...reportFilter] : reportFilter}
                                         onSelect={(arr, current) => {
                                             if (current.value === 'select_all') {
                                                 dispatch(setReportFilter(
@@ -189,8 +192,12 @@ const Reports = (props) => {
                                             } else
                                                 dispatch(setReportFilter(arr))
                                         }}
-                                        onRemove={(arr) => {
-                                            dispatch(setReportFilter(arr.filter(p => p.value !== 'select_all')))
+                                        onRemove={(arr, target) => {
+                                            let categories = arr.filter(p => p.value !== 'select_all');
+                                            if(target.value === 'select_all'){
+                                                categories = [];
+                                            }
+                                            dispatch(setReportFilter(categories))
                                         }}
                                         displayValue="name"
                                         placeholder="Group Filter"

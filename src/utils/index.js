@@ -26,6 +26,7 @@ const formatDate = (dateString) => {
 }
 
 const textEllipsis = (str, maxLength, { side = "end", ellipsis = "..." } = {}) => {
+    if(!str) return '';
     if (str.length > maxLength) {
       switch (side) {
         case "start":
