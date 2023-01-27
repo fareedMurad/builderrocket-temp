@@ -1,5 +1,9 @@
 @import '../../assets/styles/variables';
-
+@media print {
+    .table-responsive{
+        overflow: unset !important;
+    }
+}
 .products {
 
     .report-header {
@@ -311,5 +315,7 @@
     .search-wrapper.searchWrapper .chip{
         display: none;
     } 
-
+    .desc-col{
+        max-width: 100px;
+    }
 }

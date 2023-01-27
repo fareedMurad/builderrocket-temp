@@ -132,6 +132,10 @@ const ProjectHeader = () => {
                             {project?.StreetAddress1}
                         </div>
 
+                        <div className='d-flex'>
+                            {project?.City}{project?.City ? "," : ""} {project?.State} {project?.Zip}
+                        </div>
+
                         <div className='mt-1 d-flex'>
                             <Button
                                 variant='link'

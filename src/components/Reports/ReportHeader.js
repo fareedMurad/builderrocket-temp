@@ -52,6 +52,9 @@ const ReportHeader = ({ hideTotals }) => {
                         <div className='d-flex'>
                             {report?.StreetAddress1}
                         </div>
+                        <div className='d-flex'>
+                            {report?.City}{report?.City ? "," : ""} {report?.State} {report?.Zip}
+                        </div>
                     </div>
                 </div>
 
@@ -98,6 +101,9 @@ const ReportHeader = ({ hideTotals }) => {
                         {!hideTotals &&
                             " Project Total: $0.00 Margin: $0.00"
                         }
+                    </div>
+                    <div className='d-flex total justify-content-end text'>
+                        Line Totals: ${report?.Items?.map(a => a.LineTotal).reduce((a, b) => a + b, 0)}
                     </div>
                 </div>
             </div>

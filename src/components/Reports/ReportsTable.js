@@ -36,12 +36,12 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                     <th>Model</th>
                     <th>ProductName</th>
                     <th>Color/Finish </th>
-                    <th>Description</th>
-                    {!hideTotals && <th>Vendor</th>}
+                    <th className={'desc-col'}>Description</th>
+                    <th>Vendor</th>
                     <th>UOM</th>
                     <th>Total Qty </th>
-                    {!hideTotals && <th>Price</th>}
-                    {!hideTotals && <th>LineTotal</th>}
+                    <th>Price</th>
+                    <th>Line Total</th>
                 </tr>
             </thead>
         )
@@ -63,11 +63,11 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                 <td>{item?.ProductName}</td>
                 <td>{item?.ColorFinish}</td>
                 <td>{Utils.textEllipsis(item?.ShortDescription, 150)}</td>
-                {!hideTotals && <td>{item?.VendorName}</td>}
+                <td>{item?.VendorName}</td>
                 <td>{item?.UnitOfMeasure}</td>
                 <td>{item?.Quantity}</td>
-                {!hideTotals && <td>{item?.Price}</td>}
-                {!hideTotals && <td>{item?.LineTotal}</td>}
+                <td>{item?.Price}</td>
+                <td>{item?.LineTotal}</td>
             </tr>
         )
     }
