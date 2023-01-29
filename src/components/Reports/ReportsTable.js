@@ -25,9 +25,10 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     }, [dispatch, report, selectedRoom]);
 
 
-    const renderHeader = () => {
+    const renderHeader = (printOnly = false, subHeader = null) => {
         return (
-            <thead>
+            <thead className={printOnly ? "to-print-only" : ""}>
+                {subHeader ? subHeader : null}
                 <tr>
                     <th width="100">Image</th>
                     <th>
@@ -39,9 +40,9 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                     <th className={'desc-col'}>Description</th>
                     <th>Vendor</th>
                     <th>UOM</th>
-                    <th>Total Qty </th>
+                    <th style={{width: '80px'}}>Total Qty </th>
                     <th>Price</th>
-                    <th>Line Total</th>
+                    <th style={{width: '80px'}}>Line Total</th>
                 </tr>
             </thead>
         )
@@ -49,7 +50,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
     const renderTableBody = (item, index, expend) => {
         return (
-            <tr key={index} className={!expend ? "" : "hide"}>
+            <tr key={index} className={(!expend ? "" : "hide") + " to-expand"}>
                 <td style={{ paddingRight: '40px' }}>
                     <img
                         width='50'
@@ -89,6 +90,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
     const renderTableByLayout = () => {
         let table = null
+
         switch (layout?.value) {
             case 'list' || 'vendor': {
                 table = (
@@ -102,7 +104,11 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             }
                 break;
             case 'category': {
-                table =  reportFilter?.map?.(item => <TableRow {...{ renderTableBody, item }} />)
+                table = (
+                    <>
+                        {reportFilter?.map?.(item => <TableRow {...{ renderTableBody, item, renderHeader }} />)}
+                    </>
+                )
             }
                 break;
             case 'room': {
@@ -140,7 +146,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
 export default ReportsTable;
 
-export const TableRow = ({ item, renderTableBody }) => {
+export const TableRow = ({ item, renderTableBody, renderHeader }) => {
 
 
     const [expend, setExpend] = useState(false);
@@ -148,12 +154,14 @@ export const TableRow = ({ item, renderTableBody }) => {
 
     return (
         <>
-            <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
-                <td colSpan={10} className="contractor-type-name bg-dark">{item.Name}</td>
-                <td className="contractor-type-name justify-content-end h-full bg-dark">
-                    <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
-                </td>
-            </tr>
+            {renderHeader(false, <>
+                <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
+                    <th colSpan={10} className="contractor-type-name bg-dark">{item.Name}</th>
+                    <th className="contractor-type-name justify-content-end h-full bg-dark">
+                        <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
+                    </th>
+                </tr>
+            </>)}
             {item?.Items?.length ? item?.Items?.map((item, index) => renderTableBody(item, index, expend))
                 : null
             }
