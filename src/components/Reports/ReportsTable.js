@@ -106,11 +106,15 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             case 'category': {
                 table = (
                     <>
-                        {reportFilter?.map?.(item => <TableRow {...{ renderTableBody, item, renderHeader }} />)}
+                        {reportFilter?.map?.(item =>
+                        <Table>
+                            <TableRow {...{ renderTableBody, item, renderHeader }} />
+                        </Table>
+                        )}
                     </>
                 )
             }
-                break;
+            return table;
             case 'room': {
                 table = renderGroup(reportByRoom)
             }
