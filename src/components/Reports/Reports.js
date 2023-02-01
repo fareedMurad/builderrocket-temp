@@ -89,7 +89,7 @@ const Reports = (props) => {
                 })
                 .catch(() => setIsLoading(false));
         }
-    }, [dispatch, layout]);
+    }, [dispatch, layout, reportByCategory]);
 
     const handleSelectedRoom = useCallback((roomID) => {
         const selectedRoomObj = report?.ProjectRooms?.find((room) => room.ID === parseInt(roomID));
@@ -147,7 +147,7 @@ const Reports = (props) => {
                             />
                         </div>
                         {
-                            layout?.value == "category" &&
+                            layout?.value === "category" &&
                             <div className="d-flex align-items-center">
                                 <div className="layout-select">
                                     <span>
@@ -169,10 +169,12 @@ const Reports = (props) => {
                                                     value: a.ID,
                                                 }
                                             })] : []}
-                                        selectedValues={reportFilter?.length === reportByCategory?.Groups?.length ? [{
-                                            name: "Select All",
-                                            value: "select_all"
-                                        }, ...reportFilter] : reportFilter}
+                                        selectedValues={!reportFilter ? []: (
+                                            reportFilter?.length === reportByCategory?.Groups?.length ? [{
+                                                name: "Select All",
+                                                value: "select_all"
+                                            }, ...reportFilter] : reportFilter
+                                        )}
                                         onSelect={(arr, current) => {
                                             if (current.value === 'select_all') {
                                                 dispatch(setReportFilter(
