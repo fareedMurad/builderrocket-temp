@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
-import { setSelectedRoom } from '../../actions/roomActions';
-import { getReportFilter } from '../../actions/reportActions';
-import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
+import React, {useEffect, useState} from 'react';
+import {Table} from 'react-bootstrap';
+import {setSelectedRoom} from '../../actions/roomActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {isEmpty} from 'lodash';
 import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
 import Utils from '../../utils'
 
 import './Reports.scss';
 
 
-const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
+const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
     const dispatch = useDispatch();
     const report = useSelector(state => state.project.report);
     const reportByRoom = useSelector(state => state.project.reportByRoom);
@@ -28,22 +27,22 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     const renderHeader = (printOnly = false, subHeader = null) => {
         return (
             <thead className={printOnly ? "to-print-only" : ""}>
-                {subHeader ? subHeader : null}
-                <tr>
-                    <th width="100">Image</th>
-                    <th>
-                        Brand
-                    </th>
-                    <th>Model</th>
-                    <th>ProductName</th>
-                    <th>Color/Finish </th>
-                    <th className={'desc-col'}>Description</th>
-                    <th>Vendor</th>
-                    <th>UOM</th>
-                    <th style={{width: '80px'}}>Total Qty </th>
-                    <th>Price</th>
-                    <th style={{width: '80px'}}>Line Total</th>
-                </tr>
+            {subHeader ? subHeader : null}
+            <tr>
+                <th width="100">Image</th>
+                <th>
+                    Brand
+                </th>
+                <th>Model</th>
+                <th>ProductName</th>
+                <th>Color/Finish</th>
+                <th className={'desc-col'}>Description</th>
+                <th>Vendor</th>
+                <th>UOM</th>
+                <th style={{width: '80px'}}>Total Qty</th>
+                <th>Price</th>
+                <th style={{width: '80px'}}>Line Total</th>
+            </tr>
             </thead>
         )
     }
@@ -51,7 +50,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
     const renderTableBody = (item, index, expend) => {
         return (
             <tr key={index} className={(!expend ? "" : "hide") + " to-expand"}>
-                <td style={{ paddingRight: '40px' }}>
+                <td style={{paddingRight: '40px'}}>
                     <img
                         width='50'
                         height='50'
@@ -78,11 +77,11 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             <>
                 {renderHeader()}
                 <tbody>
-                    {data?.Groups?.length && data?.Groups?.map((item, index) => {
-                        return (
-                            item ? <TableRow {...{ renderTableBody, item }} /> : null
-                        )
-                    })}
+                {data?.Groups?.length && data?.Groups?.map((item, index) => {
+                    return (
+                        item ? <TableRow {...{renderTableBody, item}} /> : null
+                    )
+                })}
                 </tbody>
             </>
         )
@@ -92,32 +91,32 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         let table = null
 
         switch (layout?.value) {
-            case 'list' || 'vendor': {
+            case 'list' || 'vendor':
                 table = (
                     <>
                         {renderHeader()}
                         <tbody>
-                            {report?.Items?.map((item, index) => renderTableBody(item, index))}
+                        {report?.Items?.map((item, index) => renderTableBody(item, index))}
                         </tbody>
                     </>
                 )
-            }
+
                 break;
-            case 'category': {
+            case 'category':
                 table = (
                     <>
                         {reportFilter?.map?.(item =>
-                        <Table>
-                            <TableRow {...{ renderTableBody, item, renderHeader }} />
-                        </Table>
+                            <Table>
+                                <TableRow {...{renderTableBody, item, renderHeader}} />
+                            </Table>
                         )}
                     </>
                 )
-            }
-            return table;
-            case 'room': {
+
+                return table;
+            case 'room':
                 table = renderGroup(reportByRoom)
-            }
+
                 break;
 
             default: {
@@ -125,7 +124,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                     <>
                         {renderHeader()}
                         <tbody>
-                            {report?.Items?.map((item, index) => renderTableBody(item, index))}
+                        {report?.Items?.map((item, index) => renderTableBody(item, index))}
                         </tbody>
                     </>
                 )
@@ -150,22 +149,24 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
 export default ReportsTable;
 
-export const TableRow = ({ item, renderTableBody, renderHeader }) => {
+export const TableRow = ({item, renderTableBody, renderHeader}) => {
 
 
     const [expend, setExpend] = useState(false);
-
+    const groupRow = (
+        <>
+            <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
+                <th colSpan={10} className="contractor-type-name bg-dark">{item.Name}</th>
+                <th className="contractor-type-name justify-content-end h-full bg-dark">
+                    <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
+                </th>
+            </tr>
+        </>
+    )
 
     return (
         <>
-            {renderHeader(false, <>
-                <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
-                    <th colSpan={10} className="contractor-type-name bg-dark">{item.Name}</th>
-                    <th className="contractor-type-name justify-content-end h-full bg-dark">
-                        <i className={`far ${expend ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i>
-                    </th>
-                </tr>
-            </>)}
+            {renderHeader ? renderHeader(false, groupRow) : groupRow}
             {item?.Items?.length ? item?.Items?.map((item, index) => renderTableBody(item, index, expend))
                 : null
             }
