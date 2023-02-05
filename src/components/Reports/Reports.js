@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import { getReportByProjectID, getCategorizedReportByProjectID, getRoomReportByProjectID, getVendorReportByProjectID } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
@@ -39,6 +39,7 @@ const Reports = (props) => {
     const reportFilter = useSelector(state => state.reportFilter.reportFilters);
 
     const [hideTotals, setHideTotals] = useState(false)
+    const [firstCategoryLoad, setFirstCategoryLoad] = useState(true);
     const [hideReportsHeader, setHideReportsHeader] = useState(true);
     useEffect(() => {
         if (isEmpty(selectedRoom))
@@ -50,7 +51,13 @@ const Reports = (props) => {
         // }
     }, [dispatch, report, selectedRoom]);
 
-
+    useEffect(() => {
+        if (isEmpty(reportByCategory))
+        {
+            dispatch(getCategorizedReportByProjectID(project?.ID));
+            console.log();
+        }
+    }, [dispatch, report, reportByCategory]);
 
     useEffect(() => {
         setIsLoading(true);
@@ -68,9 +75,10 @@ const Reports = (props) => {
                     name: a.Name,
                     value: a.ID
                 }
-            })) || [])
+            })) || []);
             dispatch(getCategorizedReportByProjectID(project?.ID))
                 .then(() => {
+
                     setIsLoading(false);
                 })
                 .catch(() => setIsLoading(false));
@@ -89,7 +97,7 @@ const Reports = (props) => {
                 })
                 .catch(() => setIsLoading(false));
         }
-    }, [dispatch, layout, reportByCategory]);
+    }, [dispatch, layout]);
 
     const handleSelectedRoom = useCallback((roomID) => {
         const selectedRoomObj = report?.ProjectRooms?.find((room) => room.ID === parseInt(roomID));
@@ -177,6 +185,7 @@ const Reports = (props) => {
                                         )}
                                         onSelect={(arr, current) => {
                                             if (current.value === 'select_all') {
+
                                                 dispatch(setReportFilter(
                                                     reportByCategory?.Groups?.length > 0 ? [
                                                         {
@@ -189,13 +198,13 @@ const Reports = (props) => {
                                                                 name: a.Name,
                                                                 value: a.ID,
                                                             }
-                                                        })] : []
+                                                        })].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0) : []
                                                 ))
                                             } else
-                                                dispatch(setReportFilter(arr))
+                                                dispatch(setReportFilter(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)))
                                         }}
                                         onRemove={(arr, target) => {
-                                            let categories = arr.filter(p => p.value !== 'select_all');
+                                            let categories = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                                             if(target.value === 'select_all'){
                                                 categories = [];
                                             }
