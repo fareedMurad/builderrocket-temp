@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import { getReportByProjectID, getCategorizedReportByProjectID, getRoomReportByProjectID, getVendorReportByProjectID } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
+import { setRoomFilter } from '../../actions/reportActions';
 import { setReportFilter } from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
@@ -37,6 +38,7 @@ const Reports = (props) => {
     const [layout, setLayout] = useState(LayoutOptions[0]);
     // const [groupLayout, setGroupLayout] = useState(null)
     const reportFilter = useSelector(state => state.reportFilter.reportFilters);
+    const roomFilter = useSelector(state => state.reportFilter.roomFilters);
 
     const [hideTotals, setHideTotals] = useState(false)
     const [firstCategoryLoad, setFirstCategoryLoad] = useState(true);
@@ -55,7 +57,6 @@ const Reports = (props) => {
         if (isEmpty(reportByCategory))
         {
             dispatch(getCategorizedReportByProjectID(project?.ID));
-            console.log();
         }
     }, [dispatch, report, reportByCategory]);
 
@@ -70,6 +71,13 @@ const Reports = (props) => {
         }
         else if (layout?.value === "category") {
             dispatch(setReportFilter(reportByCategory?.Groups?.map(a => {
+                return {
+                    ...a,
+                    name: a.Name,
+                    value: a.ID
+                }
+            })) || []);
+            dispatch(setRoomFilter(reportByCategory?.Rooms?.map(a => {
                 return {
                     ...a,
                     name: a.Name,
@@ -122,6 +130,7 @@ const Reports = (props) => {
     const downloadReportURL = btoa(JSON.stringify({
         projectID: project.ID,
         groupIDs: reportFilter?.map?.(r => r.ID),
+        roomIDs: roomFilter?.map?.(r => r.ID),
         filter: layout.value
     }));
 
@@ -212,6 +221,66 @@ const Reports = (props) => {
                                         }}
                                         displayValue="name"
                                         placeholder="Group Filter"
+                                        showCheckbox={true}
+                                        keepSearchTerm={false}
+                                        hidePlaceholder={true}
+                                    />
+                                </div>
+                                <div className="layout-select">
+                                    <span>
+                                    {roomFilter?.length ? <span className="custom-placeholder">
+                                        {roomFilter?.filter(p => p.value !== 'select_all')?.length} of {reportByCategory?.Rooms?.length} selected
+                                    </span> : null}
+                                    </span>
+                                    <Multiselect
+                                        options={
+                                            reportByCategory?.Rooms?.length > 0 ? [
+                                                {
+                                                    name: "Select All",
+                                                    value: "select_all"
+                                                },
+                                                ...reportByCategory?.Rooms?.map(a => {
+                                                    return {
+                                                        ...a,
+                                                        name: a.Name,
+                                                        value: a.ID,
+                                                    }
+                                                })] : []}
+                                        selectedValues={!roomFilter ? []: (
+                                            roomFilter?.length === reportByCategory?.Rooms?.length ? [{
+                                                name: "Select All",
+                                                value: "select_all"
+                                            }, ...roomFilter] : roomFilter
+                                        )}
+                                        onSelect={(arr, current) => {
+                                            if (current.value === 'select_all') {
+
+                                                dispatch(setRoomFilter(
+                                                    reportByCategory?.Rooms?.length > 0 ? [
+                                                        {
+                                                            name: "Select All",
+                                                            value: "select_all"
+                                                        },
+                                                        ...reportByCategory?.Rooms?.map(a => {
+                                                            return {
+                                                                ...a,
+                                                                name: a.Name,
+                                                                value: a.ID,
+                                                            }
+                                                        })].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0) : []
+                                                ))
+                                            } else
+                                                dispatch(setRoomFilter(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)))
+                                        }}
+                                        onRemove={(arr, target) => {
+                                            let rooms = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                            if(target.value === 'select_all'){
+                                                rooms = [];
+                                            }
+                                            dispatch(setRoomFilter(rooms))
+                                        }}
+                                        displayValue="name"
+                                        placeholder="Room Filter"
                                         showCheckbox={true}
                                         keepSearchTerm={false}
                                         hidePlaceholder={true}

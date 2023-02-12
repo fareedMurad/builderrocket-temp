@@ -1,11 +1,12 @@
 
 import {
     SET_REPORTS_FILTR,
-    GET_REPORTS_FILTER
+    GET_REPORTS_FILTER, SET_ROOMS_FILTR, GET_ROOMS_FILTER
 } from "../actions/types";
 
 const intialState = {
-     reportFilters: []
+     reportFilters: [],
+     roomFilters: []
 }
 
 const reportReducer = (state = intialState, action) => {
@@ -20,6 +21,18 @@ const reportReducer = (state = intialState, action) => {
             return {
                 ...state,
                 reportFilters: action.payload
+            }
+        }
+        case SET_ROOMS_FILTR: {
+            return {
+                ...state,
+                roomFilters: action.payload
+            }
+        }
+        case GET_ROOMS_FILTER: {
+            return {
+                ...state,
+                roomFilters: action.payload
             }
         }
         default:

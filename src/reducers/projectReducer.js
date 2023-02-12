@@ -47,6 +47,7 @@ const intialState = {
         ThumbnailURL: '',
         UserID: '',
         Zip: '',
+        Rooms: []
     },
     projects: [],
     selectedProjectTab: 'projectInformation',

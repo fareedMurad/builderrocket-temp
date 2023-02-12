@@ -17,6 +17,7 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
     const reportsByVendor = useSelector(state => state.project.reportsByVendor);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
     const reportFilter = useSelector(state => state.reportFilter.reportFilters);
+    const roomFilter = useSelector(state => state.reportFilter.roomFilters);
 
     useEffect(() => {
         if (isEmpty(selectedRoom))
@@ -79,7 +80,7 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
                 <tbody>
                 {data?.Groups?.length && data?.Groups?.map((item, index) => {
                     return (
-                        item ? <TableRow {...{renderTableBody, item}} /> : null
+                        item ? <TableRow {...{renderTableBody, item, roomFilter, allRooms: null}} /> : null
                     )
                 })}
                 </tbody>
@@ -105,9 +106,15 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
             case 'category':
                 table = (
                     <>
-                        {reportFilter?.map?.(item =>
+                        {reportFilter?.filter((item) => {
+                            let rooms = roomFilter?.filter(r => r.value !== 'select_all');
+                            if(rooms.length === reportByCategory.Rooms.length){
+                                return true;
+                            }
+                            return item.Items?.find(i => i.Rooms?.find(r => rooms.find(pr => pr.ID === r)));
+                        }).map?.(item =>
                             <Table>
-                                <TableRow {...{renderTableBody, item, renderHeader}} />
+                                <TableRow {...{renderTableBody, item, renderHeader, roomFilter, allRooms: reportByCategory?.Rooms}} />
                             </Table>
                         )}
                     </>
@@ -149,7 +156,7 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
 
 export default ReportsTable;
 
-export const TableRow = ({item, renderTableBody, renderHeader}) => {
+export const TableRow = ({item, renderTableBody, renderHeader, roomFilter, allRooms}) => {
 
 
     const [expend, setExpend] = useState(false);
@@ -167,7 +174,13 @@ export const TableRow = ({item, renderTableBody, renderHeader}) => {
     return (
         <>
             {renderHeader ? renderHeader(false, groupRow) : groupRow}
-            {item?.Items?.length ? item?.Items?.map((item, index) => renderTableBody(item, index, expend))
+            {item?.Items?.length ? item?.Items?.filter((item) => {
+                    let rooms = roomFilter?.filter(r => r.value !== 'select_all');
+                    if(!rooms || !allRooms || rooms.length === allRooms.length){
+                        return true;
+                    }
+                    return item.Rooms?.find(r => rooms.find(pr => pr.ID === r));
+                }).map((item, index) => renderTableBody(item, index, expend))
                 : null
             }
         </>

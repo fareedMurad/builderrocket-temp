@@ -69,5 +69,7 @@ export const IS_FAVORITE = "IS_FAVORITE";
 //report
 export const SET_REPORTS_FILTR = 'SET_REPORTS_FILTR';
 export const GET_REPORTS_FILTER = 'GET_REPORTS_FILTER';
+export const SET_ROOMS_FILTR = 'SET_ROOMS_FILTR';
+export const GET_ROOMS_FILTER = 'GET_ROOMS_FILTER';
 
 
