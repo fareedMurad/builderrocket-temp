@@ -17,7 +17,7 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
     const reportsByVendor = useSelector(state => state.project.reportsByVendor);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
     const reportFilter = useSelector(state => state.reportFilter.reportFilters);
-    const roomFilter = useSelector(state => state.reportFilter.roomFilters);
+    const localFilters = useSelector(state => state.reportFilter);
 
     useEffect(() => {
         if (isEmpty(selectedRoom))
@@ -74,13 +74,14 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
     }
 
     const renderGroup = (data, item) => {
+
         return (
             <>
                 {renderHeader()}
                 <tbody>
                 {data?.Groups?.length && data?.Groups?.map((item, index) => {
                     return (
-                        item ? <TableRow {...{renderTableBody, item, roomFilter, allRooms: null}} /> : null
+                        item ? <TableRow {...{renderTableBody, item, allRooms: null, localFilters}} /> : null
                     )
                 })}
                 </tbody>
@@ -93,11 +94,12 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
 
         switch (layout?.value) {
             case 'list' || 'vendor':
+                const items = FilterItems({localFilters, items: report?.Items});
                 table = (
                     <>
                         {renderHeader()}
                         <tbody>
-                        {report?.Items?.map((item, index) => renderTableBody(item, index))}
+                        {items?.map((item, index) => renderTableBody(item, index))}
                         </tbody>
                     </>
                 )
@@ -107,15 +109,25 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
                 table = (
                     <>
                         {reportFilter?.filter((item) => {
-                            let rooms = roomFilter?.filter(r => r.value !== 'select_all');
-                            if(rooms.length === reportByCategory.Rooms.length){
+                            let rooms = localFilters.roomFilters?.filter(r => r.value !== 'select_all');
+                            if (rooms.length === reportByCategory.Rooms.length) {
                                 return true;
                             }
-                            return item.Items?.find(i => i.Rooms?.find(r => rooms.find(pr => pr.ID === r)));
-                        }).map?.(item =>
-                            <Table>
-                                <TableRow {...{renderTableBody, item, renderHeader, roomFilter, allRooms: reportByCategory?.Rooms}} />
-                            </Table>
+                            const items = FilterItems({localFilters, items: item?.Items});
+                            return items?.length > 0 && items?.find(i => i.Rooms?.find(r => rooms.find(pr => pr.ID === r)));
+                        }).map?.(item => {
+                            const items = FilterItems({localFilters, items: item?.Items});
+                            if(!items || items.length === 0) return null;
+                             return   <Table>
+                                    <TableRow {...{
+                                        renderTableBody,
+                                        item,
+                                        renderHeader,
+                                        allRooms: reportByCategory?.Rooms,
+                                        localFilters
+                                    }} />
+                                </Table>
+                            }
                         )}
                     </>
                 )
@@ -123,22 +135,24 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
                 return table;
             case 'room':
                 table = renderGroup(reportByRoom)
-
                 break;
 
             default: {
+                const items = FilterItems({localFilters, items: report?.Items});
                 return (
                     <>
                         {renderHeader()}
                         <tbody>
-                        {report?.Items?.map((item, index) => renderTableBody(item, index))}
+                        {items?.map((item, index) => renderTableBody(item, index))}
                         </tbody>
                     </>
                 )
             }
         }
 
-
+        if(!table) {
+            return null;
+        }
         return (
             <Table responsive>
                 {table}
@@ -156,10 +170,14 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
 
 export default ReportsTable;
 
-export const TableRow = ({item, renderTableBody, renderHeader, roomFilter, allRooms}) => {
+export const TableRow = ({item, renderTableBody, renderHeader, allRooms, localFilters}) => {
 
 
     const [expend, setExpend] = useState(false);
+    const items = FilterItems({localFilters, items: item?.Items});
+    if(!items || items.length === 0){
+        return null;
+    }
     const groupRow = (
         <>
             <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
@@ -171,12 +189,13 @@ export const TableRow = ({item, renderTableBody, renderHeader, roomFilter, allRo
         </>
     )
 
+
     return (
         <>
             {renderHeader ? renderHeader(false, groupRow) : groupRow}
-            {item?.Items?.length ? item?.Items?.filter((item) => {
-                    let rooms = roomFilter?.filter(r => r.value !== 'select_all');
-                    if(!rooms || !allRooms || rooms.length === allRooms.length){
+            {items?.length > 0 ? items?.filter((item) => {
+                    let rooms = localFilters.roomFilters?.filter(r => r.value !== 'select_all');
+                    if (!rooms || !allRooms || rooms.length === allRooms.length) {
                         return true;
                     }
                     return item.Rooms?.find(r => rooms.find(pr => pr.ID === r));
@@ -185,4 +204,10 @@ export const TableRow = ({item, renderTableBody, renderHeader, roomFilter, allRo
             }
         </>
     )
+}
+
+export const FilterItems = ({localFilters, items}) => {
+    return items?.filter(value => {
+        return localFilters.isCustomer ? value.IsApproved : true
+    })
 }

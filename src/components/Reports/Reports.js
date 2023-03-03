@@ -2,8 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import { getReportByProjectID, getCategorizedReportByProjectID, getRoomReportByProjectID, getVendorReportByProjectID } from '../../actions/projectActions';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { setSelectedRoom } from '../../actions/roomActions';
-import { setRoomFilter } from '../../actions/reportActions';
-import { setReportFilter } from '../../actions/reportActions';
+import { setRoomFilter, setReportFilter, setCustomerFilter } from '../../actions/reportActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import ReportsHeader from './ReportHeader';
@@ -39,6 +38,7 @@ const Reports = (props) => {
     // const [groupLayout, setGroupLayout] = useState(null)
     const reportFilter = useSelector(state => state.reportFilter.reportFilters);
     const roomFilter = useSelector(state => state.reportFilter.roomFilters);
+    const localFilters = useSelector(state => state.reportFilter);
 
     const [hideTotals, setHideTotals] = useState(false)
     const [firstCategoryLoad, setFirstCategoryLoad] = useState(true);
@@ -127,6 +127,10 @@ const Reports = (props) => {
         }
     }
 
+    const onChangeIsCustomer = e => {
+        dispatch(setCustomerFilter(!localFilters.isCustomer));
+    }
+
     const downloadReportURL = btoa(JSON.stringify({
         projectID: project.ID,
         groupIDs: reportFilter?.map?.(r => r.ID),
@@ -145,8 +149,9 @@ const Reports = (props) => {
                     <div className="mx-5 my-3">
                         <Form>
                             <Form.Check
-                                value={hideTotals}
-                                onChange={onChangeHideTotals}
+                                value={true}
+                                checked={localFilters.isCustomer}
+                                onChange={onChangeIsCustomer}
                                 type="switch"
                                 id="custom-switch"
                                 label="Builder/Customer"
