@@ -25,11 +25,11 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
     }, [dispatch, report, selectedRoom]);
 
 
-    const renderHeader = (printOnly = false, subHeader = null) => {
+    const renderHeader = (printOnly = false, subHeader = null, isEmpty = false) => {
         return (
             <thead className={printOnly ? "to-print-only" : ""}>
             {subHeader ? subHeader : null}
-            <tr>
+            { isEmpty ? null : <tr>
                 <th width="100">Image</th>
                 <th>
                     Brand
@@ -43,7 +43,7 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
                 <th style={{width: '80px'}}>Total Qty</th>
                 <th>Price</th>
                 <th style={{width: '80px'}}>Line Total</th>
-            </tr>
+            </tr>}
             </thead>
         )
     }
@@ -117,7 +117,7 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
                             return items?.length > 0 && items?.find(i => i.Rooms?.find(r => rooms.find(pr => pr.ID === r)));
                         }).map?.(item => {
                             const items = FilterItems({localFilters, items: item?.Items});
-                            if(!items || items.length === 0) return null;
+                            if((!items || items.length === 0) && !localFilters.showEmptyData) return null;
                              return   <Table>
                                     <TableRow {...{
                                         renderTableBody,
@@ -175,7 +175,7 @@ export const TableRow = ({item, renderTableBody, renderHeader, allRooms, localFi
 
     const [expend, setExpend] = useState(false);
     const items = FilterItems({localFilters, items: item?.Items});
-    if(!items || items.length === 0){
+    if((!items || items.length === 0) && !localFilters.showEmptyData){
         return null;
     }
     const groupRow = (
@@ -208,6 +208,7 @@ export const TableRow = ({item, renderTableBody, renderHeader, allRooms, localFi
 
 export const FilterItems = ({localFilters, items}) => {
     return items?.filter(value => {
-        return localFilters.isCustomer ? value.IsApproved : true
+        return (localFilters.isCustomer ? value.IsApproved : true) &&
+            (localFilters.roughInTrimOut !== null ? value.RoughInTrimOutEnum === localFilters.roughInTrimOut : true)
     })
 }
