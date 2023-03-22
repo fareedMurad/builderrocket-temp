@@ -208,7 +208,7 @@ export const TableRow = ({item, renderTableBody, renderHeader, allRooms, localFi
 
 export const FilterItems = ({localFilters, items}) => {
     return items?.filter(value => {
-        return (localFilters.isCustomer ? value.IsApproved : true) &&
+        return (localFilters.isCustomer ? value.RequiresApproval : true) &&
             (localFilters.roughInTrimOut !== null ? value.RoughInTrimOutEnum === localFilters.roughInTrimOut : true)
     })
 }
