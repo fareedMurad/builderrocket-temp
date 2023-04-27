@@ -384,6 +384,9 @@ const Products = (props) => {
                         <div className='subtext'>The products assinged to each room are displayed below.</div>
                     </div>
                     <div>
+                        <span className='total float-left mt-3'>
+                            Total: $0.00
+                        </span>
                         <Button variant='link' className='link-btn'>
                             <i className='fas fa-download'></i>
                             Download Report
@@ -434,9 +437,6 @@ const Products = (props) => {
                                 + Add Products
                             </Button>
                         </div>
-                    </div>
-                    <div className='total'>
-                        Total: $0.00
                     </div>
                 </div>
 
