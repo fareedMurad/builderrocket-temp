@@ -445,7 +445,6 @@ const Products = (props) => {
                 {saveNotesModal()}
 
                 <div className='products-table'>
-                    <div className='table-title'>Title</div>
                     <Table responsive>
                         <thead>
                             <tr>
