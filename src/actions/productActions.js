@@ -11,7 +11,7 @@ import {
     SET_SELECTED_CATEGORY_ID,
     SET_SELECTED_PRODUCT_TAB,
     ROUGHT_IN_TRIM_OUT,
-    IS_FAVORITE, GET_SUBDIVISIONS, GET_BRANDS
+    IS_FAVORITE, GET_SUBDIVISIONS, GET_BRANDS, SET_REPORTS_FILTER, SET_PRODUCT_FILTER, GET_PRODUCTS, SET_PRODUCT_LOADING
 } from '../actions/types';
 import api from '../api';
 
@@ -79,8 +79,30 @@ export const getChildCategories = (categoryID) => dispatch => {
 
 }
 
+export const getProducts = (filterObject) => dispatch => {
+    let URL = '/Product';
+    dispatch({ type: SET_PRODUCT_LOADING, payload: true });
+    return api({
+        method: 'POST',
+        url: URL,
+        data: filterObject
+    })
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: GET_PRODUCTS, payload: response.pagedResults });
+                dispatch({ type: SET_PRODUCT_LOADING, payload: false });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+            dispatch({ type: SET_PRODUCT_LOADING, payload: false });
+        });
+}
+
 export const searchProducts = (categoryID, searchObject) => dispatch => {
-    let URL = '/Product'; 
+    let URL = '/Product/Search';
     
     if (categoryID) {
         URL = `${URL}/${categoryID}`;
@@ -311,3 +333,15 @@ export const RoughInTrimOutEnum = (projectId, productId, value) => dispatch => {
         console.log(error)
      })
    }
+
+export const setFilter = (filter) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_PRODUCT_FILTER, payload: filter });
+
+            resolve(filter);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

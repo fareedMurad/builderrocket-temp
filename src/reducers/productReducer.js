@@ -8,7 +8,7 @@ import {
     SET_SELECTED_CATEGORY_ID,
     SET_SELECTED_PRODUCT_TAB,
     ROUGHT_IN_TRIM_OUT,
-    IS_FAVORITE, GET_BRANDS
+    IS_FAVORITE, GET_BRANDS, SET_PRODUCT_LOADING
 } from '../actions/types';
 
 const intialState = {
@@ -17,12 +17,14 @@ const intialState = {
     productCategories: [],
     selectedCategoryID: '',
     selectedProductTab: 'products',
-    roughtInTrimOut: {},
+    roughInTrimOut: {},
     isFavorite: false
 }
 
 const productReducer = (state = intialState, action) => {
     switch (action.type) {
+        case SET_PRODUCT_LOADING:
+            return { ...state, productsLoading: action.payload };
         case GET_BRANDS: {
             return {
                 ...state,
@@ -31,7 +33,7 @@ const productReducer = (state = intialState, action) => {
         }
         case GET_CATEGORIES: {
             return {
-                ...state, 
+                ...state,
                 productCategories: action.payload
             }
         }
@@ -81,7 +83,7 @@ const productReducer = (state = intialState, action) => {
         case ROUGHT_IN_TRIM_OUT: {
             return {
                 ...state,
-                roughtInTrimOut: action.payload
+                roughInTrimOut: action.payload
             }
         }
         case IS_FAVORITE: {
