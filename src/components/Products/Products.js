@@ -5,7 +5,6 @@ import {
     getBrands,
     getCategories,
     getProductDetails,
-    getProducts,
     RoughInTrimOutEnum,
     setIsFavorite,
     setProduct
@@ -26,6 +25,7 @@ import './Products.scss';
 import {useHistory} from 'react-router'
 import CustomLightbox from '../Lightbox';
 import Multiselect from "multiselect-react-dropdown";
+import {setRoomFilter} from "../../actions/reportActions";
 
 
 const Products = (props) => {
@@ -39,6 +39,7 @@ const Products = (props) => {
     const roughInTrimOut = useSelector(state => state.product.roughInTrimOut);
     const brands = useSelector(state => state.product.brands);
     const [brandOptions, setBrandOptions] = useState([]);
+    const [roomsOptions, setRoomsOptions] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -60,15 +61,14 @@ const Products = (props) => {
         pageSize: 20
     })
 
-    const handleSelectedRoom = useCallback((roomID) => {
-        const selectedRoomObj = project?.ProjectRooms?.find((room) => room.ID === parseInt(roomID));
+    const handleSelectedRoom = useCallback((selectedRooms) => {
+        const rooms = [...selectedRooms.map(b => b.ID)];
 
-        dispatch(setSelectedRoom(selectedRoomObj));
-        setProductFilter({...productFilter, rooms: [roomID], pageNumber: 1});
+        setProductFilter({...productFilter, rooms: rooms, pageNumber: 1});
     }, [dispatch, productFilter, project]);
 
     const handleBrandChange = useCallback((selectedBrands) => {
-        let brands = [...selectedBrands.map(b => b.ID)];
+        const brands = [...selectedBrands.map(b => b.ID)];
         setProductFilter({...productFilter, brands: brands, pageNumber: 1});
     }, [dispatch, productFilter]);
 
@@ -92,6 +92,25 @@ const Products = (props) => {
         });
     }, [dispatch]);
 
+    useEffect(() => {
+        let options = [{
+            name: "Select All",
+            value: "select_all"
+        }, ...project?.ProjectRooms?.map((b) => {
+            return {
+                ...b,
+                name: b.RoomName,
+                value: b.ID,
+            };
+        })];
+        if(project?.ProjectRooms?.length > 1){
+            let roomId = selectedRoom?.ID ?? project?.ProjectRooms[0].ID;
+            setProductFilter({...productFilter, rooms: [roomId], pageNumber: 1});
+        }
+        setRoomsOptions(options);
+
+    }, [project]);
+
 
     const handleSelectedCategoryID = (templateItem) => {
         if (!templateItem) return;
@@ -106,10 +125,12 @@ const Products = (props) => {
                 IsApproved: false,
             }
 
+            dispatch(setSelectedRoom(templateItem.room));
+
             dispatch(setProduct(product))
                 .then(dispatch(getCategories(product?.CategoryID)))
                 .then(() => {
-                    dispatch(getProductDetails(templateItem.ID))
+                    dispatch(getProductDetails(templateItem.ProductID))
                         .then(() => {
                             if (templateItem?.IsTemplate) {
                                 history.push(`/project/${project.ProjectNumber}/product/addProduct`)
@@ -125,13 +146,13 @@ const Products = (props) => {
     }
 
     const handleDeleteProduct = (product) => {
-        if (!product || !selectedRoom?.ID) return;
+        if (!product || !product.room?.ID) return;
 
         const productDeleteObj = {
             ID: product.ID,
             Quantity: 0,
             ProductID: product.ProductID,
-            ProjectRoomID: selectedRoom.ID,
+            ProjectRoomID: product.room.ID,
             IsApproved: product.IsApproved,
             IsFavorite: product.IsFavorite,
             TemplateItemID: product.TemplateID,
@@ -225,11 +246,11 @@ const Products = (props) => {
         if (isEmpty(templateItems)) return;
 
         setIsLoading(true);
-
+        debugger;
         const updatedItems = Object.keys(templateItems)?.map((itemKey) => {
             return {
                 ID: parseInt(itemKey),
-                ProjectRoomID: selectedRoom.ID,
+                ProjectRoomID: templateItems[itemKey].room?.ID,
                 ...templateItems[itemKey]
             };
         });
@@ -430,7 +451,7 @@ const Products = (props) => {
                 <div className='d-flex justify-content-between flex-wrap'>
                     <div>
                         <div className='page-title'>Products
-                            - {selectedRoom?.RoomName ? selectedRoom?.RoomName : ''}</div>
+                            {productFilter?.rooms.length > 0 ? " -" : null} {project?.ProjectRooms?.filter(r => productFilter?.rooms.indexOf(r.ID) > -1).map(r => r.RoomName).join(", ")}</div>
                         <div className='subtext'>The products assigned to each room are displayed below.</div>
                     </div>
                     <div>
@@ -459,23 +480,38 @@ const Products = (props) => {
                 <div className='middle-section'>
                     <div className='d-flex flex-wrap'>
                         <div>
-                            <Form.Control
-                                as='select'
-                                value={selectedRoom?.ID}
-                                onChange={(e) => {
-                                    handleSelectedRoom(e.target.value)
-                                    handleRefresh()
-                                }}
-                            >
-                                {project?.ProjectRooms?.map((projectRoom, index) => (
-                                    <option
-                                        key={index}
-                                        value={projectRoom?.ID}
-                                    >
-                                        {projectRoom.RoomName}
-                                    </option>
-                                ))}
-                            </Form.Control>
+                            <div className="layout-select">
+                                <span>
+                                {productFilter?.rooms?.length > 0 ? <span className="custom-placeholder">
+                                    {project?.ProjectRooms?.filter(p => productFilter?.rooms.indexOf(p.ID) > -1)?.length} of {project?.ProjectRooms?.length} selected
+                                </span> : null}
+                                </span>
+                                <Multiselect
+                                    options={
+                                        roomsOptions?.length > 0 ? roomsOptions : []}
+                                    selectedValues={!productFilter?.rooms ? [] : (
+                                        project?.ProjectRooms?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
+                                    )}
+                                    onSelect={(arr, current) => {
+                                        if (current.value === 'select_all') {
+                                            handleSelectedRoom(roomsOptions.filter(p => p.value !== 'select_all'))
+                                        } else
+                                            handleSelectedRoom(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                    }}
+                                    onRemove={(arr, target) => {
+                                        let rooms = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                        if (target.value === 'select_all') {
+                                            rooms = [];
+                                        }
+                                        handleSelectedRoom(rooms)
+                                    }}
+                                    displayValue="name"
+                                    placeholder="Rooms Filter"
+                                    showCheckbox={true}
+                                    keepSearchTerm={false}
+                                    hidePlaceholder={true}
+                                />
+                            </div>
                         </div>
 
                         <div className='ml-1'>
@@ -490,11 +526,11 @@ const Products = (props) => {
 
                         <div>
                             <div className="layout-select">
-                                        <span>
-                                        {productFilter?.brands?.length > 0 ? <span className="custom-placeholder">
-                                            {brands?.filter(p => productFilter?.brands.indexOf(p.ID) > -1)?.length} of {brands?.length} selected
-                                        </span> : null}
-                                        </span>
+                                <span>
+                                {productFilter?.brands?.length > 0 ? <span className="custom-placeholder">
+                                    {brands?.filter(p => productFilter?.brands.indexOf(p.ID) > -1)?.length} of {brands?.length} selected
+                                </span> : null}
+                                </span>
                                 <Multiselect
                                     options={
                                         brandOptions?.length > 0 ? brandOptions : []}
@@ -539,6 +575,11 @@ const Products = (props) => {
                                     Product Name
                                 </div>
                             </th>
+                            {productFilter?.rooms.length > 1 ? <th>
+                                <div className='d-flex justify-content-center'>
+                                    Room
+                                </div>
+                            </th> : null}
                             <th>Description</th>
                             <th>Category</th>
                             <th>UOM</th>
@@ -552,9 +593,18 @@ const Products = (props) => {
                         </tr>
                         </thead>
                         <tbody>
-                        {selectedRoom?.Items.filter(i => {
-                            return productFilter.brands.length === 0 || productFilter.brands.indexOf(i.BrandID) > -1
-                        })?.map((templateItem, index) => {
+                        {project?.ProjectRooms.filter(r => productFilter.rooms.indexOf(r.ID) > -1).reduce((accumulator, currentValue) => {
+                            let {Items, ...room} = currentValue;
+                            return accumulator.concat(currentValue.Items?.map(i => { return {room: room, ...i}}));
+                        }, [])?.sort((a, b) => {
+                            if (a.ShortDescription !== b.ShortDescription) {
+                                return a.ShortDescription?.localeCompare(b.ShortDescription);
+                            }
+                            if (a.room?.RoomName !== b.room?.RoomName) {
+                                return a.room?.RoomName?.localeCompare(b.room?.RoomName);
+                            }
+                            return 0;
+                        }).map((templateItem, index) => {
                                 const tempTemplateItem = templateItems?.[templateItem?.ID];
 
                                 let requiresApproval = !!(templateItem?.RequiresApproval);
@@ -621,6 +671,10 @@ const Products = (props) => {
                                                 </div>
                                             </div>
                                         </td>
+                                        {productFilter?.rooms.length > 1 ?
+                                        <td>
+                                            {templateItem?.room?.RoomName}
+                                        </td> : null}
                                         <td>{templateItem?.ShortDescription}</td>
                                         <td>{templateItem?.CategoryName}</td>
                                         <td>{templateItem?.UnitOfMeasure}</td>
