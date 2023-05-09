@@ -38,8 +38,10 @@ const Products = (props) => {
     const isFavorite = useSelector(state => state.product.isFavorite);
     const roughInTrimOut = useSelector(state => state.product.roughInTrimOut);
     const brands = useSelector(state => state.product.brands);
+    const categories = useSelector(state => state.product.productCategories);
     const [brandOptions, setBrandOptions] = useState([]);
     const [roomsOptions, setRoomsOptions] = useState([]);
+    const [categoriesOptions, setCategoriesOptions] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -72,6 +74,11 @@ const Products = (props) => {
         setProductFilter({...productFilter, brands: brands, pageNumber: 1});
     }, [dispatch, productFilter]);
 
+    const handleCategoryChange = useCallback((selectedCategories) => {
+        const categories = [...selectedCategories.map(b => b.ID)];
+        setProductFilter({...productFilter, categories: categories, pageNumber: 1});
+    }, [dispatch, productFilter]);
+
     // useEffect(() => {
     //     dispatch(getProducts({...productFilter, projectId: project?.ID}));
     // }, [dispatch, productFilter])
@@ -89,6 +96,24 @@ const Products = (props) => {
                 };
             })];
             setBrandOptions(options)
+        });
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(getCategories()).then(() => {
+            let options = [{
+                name: "Select All",
+                value: "select_all"
+            }, ...categories?.map((b) => {
+                return {
+                    ...b,
+                    name: b.Name?.replaceAll('&nbsp;', ''),
+                    value: b.ID,
+                };
+            }).sort((a, b) => {
+                return a.Path?.localeCompare(b.Path);
+            })];
+            setCategoriesOptions(options)
         });
     }, [dispatch]);
 
@@ -544,14 +569,49 @@ const Products = (props) => {
                                             handleBrandChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
                                     }}
                                     onRemove={(arr, target) => {
-                                        let rooms = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                        let brands = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
                                         if (target.value === 'select_all') {
-                                            rooms = [];
+                                            brands = [];
                                         }
-                                        handleBrandChange(rooms)
+                                        handleBrandChange(brands)
                                     }}
                                     displayValue="name"
                                     placeholder="Brand Filter"
+                                    showCheckbox={true}
+                                    keepSearchTerm={false}
+                                    hidePlaceholder={true}
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <div className="layout-select">
+                                <span>
+                                {productFilter?.categories?.length > 0 ? <span className="custom-placeholder">
+                                    {categories?.filter(p => productFilter?.categories.indexOf(p.ID) > -1)?.length} of {categories?.length} selected
+                                </span> : null}
+                                </span>
+                                <Multiselect
+                                    options={
+                                        categoriesOptions?.length > 0 ? categoriesOptions : []}
+                                    selectedValues={!productFilter?.categories ? [] : (
+                                        categories?.length === productFilter?.categories?.length ? categoriesOptions : categoriesOptions.filter(b => productFilter?.categories.indexOf(b.ID) > -1)
+                                    )}
+                                    onSelect={(arr, current) => {
+                                        if (current.value === 'select_all') {
+                                            handleCategoryChange(categoriesOptions.filter(p => p.value !== 'select_all'))
+                                        } else
+                                            handleCategoryChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                    }}
+                                    onRemove={(arr, target) => {
+                                        let categories = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                        if (target.value === 'select_all') {
+                                            categories = [];
+                                        }
+                                        handleCategoryChange(categories)
+                                    }}
+                                    displayValue="name"
+                                    placeholder="Categories Filter"
                                     showCheckbox={true}
                                     keepSearchTerm={false}
                                     hidePlaceholder={true}
@@ -595,7 +655,8 @@ const Products = (props) => {
                         <tbody>
                         {project?.ProjectRooms.filter(r => productFilter.rooms.indexOf(r.ID) > -1).reduce((accumulator, currentValue) => {
                             let {Items, ...room} = currentValue;
-                            return accumulator.concat(currentValue.Items?.map(i => { return {room: room, ...i}}));
+                            let items = FilterItems({productFilter, items: currentValue.Items, brands, categories})
+                            return accumulator.concat(items?.map(i => { return {room: room, ...i}}));
                         }, [])?.sort((a, b) => {
                             if (a.ShortDescription !== b.ShortDescription) {
                                 return a.ShortDescription?.localeCompare(b.ShortDescription);
@@ -604,7 +665,7 @@ const Products = (props) => {
                                 return a.room?.RoomName?.localeCompare(b.room?.RoomName);
                             }
                             return 0;
-                        }).map((templateItem, index) => {
+                        })?.map((templateItem, index) => {
                                 const tempTemplateItem = templateItems?.[templateItem?.ID];
 
                                 let requiresApproval = !!(templateItem?.RequiresApproval);
@@ -794,3 +855,15 @@ const Products = (props) => {
 }
 
 export default Products;
+export const FilterItems = ({productFilter, brands, categories, items}) => {
+    const selectedCategories = categories?.filter(c => productFilter.categories.length > 0 && productFilter.categories.indexOf(c.ID) > -1);
+    const allCategories = categories?.filter(c => {
+        return c.Path && selectedCategories.filter(s =>{
+            return  s.Path && c.Path.startsWith(s.Path);
+        }).length > 0;
+    }).map(c => c.ID);
+    return items?.filter(i => {
+        return (productFilter.brands.length === 0 || productFilter.brands.indexOf(i.BrandID) > -1)
+            && (productFilter.categories.length === 0 || allCategories.indexOf(i.CategoryID) > -1)
+    })
+}
