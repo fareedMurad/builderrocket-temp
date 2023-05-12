@@ -6,14 +6,25 @@
         justify-content: center;
     }
 
+    .layout-select {
+        width: 300px;
+        margin: 13px 10px;
+        position: relative;
+        .custom-placeholder{
+            position: absolute;
+            top: 8px;
+            left: 8px;
+        }
+    }
+
     .container {
-        width: 981px;
+        //width: 981px;
         background-color: white;
         padding-bottom: 2rem;
         margin-bottom: 2rem;
 
         @include media-breakpoint-up(lg) {
-            margin-right: 3rem;
+            //margin-right: 3rem;
         }
     }
 

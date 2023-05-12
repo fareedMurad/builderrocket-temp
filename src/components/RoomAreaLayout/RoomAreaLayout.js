@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import { getRoomTypes } from '../../actions/roomActions';
 import { Form, Spinner, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ import './RoomAreaLayout.scss';
 // components
 import MarketingBlock from '../MarketingBlock';
 import ClearChangesModal from '../ClearChangesModal';
+import Multiselect from "multiselect-react-dropdown";
 
 const RoomAreaLayout = () => {
     const dispatch = useDispatch();
@@ -25,6 +26,8 @@ const RoomAreaLayout = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [deleteRoomList, setDeleteRoomList] = useState([]);
     const [isLoadingRoomTypes, setIsLoadingRoomTypes] = useState(false);
+    const [roomTypeOptions, setRoomTypeOptions] = useState([]);
+    const [typesFilter, setTypesFilter] = useState([]);
 
     // Ref to access changes on unmount 
     const roomsRef = useRef();
@@ -43,6 +46,11 @@ const RoomAreaLayout = () => {
     const isRoomInProject = (id) => {
         return project?.ProjectRooms?.find((room) => room?.RoomID === id);
     }
+
+    const handleSelectedRoomTypeChange = useCallback((selectedTypes) => {
+        const types = [...selectedTypes.map(b => b.ID)];
+        setTypesFilter(types);
+    }, [dispatch, setTypesFilter]);
 
     const handleCheckBox = (roomID, e) => {
 
@@ -165,14 +173,69 @@ const RoomAreaLayout = () => {
         }
     }, [dispatch]);
 
+    useEffect(() => {
+        let options = [{
+            name: "Select All",
+            value: "select_all"
+        }, ...roomTypes?.map((b) => {
+            return {
+                ...b,
+                name: b.Name,
+                value: b.ID,
+            };
+        })];
+        if(roomTypes?.length > 0){
+            setTypesFilter(roomTypes.map(r => r.ID));
+        }
+        setRoomTypeOptions(options);
+
+    }, [project]);
+
     return (
         <div className='d-flex room-area-layout'>
             <div className='container'>
-                <div>
-                    <div className='page-title'>Room/Area Layout</div>
-                    <div className='subtext'>A default list of rooms has been provided. You can add or remove rooms for this project.</div>
-
+                <div className='d-flex flex-wrap'>
+                    <div className='flex-grow-1'>
+                        <div className='page-title'>Room/Area Layout</div>
+                        <div className='subtext'>A default list of rooms has been provided. You can add or remove rooms for this project.</div>
+                    </div>
+                    <div>
+                        <div className='input-label mt-2 ml-3'>Room Types</div>
+                        <div className="layout-select custom-dropdown">
+                                <span>
+                                {typesFilter?.length > 0 ? <span className="custom-placeholder">
+                                    {roomTypes?.filter(p => typesFilter.indexOf(p.ID) > -1)?.length} of {roomTypes?.length} selected
+                                </span> : null}
+                                </span>
+                            <Multiselect
+                                options={
+                                    roomTypes?.length > 0 ? roomTypeOptions : []}
+                                selectedValues={!typesFilter ? [] : (
+                                    roomTypes?.length === typesFilter?.length ? roomTypeOptions : roomTypeOptions.filter(b => typesFilter.indexOf(b.ID) > -1)
+                                )}
+                                onSelect={(arr, current) => {
+                                    if (current.value === 'select_all') {
+                                        handleSelectedRoomTypeChange(roomTypeOptions.filter(p => p.value !== 'select_all'))
+                                    } else
+                                        handleSelectedRoomTypeChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                }}
+                                onRemove={(arr, target) => {
+                                    let types = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                    if (target.value === 'select_all') {
+                                        types = [];
+                                    }
+                                    handleSelectedRoomTypeChange(types)
+                                }}
+                                displayValue="name"
+                                placeholder="Room Types Filter"
+                                showCheckbox={true}
+                                keepSearchTerm={false}
+                                hidePlaceholder={true}
+                            />
+                        </div>
+                    </div>
                 </div>
+
 
                 {isLoadingRoomTypes ? (
                     <div className='room-area-layout-spinner d-flex justify-content-center'>
@@ -183,7 +246,7 @@ const RoomAreaLayout = () => {
                     </div>
                 ) : (
                     <div className='rooms d-flex flex-wrap justify-content-around'>
-                        {roomTypes?.map((roomType, index) => (
+                        {roomTypes?.filter(r => typesFilter?.indexOf(r.ID) > -1).map((roomType, index) => (
                             <div 
                                 key={index} 
                                 className='room-type-container'
