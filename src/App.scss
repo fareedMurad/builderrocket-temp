@@ -44,3 +44,9 @@
 .custom-dropdown .search-wrapper.searchWrapper .chip{
   display: none;
 }
+.tags-dropdown .search-wrapper.searchWrapper .chip{
+  display: inline-flex !important;
+}
+.readonly_ms.disable_ms{
+  opacity: 1 ;
+}

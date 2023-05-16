@@ -25,7 +25,7 @@ import './Products.scss';
 import {useHistory} from 'react-router'
 import CustomLightbox from '../Lightbox';
 import Multiselect from "multiselect-react-dropdown";
-import {setRoomFilter} from "../../actions/reportActions";
+import {ProjectStatus} from "../../utils/contants";
 
 
 const Products = (props) => {
@@ -128,7 +128,7 @@ const Products = (props) => {
                 value: b.ID,
             };
         })];
-        if(project?.ProjectRooms?.length > 1){
+        if (project?.ProjectRooms?.length > 1) {
             let roomId = selectedRoom?.ID ?? project?.ProjectRooms[0].ID;
             setProductFilter({...productFilter, rooms: [roomId], pageNumber: 1});
         }
@@ -475,14 +475,16 @@ const Products = (props) => {
             <div className='products-container'>
                 <div className='d-flex justify-content-between flex-wrap'>
                     <div>
-                        <div className='page-title'>Products
-                            {productFilter?.rooms.length > 0 ? " -" : null} {project?.ProjectRooms?.filter(r => productFilter?.rooms.indexOf(r.ID) > -1).map(r => r.RoomName).join(", ")}</div>
                         <div className='subtext'>The products assigned to each room are displayed below.</div>
                     </div>
                     <div>
-                        <span className='total float-left mt-3'>
-                            Total: $0.00
-                        </span>
+                        <Button
+                            variant='link'
+                            className='link-btn'
+                            onClick={showProducts}
+                        >
+                            + Add Products
+                        </Button>
                         <Button variant='link' className='link-btn'>
                             <i className='fas fa-download'></i>
                             Download Report
@@ -499,17 +501,38 @@ const Products = (props) => {
                             <i className='fas fa-th'></i>
                             Category Layout
                         </Button>
+                        <span className='total float-left mt-3'>
+                            Total: $0.00
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <div className='page-title'>
+                        Products
+                        <div className='mx-2'>
+                            <Multiselect
+                                tags
+                                className="tags-dropdown readonly_ms"
+                                disable={true}
+                                placeholder=""
+                                showCheckbox={true}
+                                options={roomsOptions} // Options to display in the dropdown
+                                selectedValues={!productFilter?.rooms ? [] : (
+                                    project?.ProjectRooms?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
+                                )}
+                                displayValue="name" // Property name to display in the dropdown options
+                            />
+                        </div>
                     </div>
                 </div>
 
                 <div className='middle-section'>
                     <div className='d-flex flex-wrap'>
                         <div>
-                            <div className="layout-select">
+                            <div className='input-label mt-2 ml-3'>Room</div>
+                            <div className="layout-select custom-dropdown">
                                 <span>
-                                {productFilter?.rooms?.length > 0 ? <span className="custom-placeholder">
-                                    {project?.ProjectRooms?.filter(p => productFilter?.rooms.indexOf(p.ID) > -1)?.length} of {project?.ProjectRooms?.length} selected
-                                </span> : null}
+                                {DrawDropdownSelection({items: project?.ProjectRooms, selectedIds:  productFilter?.rooms, nameProp: "RoomName", type: "room"})}
                                 </span>
                                 <Multiselect
                                     options={
@@ -531,7 +554,7 @@ const Products = (props) => {
                                         handleSelectedRoom(rooms)
                                     }}
                                     displayValue="name"
-                                    placeholder="Rooms Filter"
+                                    placeholder=""
                                     showCheckbox={true}
                                     keepSearchTerm={false}
                                     hidePlaceholder={true}
@@ -539,57 +562,12 @@ const Products = (props) => {
                             </div>
                         </div>
 
-                        <div className='ml-1'>
-                            <Button
-                                variant='link'
-                                className='link-btn'
-                                onClick={showProducts}
-                            >
-                                + Add Products
-                            </Button>
-                        </div>
 
                         <div>
-                            <div className="layout-select">
+                            <div className='input-label mt-2 ml-3'>Product Category</div>
+                            <div className="layout-select custom-dropdown">
                                 <span>
-                                {productFilter?.brands?.length > 0 ? <span className="custom-placeholder">
-                                    {brands?.filter(p => productFilter?.brands.indexOf(p.ID) > -1)?.length} of {brands?.length} selected
-                                </span> : null}
-                                </span>
-                                <Multiselect
-                                    options={
-                                        brandOptions?.length > 0 ? brandOptions : []}
-                                    selectedValues={!productFilter?.brands ? [] : (
-                                        brands?.length === productFilter?.brands?.length ? brandOptions : brandOptions.filter(b => productFilter?.brands.indexOf(b.ID) > -1)
-                                    )}
-                                    onSelect={(arr, current) => {
-                                        if (current.value === 'select_all') {
-                                            handleBrandChange(brandOptions.filter(p => p.value !== 'select_all'))
-                                        } else
-                                            handleBrandChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-                                    }}
-                                    onRemove={(arr, target) => {
-                                        let brands = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-                                        if (target.value === 'select_all') {
-                                            brands = [];
-                                        }
-                                        handleBrandChange(brands)
-                                    }}
-                                    displayValue="name"
-                                    placeholder="Brand Filter"
-                                    showCheckbox={true}
-                                    keepSearchTerm={false}
-                                    hidePlaceholder={true}
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="layout-select">
-                                <span>
-                                {productFilter?.categories?.length > 0 ? <span className="custom-placeholder">
-                                    {categories?.filter(p => productFilter?.categories.indexOf(p.ID) > -1)?.length} of {categories?.length} selected
-                                </span> : null}
+                                    {DrawDropdownSelection({items: categories, selectedIds:  productFilter?.categories, nameProp: "Name", type: "category"})}
                                 </span>
                                 <Multiselect
                                     options={
@@ -611,7 +589,41 @@ const Products = (props) => {
                                         handleCategoryChange(categories)
                                     }}
                                     displayValue="name"
-                                    placeholder="Categories Filter"
+                                    placeholder=""
+                                    showCheckbox={true}
+                                    keepSearchTerm={false}
+                                    hidePlaceholder={true}
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <div className='input-label mt-2 ml-3'>Brand</div>
+                            <div className="layout-select custom-dropdown">
+                                <span>
+                                    {DrawDropdownSelection({items: brands, selectedIds:  productFilter?.brands, nameProp: "Name", type: "brand"})}
+                                </span>
+                                <Multiselect
+                                    options={
+                                        brandOptions?.length > 0 ? brandOptions : []}
+                                    selectedValues={!productFilter?.brands ? [] : (
+                                        brands?.length === productFilter?.brands?.length ? brandOptions : brandOptions.filter(b => productFilter?.brands.indexOf(b.ID) > -1)
+                                    )}
+                                    onSelect={(arr, current) => {
+                                        if (current.value === 'select_all') {
+                                            handleBrandChange(brandOptions.filter(p => p.value !== 'select_all'))
+                                        } else
+                                            handleBrandChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                    }}
+                                    onRemove={(arr, target) => {
+                                        let brands = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                        if (target.value === 'select_all') {
+                                            brands = [];
+                                        }
+                                        handleBrandChange(brands)
+                                    }}
+                                    displayValue="name"
+                                    placeholder=""
                                     showCheckbox={true}
                                     keepSearchTerm={false}
                                     hidePlaceholder={true}
@@ -656,7 +668,9 @@ const Products = (props) => {
                         {project?.ProjectRooms.filter(r => productFilter.rooms.indexOf(r.ID) > -1).reduce((accumulator, currentValue) => {
                             let {Items, ...room} = currentValue;
                             let items = FilterItems({productFilter, items: currentValue.Items, brands, categories})
-                            return accumulator.concat(items?.map(i => { return {room: room, ...i}}));
+                            return accumulator.concat(items?.map(i => {
+                                return {room: room, ...i}
+                            }));
                         }, [])?.sort((a, b) => {
                             if (a.ShortDescription !== b.ShortDescription) {
                                 return a.ShortDescription?.localeCompare(b.ShortDescription);
@@ -733,9 +747,9 @@ const Products = (props) => {
                                             </div>
                                         </td>
                                         {productFilter?.rooms.length > 1 ?
-                                        <td>
-                                            {templateItem?.room?.RoomName}
-                                        </td> : null}
+                                            <td>
+                                                {templateItem?.room?.RoomName}
+                                            </td> : null}
                                         <td>{templateItem?.ShortDescription}</td>
                                         <td>{templateItem?.CategoryName}</td>
                                         <td>{templateItem?.UnitOfMeasure}</td>
@@ -858,12 +872,30 @@ export default Products;
 export const FilterItems = ({productFilter, brands, categories, items}) => {
     const selectedCategories = categories?.filter(c => productFilter.categories.length > 0 && productFilter.categories.indexOf(c.ID) > -1);
     const allCategories = categories?.filter(c => {
-        return c.Path && selectedCategories.filter(s =>{
-            return  s.Path && c.Path.startsWith(s.Path);
+        return c.Path && selectedCategories.filter(s => {
+            return s.Path && c.Path.startsWith(s.Path);
         }).length > 0;
     }).map(c => c.ID);
     return items?.filter(i => {
         return (productFilter.brands.length === 0 || productFilter.brands.indexOf(i.BrandID) > -1)
             && (productFilter.categories.length === 0 || allCategories.indexOf(i.CategoryID) > -1)
     })
+}
+
+export const DrawDropdownSelection = ({items, selectedIds, nameProp, type}) => {
+    const selectedLength = selectedIds?.length;
+    const types = {
+        'room': {'single': 'Room', 'group': 'Rooms'},
+        'category': {'single': 'Category', 'group': 'Categories'},
+        'brand': {'single': 'Brand', 'group': 'Brands'}
+    };
+    let name = `No ${types[type].group} selected`;
+    if(selectedLength === 1){
+        name = items?.filter(p => selectedIds.indexOf(p.ID) > -1)[0][nameProp];
+    }else if(selectedLength > 1 && selectedLength < items.length){
+        name = `Multiple ${types[type].group}`;
+    }else if(items?.length === selectedLength){
+        name = `All ${types[type].group}`;
+    }
+    return  (<span className="custom-placeholder">{name}</span>)
 }
