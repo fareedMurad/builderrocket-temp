@@ -1,5 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Form, Modal, OverlayTrigger, Spinner, Table, Tooltip,} from 'react-bootstrap';
+import {Button, Form, Modal, OverlayTrigger, Spinner, Table, Tooltip, Card} from 'react-bootstrap';
+import SlideToggle from "react-slide-toggle";
+
 
 import {
     getBrands,
@@ -42,6 +44,7 @@ const Products = (props) => {
     const [brandOptions, setBrandOptions] = useState([]);
     const [roomsOptions, setRoomsOptions] = useState([]);
     const [categoriesOptions, setCategoriesOptions] = useState([]);
+    const [selectedRooms, setSelectedRooms] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +81,7 @@ const Products = (props) => {
         const categories = [...selectedCategories.map(b => b.ID)];
         setProductFilter({...productFilter, categories: categories, pageNumber: 1});
     }, [dispatch, productFilter]);
+
 
     // useEffect(() => {
     //     dispatch(getProducts({...productFilter, projectId: project?.ID}));
@@ -135,6 +139,13 @@ const Products = (props) => {
         setRoomsOptions(options);
 
     }, [project]);
+
+    useEffect(() => {
+        const rooms = project?.ProjectRooms.filter(r => productFilter.rooms.indexOf(r.ID) > -1).map((room, index) => {
+            return {...room, isOpen: index === 0};
+        });
+        setSelectedRooms(rooms);
+    }, [project, productFilter])
 
 
     const handleSelectedCategoryID = (templateItem) => {
@@ -501,7 +512,7 @@ const Products = (props) => {
                             <i className='fas fa-th'></i>
                             Category Layout
                         </Button>
-                        <span className='total float-left mt-3'>
+                        <span className='total float-right mt-3'>
                             Total: $0.00
                         </span>
                     </div>
@@ -636,208 +647,227 @@ const Products = (props) => {
                 {deleteModal()}
 
                 {saveNotesModal()}
-
-                <div className='products-table'>
-                    <Table responsive>
-                        <thead>
-                        <tr>
-                            <th>Needs Approval</th>
-                            <th>
-                                <div className='d-flex justify-content-center'>
-                                    Product Name
-                                </div>
-                            </th>
-                            {productFilter?.rooms.length > 1 ? <th>
-                                <div className='d-flex justify-content-center'>
-                                    Room
-                                </div>
-                            </th> : null}
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>UOM</th>
-                            <th className='radios'>Rough In / Trim Out</th>
-                            <th>Distributor</th>
-                            <th>QTY</th>
-                            <th>Price</th>
-                            <th>Customer Approval</th>
-                            <th>Notes</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {project?.ProjectRooms.filter(r => productFilter.rooms.indexOf(r.ID) > -1).reduce((accumulator, currentValue) => {
-                            let {Items, ...room} = currentValue;
-                            let items = FilterItems({productFilter, items: currentValue.Items, brands, categories})
-                            return accumulator.concat(items?.map(i => {
-                                return {room: room, ...i}
-                            }));
-                        }, [])?.sort((a, b) => {
-                            if (a.ShortDescription !== b.ShortDescription) {
-                                return a.ShortDescription?.localeCompare(b.ShortDescription);
-                            }
-                            if (a.room?.RoomName !== b.room?.RoomName) {
-                                return a.room?.RoomName?.localeCompare(b.room?.RoomName);
-                            }
-                            return 0;
-                        })?.map((templateItem, index) => {
-                                const tempTemplateItem = templateItems?.[templateItem?.ID];
-
-                                let requiresApproval = !!(templateItem?.RequiresApproval);
-                                let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
-                                let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
-                                let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
-                                let isFav = templateItem?.IsFavorite
-
-                                if (!isEmpty(tempTemplateItem)) {
-                                    quantity = tempTemplateItem.Quantity;
-                                    requiresApproval = tempTemplateItem.RequiresApproval;
-                                    isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
-                                    isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
-                                }
-                                return (
-                                    <tr key={index}>
-                                        <td className='approval-checkbox'>
-                                            <div className='d-flex justify-content-center'>
-                                                <Form>
-                                                    {itemLoading(templateItem, isRequiresApprovalLoading) ? <Spinner
-                                                        animation='border'
-                                                        variant='primary'
-                                                    /> : <Form.Check
-                                                        type='checkbox'
-                                                        checked={templateItem?.RequiresApproval}
-                                                        disabled={isUndefined(templateItem?.RequiresApproval) ? true : false}
-                                                        onChange={
-                                                            () => handleRequiresApproval(templateItem, !templateItem?.RequiresApproval)
-                                                        }
-                                                    />}
-
-
-                                                </Form>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className='d-flex add-btn-templateItem'>
-                                                {templateItem?.ProductThumbnailURl && (
-                                                    <CustomLightbox images={[templateItem?.ProductThumbnailURl]}/>
-                                                )}
-                                                <div>
-                                                    <Button
-                                                        variant='link'
-                                                        className='link-btn item-button'
-                                                        onClick={() => handleSelectedCategoryID(templateItem)}
-                                                    >
-                                                        {templateItem?.IsTemplate ?
-                                                            <>
-                                                                <i className='fas fa-plus-circle plus-circle'></i>
-                                                                {templateItem?.AddLabel}
-                                                            </>
-                                                            :
-                                                            <>
-                                                                {templateItem?.ProductName}
-                                                            </>
-                                                        }
-                                                    </Button>
-
-                                                    {!templateItem?.IsTemplate && (
-                                                        <div className='model-number'>
-                                                            Model: {templateItem?.ModelNumber}
+                {selectedRooms.map((data, roomIndex) => {
+                    let {Items, ...room} = data;
+                    let items = FilterItems({productFilter, items: Items, brands, categories})?.map(i => {
+                        return {room: room, ...i}
+                    })?.sort((a, b) => {
+                        if (a.ShortDescription !== b.ShortDescription) {
+                            return a.ShortDescription?.localeCompare(b.ShortDescription);
+                        }
+                        if (a.room?.RoomName !== b.room?.RoomName) {
+                            return a.room?.RoomName?.localeCompare(b.room?.RoomName);
+                        }
+                        return 0;
+                    });
+                    return (
+                        <SlideToggle
+                            onExpanded={({ hasReversed }) => {
+                                let _room = selectedRooms.filter(r => r.ID === room.ID)[0];
+                                _room.isOpen = true;
+                                setSelectedRooms([...selectedRooms]);
+                            }}
+                            onCollapsed={({ hasReversed }) => {
+                                let _room = selectedRooms.filter(r => r.ID === room.ID)[0];
+                                _room.isOpen = false;
+                                setSelectedRooms([...selectedRooms]);
+                            }}
+                            render={({ toggle, setCollapsibleElement }) => (
+                                <Card className='ml-3 my-3 accordion'>
+                                    <Card.Header className='pointer' onClick={toggle}>{room.RoomName} <i className={`far float-right mt-1 ${room.isOpen ? 'fa-chevron-double-up' : 'fa-chevron-double-down'}`}></i></Card.Header>
+                                    <Card.Body id={"room-" + room.ID} ref={setCollapsibleElement}>
+                                        <div className='products-table'>
+                                            <Table responsive>
+                                                <thead>
+                                                <tr>
+                                                    <th>Needs Approval</th>
+                                                    <th>
+                                                        <div className='d-flex justify-content-center'>
+                                                            Product Name
                                                         </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        {productFilter?.rooms.length > 1 ?
-                                            <td>
-                                                {templateItem?.room?.RoomName}
-                                            </td> : null}
-                                        <td>{templateItem?.ShortDescription}</td>
-                                        <td>{templateItem?.CategoryName}</td>
-                                        <td>{templateItem?.UnitOfMeasure}</td>
-                                        <td>
-                                            {!templateItem?.IsTemplate && <Form className='d-flex justify-content-center'>
-                                                <Form.Check
-                                                    type='radio'
-                                                    checked={isRoughIn}
-                                                    disabled={templateItem?.IsTemplate}
-                                                    onChange={
-                                                        () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
-                                                    }
-                                                />
-                                                <Form.Check
-                                                    type='radio'
-                                                    checked={isTrimOut}
-                                                    disabled={templateItem?.IsTemplate}
-                                                    onChange={
-                                                        () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
-                                                    }
-                                                />
-                                            </Form>}
-                                        </td>
-                                        <td>
-                                            {!templateItem?.IsTemplate && <div className='distributor-select'>
-                                                <Form.Control as='select'>
-                                                </Form.Control>
-                                            </div>}
-                                        </td>
-                                        <td>
-                                            {!templateItem?.IsTemplate && <div className='qty-input'>
-                                                {itemLoading(templateItem, isQuantityLoading) ? <Spinner
-                                                        animation='border'
-                                                        variant='primary'
-                                                    /> :
-                                                    <Form.Control
-                                                        min='0'
-                                                        type='text'
-                                                        id={`quantity-${templateItem?.ID}`}
-                                                        disabled={!templateItem?.Quantity}
-                                                        defaultValue={templateItem?.Quantity}
-                                                        onBlur={(e) => handleQuantity(templateItem, e.target.value)}
-                                                    >
-                                                    </Form.Control>
-                                                }
-                                            </div>}
-                                        </td>
-                                        <td></td>
-                                        <td>
-                                            {renderApproval(templateItem)}
-                                        </td>
-                                        {!templateItem?.IsTemplate ?
-                                            <td className={`${templateItem?.Notes && 'sticky-note-red'}`}
-                                                onClick={() => handleOpenNotesModal(templateItem)}>
-                                                {templateItem?.Notes ?
-                                                    <OverlayTrigger
-                                                        placement='top'
-                                                        overlay={
-                                                            <Tooltip id='button-tooltip'>
-                                                                {templateItem?.Notes}
-                                                            </Tooltip>
+                                                    </th>
+                                                    {productFilter?.rooms.length > 1 ? <th>
+                                                        <div className='d-flex justify-content-center'>
+                                                            Room
+                                                        </div>
+                                                    </th> : null}
+                                                    <th>Description</th>
+                                                    <th>Category</th>
+                                                    <th>UOM</th>
+                                                    <th className='radios'>Rough In / Trim Out</th>
+                                                    <th>Distributor</th>
+                                                    <th>QTY</th>
+                                                    <th>Price</th>
+                                                    <th>Customer Approval</th>
+                                                    <th>Notes</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {items?.map((templateItem, index) => {
+                                                    const tempTemplateItem = templateItems?.[templateItem?.ID];
 
-                                                        }
-                                                        delay={{show: 250, hide: 400}}
-                                                    >
-                                                        <i className='far fa-sticky-note d-flex justify-content-center'></i>
-                                                    </OverlayTrigger> :
-                                                    <i className='far fa-sticky-note d-flex justify-content-center'></i>}
-                                            </td> : <td/>}
-                                        <td>
-                                            {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
-                                                <i className='fas fa-retweet'></i>
-                                                <i className={`far ${isFav ? 'text-danger fas fa-heart' : 'fa-heart'}`}
-                                                   onClick={() => handleIsFavorite(templateItem)}></i>
-                                                <i
-                                                    className='far fa-trash-alt'
-                                                    onClick={() => handleOpenModal(templateItem)}
-                                                ></i>
-                                            </div>}
-                                        </td>
-                                    </tr>
-                                )
-                            }
-                        )}
-                        </tbody>
+                                                    let requiresApproval = !!(templateItem?.RequiresApproval);
+                                                    let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
+                                                    let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
+                                                    let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
+                                                    let isFav = templateItem?.IsFavorite;
 
-                    </Table>
-                </div>
+                                                    if (!isEmpty(tempTemplateItem)) {
+                                                        quantity = tempTemplateItem.Quantity;
+                                                        requiresApproval = tempTemplateItem.RequiresApproval;
+                                                        isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
+                                                        isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
+                                                    }
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td className='approval-checkbox'>
+                                                                <div className='d-flex justify-content-center'>
+                                                                    <Form>
+                                                                        {itemLoading(templateItem, isRequiresApprovalLoading) ? <Spinner
+                                                                            animation='border'
+                                                                            variant='primary'
+                                                                        /> : <Form.Check
+                                                                            type='checkbox'
+                                                                            checked={templateItem?.RequiresApproval}
+                                                                            disabled={isUndefined(templateItem?.RequiresApproval) ? true : false}
+                                                                            onChange={
+                                                                                () => handleRequiresApproval(templateItem, !templateItem?.RequiresApproval)
+                                                                            }
+                                                                        />}
+
+
+                                                                    </Form>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div className='d-flex add-btn-templateItem'>
+                                                                    {templateItem?.ProductThumbnailURl && (
+                                                                        <CustomLightbox images={[templateItem?.ProductThumbnailURl]}/>
+                                                                    )}
+                                                                    <div>
+                                                                        <Button
+                                                                            variant='link'
+                                                                            className='link-btn item-button'
+                                                                            onClick={() => handleSelectedCategoryID(templateItem)}
+                                                                        >
+                                                                            {templateItem?.IsTemplate ?
+                                                                                <>
+                                                                                    <i className='fas fa-plus-circle plus-circle'></i>
+                                                                                    {templateItem?.AddLabel}
+                                                                                </>
+                                                                                :
+                                                                                <>
+                                                                                    {templateItem?.ProductName}
+                                                                                </>
+                                                                            }
+                                                                        </Button>
+
+                                                                        {!templateItem?.IsTemplate && (
+                                                                            <div className='model-number'>
+                                                                                Model: {templateItem?.ModelNumber}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            {productFilter?.rooms.length > 1 ?
+                                                                <td>
+                                                                    {templateItem?.room?.RoomName}
+                                                                </td> : null}
+                                                            <td>{templateItem?.ShortDescription}</td>
+                                                            <td>{templateItem?.CategoryName}</td>
+                                                            <td>{templateItem?.UnitOfMeasure}</td>
+                                                            <td>
+                                                                {!templateItem?.IsTemplate && <Form className='d-flex justify-content-center'>
+                                                                    <Form.Check
+                                                                        type='radio'
+                                                                        checked={isRoughIn}
+                                                                        disabled={templateItem?.IsTemplate}
+                                                                        onChange={
+                                                                            () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
+                                                                        }
+                                                                    />
+                                                                    <Form.Check
+                                                                        type='radio'
+                                                                        checked={isTrimOut}
+                                                                        disabled={templateItem?.IsTemplate}
+                                                                        onChange={
+                                                                            () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
+                                                                        }
+                                                                    />
+                                                                </Form>}
+                                                            </td>
+                                                            <td>
+                                                                {!templateItem?.IsTemplate && <div className='distributor-select'>
+                                                                    <Form.Control as='select'>
+                                                                    </Form.Control>
+                                                                </div>}
+                                                            </td>
+                                                            <td>
+                                                                {!templateItem?.IsTemplate && <div className='qty-input'>
+                                                                    {itemLoading(templateItem, isQuantityLoading) ? <Spinner
+                                                                            animation='border'
+                                                                            variant='primary'
+                                                                        /> :
+                                                                        <Form.Control
+                                                                            min='0'
+                                                                            type='text'
+                                                                            id={`quantity-${templateItem?.ID}`}
+                                                                            disabled={!templateItem?.Quantity}
+                                                                            defaultValue={templateItem?.Quantity}
+                                                                            onBlur={(e) => handleQuantity(templateItem, e.target.value)}
+                                                                        >
+                                                                        </Form.Control>
+                                                                    }
+                                                                </div>}
+                                                            </td>
+                                                            <td></td>
+                                                            <td>
+                                                                {renderApproval(templateItem)}
+                                                            </td>
+                                                            {!templateItem?.IsTemplate ?
+                                                                <td className={`${templateItem?.Notes && 'sticky-note-red'}`}
+                                                                    onClick={() => handleOpenNotesModal(templateItem)}>
+                                                                    {templateItem?.Notes ?
+                                                                        <OverlayTrigger
+                                                                            placement='top'
+                                                                            overlay={
+                                                                                <Tooltip id='button-tooltip'>
+                                                                                    {templateItem?.Notes}
+                                                                                </Tooltip>
+
+                                                                            }
+                                                                            delay={{show: 250, hide: 400}}
+                                                                        >
+                                                                            <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                                                        </OverlayTrigger> :
+                                                                        <i className='far fa-sticky-note d-flex justify-content-center'></i>}
+                                                                </td> : <td/>}
+                                                            <td>
+                                                                {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
+                                                                    <i className='fas fa-retweet'></i>
+                                                                    <i className={`far ${isFav ? 'text-danger fas fa-heart' : 'fa-heart'}`}
+                                                                       onClick={() => handleIsFavorite(templateItem)}></i>
+                                                                    <i
+                                                                        className='far fa-trash-alt'
+                                                                        onClick={() => handleOpenModal(templateItem)}
+                                                                    ></i>
+                                                                </div>}
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })}
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            )}
+                        />
+                    )
+                })
+                }
 
                 <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
