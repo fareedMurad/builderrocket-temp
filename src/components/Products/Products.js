@@ -48,11 +48,9 @@ const Products = (props) => {
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [dropdownLoading, setDropdownLoading] = useState({
-        rooms: true,
-        brands: true,
-        categories: true
-    });
+    const [roomsDropdownLoading, setRoomsDropdownLoading] = useState(true);
+    const [brandsDropdownLoading, setBrandsDropdownLoading] = useState(true);
+    const [categoriesDropdownLoading, setCategoriesDropdownLoading] = useState(true);
     const [tempProduct, setTempProduct] = useState({});
     const [templateItems, setTemplateItems] = useState({});
     const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({loading: false});
@@ -93,7 +91,7 @@ const Products = (props) => {
     // }, [dispatch, productFilter])
 
     useEffect(() => {
-        setDropdownLoading({...dropdownLoading, brands: true});
+        setBrandsDropdownLoading(true);
         dispatch(getBrands()).then(() => {
             let options = [{
                 name: "Select All",
@@ -106,13 +104,13 @@ const Products = (props) => {
                 };
             })];
             setBrandOptions(options);
-            dropdownLoading.brands = false;
-            setDropdownLoading(dropdownLoading);
+            setBrandsDropdownLoading(false);
         });
     }, [dispatch]);
 
     useEffect(() => {
-        setDropdownLoading({...dropdownLoading, categories: true});
+
+        setCategoriesDropdownLoading(true);
         dispatch(getCategories()).then(() => {
             let options = [{
                 name: "Select All",
@@ -127,13 +125,14 @@ const Products = (props) => {
                 return a.Path?.localeCompare(b.Path);
             })];
             setCategoriesOptions(options);
-            dropdownLoading.categories = false;
-            setDropdownLoading(dropdownLoading);
+
+            setCategoriesDropdownLoading(false);
         });
     }, [dispatch]);
 
     useEffect(() => {
-        setDropdownLoading({...dropdownLoading, rooms: true});
+
+        setRoomsOptions(true);
         let options = [{
             name: "Select All",
             value: "select_all"
@@ -149,8 +148,8 @@ const Products = (props) => {
             setProductFilter({...productFilter, rooms: [roomId], pageNumber: 1});
         }
         setRoomsOptions(options);
-        dropdownLoading.rooms = false;
-        setDropdownLoading(dropdownLoading);
+
+        setRoomsDropdownLoading(false);
 
     }, [project]);
 
@@ -535,7 +534,7 @@ const Products = (props) => {
                 </div>
                 <div className='subtext'>The products assigned to each room are displayed below.</div>
                 <div className='ml-3'>
-                    {dropdownLoading.rooms ?
+                    {roomsDropdownLoading ?
                         <div className='text-center'>
                             <Spinner
                                 animation='border'
@@ -567,7 +566,7 @@ const Products = (props) => {
                         <div>
                             <div className='input-label mt-2 ml-3'>Room</div>
                             <div className="layout-select custom-dropdown">
-                                {dropdownLoading.rooms ?
+                                {roomsDropdownLoading ?
                                     <div className='text-center'>
                                         <Spinner
                                             animation='border'
@@ -613,7 +612,7 @@ const Products = (props) => {
                         <div>
                             <div className='input-label mt-2 ml-3'>Product Category</div>
                             <div className="layout-select custom-dropdown">
-                                {dropdownLoading.categories ?
+                                {categoriesDropdownLoading ?
                                     <div className='text-center'>
                                         <Spinner
                                             animation='border'
@@ -658,7 +657,7 @@ const Products = (props) => {
                             <div className='input-label mt-2 ml-3'>Brand</div>
                             <div className="layout-select custom-dropdown">
                                 {
-                                    dropdownLoading.brands ?
+                                    brandsDropdownLoading ?
                                         <div className='text-center'>
                                             <Spinner
                                                 animation='border'
