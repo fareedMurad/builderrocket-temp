@@ -73,7 +73,7 @@ const Products = (props) => {
         const rooms = [...selectedRooms.map(b => b.ID)];
 
         setProductFilter({...productFilter, rooms: rooms, pageNumber: 1});
-    }, [dispatch, productFilter, project]);
+    }, [dispatch, productFilter]);
 
     const handleBrandChange = useCallback((selectedBrands) => {
         const brands = [...selectedBrands.map(b => b.ID)];
@@ -132,7 +132,7 @@ const Products = (props) => {
 
     useEffect(() => {
 
-        setRoomsOptions(true);
+        setRoomsDropdownLoading(true);
         let options = [{
             name: "Select All",
             value: "select_all"
@@ -143,7 +143,7 @@ const Products = (props) => {
                 value: b.ID,
             };
         })];
-        if (project?.ProjectRooms?.length > 1) {
+        if (project?.ProjectRooms?.length > 1 && productFilter.rooms.length === 0) {
             let roomId = selectedRoom?.ID ?? project?.ProjectRooms[0].ID;
             setProductFilter({...productFilter, rooms: [roomId], pageNumber: 1});
         }
@@ -210,7 +210,9 @@ const Products = (props) => {
         }
 
         dispatch(handleProductForProject([productDeleteObj]))
-            .then(setShowModal(false));
+            .then(() => {
+                setShowModal(false)
+            });
     }
 
     const handleOpenModal = (item) => {
@@ -241,8 +243,8 @@ const Products = (props) => {
             setIsQuantityLoading({loading: true, ID: templateItem?.ID})
             dispatch(updateQuantity(project?.ID, templateItem?.ID, quantity))
                 .then((project) => {
-                    dispatch(setSelectedProject(project))
-                    setIsQuantityLoading({loading: false})
+                    dispatch(setSelectedProject(project));
+                    setIsQuantityLoading({loading: false});
                 });
         }
     }
@@ -287,7 +289,8 @@ const Products = (props) => {
 
     const handleIsFavorite = (item) => {
         dispatch(setIsFavorite(project?.ID, item?.ID, !item?.IsFavorite)).then(() => {
-            dispatch(saveProject(isFavorite))
+            dispatch(saveProject(isFavorite)).then(() =>{
+            })
         })
     }
 
@@ -295,7 +298,6 @@ const Products = (props) => {
         if (isEmpty(templateItems)) return;
 
         setIsLoading(true);
-        debugger;
         const updatedItems = Object.keys(templateItems)?.map((itemKey) => {
             return {
                 ID: parseInt(itemKey),
