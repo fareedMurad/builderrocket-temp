@@ -28,6 +28,7 @@ export const getBrands = () => dispatch => {
 
                 return response.data;
             }
+            return [];
         })
         .catch((error) => {
 
@@ -49,6 +50,7 @@ export const getCategories = (categoryID) => dispatch => {
 
             return response.data;
         }
+        return [];
     })
     .catch((error) => {
         if (error?.response?.status === 401) 
@@ -71,6 +73,7 @@ export const getChildCategories = (categoryID) => dispatch => {
 
             return response.data;
         }
+        return [];
     })
     .catch((error) => {
         if (error?.response?.status === 401) 

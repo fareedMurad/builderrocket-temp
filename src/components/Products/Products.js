@@ -92,7 +92,10 @@ const Products = (props) => {
 
     useEffect(() => {
         setBrandsDropdownLoading(true);
-        dispatch(getBrands()).then(() => {
+        dispatch(getBrands());
+    }, [dispatch]);
+    useEffect(() => {
+        if(brands){
             let options = [{
                 name: "Select All",
                 value: "select_all"
@@ -105,8 +108,8 @@ const Products = (props) => {
             })];
             setBrandOptions(options);
             setBrandsDropdownLoading(false);
-        });
-    }, [dispatch]);
+        }
+    }, [brands])
 
     useEffect(() => {
 
