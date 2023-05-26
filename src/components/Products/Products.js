@@ -94,6 +94,7 @@ const Products = (props) => {
         setBrandsDropdownLoading(true);
         dispatch(getBrands());
     }, [dispatch]);
+
     useEffect(() => {
         if(brands){
             let options = [{
@@ -112,9 +113,12 @@ const Products = (props) => {
     }, [brands])
 
     useEffect(() => {
-
         setCategoriesDropdownLoading(true);
-        dispatch(getCategories()).then(() => {
+        dispatch(getCategories());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if(categories){
             let options = [{
                 name: "Select All",
                 value: "select_all"
@@ -130,8 +134,8 @@ const Products = (props) => {
             setCategoriesOptions(options);
 
             setCategoriesDropdownLoading(false);
-        });
-    }, [dispatch]);
+        }
+    }, [categories]);
 
     useEffect(() => {
 
@@ -182,14 +186,19 @@ const Products = (props) => {
             dispatch(setProduct(product))
                 .then(dispatch(getCategories(product?.CategoryID)))
                 .then(() => {
-                    dispatch(getProductDetails(templateItem.ProductID))
-                        .then(() => {
-                            if (templateItem?.IsTemplate) {
-                                history.push(`/project/${project.ProjectNumber}/product/addProduct`)
-                            } else {
-                                history.push(`/project/${project.ProjectNumber}/product/replaceProduct`)
-                            }
-                        })
+                    if(templateItem.ProductID) {
+                        dispatch(getProductDetails(templateItem.ProductID))
+                            .then(() => {
+                                if (templateItem?.IsTemplate) {
+                                    history.push(`/project/${project.ProjectNumber}/product/addProduct`)
+                                } else {
+                                    history.push(`/project/${project.ProjectNumber}/product/replaceProduct`)
+                                }
+                            })
+                    }
+                    else{
+                        history.push(`/project/${project.ProjectNumber}/product/addProduct`)
+                    }
                 })
                 .catch(() => {
                 });
