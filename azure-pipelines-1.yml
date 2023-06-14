@@ -1,0 +1,38 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  GITHUB_TOKEN: $(GITHUB_TOKEN) # This is the secret variable we defined earlier
+  majorVersion: 1
+  minorVersion: 0
+  patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
+
+
+steps:
+  - script: |
+      echo Installing Node.js...
+      curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+      sudo apt-get install -y nodejs
+    displayName: 'Install Node.js'
+
+  - script: |
+      echo Installing dependencies...
+      npm ci
+    displayName: 'Install Dependencies'
+
+  - script: |
+      echo Building the React app...
+      npm run build
+    displayName: 'Build'
+
+  - script: |
+      echo Increasing app version...
+      npm version $(majorVersion).$(minorVersion).$(patchVersion)
+      git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
+      git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
+    displayName: 'npm install, increase version & push tag'
