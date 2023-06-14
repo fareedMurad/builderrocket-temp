@@ -7,7 +7,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  GITHUB_TOKEN: $(GITHUB_TOKEN) # This is the secret variable we defined earlier
+  GH_TOKEN: $(GITHUB_TOKEN) # This is the secret variable we defined earlier
   majorVersion: 1
   minorVersion: 0
   patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
@@ -28,6 +28,7 @@ steps:
 
   - script: |
       echo Increasing app version...
+      export GITHUB_TOKEN=$(GH_TOKEN)
       echo https://$GITHUB_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
       npm version $(majorVersion).$(minorVersion).$(patchVersion)
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
