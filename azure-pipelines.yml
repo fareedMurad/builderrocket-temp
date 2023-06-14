@@ -18,6 +18,8 @@ steps:
 - script: |
     npm install
     npm install -g typescript
+    git config --global user.email "dev.doublemwebsolutions@gmail.com"
+    git config --global user.name "Azure Pipline"
     npm version $(majorVersion).$(minorVersion).$(patchVersion)
     git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
     git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
