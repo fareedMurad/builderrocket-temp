@@ -28,6 +28,7 @@ steps:
 
   - script: |
       echo Increasing app version...
+      echo https://$GITHUB_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
       npm version $(majorVersion).$(minorVersion).$(patchVersion)
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
       git config --global user.name "Azure Pipline"
