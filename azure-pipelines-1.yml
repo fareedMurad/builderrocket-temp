@@ -7,7 +7,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  GH_TOKEN: $(GITHUB_TOKEN) # This is the secret variable we defined earlier
   majorVersion: 1
   minorVersion: 0
   patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
@@ -28,12 +27,12 @@ steps:
 
   - script: |
       echo Increasing app version...
-      export GITHUB_TOKEN=$(GH_TOKEN)
-      echo https://$GITHUB_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
+      export GH_TOKEN=$(GITHUB_TOKEN)
+      echo https://$GH_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
       npm version $(majorVersion).$(minorVersion).$(patchVersion)
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
       git config --global user.name "Azure Pipline"
-      git remote set-url origin https://$GITHUB_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
+      git remote set-url origin https://$GH_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
       git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
       git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
     displayName: 'npm install, increase version & push tag'
