@@ -22,13 +22,9 @@ steps:
 
   - script: |
       echo Installing dependencies...
-      npm ci
+      npm install
+      npm install -g typescript
     displayName: 'Install Dependencies'
-
-  - script: |
-      echo Building the React app...
-      npm run build
-    displayName: 'Build'
 
   - script: |
       echo Increasing app version...
@@ -36,3 +32,9 @@ steps:
       git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
       git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
     displayName: 'npm install, increase version & push tag'
+    
+  - script: |
+      echo Building the React app...
+      npm run build
+    displayName: 'Build'
+
