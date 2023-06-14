@@ -31,7 +31,7 @@ steps:
       npm version $(majorVersion).$(minorVersion).$(patchVersion)
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
       git config --global user.name "Azure Pipline"
-      git remote set-url origin https://$(GITHUB_TOKEN)@github.com:Huskerfromthehill/builderrocket-ui.git
+      git remote set-url origin https://$(env.GITHUB_TOKEN)@github.com:Huskerfromthehill/builderrocket-ui.git
       git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
       git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
     displayName: 'npm install, increase version & push tag'
