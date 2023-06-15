@@ -24,6 +24,18 @@ steps:
       npm install
       npm install -g typescript
     displayName: 'Install Dependencies'
+    
+  - script: |
+      echo "Starting downloading extras..."
+      
+      # Simulate a 10-minute operation (download) with progress output
+      for ((i=1; i<=10; i++)); do
+        echo "Downloading... $((i * 10))% complete"
+        sleep 60s
+      done
+      
+      echo "Download complete!"
+    displayName: 'Simulate download Operation'
 
   - script: |
       echo Increasing app version...
