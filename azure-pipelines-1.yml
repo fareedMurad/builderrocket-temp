@@ -28,7 +28,7 @@ steps:
   - script: |
       echo "Starting downloading extras..."
       
-     total_seconds=600
+      total_seconds=600
       remaining_seconds=$total_seconds
       
       while [ $remaining_seconds -gt 0 ]; do
