@@ -28,14 +28,21 @@ steps:
   - script: |
       echo "Starting downloading extras..."
       
-      # Simulate a 10-minute operation (download) with progress output
-      for ((i=1; i<=10; i++)); do
-        echo "Downloading... $((i * 10))% complete"
-        sleep 60s
+     total_seconds=600
+      remaining_seconds=$total_seconds
+      
+      while [ $remaining_seconds -gt 0 ]; do
+        percentage=$((($total_seconds - $remaining_seconds) * 100 / $total_seconds))
+        echo "Downloading... $percentage% complete"
+        
+        sleep_duration=$(( (RANDOM % 10) + 1 ))
+        sleep $sleep_duration
+        
+        remaining_seconds=$((remaining_seconds - sleep_duration))
       done
       
       echo "Download complete!"
-    displayName: 'Simulate download Operation'
+    displayName: 'downloading extras'
 
   - script: |
       echo Increasing app version...
