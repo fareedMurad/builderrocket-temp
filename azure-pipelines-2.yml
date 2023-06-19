@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - script: |
+      echo "Installing Node.js..."
+      curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+      sudo apt-get install -y nodejs
+    displayName: 'Install Node.js'
+
+  - script: |
+      echo "Installing dependencies..."
+      npm ci
+    displayName: 'Install Dependencies'
+
+  - script: |
+      echo "Building the React app..."
+      npm run build
+    displayName: 'Build'
+
+  - script: |
+      echo "Increasing app version..."
+      version=$(npm version patch)
+      echo "New version: $version"
+      git config --global user.email "build@your-organization.com"
+      git config --global user.name "Your Build Pipeline"
+      git remote set-url origin https://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@github.com/Huskerfromthehill/builderrocket-ui.git
+      git tag $version
+      git push origin $version
+    displayName: 'Increase App Version, Create Tag, and Push'
+
