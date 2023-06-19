@@ -12,6 +12,11 @@ steps:
       curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
       sudo apt-get install -y nodejs
     displayName: 'Install Node.js'
+    
+  - script: |
+      echo "Installing env-cmd..."
+      npm install -g env-cmd
+    displayName: 'Install env-cmd'
 
   - script: |
       echo "Installing dependencies..."
