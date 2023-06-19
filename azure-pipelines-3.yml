@@ -31,13 +31,15 @@ steps:
         $BranchName = "$(Build.SourceBranch)"
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipeline"
+        git checkout $BranchName
+        git add . 
+        git commit -m "Clean git status"
         echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
         npm version $(majorVersion).$(minorVersion).$(patchVersion)
         nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
         echo "To: $nVersion"
-        git checkout $BranchName
         echo "New Version: v$nVersion"
-        git tag -a v$nVersion -m "Version $nVersion"
         git add . 
+        git tag -a v$nVersion -m "Version $nVersion"
         git commit -m "Bump version to $nVersion"
         git push origin v$nVersion
