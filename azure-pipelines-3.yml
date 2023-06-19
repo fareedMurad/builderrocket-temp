@@ -29,14 +29,14 @@ steps:
 
 - script: |
         $BranchName = "$(Build.SourceBranch)" -replace "refs/heads/"
+        git config --global user.email "dev.doublemwebsolutions@gmail.com"
+        git config --global user.name "Azure Pipeline"
         git commit -m "Clean git status"
         echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
         npm version $(majorVersion).$(minorVersion).$(patchVersion)
         nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
         echo "To: $nVersion"
         git checkout $BranchName
-        git config --global user.email "dev.doublemwebsolutions@gmail.com"
-        git config --global user.name "Azure Pipeline"
         echo "New Version: v$nVersion"
         git tag -a v$nVersion -m "Version $nVersion"
         git commit -m "Bump version to $nVersion"
