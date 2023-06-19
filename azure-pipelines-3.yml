@@ -40,4 +40,4 @@ steps:
         echo "New Version: v$nVersion"
         git tag -a v$nVersion -m "Version $nVersion"
         git commit -m "Bump version to $nVersion"
-        git push origin v$version
+        git push origin v$nVersion
