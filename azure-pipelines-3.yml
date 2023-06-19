@@ -32,12 +32,12 @@ steps:
         git status
         echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
         npm version $(majorVersion).$(minorVersion).$(patchVersion)
-        version="$(majorVersion).$(minorVersion).$(patchVersion)"
-        echo "To: $version"
+        nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
+        echo "To: $nVersion"
         git checkout $BranchName
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipeline"
-        echo "New Version: v$(version)"
-        git tag -a v$version -m "Version $version"
-        git commit -m "Bump version to $version"
+        echo "New Version: v$nVersion"
+        git tag -a v$version -m "Version $nVersion"
+        git commit -m "Bump version to $nVersion"
         git push origin v$version
