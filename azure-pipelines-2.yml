@@ -15,7 +15,8 @@ steps:
 
   - script: |
       echo "Installing dependencies..."
-      npm ci
+      npm install
+      npm install -g typescript
     displayName: 'Install Dependencies'
 
   - script: |
@@ -27,8 +28,8 @@ steps:
       echo "Increasing app version..."
       version=$(npm version patch)
       echo "New version: $version"
-      git config --global user.email "build@your-organization.com"
-      git config --global user.name "Your Build Pipeline"
+      git config --global user.email "dev.doublemwebsolutions@gmail.com"
+      git config --global user.name "Build Pipeline"
       git remote set-url origin https://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@github.com/Huskerfromthehill/builderrocket-ui.git
       git tag $version
       git push origin $version
