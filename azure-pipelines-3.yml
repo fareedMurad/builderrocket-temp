@@ -29,8 +29,11 @@ steps:
 
 - script: |
         $BranchName = "$(Build.SourceBranch)" -replace "refs/heads/"
+        git status
+        echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
         npm version $(majorVersion).$(minorVersion).$(patchVersion)
         version="$(majorVersion).$(minorVersion).$(patchVersion)"
+        echo "To: $version"
         git checkout $BranchName
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipeline"
