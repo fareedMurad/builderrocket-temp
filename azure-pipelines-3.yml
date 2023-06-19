@@ -32,5 +32,6 @@ steps:
         git checkout $BranchName
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipline"
-        npm version prerelease -m "Auto increment pre-release version to %s [skip ci]" --force
-        git push
+        npm version $(majorVersion).$(minorVersion).$(patchVersion)
+        git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
+        git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
