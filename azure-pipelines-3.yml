@@ -20,18 +20,21 @@ steps:
 - script: |
     npm install
     npm install -g typescript
-  displayName: 'npm install, increase version & push tag'
+  displayName: 'npm install'
   
 - task: PowerShell@2
-  displayName: 'Bump the version'
+  displayName: 'increase version & push tag'
   inputs:
       targetType: 'inline'
 
 - script: |
         $BranchName = "$(Build.SourceBranch)" -replace "refs/heads/"
+        npm version $(majorVersion).$(minorVersion).$(patchVersion)
+        version="$(majorVersion).$(minorVersion).$(patchVersion)"
         git checkout $BranchName
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
-        git config --global user.name "Azure Pipline"
-        npm version $(majorVersion).$(minorVersion).$(patchVersion)
-        git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
-        git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
+        git config --global user.name "Azure Pipeline"
+        echo "New Version: v$(version)"
+        git tag -a v$version -m "Version $version"
+        git commit -m "Bump version to $version"
+        git push origin v$version
