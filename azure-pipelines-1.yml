@@ -23,7 +23,7 @@ steps:
   displayName: 'npm install'
   
 - script: |
-        $BranchName = "$(Build.SourceBranch)"
+        BranchName="$(Build.SourceBranch)"
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipeline"
         # git checkout $BranchName
