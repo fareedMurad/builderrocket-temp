@@ -1,5 +1,5 @@
 trigger:
-- main
+- staging
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -10,6 +10,8 @@ variables:
   patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
 
 steps:
+- checkout: self
+  persistCredentials: true
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
@@ -18,9 +20,26 @@ steps:
 - script: |
     npm install
     npm install -g typescript
-    git config --global user.email "dev.doublemwebsolutions@gmail.com"
-    git config --global user.name "Azure Pipline"
-    npm version $(majorVersion).$(minorVersion).$(patchVersion)
-    git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
-    git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
-  displayName: 'npm install, increase version & push tag'
+  displayName: 'npm install'
+  
+- task: PowerShell@2
+  displayName: 'increase version & push tag'
+  inputs:
+      targetType: 'inline'
+
+- script: |
+        $BranchName = "$(Build.SourceBranch)"
+        git config --global user.email "dev.doublemwebsolutions@gmail.com"
+        git config --global user.name "Azure Pipeline"
+        git checkout $BranchName
+        git add . 
+        git commit -m "Clean git status"
+        echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
+        npm version $(majorVersion).$(minorVersion).$(patchVersion)
+        nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
+        echo "To: $nVersion"
+        echo "New Version: v$nVersion"
+        git add . 
+        git tag -a v$nVersion -m "Version $nVersion"
+        git commit -m "Bump version to $nVersion"
+        git push origin v$nVersion
