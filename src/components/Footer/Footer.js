@@ -5,7 +5,7 @@ import './Footer.scss';
 
 
 const Footer = () => {
-    const appVersion = typeof process !== 'undefined' && process.env ? 'v' + process.env.NODE_ENV : null;
+    const appVersion = typeof process !== 'undefined' && process.env ? 'v' + process.env.REACT_APP_VERSION : 'dev-version';
 
     return (
         <Navbar className='footer justify-content-center'>  
@@ -14,7 +14,7 @@ const Footer = () => {
                 <Link className='footer-item' to='/'>Social Media</Link>
                 <Link className='footer-item' to='/'>Contact Us</Link>
             </Nav>
-            <span className='float-right'>{appVersion}</span>
+            <span className='ml-auto text-white'>{appVersion}</span>
         </Navbar>
     )
 }
