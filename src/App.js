@@ -25,7 +25,6 @@ function App() {
             window.removeEventListener('resize');
         })
     }, []);
-    console.log(process?.env.NODE_ENV);
 
     return (
         <div>
