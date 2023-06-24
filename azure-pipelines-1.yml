@@ -31,7 +31,7 @@ steps:
   displayName: 'npm install'
   
 - script: |
-        $[variables['patchVersion'] = 34]
+        # $[variables['patchVersion'] = 34] # this to set the variable to the latest tag
         branchName=$(Build.SourceBranchName)
         sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
         git switch $sanitizedBranchName
