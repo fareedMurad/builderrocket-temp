@@ -23,7 +23,7 @@ steps:
   displayName: 'npm install'
   
 - script: |
-        BranchName="$(Build.SourceBranch)"
+        BranchName="$(Build.SourceBranch)" -replace "refs/heads/"
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipeline"
         # git checkout $BranchName
@@ -46,5 +46,5 @@ steps:
         echo new package.json version: $(jq -r ".version" package.json)
         git add . 
         git commit -m "Bump version to $nVersion"
-        git push origin $BranchName
+        git push
   displayName: 'increase version & push tag'
