@@ -1,5 +1,7 @@
 trigger:
-- staging
+  tags:
+      include:
+      - '*'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -47,7 +49,25 @@ steps:
         #sed -i 's/"version": "'${package_version}'"/"version": "'${nVersion}'"/' package.json
         #echo new package.json version: $(jq -r ".version" package.json)
         git tag -a v$nVersion -m "Version $nVersion"
-        git add . 
-        git commit -m "Bump version to $nVersion"
         git push
   displayName: 'increase version & push tag'
+  
+- script: |
+      echo "Building the React app..."
+      npm run build
+  displayName: 'Building the app'
+  
+- task: FtpUpload@2
+  inputs:
+    credentialsOption: 'inputs'
+    serverUrl: $(FTP_SERVER)
+    username: $(FTP_USERNAME)
+    password: $(FTP_PASSWORD)
+    rootDirectory: './build'
+    filePatterns: '**'
+    remoteDirectory: '/Staging/$(Build.BuildId)/'
+    clean: false
+    cleanContents: false
+    preservePaths: true
+    trustSSL: true
+  displayName: 'Uploading to the FTP'
