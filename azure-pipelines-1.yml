@@ -21,6 +21,8 @@ steps:
 - script: |
     npm install
     npm install -g typescript
+    echo "Installing env-cmd..."
+    npm install -g env-cmd
   displayName: 'npm install'
   
 - script: |
