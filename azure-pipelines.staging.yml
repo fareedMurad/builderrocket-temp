@@ -58,7 +58,7 @@ steps:
       password: $(FTP_PASSWORD)
       rootDirectory: './build'
       filePatterns: '**'
-      remoteDirectory: '/Staging/Beta/'
+      remoteDirectory: $(FTP_FOLDER)
       clean: false
       cleanContents: true
       preservePaths: true
