@@ -39,10 +39,16 @@ steps:
         nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
         echo "To: $nVersion"
         echo "New Version: v$nVersion"
-        git add . 
-        echo Replacing \"version\": \"$package_version\" with \"version\": \"$new_version\" in local package.json
-        sed -i 's/"version": "'${package_version}'"/"version": "'${new_version}'"/' package.json
+        # Get package name and version from package.json file
+        package_name=$(jq -r ".name" package.json)
+        package_version=$(jq -r ".version" package.json)
+        # next, let's get all available versions for our package
+        
+        # if we find out that the version we're trying to publish already exists in the feed, then let's increment patch version for that package and publish
+        echo Replacing \"version\": \"$package_version\" with \"version\": \"$nVersion\" in local package.json
+        sed -i 's/"version": "'${package_version}'"/"version": "'${nVersion}'"/' package.json
         echo new package.json version: $(jq -r ".version" package.json)
+        git add . 
         git commit -m "Bump version to $nVersion"
         git push origin v$nVersion
   displayName: 'increase version & push tag'
