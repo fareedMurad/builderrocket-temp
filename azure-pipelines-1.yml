@@ -32,21 +32,21 @@ steps:
         # git checkout $BranchName
         # git add . 
         # git commit -m "Clean git status"
-        # echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
-        # npm version $(majorVersion).$(minorVersion).$(patchVersion)
+        echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
+        npm version $(majorVersion).$(minorVersion).$(patchVersion)
         nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
         echo "To: $nVersion"
-        echo "New Version: v$nVersion"
         # Get package name and version from package.json file
-        package_name=$(jq -r ".name" package.json)
-        package_version=$(jq -r ".version" package.json)
-        echo "Package Name: $package_name, v: $package_version, nV: $nVersion"
+        #package_name=$(jq -r ".name" package.json)
+        #package_version=$(jq -r ".version" package.json)
+        #echo "Package Name: $package_name, v: $package_version, nV: $nVersion"
         # next, let's get all available versions for our package
         
         # if we find out that the version we're trying to publish already exists in the feed, then let's increment patch version for that package and publish
-        echo Replacing \"version\": \"$package_version\" with \"version\": \"$nVersion\" in local package.json
-        sed -i 's/"version": "'${package_version}'"/"version": "'${nVersion}'"/' package.json
-        echo new package.json version: $(jq -r ".version" package.json)
+        #echo Replacing \"version\": \"$package_version\" with \"version\": \"$nVersion\" in local package.json
+        #sed -i 's/"version": "'${package_version}'"/"version": "'${nVersion}'"/' package.json
+        #echo new package.json version: $(jq -r ".version" package.json)
+        git tag -a v$nVersion -m "Version $nVersion"
         git add . 
         git commit -m "Bump version to $nVersion"
         git push
