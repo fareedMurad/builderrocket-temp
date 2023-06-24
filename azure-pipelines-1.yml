@@ -46,5 +46,5 @@ steps:
         echo new package.json version: $(jq -r ".version" package.json)
         git add . 
         git commit -m "Bump version to $nVersion"
-        git push
+        git push origin $BranchName
   displayName: 'increase version & push tag'
