@@ -40,6 +40,8 @@ steps:
         echo "To: $nVersion"
         echo "New Version: v$nVersion"
         git add . 
-        git tag -a v$nVersion -m "Version $nVersion"
-        git commit -m "Bump version to $nVersion"
-        git push origin v$nVersion
+        echo "Replacing \"version\": \"$package_version\" with \"version\": \"$new_version\" in local package.json"
+        sed -i 's/"version": "'${package_version}'"/"version": "'${new_version}'"/' package.json
+        echo new package.json version: $(jq -r ".version" package.json)
+        fi
+        
