@@ -1,7 +1,5 @@
 trigger:
-  tags:
-      include:
-      - '*'
+  - staging
 
 pool:
   vmImage: 'ubuntu-latest'
