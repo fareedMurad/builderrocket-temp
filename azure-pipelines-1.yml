@@ -1,5 +1,10 @@
 trigger:
-  - staging
+  branches:
+    include:
+      - staging
+  tags:
+    exclude:
+      - '*'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -26,31 +31,18 @@ steps:
   displayName: 'npm install'
   
 - script: |
-        #git fetch --all
-        git switch $(basename $(Build.SourceBranch))
-        BranchName="$(Build.SourceBranchName)"
-        sanitizedBranchName=$(echo $BranchName | sed 's/refs\/heads\///')
+        git fetch --all
+        branchName=$(Build.SourceBranchName)
+        sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
+        git switch $sanitizedBranchName
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipeline"
-        # git checkout $BranchName
-        # git add . 
-        # git commit -m "Clean git status"
         echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
         npm version $(majorVersion).$(minorVersion).$(patchVersion)
         nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
         echo "To: $nVersion"
-        # Get package name and version from package.json file
-        #package_name=$(jq -r ".name" package.json)
-        #package_version=$(jq -r ".version" package.json)
-        #echo "Package Name: $package_name, v: $package_version, nV: $nVersion"
-        # next, let's get all available versions for our package
-        
-        # if we find out that the version we're trying to publish already exists in the feed, then let's increment patch version for that package and publish
-        #echo Replacing \"version\": \"$package_version\" with \"version\": \"$nVersion\" in local package.json
-        #sed -i 's/"version": "'${package_version}'"/"version": "'${nVersion}'"/' package.json
-        #echo new package.json version: $(jq -r ".version" package.json)
         git tag -a v$nVersion -m "Version $nVersion"
-        git push origin $sanitizedBranchName --tags
+        git push origin --tags
   displayName: 'increase version & push tag'
   
 - script: |
@@ -66,9 +58,47 @@ steps:
     password: $(FTP_PASSWORD)
     rootDirectory: './build'
     filePatterns: '**'
-    remoteDirectory: '/Staging/$(Build.BuildId)/'
+    remoteDirectory: '/Staging/Beta/'
+    clean: false
+    cleanContents: true
+    preservePaths: true
+    trustSSL: true
+  displayName: 'Uploading to the FTP'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(zipFileName)'
+  displayName: 'Create build.zip'
+
+- task: FtpUpload@2
+  inputs:
+    credentialsOption: 'inputs'
+    serverUrl: $(FTP_SERVER)
+    username: $(FTP_USERNAME)
+    password: $(FTP_PASSWORD)
+    rootDirectory: '$(Build.ArtifactStagingDirectory)'
+    filePatterns: '$(zipFileName)'
+    remoteDirectory: '/Staging/BetaDeploy/'
+    clean: false
+    cleanContents: true
+    preservePaths: true
+    trustSSL: true
+  displayName: 'Upload build.zip to FTP'
+
+- task: FtpUpload@2
+  inputs:
+    credentialsOption: 'inputs'
+    serverUrl: $(FTP_SERVER)
+    username: $(FTP_USERNAME)
+    password: $(FTP_PASSWORD)
+    rootDirectory: '$(Build.ArtifactStagingDirectory)'
+    filePatterns: '**/*.zip'
+    remoteDirectory: '/Staging/BetaDeploy/'
     clean: false
     cleanContents: false
     preservePaths: true
     trustSSL: true
-  displayName: 'Uploading to the FTP'
+    operation: 'unzip'
+  displayName: 'Unzip build.zip on FTP'
