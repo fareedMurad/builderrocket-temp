@@ -27,11 +27,12 @@ steps:
   
 - script: |
         #git fetch --all
-        #git switch $(basename $(Build.SourceBranch))
-        BranchName="$(Build.SourceBranch)" -replace "refs/heads/"
+        git switch $(basename $(Build.SourceBranch))
+        BranchName="$(Build.SourceBranchName)"
+        sanitizedBranchName=$(echo $BranchName | sed 's/refs\/heads\///')
         git config --global user.email "dev.doublemwebsolutions@gmail.com"
         git config --global user.name "Azure Pipeline"
-        git checkout $BranchName
+        # git checkout $BranchName
         # git add . 
         # git commit -m "Clean git status"
         echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
@@ -49,7 +50,7 @@ steps:
         #sed -i 's/"version": "'${package_version}'"/"version": "'${nVersion}'"/' package.json
         #echo new package.json version: $(jq -r ".version" package.json)
         git tag -a v$nVersion -m "Version $nVersion"
-        git push
+        git push origin $sanitizedBranchName --tags
   displayName: 'increase version & push tag'
   
 - script: |
