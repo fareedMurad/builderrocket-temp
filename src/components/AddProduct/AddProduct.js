@@ -144,8 +144,8 @@ const AddProduct = () => {
     const handleSelectedProductDetails = (productDetail) => {
         dispatch(setProductDetail(productDetail))
             .then(() => {
-                setShowColorModal(true);
-                //history.push(`/project/${project.ProjectNumber}/product/productDetail`)
+                //setShowColorModal(true);
+                history.push(`/project/${project.ProjectNumber}/product/productDetail`)
             });
     }
 
