@@ -582,6 +582,7 @@ const Products = (props) => {
                             <div className="layout-select custom-dropdown">
                                 {roomsDropdownLoading ?
                                     <div className='text-center'>
+                                        <span></span>
                                         <Spinner
                                             animation='border'
                                             variant='primary'
