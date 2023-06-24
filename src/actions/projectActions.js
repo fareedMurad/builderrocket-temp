@@ -183,6 +183,10 @@ export const getProjectByProjectID = (projectID) => dispatch => {
         .catch((error) => {
             if (error.response?.status === 401)
                 dispatch({ type: LOGOUT });
+            else{
+                dispatch({ type: GET_PROJECT, payload: null });
+                throw error;
+            }
         });
 }
 

@@ -7,6 +7,7 @@ import 'react-image-lightbox/style.css'; // This only needs to be imported once 
 // components
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Toaster from "react-hot-toast";
 
 function App() {
 

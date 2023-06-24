@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { getProjectByProjectID } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectCard.scss';
+import toast from "react-hot-toast";
+import Toaster from "react-hot-toast";
 
 const ProjectCard = (props) => {
     const { project, history } = props;
@@ -13,7 +15,9 @@ const ProjectCard = (props) => {
         dispatch(getProjectByProjectID(project?.ID))
             .then(() => {
                 history.push(`/project/${project?.ProjectNumber}/projectInformation`)
-            });
+            }).catch((response) => {
+            alert("Error! Can't load the project");
+        });
     }
 
     return (
@@ -28,6 +32,7 @@ const ProjectCard = (props) => {
             }}
         >
             <div className='card-container'>
+                <Toaster position="top-center" />
                 <div className='top-section'>
                     <div className='lot-number'>
                         {project?.ProjectNumber}
