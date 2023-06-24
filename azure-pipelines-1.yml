@@ -31,7 +31,6 @@ steps:
   displayName: 'npm install'
   
 - script: |
-        git fetch --all
         branchName=$(Build.SourceBranchName)
         sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
         git switch $sanitizedBranchName
@@ -42,6 +41,7 @@ steps:
         nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
         echo "To: $nVersion"
         git tag -a v$nVersion -m "Version $nVersion"
+        git commit -m "Increase version to v$nVersion"
         git push origin --tags
   displayName: 'increase version & push tag'
   
@@ -50,42 +50,17 @@ steps:
       npm run build
   displayName: 'Building the app'
   
-
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
-    includeRootFolder: false
-    archiveFile: '$(System.DefaultWorkingDirectory)/$(zipFileName)'
-  displayName: 'Create build.zip'
-
 - task: FtpUpload@2
   inputs:
     credentialsOption: 'inputs'
     serverUrl: $(FTP_SERVER)
     username: $(FTP_USERNAME)
     password: $(FTP_PASSWORD)
-    rootDirectory: '$(System.DefaultWorkingDirectory)'
-    filePatterns: '$(zipFileName)'
-    remoteDirectory: '/Staging/BetaDeploy/'
+    rootDirectory: './build'
+    filePatterns: '**'
+    remoteDirectory: '/Staging/Beta/'
     clean: false
     cleanContents: true
     preservePaths: true
     trustSSL: true
-  displayName: 'Upload build.zip to FTP'
-
-- task: FtpUpload@2
-  inputs:
-    credentialsOption: 'inputs'
-    serverUrl: $(FTP_SERVER)
-    username: $(FTP_USERNAME)
-    password: $(FTP_PASSWORD)
-    rootDirectory: '$(System.DefaultWorkingDirectory)'
-    filePatterns: '**/*.zip'
-    remoteDirectory: '/Staging/BetaDeploy/'
-    clean: false
-    cleanContents: false
-    preservePaths: true
-    trustSSL: true
-    operation: 'unzip'
-  displayName: 'Unzip build.zip on FTP'
+  displayName: 'Uploading to the FTP'
