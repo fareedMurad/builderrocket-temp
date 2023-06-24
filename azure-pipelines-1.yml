@@ -1,7 +1,5 @@
 trigger:
-  branches:
-    include:
-      - main
+- staging
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -11,53 +9,40 @@ variables:
   minorVersion: 0
   patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
 
-
 steps:
-  - script: |
-      echo Installing Node.js...
-      curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-      sudo apt-get install -y nodejs
-    displayName: 'Install Node.js'
+- checkout: self
+  persistCredentials: true
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
 
-  - script: |
-      echo Installing dependencies...
-      npm install
-      npm install -g typescript
-    displayName: 'Install Dependencies'
-    
-  - script: |
-      echo "Starting downloading extras..."
-      
-      total_seconds=600
-      remaining_seconds=$total_seconds
-      
-      while [ $remaining_seconds -gt 0 ]; do
-        percentage=$((($total_seconds - $remaining_seconds) * 100 / $total_seconds))
-        echo "Downloading... $percentage% complete"
-        
-        sleep_duration=$(( (RANDOM % 10) + 1 ))
-        sleep $sleep_duration
-        
-        remaining_seconds=$((remaining_seconds - sleep_duration))
-      done
-      
-      echo "Download complete!"
-    displayName: 'downloading extras'
+- script: |
+    npm install
+    npm install -g typescript
+  displayName: 'npm install'
+  
+- task: PowerShell@2
+  displayName: 'increase version & push tag'
+  inputs:
+      targetType: 'inline'
 
-  - script: |
-      echo Increasing app version...
-      export GH_TOKEN=$(GITHUB_TOKEN)
-      echo https://$GH_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
-      npm version $(majorVersion).$(minorVersion).$(patchVersion)
-      git config --global user.email "dev.doublemwebsolutions@gmail.com"
-      git config --global user.name "Azure Pipline"
-      git remote set-url origin https://$GH_TOKEN@github.com:Huskerfromthehill/builderrocket-ui.git
-      git tag -a v$(majorVersion).$(minorVersion).$(patchVersion) -m "Version $(majorVersion).$(minorVersion).$(patchVersion)"
-      git push origin v$(majorVersion).$(minorVersion).$(patchVersion)
-    displayName: 'npm install, increase version & push tag'
-    
-  - script: |
-      echo Building the React app...
-      npm run build
-    displayName: 'Build'
-
+- script: |
+        $BranchName = "$(Build.SourceBranch)"
+        git config --global user.email "dev.doublemwebsolutions@gmail.com"
+        git config --global user.name "Azure Pipeline"
+        git checkout $BranchName
+        git add . 
+        git commit -m "Clean git status"
+        echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
+        npm version $(majorVersion).$(minorVersion).$(patchVersion)
+        nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
+        echo "To: $nVersion"
+        echo "New Version: v$nVersion"
+        git add . 
+        echo Replacing \"version\": \"$package_version\" with \"version\": \"$new_version\" in local package.json
+        sed -i 's/"version": "'${package_version}'"/"version": "'${new_version}'"/' package.json
+        echo new package.json version: $(jq -r ".version" package.json)
+        git commit -m "Bump version to $nVersion"
+        git push origin v$nVersion
+  displayName: 'increase version & push tag'
