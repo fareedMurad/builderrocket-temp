@@ -342,11 +342,11 @@ const AddProduct = () => {
                 handleClose={handleClose} 
                 handleCloseModal={() => setShowModal(false)} 
             />
-            <ColorProductModal
+            {/*<ColorProductModal
                 show={showColorModal}
                 handleClose={handleColorClose}
                 handleCloseModal={() => setShowColorModal(false)}
-            />
+            />*/}
         </div>
     );
 }
