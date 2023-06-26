@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "increase-version": "set VERSION=$(node -p \"require('./package.json').version\") && npm version patch --no-git-tag-version && git add package.json package-lock.json && git commit -m \"Bump version to %VERSION%\"",
-    "tag-version": "git tag v$(node -p \"require('./package.json').version\") -m \"Version $(node -p \"require('./package.json').version\")\"",
-    "release": "npm run increase-version && npm run tag-version && git push origin --follow-tags",
+    "increase-version": "$VERSION=$(node -p \"require('./package.json').version\") && npm version patch --no-git-tag-version && git add package.json package-lock.json && git commit -m \"Bump version to $VERSION\"",
+    "tag-version": "$VERSION=$(node -p \"require('./package.json').version\") && git tag v$VERSION -m \"Version $VERSION\"",
+    "release": "npm run increase-version && npm run tag-version",
     "build": "env-cmd -f .env.staging react-scripts build",
     "build:prod": "env-cmd -f .env.production react-scripts build",
     "prebuild": "cross-env REACT_APP_VERSION=$(node -p \"require('./package.json').version\")",

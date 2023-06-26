@@ -150,9 +150,16 @@ const Products = (props) => {
                 value: b.ID,
             };
         })];
-        if (project?.ProjectRooms?.length > 1 && productFilter.rooms.length === 0) {
+        if (project?.ProjectRooms?.length > 0 && productFilter.rooms.length === 0) {
             let roomId = selectedRoom?.ID ?? project?.ProjectRooms[0].ID;
-            setProductFilter({...productFilter, rooms: [roomId], pageNumber: 1});
+            if(project?.ProjectRooms.filter(p => p.ID === roomId).length === 0 || !roomId){
+                roomId = project?.ProjectRooms[0].ID;
+            }
+            let rooms = [roomId];
+            if(!roomId){
+                rooms = [];
+            }
+            setProductFilter({...productFilter, rooms: rooms, pageNumber: 1});
         }
         setRoomsOptions(options);
 
@@ -993,7 +1000,8 @@ export const DrawDropdownSelection = ({items, selectedIds, nameProp, type}) => {
     };
     let name = `No ${types[type].group} selected`;
     if(selectedLength === 1){
-        name = items?.filter(p => selectedIds.indexOf(p.ID) > -1)[0][nameProp];
+        let item = items?.filter(p => selectedIds.indexOf(p.ID) > -1)[0];
+        name = item ? item[nameProp] : null;
     }else if(selectedLength > 1 && selectedLength < items.length){
         name = `Multiple ${types[type].group}`;
     }else if(items?.length === selectedLength){

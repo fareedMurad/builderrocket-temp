@@ -2,9 +2,6 @@ trigger:
   branches:
     include:
       - staging
-  excludeMessage:
-    startsWith:
-      - 'Bump version'
   tags:
     exclude:
       - '*'
@@ -27,6 +24,25 @@ steps:
       echo "Installing env-cmd..."
       npm install -g env-cmd
     displayName: 'npm install'
+
+  - script: |
+      branchName=$(Build.SourceBranchName)
+      sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
+      oldVersion=$(jq -r '.version' package.json)
+      echo "Increased Patch Version: $patchVersion"
+      git switch $sanitizedBranchName
+      git config --global user.email "dev.doublemwebsolutions@gmail.com"
+      git config --global user.name "Azure Pipeline"
+      echo "Increase version from: $oldVersion"
+      npm version patch --no-git-tag-version
+      newVersion=$(jq -r '.version' package.json)
+      echo "To: $newVersion"
+      git add .
+      git commit -m "Bump version to $newVersion"
+      git tag -a v$newVersion -m "Version $newVersion"
+      git push origin --follow-tags
+    displayName: 'increase version & push tag'
+
   - script: |
       echo "Building the React app..."
       npm run build
