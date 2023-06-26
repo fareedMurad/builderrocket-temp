@@ -32,13 +32,14 @@ steps:
 
   - script: |
       branchName=$(Build.SourceBranchName)
+      patchVer=40+$(patchVersion)
       sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
       git switch $sanitizedBranchName
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
       git config --global user.name "Azure Pipeline"
-      echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
-      npm version $(majorVersion).$(minorVersion).$(patchVersion)
-      nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
+      echo "Increase version from: $(majorVersion).$(minorVersion).$patchVer"
+      npm version $(majorVersion).$(minorVersion).$patchVer
+      nVersion="$(majorVersion).$(minorVersion).$patchVer"
       echo "To: $nVersion"
       git tag -a v$nVersion -m "Version $nVersion"
       git commit -m "Increase version to v$nVersion"
