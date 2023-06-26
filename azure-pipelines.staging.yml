@@ -42,9 +42,6 @@ steps:
       npm version $(majorVersion).$(minorVersion).$patchVersion
       nVersion="$(majorVersion).$(minorVersion).$patchVersion"
       echo "To: $nVersion"
-      git tag -a v$nVersion -m "Version $nVersion"
-      git commit -m "Increase version to v$nVersion"
-      git push origin --tags
     displayName: 'increase version & push tag'
 
   - script: |
