@@ -31,8 +31,11 @@ steps:
     displayName: 'npm install'
 
   - script: |
-      branchName=$(Build.SourceBranchName)
       echo "##vso[task.setvariable variable=patchVersion;isOutput=true]$patchVersion"
+      displayName: 'set patch version'
+
+  - script: |
+      branchName=$(Build.SourceBranchName)
       sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
       git switch $sanitizedBranchName
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
