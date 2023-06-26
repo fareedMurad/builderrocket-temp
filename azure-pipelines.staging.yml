@@ -41,10 +41,10 @@ steps:
       git config --global user.name "Azure Pipeline"
       echo "Increase version from: $oldVersion"
       npm version --no-git-tag-version $(majorVersion).$(minorVersion).$patchVersion
-      nVersion=$(( $(cat package.json | jq -r '.version')))
+      nVersion="$(npm show . version)"
       echo "To: $nVersion"
+      git add .
       git tag -a v$nVersion -m "Version $nVersion"
-      git commit -m "Increase version to v$nVersion"
       git push origin --tags
     displayName: 'increase version & push tag'
 
