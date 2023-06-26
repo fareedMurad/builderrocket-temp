@@ -43,6 +43,7 @@ steps:
       newVersion=$(jq -r '.version' package.json)
       echo "To: $newVersion"
       git add .
+      git commit -m "Bump version to $newVersion"
       git tag -a v$newVersion -m "Version $newVersion"
       git push origin --tags
     displayName: 'increase version & push tag'
