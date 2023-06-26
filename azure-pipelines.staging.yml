@@ -45,7 +45,7 @@ steps:
       git add .
       git commit -m "Bump version to $newVersion"
       git tag -a v$newVersion -m "Version $newVersion"
-      git push origin --tags
+      git push origin --follow-tags
     displayName: 'increase version & push tag'
 
   - script: |
