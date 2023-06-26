@@ -33,14 +33,14 @@ steps:
   - script: |
       branchName=$(Build.SourceBranchName)
       sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
-      oldVersion=$(($(cat package.json | jq -r '.version')))
+      oldVersion=$(jq -r '.version' package.json)
       echo "Increased Patch Version: $patchVersion"
       git switch $sanitizedBranchName
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
       git config --global user.name "Azure Pipeline"
       echo "Increase version from: $oldVersion"
       npm version patch --no-git-tag-version
-      newVersion=$(($(cat package.json | jq -r '.version')))
+      newVersion=$(jq -r '.version' package.json)
       echo "To: $newVersion"
       git add .
       git tag -a v$newVersion -m "Version $newVersion"
