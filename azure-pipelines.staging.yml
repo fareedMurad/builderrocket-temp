@@ -31,20 +31,16 @@ steps:
     displayName: 'npm install'
 
   - script: |
-      patchVersion=$(( $(patchVersion) + 35 ))
-      echo "Increased Patch Version: $patchVersion"
-      echo "##vso[task.setvariable variable=patchVersion;isOutput=true]$patchVersion"
-    displayName: 'set patch version'
-
-  - script: |
       branchName=$(Build.SourceBranchName)
       sanitizedBranchName=$(echo $branchName | sed 's/refs\/heads\///')
+      patchVersion=$(( $(patchVersion) + 35 ))
+      echo "Increased Patch Version: $patchVersion"
       git switch $sanitizedBranchName
       git config --global user.email "dev.doublemwebsolutions@gmail.com"
       git config --global user.name "Azure Pipeline"
-      echo "Increase version from: $(majorVersion).$(minorVersion).$(patchVersion)"
-      npm version $(majorVersion).$(minorVersion).$(patchVersion)
-      nVersion="$(majorVersion).$(minorVersion).$(patchVersion)"
+      echo "Increase version from: $(majorVersion).$(minorVersion).$patchVersion"
+      npm version $(majorVersion).$(minorVersion).$patchVersion
+      nVersion="$(majorVersion).$(minorVersion).$patchVersion"
       echo "To: $nVersion"
       git tag -a v$nVersion -m "Version $nVersion"
       git commit -m "Increase version to v$nVersion"
