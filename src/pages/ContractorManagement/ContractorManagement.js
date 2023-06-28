@@ -50,25 +50,19 @@ const ContractorManagement = () => {
             });
     }, [dispatch]);
 
+    const SearchField = ["CompanyName", "FirstName", "LastName", "City", "State"]
+
     useEffect(() => {
         const timer = setTimeout(() => {
             const filter = contractors?.filter((contractor) =>
-                contractor?.CompanyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.FirstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.LastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.City?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.State?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.ZipCode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.PhoneNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                contractor?.EmailAddress?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                `${contractor?.FirstName} ${contractor?.LastName}`.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
-                contractor?.ContractorTypes.find((type) => type.Name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
-            )?.map(c => {
-                return {
-                    ...c,
-                    ContractorTypes: c.ContractorTypes.filter(t => t.Name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-                }
-            })
+                SearchField.some(newItem => {
+                    if (contractor[newItem]) {
+                        return (
+                            contractor[newItem].toString().toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
+                        );
+                    }
+                })
+            )
 
             setFilteredContractors(filter)
         }, 1000);
@@ -153,12 +147,12 @@ const ContractorManagement = () => {
     // }
 
     const handleFavorite = (contractor) => {
-        if(!isFavoriteLoading){
+        if (!isFavoriteLoading) {
             setIsFavoriteLoading(true)
             dispatch(updateIsFavorite(contractor, !contractor?.IsFavorite))
-            .then(() => {
-                setIsFavoriteLoading(false)
-            });
+                .then(() => {
+                    setIsFavoriteLoading(false)
+                });
         }
     }
 
