@@ -38,7 +38,7 @@ const Contractors = () => {
 
     const filterContractorsByType = (id) => {
         // filter contractors that fit contractor type ID
-        return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.ID === id));
+        return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.ID === id)).sort(function(x, y) {return (y.IsFavorite - x.IsFavorite)});
     }
 
     const handleContractor = (contractorID, contractorTypeID) => {
@@ -158,6 +158,7 @@ const Contractors = () => {
                                         <option 
                                             key={index}
                                             value={contractor.ID}
+
                                         >
                                             {contractor.CompanyName} 
                                             {contractor.FirstName && (

@@ -55,11 +55,10 @@ const Home = (props) => {
                 project?.State?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
                 project?.City?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
                 project?.Zip?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
+                project?.PlanName?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
                 project?.Customers?.find(customer => customer?.Email?.toLocaleLowerCase().includes(searchTerm?.toLowerCase())) ||
                 project?.Customers?.find(customer => customer?.Phone?.toLocaleLowerCase().includes(searchTerm?.toLowerCase())) ||
-                project?.Customers?.find(customer => customer?.FirstName?.toLowerCase().includes(searchTerm?.toLowerCase())) ||
-                project?.Customers?.find(customer => customer?.LastName?.toLowerCase().includes(searchTerm?.toLowerCase())) ||
-                project?.Customers?.find(customer => `${customer?.FirstName} ${customer?.LastName}`.toLocaleLowerCase().includes(searchTerm?.toLocaleLowerCase())) 
+                project?.Customers?.find(customer => customer?.CustomerName?.toLowerCase().includes(searchTerm?.toLowerCase()))
         );
 
             setFilteredProjects(filter);
@@ -110,14 +109,14 @@ const Home = (props) => {
                         />
                     </div>
                     <div className='d-flex search-bar'> 
-                        <Form inline>
+                        {/* <Form inline > */}
                             <FormControl 
                                 className='search-container' 
                                 placeholder='Search'
                                 type='text'
                                 onChange={(e) => setSearchTerm(e.target.value)}    
                             />
-                        </Form>
+                        {/* </Form> */}
                     </div>
                 </div>
 
