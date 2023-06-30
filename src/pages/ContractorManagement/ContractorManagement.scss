@@ -67,8 +67,16 @@
     }
     
     .search-bar {
+        justify-content: center;
+        align-items: center;
+        .contractor-type{
+            width: 15rem;
+            > div{
+                width: 100%;
+            }
+        }
         // margin-left: 50%;
-
+        gap: 15px;
         .form-control {
             height: 28px;
             font-size: 12px;
