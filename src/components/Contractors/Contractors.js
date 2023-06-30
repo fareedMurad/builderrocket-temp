@@ -158,6 +158,7 @@ const Contractors = () => {
                                         <option 
                                             key={index}
                                             value={contractor.ID}
+
                                         >
                                             {contractor.CompanyName} 
                                             {contractor.FirstName && (
