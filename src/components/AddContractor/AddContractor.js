@@ -190,8 +190,8 @@ const AddContractor = ({ show, handleClose }) => {
                         <Form.Control
                             type='text'
                             className='input-gray'
-                            onChange={(e) => setContractor({ ...contractor, Zip: e.target.value })}
-                            defaultValue={contractor?.Zip}
+                            onChange={(e) => setContractor({ ...contractor, ZipCode: e.target.value })}
+                            defaultValue={contractor?.ZipCode}
                         />
                         </Form.Group>
                     </Col>
