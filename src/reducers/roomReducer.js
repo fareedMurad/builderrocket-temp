@@ -2,6 +2,7 @@ import {
     GET_ROOM,
     GET_ROOMS,
     GET_ROOM_TYPES,
+    PRODUCT_SELECTED_ROOM,
     SET_SELECTED_ROOM
 } from '../actions/types';
 
@@ -9,7 +10,8 @@ const intialState = {
     room: {}, 
     rooms: [],
     roomTypes: [],
-    selectedRoom: {}
+    selectedRoom: {},
+    ProductSelectedRoom:[]
 }
 
 const roomReducer = (state = intialState, action) => {
@@ -36,6 +38,12 @@ const roomReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 selectedRoom: action.payload
+            }
+        }
+        case PRODUCT_SELECTED_ROOM: {
+            return {
+                ...state, 
+                ProductSelectedRoom: action.payload
             }
         }
         default: 

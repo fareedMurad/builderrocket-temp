@@ -28,6 +28,7 @@ import {useHistory} from 'react-router'
 import CustomLightbox from '../Lightbox';
 import Multiselect from "multiselect-react-dropdown";
 import {ProjectStatus} from "../../utils/contants";
+import { PRODUCT_SELECTED_ROOM } from '../../actions/types';
 
 
 const Products = (props) => {
@@ -73,6 +74,8 @@ const Products = (props) => {
         const rooms = [...selectedRooms.map(b => b.ID)];
 
         setProductFilter({...productFilter, rooms: rooms, pageNumber: 1});
+        dispatch({type:PRODUCT_SELECTED_ROOM, payload:rooms})
+        
     }, [dispatch, productFilter]);
 
     const handleBrandChange = useCallback((selectedBrands) => {
@@ -137,6 +140,7 @@ const Products = (props) => {
         }
     }, [categories]);
 
+
     useEffect(() => {
 
         setRoomsDropdownLoading(true);
@@ -160,6 +164,7 @@ const Products = (props) => {
                 rooms = [];
             }
             setProductFilter({...productFilter, rooms: rooms, pageNumber: 1});
+            dispatch({type:PRODUCT_SELECTED_ROOM, payload:rooms})
         }
         setRoomsOptions(options);
 
@@ -574,7 +579,7 @@ const Products = (props) => {
                                 options={roomsOptions} // Options to display in the dropdown
                                 selectedValues={!productFilter?.rooms ? [] : (
                                     project?.ProjectRooms?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
-                                )}
+                                )}  
                                 displayValue="name" // Property name to display in the dropdown options
                             />
                         </div>

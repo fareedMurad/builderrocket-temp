@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { 
-    setProduct, 
-    getCategories, 
-    setCategories, 
-    searchProducts, 
+import {
+    setProduct,
+    getCategories,
+    setCategories,
+    searchProducts,
     setProductDetail,
     setProducts,
     setSelectedProductTab,
@@ -23,6 +23,7 @@ import CustomLightbox from '../Lightbox';
 // components 
 import ProductModal from '../ProductModal';
 import ColorProductModal from "../ColorProductModal";
+import Multiselect from 'multiselect-react-dropdown';
 
 const AddProduct = () => {
     const dispatch = useDispatch();
@@ -32,7 +33,20 @@ const AddProduct = () => {
     const project = useSelector(state => state.project.project);
     const products = useSelector(state => state.product.products);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
+    const ProductSelectedRoom = useSelector(state => state.room.ProductSelectedRoom);
     const productCategories = useSelector(state => state.product.productCategories);
+    const [roomsOptions, setRoomsOptions] = useState([]);
+
+    useEffect(() => {
+        let options = [...project?.ProjectRooms?.map((b) => {
+            return {
+                ...b,
+                name: b.RoomName,
+                value: b.ID,
+            };
+        })];
+        setRoomsOptions(options);
+    }, [project]);
 
     const [showModal, setShowModal] = useState(false);
     const [showColorModal, setShowColorModal] = useState(false);
@@ -40,7 +54,7 @@ const AddProduct = () => {
     const [searchObject, setSearchObject] = useState({
         CategoryID: '',
         ModelName: null,
-        Description: null, 
+        Description: null,
         Filter: null,
         CustomFilters: {}
     });
@@ -67,7 +81,7 @@ const AddProduct = () => {
         if (isEmpty(productCategoriesRef.current))
             dispatch(getCategories(productRef.current?.CategoryID));
     }, [dispatch]);
-    
+
     useEffect(() => {
         if (productRef.current?.CategoryID) {
             dispatch(searchProducts(productRef.current?.CategoryID))
@@ -84,7 +98,7 @@ const AddProduct = () => {
         if (!productCategoryID) return;
 
         dispatch(setProduct({
-            ...product, 
+            ...product,
             CategoryID: parseInt(productCategoryID)
         }));
     }
@@ -98,12 +112,12 @@ const AddProduct = () => {
         let updatedFilters = products?.CustomFilters;
 
         updatedFilters[filterType][filterChildIndex] = updatedFilterChild;
- 
+
         const search = {
-            CategoryID: product?.CategoryID, 
+            CategoryID: product?.CategoryID,
             ModelName: null,
-            Description: null, 
-            Filter: searchObject.Filter, 
+            Description: null,
+            Filter: searchObject.Filter,
             CustomFilters: updatedFilters
         }
 
@@ -115,7 +129,7 @@ const AddProduct = () => {
         if (!productID || !selectedRoom.ID) return;
 
         const newProduct = {
-            ...product, 
+            ...product,
             ProductID: productID,
             ProjectRoomID: selectedRoom.ID
         }
@@ -129,7 +143,7 @@ const AddProduct = () => {
     }
 
     const handleClose = () => {
-      setShowModal(false);
+        setShowModal(false);
     }
     const handleColorClose = () => {
         setShowColorModal(false);
@@ -137,7 +151,7 @@ const AddProduct = () => {
 
     const Category = ({ category, type }) => {
         return (
-            <option value={category?.ID} dangerouslySetInnerHTML={{__html: category?.Name}}></option>
+            <option value={category?.ID} dangerouslySetInnerHTML={{ __html: category?.Name }}></option>
         )
     }
 
@@ -167,21 +181,34 @@ const AddProduct = () => {
         <div className='add-product-container'>
             <div className='d-flex'>
                 <div>
-                    <Button 
-                        variant='link' 
+                    <Button
+                        variant='link'
                         className='link-btn'
                         onClick={handleGoToProducts}
                     >
                         Products /
                     </Button>
-                </div>  
+                </div>
                 <div className='page-title'>Add Products - {selectedRoom?.RoomName}</div>
+                {ProductSelectedRoom.length ? 
+                    <Multiselect
+                        tags
+                        className="tags-dropdown readonly_ms border-none"
+                        disable={true}
+                        placeholder=""
+                        showCheckbox={true}
+                        options={roomsOptions} // Options to display in the dropdown
+                        selectedValues={!ProductSelectedRoom ? [] : (
+                            project?.ProjectRooms?.length === ProductSelectedRoom?.length ? roomsOptions : roomsOptions.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
+                        )}
+                        displayValue="name" // Property name to display in the dropdown options
+                    /> :false}
             </div>
 
             <div className='filter-section'>
                 <div className='d-flex flex-wrap'>
                     <div className='mr-3'>
-                        <Form.Control 
+                        <Form.Control
                             as='select'
                             value={product?.CategoryID}
                             onChange={(event) => onProductCategoryChange(event.target.value)}
@@ -189,27 +216,27 @@ const AddProduct = () => {
                             <option value=''>Select Category</option>
 
                             {productCategories?.map((category) => (
-                                <Category 
-                                    key={category.ID} 
-                                    category={category} 
+                                <Category
+                                    key={category.ID}
+                                    category={category}
                                 />
                             ))}
                         </Form.Control>
                     </div>
                     <div className='d-flex'>
-                        <Form.Control 
+                        <Form.Control
                             placeholder='Search Keywords'
-                            ref={searchRef} 
+                            ref={searchRef}
                         >
                         </Form.Control>
-                        <Button 
+                        <Button
                             onClick={handleSearch}
                             className='primary-gray-btn search-btn ml-3'
                         >
-                                Search
+                            Search
                         </Button>
-                        <Button 
-                            variant='link' 
+                        <Button
+                            variant='link'
                             className='cancel ml-3'
                             onClick={handleGoToProducts}
                         >
@@ -230,14 +257,14 @@ const AddProduct = () => {
             <div className='add-products-body d-flex'>
                 <div className='checkbox-filter'>
                     {products?.CustomFilters && Object.keys(products?.CustomFilters)?.reverse()?.map((filter, index) => (
-                        <div 
-                            key={index} 
+                        <div
+                            key={index}
                             className='mt-3 mb-5'
                         >
                             <div className='bold-text mb-3'>{filter}</div>
 
                             {products?.CustomFilters?.[filter]?.map((filterChild, childIndex) => (
-                                <Form.Check 
+                                <Form.Check
                                     key={childIndex}
                                     type='checkbox'
                                     className='mt-2'
@@ -251,14 +278,14 @@ const AddProduct = () => {
                 </div>
 
                 <div className='add-product-table'>
-                {isLoading ? (
-                    <div className='add-products-spinner d-flex justify-content-center'>
-                        <Spinner 
-                            animation='border'
-                            variant='primary' 
-                        />
-                    </div>
-                ) : (
+                    {isLoading ? (
+                        <div className='add-products-spinner d-flex justify-content-center'>
+                            <Spinner
+                                animation='border'
+                                variant='primary'
+                            />
+                        </div>
+                    ) : (
                         <Table hover responsive>
                             <thead>
                                 <tr>
@@ -276,12 +303,12 @@ const AddProduct = () => {
                                 {products?.Products?.slice(0, 25)?.map((product, index) => (
                                     <tr key={index}>
                                         <td>
-                                             <CustomLightbox images={[product?.ThumbnailName ? product?.ThumbnailURL : Avatar]} />
+                                            <CustomLightbox images={[product?.ThumbnailName ? product?.ThumbnailURL : Avatar]} />
                                         </td>
                                         <td>
                                             <div className='add-btn-product-details'>
-                                                <Button 
-                                                    variant='link' 
+                                                <Button
+                                                    variant='link'
                                                     className='link-btn item-button'
                                                     onClick={() => handleSelectedProductDetails(product)}
                                                 >
@@ -293,7 +320,7 @@ const AddProduct = () => {
                                                         Model: {product?.ModelNumber}
                                                     </div>
                                                     <div>
-                                                        Part: 
+                                                        Part:
                                                     </div>
                                                 </div>
                                             </div>
@@ -328,19 +355,19 @@ const AddProduct = () => {
             </div>
 
             <div className='d-flex justify-content-center p2-5'>
-                <Button 
-                    variant='link' 
+                <Button
+                    variant='link'
                     className='cancel'
                     onClick={handleGoToProducts}
                 >
                     Cancel
                 </Button>
             </div>
-        
-            <ProductModal 
-                show={showModal} 
-                handleClose={handleClose} 
-                handleCloseModal={() => setShowModal(false)} 
+
+            <ProductModal
+                show={showModal}
+                handleClose={handleClose}
+                handleCloseModal={() => setShowModal(false)}
             />
             {/*<ColorProductModal
                 show={showColorModal}
