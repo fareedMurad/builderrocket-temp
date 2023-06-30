@@ -5,6 +5,7 @@ export const ProjectStatus = [
     {"id": 2, "text": "Complete"},
     {"id": 3, "text": "Closed"},
     {"id": -1, "text": "Delete"},
+    {"id": 4, "text": "Lead"},
 ];
 
 export const  PaintTypes = [

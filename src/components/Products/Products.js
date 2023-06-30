@@ -893,7 +893,7 @@ const Products = (props) => {
                                                                             min='0'
                                                                             type='text'
                                                                             id={`quantity-${templateItem?.ID}`}
-                                                                            disabled={!templateItem?.Quantity}
+                                                                            // disabled={!templateItem?.Quantity}
                                                                             defaultValue={templateItem?.Quantity}
                                                                             onBlur={(e) => handleQuantity(templateItem, e.target.value)}
                                                                         >

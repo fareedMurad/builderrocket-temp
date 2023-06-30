@@ -19,6 +19,7 @@ import {
 } from '../../actions/contractorActions';
 import './ContractorManagement.scss';
 import StarRatings from 'react-star-ratings';
+import Select from 'react-select';
 // components
 import AddContractor from '../../components/AddContractor';
 
@@ -35,6 +36,7 @@ const ContractorManagement = () => {
     const [showContractorModal, setShowContractorModal] = useState(false);
     const [filteredContractors, setFilteredContractors] = useState(contractors);
     const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+    const [contractor, setContractor] = useState({});
 
     useEffect(() => {
         setIsLoading(true);
@@ -50,25 +52,32 @@ const ContractorManagement = () => {
             });
     }, [dispatch]);
 
-    const SearchField = ["CompanyName", "FirstName", "LastName", "City", "State"]
+
+    const [Param] = useState(["CompanyName", "State", "FirstName", "LastName", "City"]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            const filter = contractors?.filter((contractor) =>
-                SearchField.some(newItem => {
+            const filter = contractors?.filter((contractor) => {
+                return Param.some(newItem => {
+
                     if (contractor[newItem]) {
                         return (
                             contractor[newItem].toString().toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
                         );
                     }
-                })
-            )
 
+                })  
+            }).filter(t => {
+                    if (contractor.value) {
+
+                        return t.ContractorTypes.find((type) => type.ID === contractor.value && type.Name === contractor.label)
+                    } else { return t }
+                })
             setFilteredContractors(filter)
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [searchTerm, contractors]);
+    }, [searchTerm, contractors, contractor]);
 
     const handleDeleteContractor = () => {
         setIsLoading(true);
@@ -161,11 +170,22 @@ const ContractorManagement = () => {
             return contractor.ContractorTypes.find((type) => type.ID === contractorTypeID);
         });
 
+
         if (contractorsByType.length > 0) {
-            return contractorsByType;
+            if (contractor.value === contractorTypeID) {
+                return contractorsByType.map(type => {
+                    return {
+                        ...type,
+                        ContractorTypes:type.ContractorTypes.filter((typ) => typ.ID === contractor.value)}
+                })
+            }
+            if(!Object.keys(contractor).length){
+                return contractorsByType;
+            }
         }
         return [];
     }
+
 
     return (
         <div className='d-flex contractor-management'>
@@ -184,8 +204,23 @@ const ContractorManagement = () => {
                         </div>
                     </div>
 
-                    <div className='d-flex search-bar'>
-                        <Form inline>
+                    <div className='d-flex'>
+                        <Form inline className='search-bar'>
+                            <Form.Group className='contractor-type'>
+                                <Select
+                                    // isMulti
+                                    isClearable={true}
+                                    placeholde="Contractor Type"
+                                    options={
+                                        contractorTypes?.map((contractor, index) => {
+                                            return { value: contractor.ID, label: contractor.Name }
+                                        })
+                                    }
+                                    onm
+                                    value={contractor.ContractorTypes}
+                                    onChange={(options) => setContractor(options ? options : {})}
+                                />
+                            </Form.Group>
                             <FormControl
                                 placeholder='Search Keywords'
                                 type='text'
@@ -206,6 +241,7 @@ const ContractorManagement = () => {
                         <ContractorTable
                             contractorTypes={contractorTypes}
                             isLoading={isLoading}
+                            SelectedcontractorType={contractor}
                             editContractor={editContractor}
                             selectedContractorID={selectedContractorID}
                             handleContractors={handleContractors}
@@ -232,12 +268,13 @@ const ContractorTable = ({
     isLoading,
     editContractor,
     selectedContractorID,
+    SelectedcontractorType,
     deleteContractorConfirmation,
     handleContractors,
     contractorTypes,
     handleFavorite
 }) => {
-
+    
     return (
 
         <Table hover responsive>
@@ -256,93 +293,96 @@ const ContractorTable = ({
             <tbody>
                 {contractorTypes?.map((type) => {
                     if (handleContractors(type?.ID)?.length > 0) {
-                        return (
-                            <>
-                                <tr className="contractor-type-row">
-                                    <td colSpan={7} className="contractor-type-name">{type.Name}</td>
-                                </tr>
-                                <tr>
-                                    <th>Company Name</th>
-                                    <th>Contact Name</th>
-                                    <th>City/State</th>
-                                    <th>Phone</th>
-                                    <th>Email</th>
-                                    <th>Rating</th>
-                                    <th>Notes</th>
-                                    <th></th>
-                                </tr>
-                                {handleContractors(type?.ID).map((contractor, index) => (
-                                    <tr key={index}>
-                                        <td width='15%'>{contractor?.CompanyName}</td>
-                                        <td>{contractor?.FirstName}</td>
-                                        <td>{contractor?.City} {contractor?.State}</td>
-                                        <td>
-                                            <a href={`tel:+1${contractor?.PhoneNumber}`}>
-                                                {contractor?.PhoneNumber}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href={`mailto:${contractor?.EmailAddress}`}>
-                                                {contractor?.EmailAddress}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <div className="star-ratings">
-                                                <StarRatings
-                                                    rating={contractor?.Rating ? contractor?.Rating : 0}
-                                                    starRatedColor="#ffd700"
-                                                    starSpacing="0"
-                                                    numberOfStars={5}
-                                                    starDimension="12px"
-                                                    name='rating'
-                                                    starEmptyColor="#aaa"
-                                                />
-                                            </div>
-
-                                        </td>
-                                        <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
-                                            <OverlayTrigger
-                                                placement='top'
-                                                overlay={
-                                                    <Tooltip id='button-tooltip'>
-                                                        {contractor?.Notes}
-                                                    </Tooltip>
-                                                }
-                                                delay={{ show: 250, hide: 400 }}
-                                            >
-                                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
-                                            </OverlayTrigger>
-                                        </td>
-                                        <td width='5%'>
-                                            {(isLoading && selectedContractorID === contractor.ID) ? (
-                                                <Spinner
-                                                    size='sm'
-                                                    className='justify-content-center d-flex'
-                                                    animation='border'
-                                                    variant='primary'
-                                                />
-                                            ) : (
-                                                <div className='d-flex justify-content-between'>
-                                                    <i
-                                                        className={`${contractor.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
-                                                        onClick={() => handleFavorite(contractor)}
-                                                    ></i>
-                                                    <i
-                                                        className='far fa-pencil-alt'
-                                                        onClick={() => editContractor(contractor)}
-                                                    ></i>
-                                                    <i
-                                                        className='far fa-trash-alt'
-                                                        onClick={() => deleteContractorConfirmation(contractor.ID)}
-                                                    ></i>
-                                                </div>
-                                            )}
-                                        </td>
+                       return (
+                                <>
+                                    <tr className="contractor-type-row">
+                                        <td colSpan={7} className="contractor-type-name">{type.Name}</td>
                                     </tr>
-                                ))}
-                            </>
-                        )
-                    }
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Contact Name</th>
+                                        <th>City/State</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Rating</th>
+                                        <th>Notes</th>
+                                        <th></th>
+                                    </tr>
+                                    {handleContractors(type?.ID).map((contractor, index) => {
+
+                                        return (
+                                            <tr key={index}>
+                                                <td width='15%'>{contractor?.CompanyName}</td>
+                                                <td>{contractor?.FirstName}</td>
+                                                <td>{contractor?.City} {contractor?.State}</td>
+                                                <td>
+                                                    <a href={`tel:+1${contractor?.PhoneNumber}`}>
+                                                        {contractor?.PhoneNumber}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href={`mailto:${contractor?.EmailAddress}`}>
+                                                        {contractor?.EmailAddress}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <div className="star-ratings">
+                                                        <StarRatings
+                                                            rating={contractor?.Rating ? contractor?.Rating : 0}
+                                                            starRatedColor="#ffd700"
+                                                            starSpacing="0"
+                                                            numberOfStars={5}
+                                                            starDimension="12px"
+                                                            name='rating'
+                                                            starEmptyColor="#aaa"
+                                                        />
+                                                    </div>
+
+                                                </td>
+                                                <td className={`${contractor?.Notes && 'sticky-note-red'}`}>
+                                                    <OverlayTrigger
+                                                        placement='top'
+                                                        overlay={
+                                                            <Tooltip id='button-tooltip'>
+                                                                {contractor?.Notes}
+                                                            </Tooltip>
+                                                        }
+                                                        delay={{ show: 250, hide: 400 }}
+                                                    >
+                                                        <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                                    </OverlayTrigger>
+                                                </td>
+                                                <td width='5%'>
+                                                    {(isLoading && selectedContractorID === contractor.ID) ? (
+                                                        <Spinner
+                                                            size='sm'
+                                                            className='justify-content-center d-flex'
+                                                            animation='border'
+                                                            variant='primary'
+                                                        />
+                                                    ) : (
+                                                        <div className='d-flex justify-content-between'>
+                                                            <i
+                                                                className={`${contractor.IsFavorite ? 'fas fa-heart' : 'far fa-heart'}`}
+                                                                onClick={() => handleFavorite(contractor)}
+                                                            ></i>
+                                                            <i
+                                                                className='far fa-pencil-alt'
+                                                                onClick={() => editContractor(contractor)}
+                                                            ></i>
+                                                            <i
+                                                                className='far fa-trash-alt'
+                                                                onClick={() => deleteContractorConfirmation(contractor.ID)}
+                                                            ></i>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </>
+                            )
+                     }
                     return null;
                 })}
 

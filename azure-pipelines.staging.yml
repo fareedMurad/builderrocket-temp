@@ -31,7 +31,7 @@ steps:
       oldVersion=$(jq -r '.version' package.json)
       echo "Increased Patch Version: $patchVersion"
       git switch $sanitizedBranchName
-      git config --global user.email "dev.doublemwebsolutions@gmail.com"
+      git config --global user.email "dev@doublemwebsolutions.com"
       git config --global user.name "Azure Pipeline"
       echo "Increase version from: $oldVersion"
       npm version patch --no-git-tag-version

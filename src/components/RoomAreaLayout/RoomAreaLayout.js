@@ -2,10 +2,11 @@ import React, {useEffect, useState, useRef, useCallback} from 'react';
 import { getRoomTypes } from '../../actions/roomActions';
 import { Form, Spinner, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-    addRoomsToProject, 
-    setSelectedProjectTab, 
-    deleteRoomsFromProject, 
+import {
+    addRoomsToProject,
+    setSelectedProjectTab,
+    deleteRoomsFromProject,
+    getProjects,
 } from '../../actions/projectActions';
 import { isEmpty } from 'lodash';
 import './RoomAreaLayout.scss';
@@ -88,7 +89,7 @@ const RoomAreaLayout = () => {
 
     const handleAddRoomsToProject = () => {
         if (!isEmpty(roomList)) {
-
+            setIsLoading(true);
             const roomsObj = {
                 RoomIDs: roomList
             }
@@ -96,6 +97,7 @@ const RoomAreaLayout = () => {
             dispatch(addRoomsToProject(project?.ID, roomsObj))
                 .then(() => {
                     setRoomList([]);
+                    setIsLoading(false);
                     return;
                 })
                 .catch(() => {
@@ -107,6 +109,7 @@ const RoomAreaLayout = () => {
 
     const handleRemoveProjectRooms = () => {
         if (!isEmpty(deleteRoomList)) {
+            setIsLoading(true);
 
             const deleteRoomsObj = {
                 IDs: deleteRoomList
@@ -115,6 +118,7 @@ const RoomAreaLayout = () => {
             dispatch(deleteRoomsFromProject(project?.ID, deleteRoomsObj))
                 .then(() => {
                     setDeleteRoomList([]);
+                    setIsLoading(false);
                     return;
                 })
                 .catch(() => {
@@ -130,9 +134,8 @@ const RoomAreaLayout = () => {
         await handleAddRoomsToProject();
         await handleRemoveProjectRooms();
 
-        setIsLoading(false);
-
-        dispatch(setSelectedProjectTab('products'));
+        dispatch(getProjects())
+        // dispatch(setSelectedProjectTab('products'));
     }
 
     const clearChanges = () => {
@@ -202,11 +205,11 @@ const RoomAreaLayout = () => {
                     <div>
                         <div className='input-label mt-2 ml-3'>Room Types</div>
                         <div className="layout-select custom-dropdown">
-                                <span>
+                            <span>
                                 {typesFilter?.length > 0 ? <span className="custom-placeholder">
                                     {roomTypes?.filter(p => typesFilter.indexOf(p.ID) > -1)?.length} of {roomTypes?.length} selected
                                 </span> : null}
-                                </span>
+                            </span>
                             <Multiselect
                                 options={
                                     roomTypes?.length > 0 ? roomTypeOptions : []}
@@ -239,30 +242,30 @@ const RoomAreaLayout = () => {
 
                 {isLoadingRoomTypes ? (
                     <div className='room-area-layout-spinner d-flex justify-content-center'>
-                        <Spinner 
+                        <Spinner
                             animation='border'
-                            variant='primary' 
+                            variant='primary'
                         />
                     </div>
                 ) : (
                     <div className='rooms d-flex flex-wrap justify-content-around'>
                         {roomTypes?.filter(r => typesFilter?.indexOf(r.ID) > -1).map((roomType, index) => (
-                            <div 
-                                key={index} 
+                            <div
+                                key={index}
                                 className='room-type-container'
                             >
                                 <div className='room-type'>{roomType?.Name}</div>
 
                                 {roomType?.Rooms?.map((room, index) => (
-                                    <div 
-                                        key={index} 
+                                    <div
+                                        key={index}
                                         className='room-name'
                                     >
-                                        <Form.Check 
+                                        <Form.Check
                                             type='checkbox'
-                                            defaultChecked={isRoomInProject(room?.ID)} 
+                                            defaultChecked={isRoomInProject(room?.ID)}
                                             onChange={() => handleCheckBox(room?.ID)}
-                                            label={`${room?.Name}`} 
+                                            label={`${room?.Name}`}
                                         />
                                     </div>
                                 ))}
@@ -271,32 +274,25 @@ const RoomAreaLayout = () => {
                     </div>
                 )}
 
-                <ClearChangesModal 
+                <ClearChangesModal
                     show={showModal}
                     setShow={setShowModal}
                     clearChanges={clearChanges}
                 />
 
-               <div className='d-flex justify-content-center pt-5'>
+                <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
-                        <Spinner 
+                        <Spinner
                             animation='border'
-                            variant='primary' 
+                            variant='primary'
                         />
                     ) : (
                         <>
-                            <Button 
-                                variant='link' 
-                                className='cancel'
-                                onClick={() => setShowModal(true)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button 
+                            <Button
                                 onClick={save}
                                 className='primary-gray-btn next-btn ml-3'
                             >
-                                Next
+                                Save
                             </Button>
                         </>
                     )}
