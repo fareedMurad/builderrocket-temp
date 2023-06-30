@@ -109,14 +109,14 @@ const Home = (props) => {
                         />
                     </div>
                     <div className='d-flex search-bar'> 
-                        <Form inline>
+                        {/* <Form inline > */}
                             <FormControl 
                                 className='search-container' 
                                 placeholder='Search'
                                 type='text'
                                 onChange={(e) => setSearchTerm(e.target.value)}    
                             />
-                        </Form>
+                        {/* </Form> */}
                     </div>
                 </div>
 
