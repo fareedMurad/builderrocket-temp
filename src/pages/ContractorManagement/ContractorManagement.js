@@ -52,17 +52,20 @@ const ContractorManagement = () => {
             });
     }, [dispatch]);
 
+
     const [Param] = useState(["CompanyName", "State", "FirstName", "LastName", "City"]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             const filter = contractors?.filter((contractor) => {
                 return Param.some(newItem => {
+
                     if (contractor[newItem]) {
                         return (
                             contractor[newItem].toString().toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
                         );
                     }
+
                 })  
             }).filter(t => {
                     if (contractor.value) {
