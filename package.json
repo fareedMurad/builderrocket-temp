@@ -1,6 +1,6 @@
 {
   "name": "builder-rocket",
-  "version": "1.0.754",
+  "version": "1.0.755",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
