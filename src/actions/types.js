@@ -51,6 +51,7 @@ export const GET_ROOM = 'GET_ROOM';
 export const GET_ROOMS = 'GET_ROOMS';
 export const GET_ROOM_TYPES = 'GET_ROOM_TYPES';
 export const SET_SELECTED_ROOM = 'SET_SELECTED_ROOM';
+export const PRODUCT_SELECTED_ROOM = 'PRODUCT_SELECTED_ROOM';
 
 // product 
 export const SET_PRODUCT_LOADING = 'SET_PRODUCT_LOADING';
