@@ -1,0 +1,47 @@
+@import '../../assets/styles/variables';
+
+.products {
+    .photos-grid {
+        display: grid;
+        padding: 1rem;
+        gap: 1rem;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        .item{
+            position: relative;
+            button{
+                position: absolute;
+                right: 0;
+                height: 40px;
+                width: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 10%;
+                margin: 10px;
+                background-color: $lightgray;
+                i{
+                    margin: 0;
+                }
+            }
+            img{
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+    
+    .d-modal{
+     display: flex;
+     justify-content: center;   
+     align-items: center;
+    }
+
+    @media only screen and (max-width: 767px) {
+        .photos-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+}
+.gap-2{
+    gap: 1rem;
+}

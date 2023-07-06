@@ -18,6 +18,7 @@ import ProductDetail from '../ProductDetail';
 import RoomAreaLayout from '../RoomAreaLayout';
 import ProjectInformation from '../ProjectInformation';
 import Reports from '../Reports';
+import Photos from '../Photos';
 
 const ProjectTabs = (props) => {
     const dispatch = useDispatch();
@@ -102,6 +103,9 @@ const ProjectTabs = (props) => {
             </Tab>
             <Tab eventKey="reports" title="Reports">
               {selectedProjectTab === "reports" && <Reports />}
+            </Tab>
+            <Tab eventKey="photo" title="Photo">
+              {selectedProjectTab === "photo" && <Photos />}
             </Tab>
           </Tabs>
         ) : (
