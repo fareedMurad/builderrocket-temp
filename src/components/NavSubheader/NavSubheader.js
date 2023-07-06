@@ -11,11 +11,11 @@ const NavSubheader = () => {
     const setDimension = () => {
         setScreenWidth(window.innerWidth);
     }
-    
+
     useEffect(() => {
         window.addEventListener('resize', setDimension);
-        
-        return(() => {
+
+        return (() => {
             window.removeEventListener('resize', setDimension);
         })
     }, [screenWidth]);
@@ -25,8 +25,8 @@ const NavSubheader = () => {
             <Navbar className='nav-bar-subheader'>
                 <Container>
                     <Nav id='nav-dropdown'>
-                        <div 
-                            className='header-item' 
+                        <div
+                            className='header-item'
                             onClick={() => history.push('/')}
                         >
                             Projects
@@ -49,8 +49,8 @@ const NavSubheader = () => {
                 <Navbar.Toggle aria-controls='nav-bar' />
                 <Navbar.Collapse>
                     <Nav className='mr-auto'>
-                        <div 
-                            className='header-item' 
+                        <div
+                            className='header-item'
                             onClick={() => history.push('/')}
                         >
                             <i className='far fa-images fa-sm tab-icon'></i>
@@ -60,8 +60,8 @@ const NavSubheader = () => {
                             <i className='far fa-border-none fa-sm tab-icon'></i>
                             Rooms Management
                         </div>
-                        <div 
-                            className='header-item' 
+                        <div
+                            className='header-item'
                             onClick={() => history.push('/utility-management')}
                         >
                             <i className='far fa-lightbulb fa-sm tab-icon'></i>
@@ -71,12 +71,16 @@ const NavSubheader = () => {
                             <i className='far fa-bookmark fa-sm tab-icon'></i>
                             Vendor Management
                         </div>
-                        <div 
+                        <div
                             className='header-item'
                             onClick={() => history.push('/contractor-management')}
                         >
                             <i className='far fa-user-hard-hat fa-sm tab-icon'></i>
                             Contractor Management
+                        </div>
+                        <div className='header-item'>
+                            <i className='far fa-house-day fa-sm tab-icon'></i>
+                            Subdivision Management
                         </div>
                     </Nav>
                 </Navbar.Collapse>
