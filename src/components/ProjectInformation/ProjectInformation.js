@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Button, Form, Modal, Spinner} from "react-bootstrap";
-import {addSubdivision, getSubdivisions} from "../../actions/subdivisionActions";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Form, Modal, Spinner } from "react-bootstrap";
+import { addSubdivision, getSubdivisions } from "../../actions/subdivisionActions";
 import {
     createProject,
     deleteProject,
@@ -9,10 +9,10 @@ import {
     setSelectedProjectTab,
     uploadProjectThumbnail,
 } from "../../actions/projectActions";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import {withSwal} from 'react-sweetalert2';
+import { withSwal } from 'react-sweetalert2';
 import toast from 'react-hot-toast';
 import Toaster from 'react-hot-toast';
 
@@ -23,13 +23,13 @@ import FileUpload from "../FileUpload";
 import CustomerModal from "../CustomerModal";
 import MarketingBlock from "../MarketingBlock";
 import ClearChangesModal from "../ClearChangesModal";
-import {useHistory} from "react-router-dom";
-import {ProjectStatus} from "../../utils/contants";
+import { useHistory } from "react-router-dom";
+import { ProjectStatus } from "../../utils/contants";
 
 
 
 const ProjectInformation = withSwal((props) => {
-    const {swal} = props;
+    const { swal } = props;
     const history = useHistory();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.user);
@@ -59,7 +59,7 @@ const ProjectInformation = withSwal((props) => {
 
     function handleUpdateStatus(statusId) {
         if (statusId === -1) {
-          handleDelete();
+            handleDelete();
         } else {
             setProjectInformation({
                 ...projectInformation,
@@ -84,7 +84,7 @@ const ProjectInformation = withSwal((props) => {
                 ...projectInformation,
                 StatusID: -1,
             })
-        }else{
+        } else {
             setProjectInformation({
                 ...projectInformation,
                 StatusID: projectInformation?.StatusID,
@@ -94,7 +94,7 @@ const ProjectInformation = withSwal((props) => {
 
     const onFileChange = (event) => {
         let file = event.target?.files?.[0];
-        setProjectInformation({...projectInformation, ThumbnailName: file?.name});
+        setProjectInformation({ ...projectInformation, ThumbnailName: file?.name });
         setProjectImage(file);
         if (!project?.ID) return;
 
@@ -119,7 +119,7 @@ const ProjectInformation = withSwal((props) => {
 
     const clearChanges = () => {
         // Reset component state with redux project state
-        setProjectInformation({...project});
+        setProjectInformation({ ...project });
 
         setShowModal(false);
     };
@@ -246,7 +246,7 @@ const ProjectInformation = withSwal((props) => {
 
         setIsLoading(true);
 
-        dispatch(addSubdivision({subdivisionName: newSubdivisionName}))
+        dispatch(addSubdivision({ subdivisionName: newSubdivisionName }))
             .then((subdivisions) => {
                 setIsLoading(false);
                 setNewSubdivisionName(newSubdivisionName);
@@ -285,7 +285,7 @@ const ProjectInformation = withSwal((props) => {
                     </Form>
                     <div className="d-flex justify-content-center mt-3">
                         {isLoading ? (
-                            <Spinner animation="border" variant="primary"/>
+                            <Spinner animation="border" variant="primary" />
                         ) : (
                             <>
                                 <Button variant="link" className="cancel" onClick={cancelModal}>
@@ -304,7 +304,7 @@ const ProjectInformation = withSwal((props) => {
             </Modal>
         );
     };
-
+    console.log("projectInformation?.Customers",)
     return (
         <div className="d-flex project-information">
             <div className="information-form-container">
@@ -336,23 +336,95 @@ const ProjectInformation = withSwal((props) => {
                             />
                         </div>
                         <div className="form-col pb-4">
-                            <Form.Label className="input-label">Customer Name</Form.Label>
-                            <Form.Control
+                            {/* <Form.Label className="input-label">Customer Name</Form.Label> */}
+                            <Form.Label className="input-label">Customer Info</Form.Label>
+                            <div className="row">
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">First Name</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[0]?.FirstName}
+                                        onClick={() => setShowCustomerModal(true)}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Last Name</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[0]?.LastName}
+                                        onClick={() => setShowCustomerModal(true)}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Mobile</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[0]?.Phone}
+                                        onClick={() => setShowCustomerModal(true)}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">First Name</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[1]?.FirstName}
+                                        onClick={() => setShowCustomerModal(true)}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Last Name</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[1]?.LastName}
+                                        onClick={() => setShowCustomerModal(true)}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Mobile</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[1]?.Phone || '000-000-0000'}
+                                        onClick={() => setShowCustomerModal(true)}
+                                    />
+                                </div>
+                            </div>
+                            {/* <Form.Control
                                 readOnly
                                 className="input-gray"
                                 value={customerFullName()}
                                 onClick={() => setShowCustomerModal(true)}
-                            />
+                            /> */}
                         </div>
                         <div className="form-col pb-4">
-                            <Form.Label className="input-label">Customer Email</Form.Label>
-                            <Form.Control
-                                readOnly
-                                type="email"
-                                className="input-gray"
-                                onClick={() => setShowCustomerModal(true)}
-                                value={projectInformation?.Customers?.[0]?.Email}
-                            />
+                            <Form.Label className="input-label"></Form.Label>
+                            <div className="row">
+                                <div className="col-12">
+                                    <Form.Label className="input-label">Email</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        type="email"
+                                        className="input-gray"
+                                        onClick={() => setShowCustomerModal(true)}
+                                        value={projectInformation?.Customers?.[0]?.Email}
+                                    />
+                                </div>
+                                <div className="col-12">
+                                    <Form.Label className="input-label">Email</Form.Label>
+                                    <Form.Control
+                                        readOnly
+                                        type="email"
+                                        className="input-gray"
+                                        onClick={() => setShowCustomerModal(true)}
+                                        value={projectInformation?.Customers?.[1]?.Email}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="form-col pb-4">
                             <Form.Label className="input-label">Plan Name</Form.Label>
@@ -529,7 +601,7 @@ const ProjectInformation = withSwal((props) => {
 
                 <div className="d-flex justify-content-center pt-5">
                     {isLoading ? (
-                        <Spinner animation="border" variant="primary"/>
+                        <Spinner animation="border" variant="primary" />
                     ) : (
                         <>
                             {project?.ID ? (
@@ -578,7 +650,7 @@ const ProjectInformation = withSwal((props) => {
                 </div>
             </div>
 
-            <MarketingBlock/>
+            <MarketingBlock />
 
         </div>
 
