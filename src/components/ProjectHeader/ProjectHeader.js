@@ -159,7 +159,7 @@ const ProjectHeader = () => {
                         <div className='pr-3 text phone'>
                             <i className='fas fa-phone mr-2'></i>
                             <a href={`tel:+1${project?.Customers?.[0]?.Phone}`}>
-                                {project?.Customers?.[0]?.Phone}
+                                {project?.Customers?.[0]?.Phone || '000-000-0000'}
                             </a>
                         </div>
 
