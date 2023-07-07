@@ -3,7 +3,8 @@ import './Photo.scss'
 import { Button, Card, Form, Modal, Overlay, Popover } from 'react-bootstrap';
 import { deleteProjectPhotos, getProjectByProjectID, uploadProjectPhotos, uploadProjectThumbnail } from '../../actions/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
-const Photos = () => {
+
+const PhotosTab = () => {
 
   const ref = React.useRef(null);
   const dispatch = useDispatch();
@@ -156,4 +157,4 @@ const Photos = () => {
   )
 }
 
-export default Photos
+export default PhotosTab
