@@ -482,6 +482,56 @@ export const uploadProjectThumbnail = (projectID, thumbnail) => async dispatch =
     } catch (error) { }
 }
 
+export const uploadProjectPhotos = (projectID, thumbnail) => async dispatch => {
+    if (!projectID) return;
+
+    const URL = `/Project/${projectID}/uploadProjectImages`;
+
+    // dispatch({ type: SET_REFRESH_THUMBNAIL, payload: true });
+
+    try {
+        const response = await api({
+            method: 'POST',
+            url: URL,
+            data: thumbnail
+        });
+        if (response.status === 200) {
+            console.log("first",response.data)
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+            // dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
+            return response.data;
+        } else {
+            // dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
+            return;
+        }
+    } catch (error) { }
+}
+
+export const deleteProjectPhotos = (projectID, id) => async dispatch => {
+    if (!projectID) return;
+
+    const URL = `/Project/${projectID}/${id}`;
+
+    // dispatch({ type: SET_REFRESH_THUMBNAIL, payload: true });
+
+    try {
+        const response = await api({
+            method: 'DELETE',
+            url: URL,
+            // data: thumbnail
+        });
+        if (response.status === 200) {
+            console.log("first",response.data)
+            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+            // dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
+            return response.data;
+        } else {
+            // dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
+            return;
+        }
+    } catch (error) { }
+}
+
 /**
  * 
  * @param {Array} items - product items to be updated
