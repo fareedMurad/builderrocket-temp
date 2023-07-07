@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Button, Form, Modal, Spinner} from "react-bootstrap";
-import {addSubdivision, getSubdivisions} from "../../actions/subdivisionActions";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Form, Modal, Spinner } from "react-bootstrap";
+import { addSubdivision, getSubdivisions } from "../../actions/subdivisionActions";
 import {
     createProject,
     deleteProject,
@@ -9,10 +9,10 @@ import {
     setSelectedProjectTab,
     uploadProjectThumbnail,
 } from "../../actions/projectActions";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
-import {withSwal} from 'react-sweetalert2';
+import { withSwal } from 'react-sweetalert2';
 import toast from 'react-hot-toast';
 import Toaster from 'react-hot-toast';
 
@@ -23,13 +23,13 @@ import FileUpload from "../FileUpload";
 import CustomerModal from "../CustomerModal";
 import MarketingBlock from "../MarketingBlock";
 import ClearChangesModal from "../ClearChangesModal";
-import {useHistory} from "react-router-dom";
-import {ProjectStatus} from "../../utils/contants";
+import { useHistory } from "react-router-dom";
+import { ProjectStatus } from "../../utils/contants";
 
 
 
 const ProjectInformation = withSwal((props) => {
-    const {swal} = props;
+    const { swal } = props;
     const history = useHistory();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.user);
@@ -59,7 +59,7 @@ const ProjectInformation = withSwal((props) => {
 
     function handleUpdateStatus(statusId) {
         if (statusId === -1) {
-          handleDelete();
+            handleDelete();
         } else {
             setProjectInformation({
                 ...projectInformation,
@@ -84,7 +84,7 @@ const ProjectInformation = withSwal((props) => {
                 ...projectInformation,
                 StatusID: -1,
             })
-        }else{
+        } else {
             setProjectInformation({
                 ...projectInformation,
                 StatusID: projectInformation?.StatusID,
@@ -94,7 +94,7 @@ const ProjectInformation = withSwal((props) => {
 
     const onFileChange = (event) => {
         let file = event.target?.files?.[0];
-        setProjectInformation({...projectInformation, ThumbnailName: file?.name});
+        setProjectInformation({ ...projectInformation, ThumbnailName: file?.name });
         setProjectImage(file);
         if (!project?.ID) return;
 
@@ -119,7 +119,7 @@ const ProjectInformation = withSwal((props) => {
 
     const clearChanges = () => {
         // Reset component state with redux project state
-        setProjectInformation({...project});
+        setProjectInformation({ ...project });
 
         setShowModal(false);
     };
@@ -246,7 +246,7 @@ const ProjectInformation = withSwal((props) => {
 
         setIsLoading(true);
 
-        dispatch(addSubdivision({subdivisionName: newSubdivisionName}))
+        dispatch(addSubdivision({ subdivisionName: newSubdivisionName }))
             .then((subdivisions) => {
                 setIsLoading(false);
                 setNewSubdivisionName(newSubdivisionName);
@@ -285,7 +285,7 @@ const ProjectInformation = withSwal((props) => {
                     </Form>
                     <div className="d-flex justify-content-center mt-3">
                         {isLoading ? (
-                            <Spinner animation="border" variant="primary"/>
+                            <Spinner animation="border" variant="primary" />
                         ) : (
                             <>
                                 <Button variant="link" className="cancel" onClick={cancelModal}>
@@ -304,7 +304,7 @@ const ProjectInformation = withSwal((props) => {
             </Modal>
         );
     };
-
+    
     return (
         <div className="d-flex project-information">
             <div className="information-form-container">
@@ -336,23 +336,239 @@ const ProjectInformation = withSwal((props) => {
                             />
                         </div>
                         <div className="form-col pb-4">
-                            <Form.Label className="input-label">Customer Name</Form.Label>
-                            <Form.Control
-                                readOnly
-                                className="input-gray"
-                                value={customerFullName()}
-                                onClick={() => setShowCustomerModal(true)}
-                            />
+                            <Form.Label className="input-label">Customer Info</Form.Label>
+                           <div>
+                                <Form.Label className="input-label">Customer 1</Form.Label>
+                            </div>
+                            <div className="row">
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">First Name</Form.Label>
+                                    <Form.Control
+                                        // readOnly
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[0]?.FirstName}
+                                        onChange={(e) => {
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[0]?.FirstName) {
+                                                    NewState.Customers[0].FirstName = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[0]= {
+                                                            FirstName: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Last Name</Form.Label>
+                                    <Form.Control
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[0]?.LastName}
+                                        onChange={(e) => {
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[0]?.LastName) {
+                                                    NewState.Customers[0].LastName = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[0]= {
+                                                            ...NewState.Customers[0],
+                                                            LastName: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Mobile</Form.Label>
+                                    <Form.Control
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[0]?.Phone}
+                                        onChange={(e) => {
+                                            console.log(e.target.value)
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[0]?.Phone) {
+                                                    NewState.Customers[0].Phone = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[0]= {
+                                                            ...NewState.Customers[0],
+                                                            Phone: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <Form.Label className="input-label">Customer 2</Form.Label>
+                            <div className="row">
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">First Name</Form.Label>
+                                    <Form.Control
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[1]?.FirstName}
+                                        onChange={(e) => {
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[1]?.FirstName) {
+                                                    NewState.Customers[1].FirstName = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[1]= {
+                                                            FirstName: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Last Name</Form.Label>
+                                    <Form.Control
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[1]?.LastName}
+                                        onChange={(e) => {
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[1]?.LastName) {
+                                                    NewState.Customers[1].LastName = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[1]={
+                                                            ...NewState.Customers[1],
+                                                            LastName: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                    />
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <Form.Label className="input-label">Mobile</Form.Label>
+                                    <Form.Control
+                                        inputMode='tel'
+                                        type='text'
+                                        className="input-gray"
+                                        value={projectInformation?.Customers?.[1]?.Phone}
+                                        onChange={(e) => {
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[1]?.Phone) {
+                                                    NewState.Customers[1].Phone = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[1]= {
+                                                            ...NewState.Customers[1],
+                                                            Phone: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="form-col pb-4">
-                            <Form.Label className="input-label">Customer Email</Form.Label>
-                            <Form.Control
-                                readOnly
-                                type="email"
-                                className="input-gray"
-                                onClick={() => setShowCustomerModal(true)}
-                                value={projectInformation?.Customers?.[0]?.Email}
-                            />
+                            <Form.Label className="input-label"></Form.Label>
+                            <div className="row">
+                                <div className="col-12">
+                                    <Form.Label className="input-label"></Form.Label>
+                                    <div>
+                                    <Form.Label className="input-label">Email</Form.Label>
+                                    </div>
+                                    <Form.Control
+                                        type="email"
+                                        className="input-gray"
+                                        onChange={(e) => {
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[0]?.Email) {
+                                                    NewState.Customers[0].Email = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[0]= {
+                                                            ...NewState.Customers[0],
+                                                            Email: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                        value={projectInformation?.Customers?.[0]?.Email}
+                                    />
+                                </div>
+                                <div className="col-12">
+                                <Form.Label className="input-label"></Form.Label>
+                                <div>
+
+                                    <Form.Label className="input-label">Email</Form.Label>
+                                </div>
+                                    <Form.Control
+                                        type="email"
+                                        className="input-gray"
+                                        onChange={(e) => {
+                                            setProjectInformation(prev => {
+                                                const NewState = { ...prev }
+                                                if (NewState.Customers?.[1]?.Email) {
+                                                    NewState.Customers[1].Email = e.target.value
+                                                    return NewState
+                                                } else {
+                                                    const newRowData = [
+                                                        ...NewState.Customers,
+                                                        NewState.Customers[1]={
+                                                            ...NewState.Customers[1],
+                                                            Email: e.target.value
+                                                        }
+                                                    ]
+                                                    NewState.Customers = newRowData
+                                                    return NewState
+                                                }
+                                            })
+                                        }}
+                                        value={projectInformation?.Customers?.[1]?.Email}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="form-col pb-4">
                             <Form.Label className="input-label">Plan Name</Form.Label>
@@ -529,7 +745,7 @@ const ProjectInformation = withSwal((props) => {
 
                 <div className="d-flex justify-content-center pt-5">
                     {isLoading ? (
-                        <Spinner animation="border" variant="primary"/>
+                        <Spinner animation="border" variant="primary" />
                     ) : (
                         <>
                             {project?.ID ? (
@@ -578,7 +794,7 @@ const ProjectInformation = withSwal((props) => {
                 </div>
             </div>
 
-            <MarketingBlock/>
+            <MarketingBlock />
 
         </div>
 

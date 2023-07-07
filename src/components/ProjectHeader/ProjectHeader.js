@@ -170,6 +170,21 @@ const ProjectHeader = () => {
                             </a>
                         </div>
                     </div>
+                    <div className='d-flex flex-wrap'>
+                        <div className='pr-3 text phone'>
+                            <i className='fas fa-phone mr-2'></i>
+                            <a href={`tel:+1${project?.Customers?.[1]?.Phone}`}>
+                                {project?.Customers?.[1]?.Phone || '000-000-0000'}
+                            </a>
+                        </div>
+
+                        <div className='text email'>
+                            <i className='fas fa-envelope mr-2'></i>
+                            <a href={`mailto:${project?.Customers?.[1]?.Email}`}>
+                                {project?.Customers?.[1]?.Email}
+                            </a>
+                        </div>
+                    </div>
                     <div className='d-flex pt-3'>
                         <div className='bold-text pr-3'>
                             Closed On
