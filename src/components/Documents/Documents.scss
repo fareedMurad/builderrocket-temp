@@ -28,7 +28,10 @@
 
         .form-col {
             width: 45%;
-
+            
+            .gap-2{
+                gap: 10px;
+            }
             @include media-breakpoint-down(lg) {
                 width: 100%;
             }
