@@ -1,13 +1,13 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {addDocument, deleteDocument, getDocumentTypes} from '../../actions/documentActions';
+import React, { useEffect, useRef, useState } from 'react';
+import { addDocument, deleteDocument, getDocumentTypes } from '../../actions/documentActions';
 import {
     getProjectByProjectID,
     saveProject,
     setSelectedProject,
     setSelectedProjectTab
 } from '../../actions/projectActions';
-import {Button, Form, Spinner} from 'react-bootstrap';
-import {useDispatch, useSelector} from 'react-redux';
+import { Button, Form, Spinner } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Utils from '../../utils';
@@ -29,7 +29,7 @@ const Documents = () => {
     const [selectedInput, setSelectedInput] = useState();
     const [progress, setProgress] = useState({});
     const [documentsInfo, setDocumentsInfo] = useState({
-        ...project, 
+        ...project,
         PermitDate: Utils.formatShortDateUS(project?.PermitDate)
     });
 
@@ -47,25 +47,25 @@ const Documents = () => {
 
         formData.append('DocumentTypeID', documentTypeID);
         formData.append('File', event.target?.files?.[0]);
-        progress[documentTypeID] = {progress: 0, loading: false};
-        setProgress({...progress});
+        progress[documentTypeID] = { progress: 0, loading: false };
+        setProgress({ ...progress });
 
-        dispatch(addDocument(project.ID, formData,  (event) => {
-            progress[documentTypeID] = {progress: Math.round((100 * event.loaded) / event.total), loading: true};
-            setProgress({...progress});
+        dispatch(addDocument(project.ID, formData, (event) => {
+            progress[documentTypeID] = { progress: Math.round((100 * event.loaded) / event.total), loading: true };
+            setProgress({ ...progress });
             console.log(progress);
         }))
-        .then((response) => {
-            progress[documentTypeID] = {progress: 0, loading: false};
-            setProgress({...progress});
-            if(response){
-                let documents = project?.Documents?.filter((d) => d?.DocumentTypeID !== documentTypeID);
-                documents = documents.concat(response.Documents?.filter((d) => d?.DocumentTypeID === documentTypeID));
-                project.Documents = documents;
-                dispatch(setSelectedProject({...project}));
-            }
-            //dispatch(getProjectByProjectID(project.ID));
-        });
+            .then((response) => {
+                progress[documentTypeID] = { progress: 0, loading: false };
+                setProgress({ ...progress });
+                if (response) {
+                    let documents = project?.Documents?.filter((d) => d?.DocumentTypeID !== documentTypeID);
+                    documents = documents.concat(response.Documents?.filter((d) => d?.DocumentTypeID === documentTypeID));
+                    project.Documents = documents;
+                    dispatch(setSelectedProject({ ...project }));
+                }
+                //dispatch(getProjectByProjectID(project.ID));
+            });
     }
 
     let findDocumentType = (id) => {
@@ -78,20 +78,20 @@ const Documents = () => {
         return [...project?.Documents?.filter((d) => d?.DocumentTypeID === id)];
     }
     let fileProgress = (id) => {
-        if(!progress) return {};
-        return {...progress[id]};
+        if (!progress) return {};
+        return { ...progress[id] };
     }
 
     const handleDocumentDelete = (documentID) => {
         // delete document by document ID then refresh project
         dispatch(deleteDocument(documentID))
             .then((response) => {
-                if(response){
+                if (response) {
                     project.Documents = project?.Documents?.filter((d) => d?.ID !== documentID);
-                    dispatch(setSelectedProject({...project}));
+                    dispatch(setSelectedProject({ ...project }));
                 }
             })
-            .catch(() => {});
+            .catch(() => { });
     }
 
     const clearChanges = () => {
@@ -144,10 +144,10 @@ const Documents = () => {
                 <Form>
                     <div className='d-flex flex-wrap documents-form'>
                         <div className='form-col pb-2'>
-                            <FileUpload 
+                            <FileUpload
                                 short
                                 progress={fileProgress(1)}
-                                label={findDocumentType(1)?.Name} 
+                                label={findDocumentType(1)?.Name}
                                 files={findDocumentTypeFiles(1)}
                                 selectedInput={selectedInput}
                                 setSelectedInput={setSelectedInput}
@@ -156,24 +156,10 @@ const Documents = () => {
                             />
                         </div>
                         <div className='form-col pb-2'>
-                            <Form.Label className='input-label'>
-                                Lot #
-                            </Form.Label>
-                            <Form.Control
-                                type='email'
-                                className='input-gray'
-                                value={documentsInfo?.LotNumber}
-                                onChange={(event) => setDocumentsInfo({
-                                    ...documentsInfo,
-                                    LotNumber: event.target.value
-                                })}
-                            />
-                        </div>
-                        <div className='form-col pb-2'>
                             <FileUpload
                                 progress={fileProgress(2)}
-                                short 
-                                label={findDocumentType(2)?.Name}     
+                                short
+                                label={findDocumentType(2)?.Name}
                                 files={findDocumentTypeFiles(2)}
                                 selectedInput={selectedInput}
                                 setSelectedInput={setSelectedInput}
@@ -183,24 +169,25 @@ const Documents = () => {
                         </div>
                         <div className='form-col pb-2'>
                             <Form.Label className='input-label'>
+                                Permit Date
+                            </Form.Label>
+                            <DatePicker
+                                className='input-gray date-picker'
+                                selected={documentsInfo?.PermitDate ? new Date(documentsInfo?.PermitDate) : ''}
+                                onChange={(date) => setDocumentsInfo({ ...documentsInfo, PermitDate: date })}
+                            />
+                        </div>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
                                 C.O. Date
                             </Form.Label>
-                            <DatePicker 
+                            <DatePicker
                                 className='input-gray date-picker'
                                 selected={documentsInfo?.OccupencyDate ? new Date(documentsInfo?.OccupencyDate) : ''}
                                 onChange={(date) => setDocumentsInfo({ ...documentsInfo, OccupencyDate: date })}
                             />
                         </div>
-                        <div className='form-col pb-2'>
-                            <Form.Label className='input-label'>
-                                Permit Date
-                            </Form.Label>
-                            <DatePicker 
-                                className='input-gray date-picker'
-                                selected={documentsInfo?.PermitDate ? new Date(documentsInfo?.PermitDate) : ''} 
-                                onChange={(date) => setDocumentsInfo({ ...documentsInfo, PermitDate: date })}
-                            />
-                        </div>
+
                         <div className='form-col pb-2'>
                             <Form.Label className='input-label'>
                                 Building Permit #
@@ -215,30 +202,18 @@ const Documents = () => {
                             />
                         </div>
                         <div className='form-col pb-2'>
-                            <FileUpload 
+                            <FileUpload
                                 short
                                 progress={fileProgress(3)}
                                 files={findDocumentTypeFiles(3)}
-                                label={findDocumentType(3)?.Name}     
+                                label={findDocumentType(3)?.Name}
                                 selectedInput={selectedInput}
                                 setSelectedInput={setSelectedInput}
                                 handleDocumentDelete={handleDocumentDelete}
                                 onFileChange={(event) => onFileChange(3, event)}
                             />
                         </div>
-                        <div className='form-col pb-2'>
-                            <Form.Label className='input-label'>
-                                Building Risk Policy
-                            </Form.Label>
-                            <Form.Control
-                                className='input-gray'
-                                value={documentsInfo?.BuildingRiskPolicy}
-                                onChange={(event) => setDocumentsInfo({
-                                    ...documentsInfo,
-                                    BuildingRiskPolicy: event.target.value
-                                })}
-                            />
-                        </div>
+
                         <div className='form-col pb-2'>
                             <Form.Label className='input-label'>Septic Permit #</Form.Label>
                             <Form.Control
@@ -252,7 +227,7 @@ const Documents = () => {
                             />
                         </div>
                         <div className='form-col pb-2'>
-                            <FileUpload 
+                            <FileUpload
                                 short
                                 progress={fileProgress(9)}
                                 files={findDocumentTypeFiles(9)}
@@ -264,14 +239,15 @@ const Documents = () => {
                             />
                         </div>
                         <div className='form-col pb-2'>
-                            <Form.Label className='input-label'>Soil Treatment Contractor</Form.Label>
-                            <Form.Control
-                                className='input-gray'
-                                value={documentsInfo?.SoilTreatmentContractor}
-                                onChange={(event) => setDocumentsInfo({
-                                    ...documentsInfo,
-                                    SoilTreatmentContractor: event.target.value
-                                })}
+                            <FileUpload
+                                short
+                                progress={fileProgress(4)}
+                                files={findDocumentTypeFiles(4)}
+                                label={findDocumentType(4)?.Name}
+                                selectedInput={selectedInput}
+                                setSelectedInput={setSelectedInput}
+                                handleDocumentDelete={handleDocumentDelete}
+                                onFileChange={(event) => onFileChange(4, event)}
                             />
                         </div>
                         <div className='form-col pb-2'>
@@ -288,22 +264,63 @@ const Documents = () => {
                             />
                         </div>
                         <div className='form-col pb-2'>
-                            <FileUpload 
-                                short
-                                progress={fileProgress(4)}
-                                files={findDocumentTypeFiles(4)} 
-                                label={findDocumentType(4)?.Name}
-                                selectedInput={selectedInput}
-                                setSelectedInput={setSelectedInput}
-                                handleDocumentDelete={handleDocumentDelete}
-                                onFileChange={(event) => onFileChange(4, event)}
+                            <Form.Label className='input-label'>
+                                Building Risk Policy
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={documentsInfo?.BuildingRiskPolicy}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    BuildingRiskPolicy: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className='form-col pb-2'>
+                            <div className='d-flex gap-2'>
+                                <div className='w-50'>
+                                    <Form.Label className='input-label'>
+                                        Policy#
+                                    </Form.Label>
+                                    <Form.Control
+                                        className='input-gray'
+                                        value={documentsInfo?.Policy}
+                                        onChange={(event) => setDocumentsInfo({
+                                            ...documentsInfo,
+                                            Policy: event.target.value
+                                        })}
+                                    />
+                                </div>
+                                <div className='w-50'>
+                                    <Form.Label className='input-label'>
+                                        Policy Expiration Date
+                                    </Form.Label>
+                                    <DatePicker
+                                        className='input-gray date-picker'
+                                        selected={documentsInfo?.PermitDate ? new Date(documentsInfo?.PermitDate) : ''}
+                                        onChange={(date) => setDocumentsInfo({ ...documentsInfo, PermitDate: date })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className='form-col pb-2'>
+                            <Form.Label className='input-label'>
+                                Building Risk Policy
+                            </Form.Label>
+                            <Form.Control
+                                className='input-gray'
+                                value={documentsInfo?.BuildingRiskPolicy}
+                                onChange={(event) => setDocumentsInfo({
+                                    ...documentsInfo,
+                                    BuildingRiskPolicy: event.target.value
+                                })}
                             />
                         </div>
                         <div className='form-col pb-2'></div>
                     </div>
                 </Form>
 
-                <ClearChangesModal 
+                <ClearChangesModal
                     show={showModal}
                     setShow={setShowModal}
                     clearChanges={clearChanges}
@@ -311,20 +328,20 @@ const Documents = () => {
 
                 <div className='d-flex justify-content-center pt-5'>
                     {isLoading ? (
-                        <Spinner 
-                           animation='border'
-                           variant='primary' 
-                       />
+                        <Spinner
+                            animation='border'
+                            variant='primary'
+                        />
                     ) : (
                         <>
-                            <Button 
-                                variant='link' 
+                            <Button
+                                variant='link'
                                 className='cancel'
                                 onClick={() => setShowModal(true)}
                             >
                                 Cancel
                             </Button>
-                            <Button 
+                            <Button
                                 className='primary-gray-btn next-btn ml-3'
                                 onClick={saveChanges}
                             >
