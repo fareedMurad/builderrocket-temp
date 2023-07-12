@@ -335,6 +335,21 @@ const ProjectInformation = withSwal((props) => {
                                 placeholder={projectInformation?.ThumbnailName}
                             />
                         </div>
+                        <div className='form-col pb-4'>
+                            <Form.Label className='input-label'>
+                                Lot #
+                            </Form.Label>
+                            <Form.Control
+                                type='email'
+                                className='input-gray'
+                                value={projectInformation?.LotNumber}
+                                onChange={(event) => setProjectInformation({
+                                    ...projectInformation,
+                                    LotNumber: event.target.value
+                                })}
+                            />
+                        </div>
+                        <div className="form-col pb-4"></div>
                         <div className="form-col pb-4">
                             <Form.Label className="input-label">Customer Info</Form.Label>
                            <div>
