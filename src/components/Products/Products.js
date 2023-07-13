@@ -45,6 +45,7 @@ const Products = (props) => {
     const [brandOptions, setBrandOptions] = useState([]);
     const [roomsOptions, setRoomsOptions] = useState([]);
     const [categoriesOptions, setCategoriesOptions] = useState([]);
+    const [SubCategoriesOptions, setSubCategoriesOptions] = useState([]);
     const [selectedRooms, setSelectedRooms] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
@@ -65,11 +66,11 @@ const Products = (props) => {
     const [productFilter, setProductFilter] = useState({
         rooms: [],
         categories: [],
+        subcategories: [],
         brands: [],
         pageNumber: 1,
         pageSize: 20
     })
-
     const handleSelectedRoom = useCallback((selectedRooms) => {
         const rooms = [...selectedRooms.map(b => b.ID)];
 
@@ -86,6 +87,11 @@ const Products = (props) => {
     const handleCategoryChange = useCallback((selectedCategories) => {
         const categories = [...selectedCategories.map(b => b.ID)];
         setProductFilter({...productFilter, categories: categories, pageNumber: 1});
+    }, [dispatch, productFilter]);
+
+    const handleSubCategoryChange = useCallback((selectedCategories) => {
+        const subcategories = [...selectedCategories.map(b => b.ID)];
+        setProductFilter({...productFilter, subcategories: subcategories, pageNumber: 1});
     }, [dispatch, productFilter]);
 
 
@@ -135,10 +141,29 @@ const Products = (props) => {
                 return a.Path?.localeCompare(b.Path);
             })];
             setCategoriesOptions(options);
-
             setCategoriesDropdownLoading(false);
         }
     }, [categories]);
+
+    useEffect(() => {
+        // productFilter?.categories?.include(c.ParentId)
+        // if(productFilter?.categories.length){
+            let options = [{
+                name: "Select All",
+                value: "select_all"
+            }, ...categories.filter(c => productFilter?.categories.some(d => d === c.ParentId))?.map((b) => {
+                return {
+                    ...b,
+                    name: b.Name?.replaceAll('&nbsp;', ''),
+                    value: b.ParentId,
+                };
+            }).sort((a, b) => {
+                return a.Path?.localeCompare(b.Path);
+            })];
+            setSubCategoriesOptions(options);
+            setCategoriesDropdownLoading(false);
+        // }
+    }, [productFilter,categories]);
 
 
     useEffect(() => {
@@ -637,7 +662,7 @@ const Products = (props) => {
 
 
                         <div>
-                            <div className='input-label mt-2 ml-3'>Product Category</div>
+                            <div className='input-label mt-2 ml-3'>Parent Category</div>
                             <div className="layout-select custom-dropdown">
                                 {categoriesDropdownLoading ?
                                     <div className='text-center'>
@@ -679,7 +704,50 @@ const Products = (props) => {
                                 }
                             </div>
                         </div>
+                        <div>
+                            <div className='input-label mt-2 ml-3'>Child Category</div>
+                            <div className="layout-select custom-dropdown">
+                                {categoriesDropdownLoading ?
+                                    <div className='text-center'>
+                                        <Spinner
+                                            animation='border'
+                                            variant='primary'
+                                        />
+                                    </div> :
+                                    <>
+                                    <span>
+                                        {DrawDropdownSelection({items: categories, selectedIds:  productFilter?.subcategories, nameProp: "Name", type: "subcategory"})}
+                                    </span>
+                                    <Multiselect
+                                        options={
+                                            SubCategoriesOptions?.length > 0 ? SubCategoriesOptions : []}
+                                        selectedValues={!productFilter?.subcategories ? [] : (
+                                            categories?.length === productFilter?.subcategories?.length ? SubCategoriesOptions : SubCategoriesOptions.filter(b => productFilter?.subcategories.indexOf(b.ID) > -1)
 
+                                        )}
+                                        onSelect={(arr, current) => {
+                                            if (current.value === 'select_all') {
+                                                handleSubCategoryChange(SubCategoriesOptions.filter(p => p.value !== 'select_all'))
+                                            } else
+                                                handleSubCategoryChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                        }}
+                                        onRemove={(arr, target) => {
+                                            let categories = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                            if (target.value === 'select_all') {
+                                                categories = [];
+                                            }
+                                            handleSubCategoryChange(categories)
+                                        }}
+                                        displayValue="name"
+                                        placeholder=""
+                                        showCheckbox={true}
+                                        keepSearchTerm={false}
+                                        hidePlaceholder={true}
+                                    />
+                                    </>
+                                }
+                            </div>
+                        </div>
                         <div>
                             <div className='input-label mt-2 ml-3'>Brand</div>
                             <div className="layout-select custom-dropdown">
@@ -733,7 +801,7 @@ const Products = (props) => {
                 {saveNotesModal()}
                 {selectedRooms.map((data, roomIndex) => {
                     let {Items, ...room} = data;
-                    let items = FilterItems({productFilter, items: Items, brands, categories})?.map(i => {
+                    let items = FilterItems({productFilter, items: Items, brands, categories,})?.map(i => {
                         return {room: room, ...i}
                     })?.sort((a, b) => {
                         if (a.ShortDescription !== b.ShortDescription) {
@@ -993,6 +1061,7 @@ export const FilterItems = ({productFilter, brands, categories, items}) => {
     return items?.filter(i => {
         return (productFilter.brands.length === 0 || productFilter.brands.indexOf(i.BrandID) > -1)
             && (productFilter.categories.length === 0 || allCategories.indexOf(i.CategoryID) > -1)
+            && (productFilter.subcategories.length === 0 || productFilter.subcategories.indexOf(i.CategoryID) > -1)
     })
 }
 
@@ -1001,6 +1070,7 @@ export const DrawDropdownSelection = ({items, selectedIds, nameProp, type}) => {
     const types = {
         'room': {'single': 'Room', 'group': 'Rooms'},
         'category': {'single': 'Category', 'group': 'Categories'},
+        'subcategory': {'single': 'SubCategory', 'group': 'SubCategory'},
         'brand': {'single': 'Brand', 'group': 'Brands'}
     };
     let name = `No ${types[type].group} selected`;
@@ -1012,5 +1082,6 @@ export const DrawDropdownSelection = ({items, selectedIds, nameProp, type}) => {
     }else if(items?.length === selectedLength){
         name = `All ${types[type].group}`;
     }
-    return  (<span className="custom-placeholder">{name}</span>)
+
+    return  (<span className="custom-placeholder">{name?.replaceAll('&nbsp;', '')?.trim()}</span>)
 }
