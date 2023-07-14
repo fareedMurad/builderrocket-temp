@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { addDocument, deleteDocument, getDocumentTypes } from '../../actions/documentActions';
 import {
     getProjectByProjectID,
+    saveDocuments,
     saveProject,
     setSelectedProject,
     setSelectedProjectTab
@@ -109,7 +110,11 @@ const Documents = () => {
             PermitDate: Utils.formatDate(documentsInfo.PermitDate),
             OccupencyDate: Utils.formatDate(documentsInfo.OccupencyDate)
         };
-
+        
+        
+        
+        
+        console.log(documentsInfoFinal,"documentsData")
         // Save Project then navigate to utilities tab
         dispatch(saveProject(documentsInfoFinal))
             .then(() => {
@@ -297,22 +302,23 @@ const Documents = () => {
                                     </Form.Label>
                                     <DatePicker
                                         className='input-gray date-picker'
-                                        selected={documentsInfo?.PermitDate ? new Date(documentsInfo?.PermitDate) : ''}
-                                        onChange={(date) => setDocumentsInfo({ ...documentsInfo, PermitDate: date })}
+                                        selected={documentsInfo?.PolicyExpirationDate ? new Date(documentsInfo?.PolicyExpirationDate) : ''}
+                                        onChange={(date) => setDocumentsInfo({ ...documentsInfo, PolicyExpirationDate: date })}
                                     />
                                 </div>
                             </div>
                         </div>
                         <div className='form-col pb-2'>
                             <Form.Label className='input-label'>
-                                Building Risk Policy
+                                Purchase Policy Button
                             </Form.Label>
                             <Form.Control
+                                type="url"
                                 className='input-gray'
-                                value={documentsInfo?.BuildingRiskPolicy}
+                                value={documentsInfo?.PurchasePolicyButton}
                                 onChange={(event) => setDocumentsInfo({
                                     ...documentsInfo,
-                                    BuildingRiskPolicy: event.target.value
+                                    PurchasePolicyButton: event.target.value
                                 })}
                             />
                         </div>
