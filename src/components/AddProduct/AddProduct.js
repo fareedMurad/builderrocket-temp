@@ -126,23 +126,30 @@ const AddProduct = () => {
     }
 
     const addProduct = (productID) => {
-        if (!productID || !selectedRoom.ID) return;
+        if (!productID || !selectedRoom.ID || !ProductSelectedRoom.length) return;
 
         let newProduct
-        if(product && product.TemplateItemID ){
+        if (product && product.TemplateItemID) {
             newProduct = [{
                 ...product,
                 ProductID: productID,
                 ProjectRoomID: selectedRoom.ID
             }]
-        }else{
-            const GetRoomId = project?.ProjectRooms.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
-            console.log(GetRoomId,"GetRoomId")
-            newProduct = GetRoomId.map(list=>{ return { ProductID: productID,ProjectRoomID: list.ID  } })
-        }
-         
 
-        console.log(newProduct)
+        } else {
+            const GetRoomId = project?.ProjectRooms.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
+            if (GetRoomId.length) {
+                newProduct = GetRoomId.map(list => { return { ProductID: productID, ProjectRoomID: list.ID } })
+            } else {
+                console.log(selectedRoom, "selectedRoom")
+                newProduct = [{
+                    ...product,
+                    ProductID: productID,
+                    ProjectRoomID: selectedRoom.ID
+                }]
+            }
+        }
+
         delete newProduct.CategoryID
         dispatch(handleProductForProject(newProduct))
             .then(
@@ -198,7 +205,7 @@ const AddProduct = () => {
                     </Button>
                 </div>
                 <div className='page-title'>Add Products - {selectedRoom?.RoomName}</div>
-                {ProductSelectedRoom.length ? 
+                {ProductSelectedRoom.length ?
                     <Multiselect
                         tags
                         className="tags-dropdown readonly_ms border-none"
@@ -210,7 +217,7 @@ const AddProduct = () => {
                             project?.ProjectRooms?.length === ProductSelectedRoom?.length ? roomsOptions : roomsOptions.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
                         )}
                         displayValue="name" // Property name to display in the dropdown options
-                    /> :false}
+                    /> : false}
             </div>
 
             <div className='filter-section'>

@@ -34,18 +34,30 @@ const ProductDetail = () => {
     }
 
     const addProduct = () => {
-        if (!productDetailRef.current?.ID || !selectedRoom.ID) return;
+        if (!productDetailRef.current?.ID || !selectedRoom.ID || !ProductSelectedRoom.length) return;
 
         let newProduct
         if(product && product.TemplateItemID ){
-            newProduct = [{
+
+            newProduct = [
+                {
                 ...product,
                 ProductID: productDetailRef.current?.ID,
                 ProjectRoomID: selectedRoom.ID
-            }]
+            }
+        ]
+
         }else{
             const GetRoomId = project?.ProjectRooms.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
-            newProduct = GetRoomId.map(list=>{ return { ProductID: productDetailRef.current?.ID,ProjectRoomID: list.ID  } })
+            if (GetRoomId.length) {
+                newProduct = GetRoomId.map(list=>{ return { ProductID: productDetailRef.current?.ID,ProjectRoomID: list.ID  } })
+            } else {
+                newProduct = [{
+                    ...product,
+                    ProductID: productDetailRef.current?.ID,
+                    ProjectRoomID: selectedRoom.ID
+                }]
+            }
         }
 
         delete newProduct.CategoryID
@@ -55,7 +67,6 @@ const ProductDetail = () => {
                 history.push(`/project/${project.ProjectNumber}/products`)
             );
     }
-    console.log('Product Details', productDetail);
 
     return (
         <div className='product-detail'>
