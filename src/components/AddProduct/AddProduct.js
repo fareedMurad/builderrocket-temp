@@ -128,15 +128,23 @@ const AddProduct = () => {
     const addProduct = (productID) => {
         if (!productID || !selectedRoom.ID) return;
 
-        const newProduct = {
-            ...product,
-            ProductID: productID,
-            ProjectRoomID: selectedRoom.ID
+        let newProduct
+        if(product && product.TemplateItemID ){
+            newProduct = [{
+                ...product,
+                ProductID: productID,
+                ProjectRoomID: selectedRoom.ID
+            }]
+        }else{
+            const GetRoomId = project?.ProjectRooms.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
+            console.log(GetRoomId,"GetRoomId")
+            newProduct = GetRoomId.map(list=>{ return { ProductID: productID,ProjectRoomID: list.ID  } })
         }
+         
 
+        console.log(newProduct)
         delete newProduct.CategoryID
-
-        dispatch(handleProductForProject([newProduct]))
+        dispatch(handleProductForProject(newProduct))
             .then(
                 history.push(`/project/${project.ProjectNumber}/products`)
             );

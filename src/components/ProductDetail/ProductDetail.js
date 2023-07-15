@@ -14,7 +14,7 @@ const ProductDetail = () => {
     const project = useSelector(state => state.project.project);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productDetail = useSelector(state => state.product.productDetail);
-
+    const ProductSelectedRoom = useSelector(state => state.room.ProductSelectedRoom);
     const [isLoading, setIsLoading] = useState(true);
 
     const productDetailRef = useRef();
@@ -36,15 +36,21 @@ const ProductDetail = () => {
     const addProduct = () => {
         if (!productDetailRef.current?.ID || !selectedRoom.ID) return;
 
-        const newProduct = {
-            ...product,
-            ProductID: productDetailRef.current.ID,
-            ProjectRoomID: selectedRoom.ID
+        let newProduct
+        if(product && product.TemplateItemID ){
+            newProduct = [{
+                ...product,
+                ProductID: productDetailRef.current?.ID,
+                ProjectRoomID: selectedRoom.ID
+            }]
+        }else{
+            const GetRoomId = project?.ProjectRooms.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
+            newProduct = GetRoomId.map(list=>{ return { ProductID: productDetailRef.current?.ID,ProjectRoomID: list.ID  } })
         }
 
         delete newProduct.CategoryID
 
-        dispatch(handleProductForProject([newProduct]))
+        dispatch(handleProductForProject(newProduct))
             .then(
                 history.push(`/project/${project.ProjectNumber}/products`)
             );
