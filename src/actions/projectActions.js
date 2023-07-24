@@ -801,3 +801,26 @@ export const deleteProject = (projectID) => dispatch => {
                 dispatch({ type: LOGOUT });
         });
 }
+
+/**
+ * Invite customer to selected project
+ * @param {*} ID 
+ */
+export const inviteCustomerToProject = (ID) => dispatch => {
+    const URL = `/customer-portal/SaveCustomerInvite/${ID}`;
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: {CustomerID:ID}
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
