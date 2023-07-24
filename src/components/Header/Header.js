@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Navbar, Nav, Image, OverlayTrigger, Popover, Container } from 'react-bootstrap';
+import { Navbar, Nav, Image, OverlayTrigger, Popover, Container, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../actions/authActions';
 import { setSelectedProjectTab } from '../../actions/projectActions';
@@ -12,7 +12,7 @@ import 'react-bootstrap-accordion/dist/index.css'
 import { Accordion } from 'react-bootstrap-accordion'
 import Logo from '../../assets/images/builder-rocket-logo.png';
 
-const Header = ({expanded, setExpanded}) => {
+const Header = ({ expanded, setExpanded }) => {
     const history = useHistory();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -25,12 +25,12 @@ const Header = ({expanded, setExpanded}) => {
 
 
     useEffect(() => {
-        if(history?.location?.pathname?.includes?.('/project/')){
+        if (history?.location?.pathname?.includes?.('/project/')) {
             setShowTabLinks(true)
-        }else {
+        } else {
             setShowTabLinks(false)
         }
-    },[location])
+    }, [location])
 
     const handleSelectedTab = (tab) => {
         history.push(`/project/${project.ProjectNumber}/${tab}`)
@@ -75,13 +75,13 @@ const Header = ({expanded, setExpanded}) => {
     }
 
     const tabs = [
-        {url: "projectInformation", title:"Project Information", icon:"long-arrow-alt-right"},
-        {url: "documents", title:"Documents", icon:"long-arrow-alt-right"},
-        {url: "utilities", title:"Utilities", icon:"long-arrow-alt-right"},
-        {url: "contractors", title:"Contractors", icon:"long-arrow-alt-right"},
-        {url: "drawings", title:"Drawings", icon:"long-arrow-alt-right"},
-        {url: "roomAreaLayout", title:"Room/Area Layout", icon:"long-arrow-alt-right"},
-        {url: "products", title:"Products", icon:"long-arrow-alt-right"},
+        { url: "projectInformation", title: "Project Information", icon: "long-arrow-alt-right" },
+        { url: "documents", title: "Documents", icon: "long-arrow-alt-right" },
+        { url: "utilities", title: "Utilities", icon: "long-arrow-alt-right" },
+        { url: "contractors", title: "Contractors", icon: "long-arrow-alt-right" },
+        { url: "drawings", title: "Drawings", icon: "long-arrow-alt-right" },
+        { url: "roomAreaLayout", title: "Room/Area Layout", icon: "long-arrow-alt-right" },
+        { url: "products", title: "Products", icon: "long-arrow-alt-right" },
     ]
 
 
@@ -118,12 +118,12 @@ const Header = ({expanded, setExpanded}) => {
                                 <i className='far fa-border-none fa-sm tab-icon'></i>
                                 Rooms Management
                             </div>
-                           
+
                             <div className='header-item'>
                                 <i className='far fa-bookmark fa-sm tab-icon'></i>
                                 Vendor Management
                             </div>
-                            
+
 
                             {showTabLinks && <div
                                 className='header-item tabs'
@@ -174,34 +174,40 @@ const Header = ({expanded, setExpanded}) => {
                         )}
                     </OverlayTrigger>
                 </div>
-                {isSignedIn && (
-                    <Navbar.Collapse className='justify-content-end nav-collapse d-none d-lg-block'>
-                        <Nav>
-                            <Nav.Link className='item'>
-                                {user?.AvatarURL ? (
-                                    <Image src={user?.AvatarURL} roundedCircle />
+                <Navbar.Collapse className='justify-content-end nav-collapse d-none d-lg-block'>
+                    <Nav>
+                        {isSignedIn ? (
+                            <>
+                                <Nav.Link className='item'>
+                                    {user?.AvatarURL ? (
+                                        <Image src={user?.AvatarURL} roundedCircle />
+                                    ) : (
+                                        <i className='far fa-user-circle'></i>
+                                    )}
+                                </Nav.Link>
+                                <Nav.Link className='item'>
+                                    <i className='far fa-cog'></i>
+                                </Nav.Link>
+                                {user?.FirstName ? (
+                                    <Navbar.Text className='item'>
+                                        {user?.FirstName} {user?.LastName}
+                                    </Navbar.Text>
                                 ) : (
-                                    <i className='far fa-user-circle'></i>
+                                    <Navbar.Text className='item'>
+                                        {user?.Company}
+                                    </Navbar.Text>
                                 )}
-                            </Nav.Link>
-                            <Nav.Link className='item'>
-                                <i className='far fa-cog'></i>
-                            </Nav.Link>
-                            {user?.FirstName ? (
-                                <Navbar.Text className='item'>
-                                    {user?.FirstName} {user?.LastName}
-                                </Navbar.Text>
-                            ) : (
-                                <Navbar.Text className='item'>
-                                    {user?.Company}
-                                </Navbar.Text>
-                            )}
-                            <Nav.Link className='item' onClick={handleLogout}>
-                                <i className='far fa-sign-out-alt'></i>
-                            </Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                )}
+                                <Nav.Link className='item' onClick={handleLogout}>
+                                    <i className='far fa-sign-out-alt'></i>
+                                </Nav.Link>
+                            </>
+                        ) :
+                            <div className="d-flex gap-2">
+                                <Button onClick={() => history.push('/signup')}>Sign Up</Button>
+                                <Button onClick={() => history.push('/login')}>Login</Button>
+                            </div>}
+                    </Nav>
+                </Navbar.Collapse>
             </Navbar>
 
             {isSignedIn && (

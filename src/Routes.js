@@ -7,6 +7,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import ('./pages/Login'));
+const Signup = lazy(() => import ('./pages/Signup'));
 const Project = lazy(() => import('./pages/Project'));
 const UtilityManagement = lazy(() => import('./pages/UtilityManagement'));
 const ContractorManagement = lazy(() => import('./pages/ContractorManagement'));
@@ -51,6 +52,7 @@ const Routes = (props) => {
                     <Route path='/' exact component={Home} />
                     <Route exact path='/login' component={Login} /> 
                     <Route exact path='/project' component={Project} />
+                    <Route path='/signup' component={Signup} /> 
                     <Route path='/project/:project/:tab' component={Project} />
                     <Route path='/utility-management' component={UtilityManagement} />
                     <Route path='/contractor-management' component={ContractorManagement} />
