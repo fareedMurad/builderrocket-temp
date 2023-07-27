@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
-import { Row, Col, Button, Form, Spinner, Container } from 'react-bootstrap';
-import { signupEmailPassword } from '../../../actions/customerActions';
-import { useDispatch } from 'react-redux';
-import { isEmpty } from 'lodash'
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Row, Col, Button, Form, Spinner, Container } from "react-bootstrap";
+import {
+  getCustomerInvites,
+  signupEmailPassword,
+} from "../../../actions/customerActions";
+import { useDispatch, useSelector } from "react-redux";
+import { isEmpty } from "lodash";
+import { Link, useParams } from "react-router-dom";
+import { logout } from "../../../actions/authActions";
+import ConfirmLogoutModal from "../../../components/ConfirmLogoutModal";
 
 const Signup = (props) => {
   const { history } = props;
@@ -14,45 +19,63 @@ const Signup = (props) => {
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [customer, setCustomer] = useState();
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+  const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      setLogoutModalVisible(true);
+    }
+    if(customerParams?.id)
+    dispatch(getCustomerInvites(customerParams?.id)).then((response) => {
+      if (response) {
+        setCustomer(response);
+      } else {
+        setError("Please Enter valid email or password!");
+      }
+    });
+  }, []);
 
   const handleSingup = (event) => {
-
     event.preventDefault();
     setIsLoading(true);
 
     if (user.password !== user.confirmPassword) {
-      setError('Password and confirm password should be same!')
+      setError("Password and confirm password should be same!");
       setIsLoading(false);
       return;
     }
 
-    const params = { ...user, ID: customerParams?.id };
-    delete params.confirmPassword
+    const params = { ...user, ID: customer?.CustomerID, setError };
+    delete params.confirmPassword;
 
-    console.log(params, 'Hey')
+    console.log(params, "Hey");
     if (!isEmpty(user))
-      dispatch(signupEmailPassword(user)).then(
-        (response) => {
-          setIsLoading(false);
-          if (response) {
-            history.push("/");
-          } else {
-            setError("Please Enter valid email or password!");
-          }
+      dispatch(signupEmailPassword(params)).then((response) => {
+        setIsLoading(false);
+        if (response) {
+          history.push("/customer/login");
         }
-      );
+      })
+  };
+
+  const handleLogout = () => {
+    const customerDetails = {
+      customerPortal: true,
+      inviteID: customerParams?.id
+    }
+    dispatch(logout(customerDetails)).then(() => {
+      setLogoutModalVisible(false);
+    });
   };
 
   if (!customerParams?.id) {
-    return (
-      <div className=''>
-        Invalid Customer ID
-      </div>
-    )
+    return <div className="">Invalid Customer ID</div>;
   }
 
   return (
-    <Container className='pt-5' fluid="md">
+    <Container className="pt-5" fluid="md">
       <h2>Customer Signup</h2>
       <br />
       <Form onSubmit={handleSingup}>
@@ -65,7 +88,9 @@ const Signup = (props) => {
                 placeholder="First Name"
                 value={user?.firstName}
                 required
-                onChange={(e) => setUser({ ...user, firstName: e.target.value })}
+                onChange={(e) =>
+                  setUser({ ...user, firstName: e.target.value })
+                }
               />
             </Form.Group>
           </Col>
@@ -114,11 +139,13 @@ const Signup = (props) => {
               <Form.Label>Phone</Form.Label>
               <Form.Control
                 type="text"
-                inputMode='tel'
+                inputMode="tel"
                 placeholder="Phone Number"
                 value={user?.phoneNumber}
                 required
-                onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
+                onChange={(e) =>
+                  setUser({ ...user, phoneNumber: e.target.value })
+                }
               />
             </Form.Group>
           </Col>
@@ -130,7 +157,9 @@ const Signup = (props) => {
                 placeholder="Street Address 1"
                 value={user?.streetAddress1}
                 required
-                onChange={(e) => setUser({ ...user, streetAddress1: e.target.value })}
+                onChange={(e) =>
+                  setUser({ ...user, streetAddress1: e.target.value })
+                }
               />
             </Form.Group>
           </Col>
@@ -144,7 +173,9 @@ const Signup = (props) => {
                 placeholder="Street Address 2"
                 value={user?.streetAddress2}
                 required
-                onChange={(e) => setUser({ ...user, streetAddress2: e.target.value })}
+                onChange={(e) =>
+                  setUser({ ...user, streetAddress2: e.target.value })
+                }
               />
             </Form.Group>
           </Col>
@@ -198,9 +229,7 @@ const Signup = (props) => {
                 autoComplete="true"
                 placeholder="Password"
                 required
-                onChange={(e) =>
-                  setUser({ ...user, password: e.target.value })
-                }
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
               />
             </Form.Group>
           </Col>
@@ -227,16 +256,22 @@ const Signup = (props) => {
           ) : (
             <Button type="submit">Sign Up</Button>
           )}
-          <div className='d-inline justify-self-end'>
-            Already have an account? <Link className='d-inline ml-1' to="login">Login</Link>
+          <div className="d-inline justify-self-end">
+            Already have an account?{" "}
+            <Link className="d-inline ml-1" to="/customer/login">
+              Login
+            </Link>
           </div>
         </div>
-        {!error && <small className="text-danger d-block mt-1">{error}</small>}
+        {error && <small className="text-danger d-block mt-1">{error}</small>}
       </Form>
-
+      <ConfirmLogoutModal
+        show={logoutModalVisible}
+        setShow={setLogoutModalVisible}
+        handleConfirm={handleLogout}
+      />
     </Container>
-
   );
-}
+};
 
 export default Signup;

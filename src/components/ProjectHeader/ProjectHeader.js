@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Form, Spinner } from 'react-bootstrap';
-import { copyProject, inviteCustomerToProject } from '../../actions/projectActions';
+import { copyProject } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectHeader.scss';
 import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
 import InviteCustomerImage from '../../assets/images/invite-icon-20.jpg';
 import { useHistory } from 'react-router-dom';
+import { inviteCustomerToProject } from '../../actions/customerActions';
 
 const ProjectHeader = () => {
     const dispatch = useDispatch();

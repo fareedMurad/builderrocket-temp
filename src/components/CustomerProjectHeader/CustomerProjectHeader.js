@@ -6,21 +6,15 @@ import './CustomerProjectHeader.scss';
 
 const CustomerProjectHeader = () => {
 
-    const project = useSelector(state => state.project.project);
-    const refreshThumbnail = useSelector(state => state.project.refreshThumbnail);
-
-    
+    const project = useSelector(state => state.customer.project);
+    const refreshThumbnail = useSelector(state => state.customer?.project?.refreshThumbnail);
 
     const projectStatusMap = {
         1: 'Open',
         2: 'Completed',
         3: 'Closed'
     }
-
     
-
-    
-
     return (
         <div className='project-header'>
             <div className='d-flex flex-wrap justify-content-between'>
