@@ -544,6 +544,10 @@ const Products = (props) => {
             });
     }
 
+    const onRemove = (selectedList, removedItem) => {
+        
+    }
+
 
     return (
         <div className='d-flex products'>
@@ -598,14 +602,29 @@ const Products = (props) => {
                             <Multiselect
                                 tags
                                 className="tags-dropdown readonly_ms"
-                                disable={true}
+                                // disable={true}
                                 placeholder=""
                                 showCheckbox={true}
+                                keepSearchTerm={false}
+                                hidePlaceholder={true}
                                 options={roomsOptions} // Options to display in the dropdown
                                 selectedValues={!productFilter?.rooms ? [] : (
                                     project?.ProjectRooms?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
                                 )}  
                                 displayValue="name" // Property name to display in the dropdown options
+                                onSelect={(arr, current) => {
+                                    if (current.value === 'select_all') {
+                                        handleSelectedRoom(roomsOptions.filter(p => p.value !== 'select_all'))
+                                    } else
+                                        handleSelectedRoom(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                }}
+                                onRemove={(arr, target) => {
+                                    let rooms = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                    if (target.value === 'select_all') {
+                                        rooms = [];
+                                    }
+                                    handleSelectedRoom(rooms)
+                                }}
                             />
                         </div>
                         </>
@@ -614,7 +633,7 @@ const Products = (props) => {
 
                 <div className='ml-3'>
                     <div className='d-flex flex-wrap'>
-                        <div>
+                        {/* <div>
                             <div className='input-label mt-2 ml-3'>Room</div>
                             <div className="layout-select custom-dropdown">
                                 {roomsDropdownLoading ?
@@ -658,7 +677,7 @@ const Products = (props) => {
                                     </>
                                 }
                             </div>
-                        </div>
+                        </div> */}
 
 
                         <div>
