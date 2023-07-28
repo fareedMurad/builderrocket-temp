@@ -227,7 +227,7 @@ const Header = ({ expanded, setExpanded }) => {
                 <i className="far fa-sign-out-alt"></i>
               </Nav.Link>
             )}
-            {!isSignedIn && !isCustomerSignedIn && (
+            {!isSignedIn && !isCustomerSignedIn && !customerPortal &&(
               <div className="d-flex gap-2">
                 <Button onClick={() => history.push("/signup")}>Sign Up</Button>
                 <Button onClick={() => history.push("/login")}>Login</Button>

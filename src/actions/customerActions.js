@@ -185,3 +185,27 @@ export const setSelectedProjectTab = (tab) => dispatch => {
       }
   });
 }
+
+/**
+ * Customer Approval Product
+ * @param {String} ID 
+ *
+ */
+export const customerApprovalProducts = (items) => dispatch => {
+  const URL = `/customer-portal/ApproveProjectProducts`;
+  return api({
+      method: 'POST',
+      url: URL,
+      data: {"Items":items}
+  })
+  .then((response) => {
+      if (response.status === 200) {
+          // dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: response.data });
+          return response.data;
+      }
+  })
+  .catch((error) => {
+      if (error.response?.status === 401) 
+          dispatch({ type: LOGOUT }); 
+  });
+}

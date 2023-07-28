@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  customerAllApproval,
-  customerSingleApproval,
-  editProduct,
-  handleProductForProject,
-} from "../../actions/projectActions";
+import { customerSingleApproval } from "../../actions/projectActions";
 import { Form, Table } from "react-bootstrap";
 import { setSelectedRoom } from "../../actions/roomActions";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty, isUndefined } from "lodash";
 import moment from "moment";
 import "./CustomerProducts.scss";
-import { getCustomerProducts } from "../../actions/customerActions";
+import {
+  customerApprovalProducts,
+  getCustomerProducts,
+} from "../../actions/customerActions";
+import ConfirmApproveAllModal from "../ConfirmApproveAllModal/ConfirmApproveAllModal";
+import { GET_CUSTOMER_PRODUCTS } from "../../actions/types";
 
 const CustomerProducts = (props) => {
   const dispatch = useDispatch();
@@ -21,66 +21,93 @@ const CustomerProducts = (props) => {
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const customerproject = useSelector((state) => state.auth.customerproject);
   const [templateItems, setTemplateItems] = useState({});
+  const [confirmApproveModal, setConfirmApproveModal] = useState(false);
+  const [confirmRejectModal, setConfirmRejectModal] = useState(false);
 
   useEffect(() => {
-    if (isEmpty(selectedRoom))
-      dispatch(setSelectedRoom(project?.ProjectRooms?.[0]));
+    // if (isEmpty(selectedRoom))
+    //   dispatch(setSelectedRoom(project?.ProjectRooms?.[0]));
 
     dispatch(getCustomerProducts());
   }, [dispatch, project, selectedRoom]);
 
-  const handleSelectedRoom = useCallback(
-    (roomID) => {
-      const selectedRoomObj = project?.ProjectRooms?.find(
-        (room) => room.ID === parseInt(roomID)
-      );
+  //   const handleSelectedRoom = useCallback(
+  //     (roomID) => {
+  //       const selectedRoomObj = project?.ProjectRooms?.find(
+  //         (room) => room.ID === parseInt(roomID)
+  //       );
 
-      dispatch(setSelectedRoom(selectedRoomObj));
-    },
-    [dispatch, project]
-  );
+  //       dispatch(setSelectedRoom(selectedRoomObj));
+  //     },
+  //     [dispatch, project]
+  //   );
 
-  useEffect(() => {
-    if (!isEmpty(selectedRoom)) handleSelectedRoom(selectedRoom?.ID);
-  }, [project, selectedRoom, handleSelectedRoom]);
+  //   useEffect(() => {
+  //     if (!isEmpty(selectedRoom)) handleSelectedRoom(selectedRoom?.ID);
+  //   }, [project, selectedRoom, handleSelectedRoom]);
 
-  const handleItems = (incomingItem, key, value) => {
-    if (!incomingItem?.ID) return;
+  //   const handleItems = (incomingItem, key, value) => {
+  //     if (!incomingItem?.ID) return;
 
-    let newValue = value;
+  //     let newValue = value;
 
-    if (key === "RequiresApproval") newValue = !value;
+  //     if (key === "RequiresApproval") newValue = !value;
 
-    if (!templateItems?.[incomingItem?.ID]) {
-      setTemplateItems({
-        ...templateItems,
-        [incomingItem?.ID]: {
-          ...incomingItem,
-          TemplateItemID: incomingItem?.ID,
-          CategoryID: incomingItem?.CategoryID,
-          requiresApproval: false,
-          Quantity: 1,
-          [key]: newValue,
-        },
-      });
-    } else {
-      setTemplateItems({
-        ...templateItems,
-        [incomingItem?.ID]: {
-          ...templateItems?.[incomingItem?.ID],
-          [key]: newValue,
-        },
-      });
+  //     if (!templateItems?.[incomingItem?.ID]) {
+  //       setTemplateItems({
+  //         ...templateItems,
+  //         [incomingItem?.ID]: {
+  //           ...incomingItem,
+  //           TemplateItemID: incomingItem?.ID,
+  //           CategoryID: incomingItem?.CategoryID,
+  //           requiresApproval: false,
+  //           Quantity: 1,
+  //           [key]: newValue,
+  //         },
+  //       });
+  //     } else {
+  //       setTemplateItems({
+  //         ...templateItems,
+  //         [incomingItem?.ID]: {
+  //           ...templateItems?.[incomingItem?.ID],
+  //           [key]: newValue,
+  //         },
+  //       });
+  //     }
+  //   };
+
+  const approvalSingle = (ID, ProductID, StatusID) => {
+    const object = {
+        ID,
+        ProductID,
+        StatusID
     }
+    dispatch(customerApprovalProducts([object])).then(() => {
+        const filter = products.map(p => {
+            if(p.ID ===ID) {
+                return {...p, ApprovalStatusID: StatusID}
+            }else return p
+        })
+        dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: filter })
+    });;
   };
 
-  const approvalSingle = (ID, status) => {
-    const sendData = { ID: ID, ApprovalStatusID: status };
-    dispatch(customerSingleApproval(customerproject, [sendData]));
-  };
-  const approvalAll = (ID, status) => {
-    const sendData = { ProductID: ID, ApprovalStatusID: status };
-    dispatch(customerAllApproval(customerproject, [sendData]));
+  const approvalAll = (StatusID) => {
+    const sendData = products.map(p => {
+        return {
+            ID: p.ID,
+            ProductID: p.Product?.ID,
+            StatusID
+        }
+    });
+    dispatch(customerApprovalProducts(customerproject, sendData));
+
+    if(StatusID === 1)
+    setConfirmApproveModal(false);
+
+
+    if(StatusID === 2)
+    setConfirmRejectModal(false);
   };
 
   console.log(products, "products");
@@ -95,7 +122,7 @@ const CustomerProducts = (props) => {
                     </div>
                     
                 </div> */}
-{/* 
+        {/* 
         <div className="middle-section">
           <div className="d-flex">
             <div>
@@ -114,20 +141,38 @@ const CustomerProducts = (props) => {
           </div>
         </div> */}
 
+        <div className="d-flex justify-content-between pt-3">
+          <div></div>
+          <div className="d-flex justify-content-between">
+            <button
+              class="bg-success text-light mr-1 border-0 rounded px-2 py-1 fs-1"
+              onClick={() => setConfirmApproveModal(true)}
+            >
+              <i class="fas fa-check-double"></i> Approve All
+            </button>
+
+            <button
+              class="bg-danger text-light border-0 rounded px-2 py-1 fs-1"
+              onClick={() => setConfirmRejectModal(true)}
+            >
+              <i class="fas fa-times"></i> Reject All
+            </button>
+          </div>
+        </div>
+
         <div className="products-table">
           <Table>
             <thead>
               <tr>
                 <th>
-                  <div className="d-flex">
-                    Product Name
-                  </div>
+                  <div className="d-flex">Product Name</div>
                 </th>
-                <th width="30%">Description</th>
+                <th>Room</th>
+                <th width="20%">Description</th>
                 <th>Unit Of Sale</th>
-                <th>QTY</th>
+                {/* <th>QTY</th> */}
                 <th>Customer Approval</th>
-                <th></th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -147,12 +192,11 @@ const CustomerProducts = (props) => {
 
                 // }
                 // if (templateItem.IsTemplate === false) console.log('template', templateItem, requiresApproval);
-              
 
                 const { Product } = templateItem;
                 return (
                   <tr key={index}>
-                    <td>
+                    <td width="20%">
                       <div className="d-flex add-btn-templateItem">
                         {Product?.ThumbnailURL && (
                           <img
@@ -160,6 +204,7 @@ const CustomerProducts = (props) => {
                             height="50"
                             alt="template item"
                             src={Product?.ThumbnailURL}
+                            className="mr-2"
                           />
                         )}
                         <div class="pl-1">
@@ -172,53 +217,58 @@ const CustomerProducts = (props) => {
                         </div>
                       </div>
                     </td>
-                    <td width="30%">
+                    <td>{templateItem.ProjectRoom?.Name}</td>
+                    <td width="20%">
                       {Product?.ShortDescription
                         ? Product?.ShortDescription
                         : "-"}
                     </td>
-                    <td>
-                      {Product?.UnitOfSale}
-                    </td>
+                    <td>{Product?.UnitOfSale}</td>
 
-                    <td>{Product.Quantity}</td>
+                    {/* <td>{Product.Quantity}</td> */}
                     <td>
-                      <i
-                        className="fas fa-check-circle text-success approvicon"
-                        onClick={() => approvalSingle(Product?.ID, "1")}
-                      ></i>
-                      <i
-                        className="fas fa-times-circle text-danger approvicon"
-                        onClick={() => approvalSingle(Product?.ID, "-1")}
-                      ></i>
-                      <br />
-                      <small>
-                        {Product?.ApprovalStatusID === 0
-                          ? "Pending"
-                          : Product?.ApprovalStatusID === 1
+                      <small
+                        className={`
+                        text-center
+                        px-2 py-1
+                        rounded
+                        text-light
+                        ${
+                          templateItem?.ApprovalStatusID === 1
+                            ? "bg-success"
+                            : templateItem?.ApprovalStatusID === 2
+                            ? "bg-danger"
+                            : "bg-secondary"
+                        }
+                      `}
+                      >
+                        {templateItem?.ApprovalStatusID === 1
                           ? "Approved"
-                          : "Rejected"}{" "}
-                        {moment(Product?.DateApproved).format("MM/DD/Y")}
+                          : templateItem?.ApprovalStatusID === 2
+                          ? "Rejected"
+                          : "Pending"}{" "}
+                      </small>
+                      <br />
+                      <small className="d-block mt-1">
+                        {(templateItem?.ApprovalStatusID !== 2 ||
+                          templateItem?.ApprovalStatusID !== 1) &&
+                            moment(Product?.DateApproved).format("MM/DD/Y")}
                       </small>
                     </td>
                     <td>
-                      <div className="d-flex justify-content-between">
+                      <div className="d-flex ">
                         <button
-                          class="bg-success text-light"
-                          onClick={() =>
-                            approvalAll(Product?.ProductID, "1")
-                          }
+                          class="bg-success text-light mr-1 border-0 rounded py-2"
+                          onClick={() => approvalSingle(templateItem.ID, Product?.ID, 1)}
                         >
-                          <i class="fas fa-check-double"></i> All
+                          <i class="fas fa-check-double"></i> Approve
                         </button>
 
                         <button
-                          class="bg-danger text-light"
-                          onClick={() =>
-                            approvalAll(Product?.ProductID, "-1")
-                          }
+                          class="bg-danger text-light border-0 rounded py-2"
+                            onClick={() => approvalSingle(templateItem.ID, Product?.ID, 2)}
                         >
-                          <i class="fas fa-times"></i> All
+                          <i class="fas fa-times"></i> Reject
                         </button>
                       </div>
                     </td>
@@ -229,6 +279,20 @@ const CustomerProducts = (props) => {
           </Table>
         </div>
       </div>
+
+      <ConfirmApproveAllModal
+        text="Are you sure you want to approve all pending products?"
+        show={confirmApproveModal}
+        handleClose={() => setConfirmApproveModal(false)}
+        handleConfirm={() => approvalAll(1)}
+      />
+
+      <ConfirmApproveAllModal
+        text="Are you sure you want to reject all pending products?"
+        show={confirmRejectModal}
+        handleClose={() => setConfirmRejectModal(false)}
+        handleConfirm={() => approvalAll(2)}
+      />
     </div>
   );
 };

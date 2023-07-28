@@ -71,7 +71,7 @@ const Routes = (props) => {
                 path="/contractor-management"
                 component={ContractorManagement}
               />
-              <Redirect to="/" />
+              {/* <Redirect to="/" /> */}
             </>
           )}
         </Switch>

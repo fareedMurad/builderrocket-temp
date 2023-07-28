@@ -287,6 +287,33 @@ export const handleProductForProject = (product) => dispatch => {
         });
 }
 
+
+/**
+ * 
+ * @param {*} product 
+ * @returns 
+ */
+export const handleAddProductForProject = (product) => dispatch => {
+    const URL = `/product`;
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: product
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                // dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
 /**
  * Save / Update existing project
  * @param project - project object contaning ID
