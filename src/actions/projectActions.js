@@ -90,30 +90,6 @@ export const getProjectByProjectNumber = (projectNumber) => dispatch => {
 }
 
 /**
- * Get Customer project by project ID  
- * @param {String} projectID 
- *
- */
- export const getCustomerProjectByProjectID = (projectID) => dispatch => {
-    const URL = `/customer-portal/${projectID}`;
-
-    return api({
-        method: 'GET', 
-        url: URL
-    })
-    .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_PROJECT, payload: response?.data });
-
-            return response?.data;
-        }
-    })
-    .catch((error) => {
-        if (error.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
-}
-/**
  * Customer Approval project Single
  * @param {String} projectID 
  *
@@ -301,6 +277,33 @@ export const handleProductForProject = (product) => dispatch => {
         .then((response) => {
             if (response?.status === 200) {
                 dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
+
+/**
+ * 
+ * @param {*} product 
+ * @returns 
+ */
+export const handleAddProductForProject = (product) => dispatch => {
+    const URL = `/product`;
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: product
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                // dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
                 return response?.data;
             }
@@ -790,29 +793,6 @@ export const deleteProject = (projectID) => dispatch => {
     return api({
         method: 'DELETE',
         url: URL
-    })
-        .then((response) => {
-            if (response?.status === 200) {
-                return response?.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        });
-}
-
-/**
- * Invite customer to selected project
- * @param {*} ID 
- */
-export const inviteCustomerToProject = (ID) => dispatch => {
-    const URL = `/customer-portal/SaveCustomerInvite/${ID}`;
-
-    return api({
-        method: 'POST',
-        url: URL,
-        data: {CustomerID:ID}
     })
         .then((response) => {
             if (response?.status === 200) {

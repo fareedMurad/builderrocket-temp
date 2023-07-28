@@ -77,10 +77,10 @@ export const loginEmailPassword = (email, password) => dispatch => {
         });
 }
 
-export const logout = () => dispatch => {
+export const logout = (data) => (dispatch) => {
     return new Promise((resolve, reject) => {
         try {
-            dispatch({ type: LOGOUT });
+            dispatch({ type: LOGOUT, payload: data });
 
             resolve();
         } catch (error) {

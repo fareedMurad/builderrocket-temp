@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Modal, Form, Spinner } from 'react-bootstrap';
-import { copyProject, inviteCustomerToProject } from '../../actions/projectActions';
+import { copyProject } from '../../actions/projectActions';
 import Utils from '../../utils';
 import './ProjectHeader.scss';
 import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
 import InviteCustomerImage from '../../assets/images/invite-icon-20.jpg';
 import { useHistory } from 'react-router-dom';
+import { inviteCustomerToProject } from '../../actions/customerActions';
+import { Toaster, toast } from 'react-hot-toast';
 
 const ProjectHeader = () => {
     const dispatch = useDispatch();
@@ -49,11 +51,13 @@ const ProjectHeader = () => {
                 alert('Something went wrong creating copy of project try again');
             })
     }
-
     const handleInviteCustomer = (ID) => {
         if (ID)
             dispatch(inviteCustomerToProject(ID)).then((id) => {
-                history.push(`/customer/signup/${id}`)
+                const link = window.location.origin + "/customer/signup/" + id;
+                navigator.clipboard.writeText(link).then(() => {
+                    toast.success("Invite link copied!")
+                })
             })
                 .catch(() => {
                     setIsLoading(false);
@@ -113,6 +117,7 @@ const ProjectHeader = () => {
 
     return (
         <div className='project-header'>
+            <Toaster position="top-center" />
             <div className='d-flex flex-wrap justify-content-between'>
                 <div className='d-flex pt-2 flex-wrap'>
                     <div className='project-image justify-content-center d-flex'>
@@ -195,8 +200,8 @@ const ProjectHeader = () => {
                                     <button
                                         onClick={() => handleInviteCustomer(project?.Customers?.[0]?.ID)}
                                         className='snapshot-btn'
-                                        style={{ width: '80px', height: '26px' }}
-                                    ><i class="fa fa-user-plus tab-icon mr-1"></i> Invite</button>
+                                        style={{ width: '120px', height: '26px' }}
+                                    ><i class="fa fa-copy tab-icon mr-1"></i> Invite Link</button>
 
                                 </div>}
 
@@ -226,8 +231,8 @@ const ProjectHeader = () => {
                                 <button
                                     onClick={() => handleInviteCustomer(project?.Customers?.[1]?.ID)}
                                     className='snapshot-btn'
-                                    style={{ width: '80px', height: '26px' }}
-                                ><i class="fa fa-user-plus tab-icon mr-1"></i> Invite</button>
+                                    style={{ width: '120px', height: '26px' }}
+                                ><i class="fa fa-copy tab-icon mr-1"></i> Invite Link</button>
 
                             </div>}
                         </div>

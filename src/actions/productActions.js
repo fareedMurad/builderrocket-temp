@@ -35,7 +35,7 @@ export const getBrands = () => dispatch => {
         });
 }
 export const getCategories = (categoryID) => dispatch => {
-    let URL = '/Product/Category';
+    let URL = '/product/Category';
 
     if (categoryID)
         URL = URL + `/${categoryID}`;
@@ -105,7 +105,7 @@ export const getProducts = (filterObject) => dispatch => {
 }
 
 export const searchProducts = (categoryID, searchObject) => dispatch => {
-    let URL = '/Product/Search';
+    let URL = '/product/Search';
     
     if (categoryID) {
         URL = `${URL}/${categoryID}`;
