@@ -148,6 +148,7 @@ const Products = (props) => {
     useEffect(() => {
         // productFilter?.categories?.include(c.ParentId)
         // if(productFilter?.categories.length){
+            console.log(categories, 'HEYS')
             let options = [{
                 name: "Select All",
                 value: "select_all"

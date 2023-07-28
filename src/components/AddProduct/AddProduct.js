@@ -92,23 +92,15 @@ const AddProduct = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (productRef.current?.CategoryID) {
-      const updatedSearch = {
-        ...searchObject,
-        CategoryID: productRef.current?.CategoryID,
-        Filter: searchRef.current.value,
-      };
+    const updatedSearch = {
+      ...searchObject,
+      CategoryID: productRef?.current?.CategoryID,
+      Filter: searchRef?.current?.value,
+    };
       dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch))
         .then(setIsLoading(false))
         .catch(setIsLoading(false));
-    } else {
-      setIsLoading(false);
-    }
-    //  else {
-    //     dispatch(searchProducts())
-    //         .then(setIsLoading(false))
-    //         .catch(setIsLoading(false));
-    // }
+
   }, [dispatch, product]);
 
   const onProductCategoryChange = (productCategoryID) => {
