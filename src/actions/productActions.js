@@ -46,6 +46,9 @@ export const getCategories = (categoryID) => dispatch => {
     })
     .then((response) => {
         if (response.status === 200) {
+            if(categoryID) {
+                dispatch({ type: SEARCH_PRODUCTS, payload: JSON.parse(response.data) });
+            }else
             dispatch({ type: GET_CATEGORIES, payload: response.data });
 
             return response.data;

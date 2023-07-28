@@ -67,20 +67,20 @@ const ReplaceProduct = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        if (isEmpty(productCategoriesRef.current))
-            dispatch(getCategories(productRef.current?.CategoryID));
+            dispatch(getCategories());
     }, [dispatch]);
 
     useEffect(() => {
-        if (productRef.current?.CategoryID) {
-            dispatch(searchProducts(productRef.current?.CategoryID))
-                .then(setIsLoading(false))
-                .catch(setIsLoading(false));
-        } else {
-            dispatch(searchProducts())
-                .then(setIsLoading(false))
-                .catch(setIsLoading(false));
-        }
+
+        const updatedSearch = {
+            ...searchObject,
+            CategoryID: productRef?.current?.CategoryID,
+            Filter: searchRef?.current?.value,
+          };
+            dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch))
+              .then(setIsLoading(false))
+              .catch(setIsLoading(false));
+
     }, [dispatch, product]);
 
     const onProductCategoryChange = (productCategoryID) => {
@@ -219,8 +219,8 @@ const ReplaceProduct = () => {
                             onChange={(event) => onProductCategoryChange(event.target.value)}
                         >
                             <option value=''>Select Category</option>
-
-                            {productCategories?.map((category) => (
+{console.log(productCategories, 'productCategories')}
+                            {productCategories?.map?.((category) => (
                                 <Category
                                     key={category.ID}
                                     category={category}
