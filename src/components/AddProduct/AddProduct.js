@@ -7,6 +7,7 @@ import {
   setProductDetail,
   setProducts,
   setSelectedProductTab,
+  addCustomProduct,
 } from "../../actions/productActions";
 import {
   handleAddProductForProject,
@@ -27,6 +28,7 @@ import CustomLightbox from "../Lightbox";
 import ProductModal from "../ProductModal";
 import ColorProductModal from "../ColorProductModal";
 import Multiselect from "multiselect-react-dropdown";
+import AddProductModal from "../AddProductModal/AddProductModal";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -58,6 +60,8 @@ const AddProduct = () => {
   }, [project]);
 
   const [showModal, setShowModal] = useState(false);
+  const [customProductModalVisible, setCustomProductModalVisible] =
+    useState(false);
   const [showColorModal, setShowColorModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchObject, setSearchObject] = useState({
@@ -97,10 +101,9 @@ const AddProduct = () => {
       CategoryID: productRef?.current?.CategoryID,
       Filter: searchRef?.current?.value,
     };
-      dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch))
-        .then(setIsLoading(false))
-        .catch(setIsLoading(false));
-
+    dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch))
+      .then(setIsLoading(false))
+      .catch(setIsLoading(false));
   }, [dispatch, product]);
 
   const onProductCategoryChange = (productCategoryID) => {
@@ -167,9 +170,20 @@ const AddProduct = () => {
     // }
 
     // delete newProduct.CategoryID
-    dispatch(handleAddProductForProject(newProduct)).then(
-    //   history.push(`/project/${project.ProjectNumber}/products`)
-    );
+    dispatch(handleAddProductForProject(newProduct))
+      .then
+      //   history.push(`/project/${project.ProjectNumber}/products`)
+      ();
+  };
+
+  const handleAddProduct = (customProduct) => {
+    const formData = new FormData();
+
+    Object.keys(customProduct).forEach((key) => {
+      const obj = customProduct[key];
+      formData.append(key, obj);
+    });
+    dispatch(addCustomProduct(customProduct)).then(() => {});
   };
 
   const handleClose = () => {
@@ -211,41 +225,51 @@ const AddProduct = () => {
 
   return (
     <div className="add-product-container">
-      <div className="d-flex">
-        <div>
-          <Button
-            variant="link"
-            className="link-btn"
-            onClick={handleGoToProducts}
-          >
-            Products /
-          </Button>
+      <div className="d-flex justify-content-between pr-3">
+        <div className="d-flex">
+          <div>
+            <Button
+              variant="link"
+              className="link-btn"
+              onClick={handleGoToProducts}
+            >
+              Products /
+            </Button>
+          </div>
+          <div className="page-title">
+            Add Products - {selectedRoom?.RoomName}
+          </div>
+          {ProductSelectedRoom.length ? (
+            <Multiselect
+              tags
+              className="tags-dropdown readonly_ms border-none"
+              disable={true}
+              placeholder=""
+              showCheckbox={true}
+              options={roomsOptions} // Options to display in the dropdown
+              selectedValues={
+                !ProductSelectedRoom
+                  ? []
+                  : project?.ProjectRooms?.length ===
+                    ProductSelectedRoom?.length
+                  ? roomsOptions
+                  : roomsOptions.filter(
+                      (b) => ProductSelectedRoom.indexOf(b.ID) > -1
+                    )
+              }
+              displayValue="name" // Property name to display in the dropdown options
+            />
+          ) : (
+            false
+          )}
         </div>
-        <div className="page-title">
-          Add Products - {selectedRoom?.RoomName}
-        </div>
-        {ProductSelectedRoom.length ? (
-          <Multiselect
-            tags
-            className="tags-dropdown readonly_ms border-none"
-            disable={true}
-            placeholder=""
-            showCheckbox={true}
-            options={roomsOptions} // Options to display in the dropdown
-            selectedValues={
-              !ProductSelectedRoom
-                ? []
-                : project?.ProjectRooms?.length === ProductSelectedRoom?.length
-                ? roomsOptions
-                : roomsOptions.filter(
-                    (b) => ProductSelectedRoom.indexOf(b.ID) > -1
-                  )
-            }
-            displayValue="name" // Property name to display in the dropdown options
-          />
-        ) : (
-          false
-        )}
+        <Button
+          variant="link"
+          className="link-btn"
+          onClick={() => setCustomProductModalVisible(true)}
+        >
+          + Add Custom Product
+        </Button>
       </div>
 
       <div className="filter-section">
@@ -418,6 +442,13 @@ const AddProduct = () => {
         show={showModal}
         handleClose={handleClose}
         handleCloseModal={() => setShowModal(false)}
+      />
+
+      <AddProductModal
+        show={customProductModalVisible}
+        handleClose={() => setCustomProductModalVisible(false)}
+        productCategories={productCategories}
+        handleAddProduct={handleAddProduct}
       />
       {/*<ColorProductModal
                 show={showColorModal}
