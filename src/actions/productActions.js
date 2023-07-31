@@ -351,3 +351,21 @@ export const setFilter = (filter) => dispatch => {
         }
     });
 }
+
+export const addCustomProduct = (params) => dispatch => {
+    let URL = '/product/AddProduct';
+    return api({
+        method: 'POST',
+        url: URL,
+        data: params
+    })
+        .then((response) => {
+            if (response.status === 200) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
