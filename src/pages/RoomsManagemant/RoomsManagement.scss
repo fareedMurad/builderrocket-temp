@@ -1,0 +1,49 @@
+@import '../../assets/styles/variables';
+
+.room-management {
+    background-color: $lightgray;
+    padding: 2rem;
+    min-height: 100vh;
+
+    .room-management-container {
+        background-color: white;
+        width: 100%;
+    }
+
+    .room-management-table {
+        margin-left: 2rem;
+        margin-right: 1rem;
+
+        thead {
+            border: hidden;
+        }
+
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: -0.27px;
+            line-height: 17px;
+        }
+
+        td {
+            border: hidden;
+            font-size: 12px;
+            letter-spacing: -0.27px;
+            line-height: 17px;
+        }
+
+        i {
+            cursor: pointer;
+        }
+    }
+    
+    .search-bar {
+        margin-left: 50%;
+
+        .form-control {
+            height: 28px;
+            font-size: 12px;
+        }
+    }
+    
+}
