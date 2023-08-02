@@ -2,12 +2,41 @@
 
 .room-management {
     background-color: $lightgray;
-    padding: 2rem;
     min-height: 100vh;
 
     .room-management-container {
         background-color: white;
         width: 100%;
+
+        i {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            cursor: pointer;
+            &:hover {
+                background-color: rgb(240, 236, 236);
+            }
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: $activegray;
+            color: $white;
+            i:hover {
+                color: $activegray !important;
+            }
+        }
+        .accordion-button.collapsed { 
+            &:hover {
+                background-color: #494b5c23;
+            }
+        }
+        .accordion-body {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
     }
 
     .room-management-table {
