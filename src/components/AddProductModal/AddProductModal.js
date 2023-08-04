@@ -17,6 +17,8 @@ const AddProductModal = ({
   handleClose,
   productCategories,
   handleAddProduct,
+  defaultValues,
+  isEdit
 }) => {
   const [newProduct, setProduct] = useState({
     ProductName: "",
@@ -43,10 +45,44 @@ const AddProductModal = ({
     Materials: "",
     Collection: "",
     Length: "",
-    LogoDoc: "",
     FullImageFile: "",
     ThumbnailImageFiles: "",
   });
+
+  useEffect(() => {
+    if (defaultValues)
+      setProduct({
+        ID: defaultValues?.ID || "",
+        ProductName: defaultValues?.ProductName || "",
+        ShortDescription: defaultValues?.ShortDescription || "",
+        ProductDescription: defaultValues?.ProductDescription || "",
+        SeriesName: defaultValues?.SeriesName || "",
+        ProductURL: defaultValues?.ProductURL || "",
+        CategoryID: defaultValues?.CategoryID || 0,
+        DefaultUsageID: defaultValues?.DefaultUsageID || 0,
+        UPC: defaultValues?.UPC || "",
+        ModelNumber: defaultValues?.ModelNumber || "",
+        ProductNumber: defaultValues?.ProductNumber || "",
+        PartNumber: defaultValues?.PartNumber || "",
+        UnitOfSale: defaultValues?.UnitOfSale || "",
+        IsActive: defaultValues?.IsActive || false,
+        Width: defaultValues?.Width || "",
+        Height: defaultValues?.Height || "",
+        Depth: defaultValues?.Depth || "",
+        Weight: defaultValues?.Weight || "",
+        BrandID: defaultValues?.BrandID || 0,
+        StatusID: defaultValues?.StatusID || 0,
+        MSRP: defaultValues?.MSRP || "",
+        ColorFinish: defaultValues?.ColorFinish || "",
+        Materials: defaultValues?.Materials || "",
+        Collection: defaultValues?.Collection || "",
+        Length: defaultValues?.Length || "",
+        FullImageFile: defaultValues?.FullImageFile || "",
+        ThumbnailImageFiles: defaultValues?.ThumbnailImageFiles || "",
+      })
+  }, [defaultValues])
+
+
   console.log(newProduct, "newProduct");
   const saveChanges = () => {
     handleAddProduct({
@@ -67,6 +103,7 @@ const AddProductModal = ({
     });
   };
 
+
   const cancelChanges = () => {
     handleClose();
   };
@@ -74,8 +111,7 @@ const AddProductModal = ({
   return (
     <Modal centered size="lg" show={show} className="customer-modal">
       <Modal.Body>
-        <div className="page-title">Add Custom Product</div>
-
+        <div className="page-title">{isEdit ? "Edit" : "Add"} Custom Product</div>
         <Row>
           <Col md={6}>
             <Form.Group>
@@ -94,6 +130,23 @@ const AddProductModal = ({
             </Form.Group>
           </Col>
           <Col md={6}>
+            <Form.Group>
+              <Form.Label className="input-label">URL</Form.Label>
+              <Form.Control
+                type="url"
+                className="input-gray"
+                value={newProduct?.ProductURL}
+                onChange={(event) =>
+                  setProduct({
+                    ...newProduct,
+                    ProductURL: event.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+          </Col>
+
+          {/* <Col md={6}>
             <Form.Group>
               <Form.Label className="input-label">Category</Form.Label>
 
@@ -114,7 +167,7 @@ const AddProductModal = ({
                 ))}
               </Form.Control>
             </Form.Group>
-          </Col>
+          </Col> */}
           <Col md={6}>
             <Form.Group>
               <Form.Label className="input-label">Short Description</Form.Label>
@@ -165,22 +218,6 @@ const AddProductModal = ({
                   setProduct({
                     ...newProduct,
                     SeriesName: event.target.value,
-                  })
-                }
-              />
-            </Form.Group>
-          </Col>
-          <Col md={4}>
-            <Form.Group>
-              <Form.Label className="input-label">URL</Form.Label>
-              <Form.Control
-                type="url"
-                className="input-gray"
-                value={newProduct?.ProductURL}
-                onChange={(event) =>
-                  setProduct({
-                    ...newProduct,
-                    ProductURL: event.target.value,
                   })
                 }
               />
@@ -465,21 +502,11 @@ const AddProductModal = ({
           <Col md={4}>
             <FileUpload
               short
-              label="LogoDoc"
+              label="FullImageFile"
               buttonText="Upload Image"
-              fileURL={newProduct?.LogoDoc}
-              onFileChange={(event) => onFileChange(event, "LogoDoc")}
-              placeholder={newProduct?.["LogoDoc"]?.name}
-            />
-          </Col>
-          <Col md={4}>
-            <FileUpload
-              short
-              label="ImageFile"
-              buttonText="Upload Image"
-              fileURL={newProduct?.ImageFile}
-              onFileChange={(event) => onFileChange(event, "ImageFile")}
-              placeholder={newProduct?.["ImageFile"]?.name}
+              fileURL={newProduct?.FullImageFile}
+              onFileChange={(event) => onFileChange(event, "FullImageFile")}
+              placeholder={newProduct?.["FullImageFile"]?.name}
             />
           </Col>
           <Col md={4}>

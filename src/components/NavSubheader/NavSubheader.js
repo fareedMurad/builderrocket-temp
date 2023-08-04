@@ -82,6 +82,10 @@ const NavSubheader = () => {
                             <i className='far fa-house-day fa-sm tab-icon'></i>
                             Subdivision Management
                         </div>
+                        <div className='header-item' onClick={() => history.push('/my-products-management')}>
+                            <i className='fa fa-product-hunt fa-sm tab-icon'></i>
+                            My Products
+                        </div>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

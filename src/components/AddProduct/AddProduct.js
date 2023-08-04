@@ -7,7 +7,6 @@ import {
   setProductDetail,
   setProducts,
   setSelectedProductTab,
-  addCustomProduct,
 } from "../../actions/productActions";
 import {
   handleAddProductForProject,
@@ -28,7 +27,6 @@ import CustomLightbox from "../Lightbox";
 import ProductModal from "../ProductModal";
 import ColorProductModal from "../ColorProductModal";
 import Multiselect from "multiselect-react-dropdown";
-import AddProductModal from "../AddProductModal/AddProductModal";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -60,8 +58,6 @@ const AddProduct = () => {
   }, [project]);
 
   const [showModal, setShowModal] = useState(false);
-  const [customProductModalVisible, setCustomProductModalVisible] =
-    useState(false);
   const [showColorModal, setShowColorModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchObject, setSearchObject] = useState({
@@ -176,16 +172,6 @@ const AddProduct = () => {
       ();
   };
 
-  const handleAddProduct = (customProduct) => {
-    const formData = new FormData();
-
-    Object.keys(customProduct).forEach((key) => {
-      const obj = customProduct[key];
-      formData.append(key, obj);
-    });
-    dispatch(addCustomProduct(customProduct)).then(() => {});
-  };
-
   const handleClose = () => {
     setShowModal(false);
   };
@@ -252,8 +238,8 @@ const AddProduct = () => {
                   ? []
                   : project?.ProjectRooms?.length ===
                     ProductSelectedRoom?.length
-                  ? roomsOptions
-                  : roomsOptions.filter(
+                    ? roomsOptions
+                    : roomsOptions.filter(
                       (b) => ProductSelectedRoom.indexOf(b.ID) > -1
                     )
               }
@@ -263,13 +249,6 @@ const AddProduct = () => {
             false
           )}
         </div>
-        <Button
-          variant="link"
-          className="link-btn"
-          onClick={() => setCustomProductModalVisible(true)}
-        >
-          + Add Custom Product
-        </Button>
       </div>
 
       <div className="filter-section">
@@ -444,12 +423,6 @@ const AddProduct = () => {
         handleCloseModal={() => setShowModal(false)}
       />
 
-      <AddProductModal
-        show={customProductModalVisible}
-        handleClose={() => setCustomProductModalVisible(false)}
-        productCategories={productCategories}
-        handleAddProduct={handleAddProduct}
-      />
       {/*<ColorProductModal
                 show={showColorModal}
                 handleClose={handleColorClose}

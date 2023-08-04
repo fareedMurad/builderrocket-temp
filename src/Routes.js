@@ -10,6 +10,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Project = lazy(() => import("./pages/Project"));
 const UtilityManagement = lazy(() => import("./pages/UtilityManagement"));
+const MyProductsManagement = lazy(() => import("./pages/MyProducts"));
 const ContractorManagement = lazy(() => import("./pages/ContractorManagement"));
 const Customer = lazy(() => import("./pages/Customer"));
 const CustomerSignup = lazy(() => import("./pages/Customer/Signup"));
@@ -67,6 +68,7 @@ const Routes = (props) => {
               <Route exact path="/project" component={Project} />
               <Route path="/project/:project/:tab" component={Project} />
               <Route path="/utility-management" component={UtilityManagement} />
+              <Route path="/my-products-management" component={MyProductsManagement} />
               <Route
                 path="/contractor-management"
                 component={ContractorManagement}
