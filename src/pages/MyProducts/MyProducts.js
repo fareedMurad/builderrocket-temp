@@ -84,18 +84,20 @@ const MyProducts = () => {
 
     const handleAddProduct = (customProduct) => {
         const formData = new FormData();
-        customProduct.FullImageFile = null;
-        customProduct.ThumbnailImageFiles = null;
+        // customProduct.FullImageFile = null;
+        // customProduct.ThumbnailImageFiles = null;
 
         // TODO -  need to fix the issue with upload images
-        // Object.keys(customProduct).forEach((key) => {
-        //     const obj = customProduct[key];
-        //     formData.append(key, obj);
-        // });
+        Object.keys(customProduct).forEach((key) => {
+            const obj = customProduct[key];
+            formData.append(key, obj);
+        });
+
+        console.log(formData)
 
         if (selectedMyProduct?.ID) {
             setIsLoading(true)
-            dispatch(editMyProduct(customProduct)).then((res) => {
+            dispatch(editMyProduct(formData)).then((res) => {
                 dispatch(getMyProducts());
             }).then(() => {
                 setShowMyProductModal(false);
@@ -202,15 +204,15 @@ const MyProducts = () => {
                             {filteredMyProducts?.map?.((product, index) => (
                                 <tr key={index}>
                                     <td className='d-flex align-items-center'>
-                                        {!product?.ThumbnailURL ?
+                                        {!product?.ThumbnailURL ? 
                                             <img
                                                 width='50'
                                                 alt='my product'
                                                 className='mr-2'
-                                                src={product?.ThumbnailURL || ProjectPlaceholder}
+                                                src={ProjectPlaceholder}
                                             />
                                             : (<div className='mr-3'>
-                                                <CustomLightbox images={product?.ThumbnailURL ? [product?.ImageURL, product?.ThumbnailURL] : [product?.ImageURL]} />
+                                                <CustomLightbox images={product?.ImageURL ? [product?.ImageURL, product?.ThumbnailURL] : [product?.ThumbnailURL]} />
                                             </div>
                                             )}
                                         <div>{product?.ProductName}</div></td>

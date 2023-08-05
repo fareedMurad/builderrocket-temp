@@ -46,7 +46,7 @@ const AddProductModal = ({
     Collection: "",
     Length: "",
     FullImageFile: "",
-    ThumbnailImageFiles: "",
+    ThumbnailImageFile: "",
   });
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const AddProductModal = ({
         Collection: defaultValues?.Collection || "",
         Length: defaultValues?.Length || "",
         FullImageFile: defaultValues?.FullImageFile || "",
-        ThumbnailImageFiles: defaultValues?.ThumbnailImageFiles || "",
+        ThumbnailImageFile: defaultValues?.ThumbnailImageFile || "",
       })
   }, [defaultValues])
 
@@ -514,11 +514,11 @@ const AddProductModal = ({
               short
               label="ThumbnailImageFile"
               buttonText="Upload Image"
-              fileURL={newProduct?.ThumbnailImageFiles}
+              fileURL={newProduct?.ThumbnailImageFile}
               onFileChange={(event) =>
-                onFileChange(event, "ThumbnailImageFiles")
+                onFileChange(event, "ThumbnailImageFile")
               }
-              placeholder={newProduct?.["ThumbnailImageFiles"]?.name}
+              placeholder={newProduct?.["ThumbnailImageFile"]?.name}
             />
           </Col>
           <Col md={4}>
