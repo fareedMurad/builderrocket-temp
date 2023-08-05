@@ -84,16 +84,10 @@ const MyProducts = () => {
 
     const handleAddProduct = (customProduct) => {
         const formData = new FormData();
-        // customProduct.FullImageFile = null;
-        // customProduct.ThumbnailImageFiles = null;
-
-        // TODO -  need to fix the issue with upload images
         Object.keys(customProduct).forEach((key) => {
             const obj = customProduct[key];
             formData.append(key, obj);
         });
-
-        console.log(formData)
 
         if (selectedMyProduct?.ID) {
             setIsLoading(true)
@@ -105,7 +99,7 @@ const MyProducts = () => {
             })
         }
         else {
-            dispatch(createMyProduct(customProduct)).then((res) => {
+            dispatch(createMyProduct(formData)).then((res) => {
                 dispatch(getMyProducts());
             }).then(() => {
                 setShowMyProductModal(false);

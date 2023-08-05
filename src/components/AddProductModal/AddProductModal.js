@@ -82,8 +82,6 @@ const AddProductModal = ({
       })
   }, [defaultValues])
 
-
-  console.log(newProduct, "newProduct");
   const saveChanges = () => {
     handleAddProduct({
       ...newProduct,
@@ -506,7 +504,7 @@ const AddProductModal = ({
               buttonText="Upload Image"
               fileURL={newProduct?.FullImageFile}
               onFileChange={(event) => onFileChange(event, "FullImageFile")}
-              placeholder={newProduct?.["FullImageFile"]?.name}
+              placeholder={defaultValues?.ImageName || newProduct?.["FullImageFile"]?.name}
             />
           </Col>
           <Col md={4}>
@@ -518,7 +516,7 @@ const AddProductModal = ({
               onFileChange={(event) =>
                 onFileChange(event, "ThumbnailImageFile")
               }
-              placeholder={newProduct?.["ThumbnailImageFile"]?.name}
+              placeholder={defaultValues?.ThumbnailName || newProduct?.["ThumbnailImageFile"]?.name}
             />
           </Col>
           <Col md={4}>
