@@ -24,6 +24,7 @@ export const setReportFilter = (filter) => dispatch => {
 export const getReportFilter = (filter) => dispatch => {
     dispatch({ type: GET_REPORTS_FILTER, payload: filter });
 }
+
 export const setRoomFilter = (filter) => dispatch => {
     return new Promise((resolve, reject) => {
         try {

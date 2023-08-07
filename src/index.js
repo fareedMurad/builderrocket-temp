@@ -8,8 +8,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import './assets/styles/index.scss';
 
-const history = createBrowserHistory();
-
+const history = createBrowserHistory(); 
 
 ReactDOM.render(
     <React.StrictMode>
