@@ -177,7 +177,7 @@ const MyProducts = () => {
                                 {/* <th>Series Name</th> */}
                                 <th>Product URL</th>
                                 <th>UPC</th>
-                                <th>MSRP</th>
+                                <th>Price</th>
                                 {/* <th>Model Number</th> */}
                                 <th>Product Number</th>
                                 {/* <th>Part Number</th> */}
@@ -214,7 +214,7 @@ const MyProducts = () => {
                                     {/* <td>{product?.SeriesName}</td> */}
                                     <td>{product?.ProductURL}</td>
                                     <td>{product?.UPC}</td>
-                                    <td>{product?.MSRP}</td>
+                                    <td>${product?.MSRP}</td>
                                     {/* <td>{product?.ModelNumber}</td> */}
                                     <td>{product?.ProductNumber}</td>
                                     {/* <td>{product?.PartNumber}</td> */}

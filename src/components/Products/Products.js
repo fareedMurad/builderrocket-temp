@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Form, Modal, OverlayTrigger, Spinner, Table, Tooltip, Card} from 'react-bootstrap';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Form, Modal, OverlayTrigger, Spinner, Table, Tooltip, Card } from 'react-bootstrap';
 import SlideToggle from "react-slide-toggle";
 
 
@@ -20,14 +20,14 @@ import {
     updateQuantity,
     updateRequiresApproval
 } from '../../actions/projectActions';
-import {setSelectedRoom} from '../../actions/roomActions';
-import {useDispatch, useSelector} from 'react-redux';
-import {isEmpty, isUndefined} from 'lodash';
+import { setSelectedRoom } from '../../actions/roomActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty, isUndefined } from 'lodash';
 import './Products.scss';
-import {useHistory} from 'react-router'
+import { useHistory } from 'react-router'
 import CustomLightbox from '../Lightbox';
 import Multiselect from "multiselect-react-dropdown";
-import {ProjectStatus} from "../../utils/contants";
+import { ProjectStatus } from "../../utils/contants";
 import { PRODUCT_SELECTED_ROOM } from '../../actions/types';
 
 
@@ -55,8 +55,8 @@ const Products = (props) => {
     const [categoriesDropdownLoading, setCategoriesDropdownLoading] = useState(true);
     const [tempProduct, setTempProduct] = useState({});
     const [templateItems, setTemplateItems] = useState({});
-    const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({loading: false});
-    const [isQuantityLoading, setIsQuantityLoading] = useState({loading: false});
+    const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({ loading: false });
+    const [isQuantityLoading, setIsQuantityLoading] = useState({ loading: false });
 
     const [isNotesLoading, setIsNotesLoading] = useState(false);
     const [notes, setNotes] = useState(' ');
@@ -74,24 +74,24 @@ const Products = (props) => {
     const handleSelectedRoom = useCallback((selectedRooms) => {
         const rooms = [...selectedRooms.map(b => b.ID)];
 
-        setProductFilter({...productFilter, rooms: rooms, pageNumber: 1});
-        dispatch({type:PRODUCT_SELECTED_ROOM, payload:rooms})
-        
+        setProductFilter({ ...productFilter, rooms: rooms, pageNumber: 1 });
+        dispatch({ type: PRODUCT_SELECTED_ROOM, payload: rooms })
+
     }, [dispatch, productFilter]);
 
     const handleBrandChange = useCallback((selectedBrands) => {
         const brands = [...selectedBrands.map(b => b.ID)];
-        setProductFilter({...productFilter, brands: brands, pageNumber: 1});
+        setProductFilter({ ...productFilter, brands: brands, pageNumber: 1 });
     }, [dispatch, productFilter]);
 
     const handleCategoryChange = useCallback((selectedCategories) => {
         const categories = [...selectedCategories.map(b => b.ID)];
-        setProductFilter({...productFilter, categories: categories, pageNumber: 1});
+        setProductFilter({ ...productFilter, categories: categories, pageNumber: 1 });
     }, [dispatch, productFilter]);
 
     const handleSubCategoryChange = useCallback((selectedCategories) => {
         const subcategories = [...selectedCategories.map(b => b.ID)];
-        setProductFilter({...productFilter, subcategories: subcategories, pageNumber: 1});
+        setProductFilter({ ...productFilter, subcategories: subcategories, pageNumber: 1 });
     }, [dispatch, productFilter]);
 
 
@@ -105,7 +105,7 @@ const Products = (props) => {
     }, [dispatch]);
 
     useEffect(() => {
-        if(brands){
+        if (brands) {
             let options = [{
                 name: "Select All",
                 value: "select_all"
@@ -127,7 +127,7 @@ const Products = (props) => {
     }, [dispatch]);
 
     useEffect(() => {
-        if(categories){
+        if (categories) {
             let options = [{
                 name: "Select All",
                 value: "select_all"
@@ -148,23 +148,23 @@ const Products = (props) => {
     useEffect(() => {
         // productFilter?.categories?.include(c.ParentId)
         // if(productFilter?.categories.length){
-            console.log(categories, 'HEYS')
-            let options = [{
-                name: "Select All",
-                value: "select_all"
-            }, ...categories.filter(c => productFilter?.categories.some(d => d === c.ParentId))?.map((b) => {
-                return {
-                    ...b,
-                    name: b.Name?.replaceAll('&nbsp;', ''),
-                    value: b.ParentId,
-                };
-            }).sort((a, b) => {
-                return a.Path?.localeCompare(b.Path);
-            })];
-            setSubCategoriesOptions(options);
-            setCategoriesDropdownLoading(false);
+        console.log(categories, 'HEYS')
+        let options = [{
+            name: "Select All",
+            value: "select_all"
+        }, ...categories.filter(c => productFilter?.categories.some(d => d === c.ParentId))?.map((b) => {
+            return {
+                ...b,
+                name: b.Name?.replaceAll('&nbsp;', ''),
+                value: b.ParentId,
+            };
+        }).sort((a, b) => {
+            return a.Path?.localeCompare(b.Path);
+        })];
+        setSubCategoriesOptions(options);
+        setCategoriesDropdownLoading(false);
         // }
-    }, [productFilter,categories]);
+    }, [productFilter, categories]);
 
 
     useEffect(() => {
@@ -182,15 +182,15 @@ const Products = (props) => {
         })];
         if (project?.ProjectRooms?.length > 0 && productFilter.rooms.length === 0) {
             let roomId = selectedRoom?.ID ?? project?.ProjectRooms[0].ID;
-            if(project?.ProjectRooms.filter(p => p.ID === roomId).length === 0 || !roomId){
+            if (project?.ProjectRooms.filter(p => p.ID === roomId).length === 0 || !roomId) {
                 roomId = project?.ProjectRooms[0].ID;
             }
             let rooms = [roomId];
-            if(!roomId){
+            if (!roomId) {
                 rooms = [];
             }
-            setProductFilter({...productFilter, rooms: rooms, pageNumber: 1});
-            dispatch({type:PRODUCT_SELECTED_ROOM, payload:rooms})
+            setProductFilter({ ...productFilter, rooms: rooms, pageNumber: 1 });
+            dispatch({ type: PRODUCT_SELECTED_ROOM, payload: rooms })
         }
         setRoomsOptions(options);
 
@@ -200,7 +200,7 @@ const Products = (props) => {
 
     useEffect(() => {
         const rooms = project?.ProjectRooms.filter(r => productFilter.rooms.indexOf(r.ID) > -1).map((room, index) => {
-            return {...room, isOpen: index === 0};
+            return { ...room, isOpen: index === 0 };
         });
         setSelectedRooms(rooms);
     }, [project, productFilter])
@@ -224,7 +224,7 @@ const Products = (props) => {
             dispatch(setProduct(product))
                 .then(dispatch(getCategories(product?.CategoryID)))
                 .then(() => {
-                    if(templateItem.ProductID) {
+                    if (templateItem.ProductID) {
                         dispatch(getProductDetails(templateItem.ProductID))
                             .then(() => {
                                 if (templateItem?.IsTemplate) {
@@ -234,7 +234,7 @@ const Products = (props) => {
                                 }
                             })
                     }
-                    else{
+                    else {
                         history.push(`/project/${project.ProjectNumber}/product/addProduct`)
                     }
                 })
@@ -279,22 +279,22 @@ const Products = (props) => {
 
     const handleRequiresApproval = (templateItem, RequiresApproval) => {
         if (!isRequiresApprovalLoading?.loading) {
-            setIsRequiresApprovalLoading({loading: true, ID: templateItem?.ID})
+            setIsRequiresApprovalLoading({ loading: true, ID: templateItem?.ID })
             dispatch(updateRequiresApproval(project?.ID, templateItem?.ID, RequiresApproval))
                 .then((project) => {
                     dispatch(setSelectedProject(project))
-                    setIsRequiresApprovalLoading({loading: false})
+                    setIsRequiresApprovalLoading({ loading: false })
                 });
         }
     }
 
     const handleQuantity = (templateItem, quantity) => {
         if (!isQuantityLoading?.loading) {
-            setIsQuantityLoading({loading: true, ID: templateItem?.ID})
+            setIsQuantityLoading({ loading: true, ID: templateItem?.ID })
             dispatch(updateQuantity(project?.ID, templateItem?.ID, quantity))
                 .then((project) => {
                     dispatch(setSelectedProject(project));
-                    setIsQuantityLoading({loading: false});
+                    setIsQuantityLoading({ loading: false });
                 });
         }
     }
@@ -339,7 +339,7 @@ const Products = (props) => {
 
     const handleIsFavorite = (item) => {
         dispatch(setIsFavorite(project?.ID, item?.ID, !item?.IsFavorite)).then(() => {
-            dispatch(saveProject(isFavorite)).then(() =>{
+            dispatch(saveProject(isFavorite)).then(() => {
             })
         })
     }
@@ -545,8 +545,12 @@ const Products = (props) => {
             });
     }
 
+    const showCustomProducts = () => {
+        history.push(`/project/${project.ProjectNumber}/product/addCustomProducts`)
+    }
+
     const onRemove = (selectedList, removedItem) => {
-        
+
     }
 
 
@@ -560,6 +564,13 @@ const Products = (props) => {
                         </div>
                     </div>
                     <div>
+                        <Button
+                            variant='link'
+                            className='link-btn'
+                            onClick={showCustomProducts}
+                        >
+                            + Add Custom Products
+                        </Button>
                         <Button
                             variant='link'
                             className='link-btn'
@@ -598,36 +609,36 @@ const Products = (props) => {
                             />
                         </div> :
                         <>
-                        <div className='input-label mt-2 ml-3 mb-2'>Selected Rooms</div>
-                        <div className='mx-2'>
-                            <Multiselect
-                                tags
-                                className="tags-dropdown readonly_ms"
-                                // disable={true}
-                                placeholder=""
-                                showCheckbox={true}
-                                keepSearchTerm={false}
-                                hidePlaceholder={true}
-                                options={roomsOptions} // Options to display in the dropdown
-                                selectedValues={!productFilter?.rooms ? [] : (
-                                    project?.ProjectRooms?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
-                                )}  
-                                displayValue="name" // Property name to display in the dropdown options
-                                onSelect={(arr, current) => {
-                                    if (current.value === 'select_all') {
-                                        handleSelectedRoom(roomsOptions.filter(p => p.value !== 'select_all'))
-                                    } else
-                                        handleSelectedRoom(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-                                }}
-                                onRemove={(arr, target) => {
-                                    let rooms = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-                                    if (target.value === 'select_all') {
-                                        rooms = [];
-                                    }
-                                    handleSelectedRoom(rooms)
-                                }}
-                            />
-                        </div>
+                            <div className='input-label mt-2 ml-3 mb-2'>Selected Rooms</div>
+                            <div className='mx-2'>
+                                <Multiselect
+                                    tags
+                                    className="tags-dropdown readonly_ms"
+                                    // disable={true}
+                                    placeholder=""
+                                    showCheckbox={true}
+                                    keepSearchTerm={false}
+                                    hidePlaceholder={true}
+                                    options={roomsOptions} // Options to display in the dropdown
+                                    selectedValues={!productFilter?.rooms ? [] : (
+                                        project?.ProjectRooms?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
+                                    )}
+                                    displayValue="name" // Property name to display in the dropdown options
+                                    onSelect={(arr, current) => {
+                                        if (current.value === 'select_all') {
+                                            handleSelectedRoom(roomsOptions.filter(p => p.value !== 'select_all'))
+                                        } else
+                                            handleSelectedRoom(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                    }}
+                                    onRemove={(arr, target) => {
+                                        let rooms = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                        if (target.value === 'select_all') {
+                                            rooms = [];
+                                        }
+                                        handleSelectedRoom(rooms)
+                                    }}
+                                />
+                            </div>
                         </>
                     }
                 </div>
@@ -692,34 +703,34 @@ const Products = (props) => {
                                         />
                                     </div> :
                                     <>
-                                    <span>
-                                        {DrawDropdownSelection({items: categories, selectedIds:  productFilter?.categories, nameProp: "Name", type: "category"})}
-                                    </span>
-                                    <Multiselect
-                                        options={
-                                            categoriesOptions?.length > 0 ? categoriesOptions : []}
-                                        selectedValues={!productFilter?.categories ? [] : (
-                                            categories?.length === productFilter?.categories?.length ? categoriesOptions : categoriesOptions.filter(b => productFilter?.categories.indexOf(b.ID) > -1)
-                                        )}
-                                        onSelect={(arr, current) => {
-                                            if (current.value === 'select_all') {
-                                                handleCategoryChange(categoriesOptions.filter(p => p.value !== 'select_all'))
-                                            } else
-                                                handleCategoryChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-                                        }}
-                                        onRemove={(arr, target) => {
-                                            let categories = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-                                            if (target.value === 'select_all') {
-                                                categories = [];
-                                            }
-                                            handleCategoryChange(categories)
-                                        }}
-                                        displayValue="name"
-                                        placeholder=""
-                                        showCheckbox={true}
-                                        keepSearchTerm={false}
-                                        hidePlaceholder={true}
-                                    />
+                                        <span>
+                                            {DrawDropdownSelection({ items: categories, selectedIds: productFilter?.categories, nameProp: "Name", type: "category" })}
+                                        </span>
+                                        <Multiselect
+                                            options={
+                                                categoriesOptions?.length > 0 ? categoriesOptions : []}
+                                            selectedValues={!productFilter?.categories ? [] : (
+                                                categories?.length === productFilter?.categories?.length ? categoriesOptions : categoriesOptions.filter(b => productFilter?.categories.indexOf(b.ID) > -1)
+                                            )}
+                                            onSelect={(arr, current) => {
+                                                if (current.value === 'select_all') {
+                                                    handleCategoryChange(categoriesOptions.filter(p => p.value !== 'select_all'))
+                                                } else
+                                                    handleCategoryChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                            }}
+                                            onRemove={(arr, target) => {
+                                                let categories = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                                if (target.value === 'select_all') {
+                                                    categories = [];
+                                                }
+                                                handleCategoryChange(categories)
+                                            }}
+                                            displayValue="name"
+                                            placeholder=""
+                                            showCheckbox={true}
+                                            keepSearchTerm={false}
+                                            hidePlaceholder={true}
+                                        />
                                     </>
                                 }
                             </div>
@@ -735,35 +746,35 @@ const Products = (props) => {
                                         />
                                     </div> :
                                     <>
-                                    <span>
-                                        {DrawDropdownSelection({items: categories, selectedIds:  productFilter?.subcategories, nameProp: "Name", type: "subcategory"})}
-                                    </span>
-                                    <Multiselect
-                                        options={
-                                            SubCategoriesOptions?.length > 0 ? SubCategoriesOptions : []}
-                                        selectedValues={!productFilter?.subcategories ? [] : (
-                                            categories?.length === productFilter?.subcategories?.length ? SubCategoriesOptions : SubCategoriesOptions.filter(b => productFilter?.subcategories.indexOf(b.ID) > -1)
+                                        <span>
+                                            {DrawDropdownSelection({ items: categories, selectedIds: productFilter?.subcategories, nameProp: "Name", type: "subcategory" })}
+                                        </span>
+                                        <Multiselect
+                                            options={
+                                                SubCategoriesOptions?.length > 0 ? SubCategoriesOptions : []}
+                                            selectedValues={!productFilter?.subcategories ? [] : (
+                                                categories?.length === productFilter?.subcategories?.length ? SubCategoriesOptions : SubCategoriesOptions.filter(b => productFilter?.subcategories.indexOf(b.ID) > -1)
 
-                                        )}
-                                        onSelect={(arr, current) => {
-                                            if (current.value === 'select_all') {
-                                                handleSubCategoryChange(SubCategoriesOptions.filter(p => p.value !== 'select_all'))
-                                            } else
-                                                handleSubCategoryChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-                                        }}
-                                        onRemove={(arr, target) => {
-                                            let categories = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-                                            if (target.value === 'select_all') {
-                                                categories = [];
-                                            }
-                                            handleSubCategoryChange(categories)
-                                        }}
-                                        displayValue="name"
-                                        placeholder=""
-                                        showCheckbox={true}
-                                        keepSearchTerm={false}
-                                        hidePlaceholder={true}
-                                    />
+                                            )}
+                                            onSelect={(arr, current) => {
+                                                if (current.value === 'select_all') {
+                                                    handleSubCategoryChange(SubCategoriesOptions.filter(p => p.value !== 'select_all'))
+                                                } else
+                                                    handleSubCategoryChange(arr.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                                            }}
+                                            onRemove={(arr, target) => {
+                                                let categories = arr.filter(p => p.value !== 'select_all').sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+                                                if (target.value === 'select_all') {
+                                                    categories = [];
+                                                }
+                                                handleSubCategoryChange(categories)
+                                            }}
+                                            displayValue="name"
+                                            placeholder=""
+                                            showCheckbox={true}
+                                            keepSearchTerm={false}
+                                            hidePlaceholder={true}
+                                        />
                                     </>
                                 }
                             </div>
@@ -779,10 +790,10 @@ const Products = (props) => {
                                                 variant='primary'
                                             />
                                         </div>
-                                     :
+                                        :
                                         <>
                                             <span>
-                                                {DrawDropdownSelection({items: brands, selectedIds:  productFilter?.brands, nameProp: "Name", type: "brand"})}
+                                                {DrawDropdownSelection({ items: brands, selectedIds: productFilter?.brands, nameProp: "Name", type: "brand" })}
                                             </span>
                                             <Multiselect
                                                 options={
@@ -820,9 +831,9 @@ const Products = (props) => {
 
                 {saveNotesModal()}
                 {selectedRooms.map((data, roomIndex) => {
-                    let {Items, ...room} = data;
-                    let items = FilterItems({productFilter, items: Items, brands, categories,})?.map(i => {
-                        return {room: room, ...i}
+                    let { Items, ...room } = data;
+                    let items = FilterItems({ productFilter, items: Items, brands, categories, })?.map(i => {
+                        return { room: room, ...i }
                     })?.sort((a, b) => {
                         if (a.ShortDescription !== b.ShortDescription) {
                             return a.ShortDescription?.localeCompare(b.ShortDescription);
@@ -851,185 +862,185 @@ const Products = (props) => {
                                         <div className='products-table'>
                                             <Table responsive>
                                                 <thead>
-                                                <tr>
-                                                    <th>Needs Approval</th>
-                                                    <th>
-                                                        <div className='d-flex justify-content-center'>
-                                                            Product Name
-                                                        </div>
-                                                    </th>
-                                                    {productFilter?.rooms.length > 1 ? <th>
-                                                        <div className='d-flex justify-content-center'>
-                                                            Room
-                                                        </div>
-                                                    </th> : null}
-                                                    <th>Description</th>
-                                                    <th>Category</th>
-                                                    <th>UOM</th>
-                                                    <th className='radios'>Rough In / Trim Out</th>
-                                                    <th>Distributor</th>
-                                                    <th>QTY</th>
-                                                    <th>Price</th>
-                                                    <th>Customer Approval</th>
-                                                    <th>Notes</th>
-                                                    <th></th>
-                                                </tr>
+                                                    <tr>
+                                                        <th>Needs Approval</th>
+                                                        <th>
+                                                            <div className='d-flex justify-content-center'>
+                                                                Product Name
+                                                            </div>
+                                                        </th>
+                                                        {productFilter?.rooms.length > 1 ? <th>
+                                                            <div className='d-flex justify-content-center'>
+                                                                Room
+                                                            </div>
+                                                        </th> : null}
+                                                        <th>Description</th>
+                                                        <th>Category</th>
+                                                        <th>UOM</th>
+                                                        <th className='radios'>Rough In / Trim Out</th>
+                                                        <th>Distributor</th>
+                                                        <th>QTY</th>
+                                                        <th>Price</th>
+                                                        <th>Customer Approval</th>
+                                                        <th>Notes</th>
+                                                        <th></th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                {items?.map((templateItem, index) => {
-                                                    const tempTemplateItem = templateItems?.[templateItem?.ID];
+                                                    {items?.map((templateItem, index) => {
+                                                        const tempTemplateItem = templateItems?.[templateItem?.ID];
 
-                                                    let requiresApproval = !!(templateItem?.RequiresApproval);
-                                                    let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
-                                                    let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
-                                                    let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
-                                                    let isFav = templateItem?.IsFavorite;
+                                                        let requiresApproval = !!(templateItem?.RequiresApproval);
+                                                        let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
+                                                        let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
+                                                        let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
+                                                        let isFav = templateItem?.IsFavorite;
 
-                                                    if (!isEmpty(tempTemplateItem)) {
-                                                        quantity = tempTemplateItem.Quantity;
-                                                        requiresApproval = tempTemplateItem.RequiresApproval;
-                                                        isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
-                                                        isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
-                                                    }
-                                                    return (
-                                                        <tr key={index}>
-                                                            <td className='approval-checkbox'>
-                                                                <div className='d-flex justify-content-center'>
-                                                                    <Form>
-                                                                        {itemLoading(templateItem, isRequiresApprovalLoading) ? <Spinner
-                                                                            animation='border'
-                                                                            variant='primary'
-                                                                        /> : <Form.Check
-                                                                            type='checkbox'
-                                                                            checked={templateItem?.RequiresApproval}
-                                                                            disabled={isUndefined(templateItem?.RequiresApproval) ? true : false}
-                                                                            onChange={
-                                                                                () => handleRequiresApproval(templateItem, !templateItem?.RequiresApproval)
-                                                                            }
-                                                                        />}
+                                                        if (!isEmpty(tempTemplateItem)) {
+                                                            quantity = tempTemplateItem.Quantity;
+                                                            requiresApproval = tempTemplateItem.RequiresApproval;
+                                                            isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
+                                                            isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
+                                                        }
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td className='approval-checkbox'>
+                                                                    <div className='d-flex justify-content-center'>
+                                                                        <Form>
+                                                                            {itemLoading(templateItem, isRequiresApprovalLoading) ? <Spinner
+                                                                                animation='border'
+                                                                                variant='primary'
+                                                                            /> : <Form.Check
+                                                                                type='checkbox'
+                                                                                checked={templateItem?.RequiresApproval}
+                                                                                disabled={isUndefined(templateItem?.RequiresApproval) ? true : false}
+                                                                                onChange={
+                                                                                    () => handleRequiresApproval(templateItem, !templateItem?.RequiresApproval)
+                                                                                }
+                                                                            />}
 
 
-                                                                    </Form>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <div className='d-flex add-btn-templateItem'>
-                                                                    {templateItem?.ProductThumbnailURl && (
-                                                                        <CustomLightbox images={[templateItem?.ProductThumbnailURl]}/>
-                                                                    )}
-                                                                    <div>
-                                                                        <Button
-                                                                            variant='link'
-                                                                            className='link-btn item-button'
-                                                                            onClick={() => handleSelectedCategoryID(templateItem)}
-                                                                        >
-                                                                            {templateItem?.IsTemplate ?
-                                                                                <>
-                                                                                    <i className='fas fa-plus-circle plus-circle'></i>
-                                                                                    {templateItem?.AddLabel}
-                                                                                </>
-                                                                                :
-                                                                                <>
-                                                                                    {templateItem?.ProductName}
-                                                                                </>
-                                                                            }
-                                                                        </Button>
-
-                                                                        {!templateItem?.IsTemplate && (
-                                                                            <div className='model-number'>
-                                                                                Model: {templateItem?.ModelNumber}
-                                                                            </div>
-                                                                        )}
+                                                                        </Form>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                            {productFilter?.rooms.length > 1 ?
+                                                                </td>
                                                                 <td>
-                                                                    {templateItem?.room?.RoomName}
-                                                                </td> : null}
-                                                            <td>{templateItem?.ShortDescription}</td>
-                                                            <td>{templateItem?.CategoryName}</td>
-                                                            <td>{templateItem?.UnitOfMeasure}</td>
-                                                            <td>
-                                                                {!templateItem?.IsTemplate && <Form className='d-flex justify-content-center'>
-                                                                    <Form.Check
-                                                                        type='radio'
-                                                                        checked={isRoughIn}
-                                                                        disabled={templateItem?.IsTemplate}
-                                                                        onChange={
-                                                                            () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
-                                                                        }
-                                                                    />
-                                                                    <Form.Check
-                                                                        type='radio'
-                                                                        checked={isTrimOut}
-                                                                        disabled={templateItem?.IsTemplate}
-                                                                        onChange={
-                                                                            () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
-                                                                        }
-                                                                    />
-                                                                </Form>}
-                                                            </td>
-                                                            <td>
-                                                                {!templateItem?.IsTemplate && <div className='distributor-select'>
-                                                                    <Form.Control as='select'>
-                                                                    </Form.Control>
-                                                                </div>}
-                                                            </td>
-                                                            <td>
-                                                                {!templateItem?.IsTemplate && <div className='qty-input'>
-                                                                    {itemLoading(templateItem, isQuantityLoading) ? <Spinner
+                                                                    <div className='d-flex add-btn-templateItem'>
+                                                                        {templateItem?.ProductThumbnailURl && (
+                                                                            <CustomLightbox images={[templateItem?.ProductThumbnailURl]} />
+                                                                        )}
+                                                                        <div>
+                                                                            <Button
+                                                                                variant='link'
+                                                                                className='link-btn item-button'
+                                                                                onClick={() => handleSelectedCategoryID(templateItem)}
+                                                                            >
+                                                                                {templateItem?.IsTemplate ?
+                                                                                    <>
+                                                                                        <i className='fas fa-plus-circle plus-circle'></i>
+                                                                                        {templateItem?.AddLabel}
+                                                                                    </>
+                                                                                    :
+                                                                                    <>
+                                                                                        {templateItem?.ProductName}
+                                                                                    </>
+                                                                                }
+                                                                            </Button>
+
+                                                                            {!templateItem?.IsTemplate && (
+                                                                                <div className='model-number'>
+                                                                                    Model: {templateItem?.ModelNumber}
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                {productFilter?.rooms.length > 1 ?
+                                                                    <td>
+                                                                        {templateItem?.room?.RoomName}
+                                                                    </td> : null}
+                                                                <td>{templateItem?.ShortDescription}</td>
+                                                                <td>{templateItem?.CategoryName}</td>
+                                                                <td>{templateItem?.UnitOfMeasure}</td>
+                                                                <td>
+                                                                    {!templateItem?.IsTemplate && <Form className='d-flex justify-content-center'>
+                                                                        <Form.Check
+                                                                            type='radio'
+                                                                            checked={isRoughIn}
+                                                                            disabled={templateItem?.IsTemplate}
+                                                                            onChange={
+                                                                                () => handleItems(templateItem, 'RoughInTrimOutEnum', 'RoughIn')
+                                                                            }
+                                                                        />
+                                                                        <Form.Check
+                                                                            type='radio'
+                                                                            checked={isTrimOut}
+                                                                            disabled={templateItem?.IsTemplate}
+                                                                            onChange={
+                                                                                () => handleItems(templateItem, 'RoughInTrimOutEnum', 'TrimOut')
+                                                                            }
+                                                                        />
+                                                                    </Form>}
+                                                                </td>
+                                                                <td>
+                                                                    {!templateItem?.IsTemplate && <div className='distributor-select'>
+                                                                        <Form.Control as='select'>
+                                                                        </Form.Control>
+                                                                    </div>}
+                                                                </td>
+                                                                <td>
+                                                                    {!templateItem?.IsTemplate && <div className='qty-input'>
+                                                                        {itemLoading(templateItem, isQuantityLoading) ? <Spinner
                                                                             animation='border'
                                                                             variant='primary'
                                                                         /> :
-                                                                        <Form.Control
-                                                                            min='0'
-                                                                            type='text'
-                                                                            id={`quantity-${templateItem?.ID}`}
-                                                                            // disabled={!templateItem?.Quantity}
-                                                                            defaultValue={templateItem?.Quantity}
-                                                                            onBlur={(e) => handleQuantity(templateItem, e.target.value)}
-                                                                        >
-                                                                        </Form.Control>
-                                                                    }
-                                                                </div>}
-                                                            </td>
-                                                            <td></td>
-                                                            <td>
-                                                                {renderApproval(templateItem)}
-                                                            </td>
-                                                            {!templateItem?.IsTemplate ?
-                                                                <td className={`${templateItem?.Notes && 'sticky-note-red'}`}
-                                                                    onClick={() => handleOpenNotesModal(templateItem)}>
-                                                                    {templateItem?.Notes ?
-                                                                        <OverlayTrigger
-                                                                            placement='top'
-                                                                            overlay={
-                                                                                <Tooltip id='button-tooltip'>
-                                                                                    {templateItem?.Notes}
-                                                                                </Tooltip>
+                                                                            <Form.Control
+                                                                                min='0'
+                                                                                type='text'
+                                                                                id={`quantity-${templateItem?.ID}`}
+                                                                                // disabled={!templateItem?.Quantity}
+                                                                                defaultValue={templateItem?.Quantity}
+                                                                                onBlur={(e) => handleQuantity(templateItem, e.target.value)}
+                                                                            >
+                                                                            </Form.Control>
+                                                                        }
+                                                                    </div>}
+                                                                </td>
+                                                                <td></td>
+                                                                <td>
+                                                                    {renderApproval(templateItem)}
+                                                                </td>
+                                                                {!templateItem?.IsTemplate ?
+                                                                    <td className={`${templateItem?.Notes && 'sticky-note-red'}`}
+                                                                        onClick={() => handleOpenNotesModal(templateItem)}>
+                                                                        {templateItem?.Notes ?
+                                                                            <OverlayTrigger
+                                                                                placement='top'
+                                                                                overlay={
+                                                                                    <Tooltip id='button-tooltip'>
+                                                                                        {templateItem?.Notes}
+                                                                                    </Tooltip>
 
-                                                                            }
-                                                                            delay={{show: 250, hide: 400}}
-                                                                        >
-                                                                            <i className='far fa-sticky-note d-flex justify-content-center'></i>
-                                                                        </OverlayTrigger> :
-                                                                        <i className='far fa-sticky-note d-flex justify-content-center'></i>}
-                                                                </td> : <td/>}
-                                                            <td>
-                                                                {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
-                                                                    <i className='fas fa-retweet'></i>
-                                                                    <i className={`far ${isFav ? 'text-danger fas fa-heart' : 'fa-heart'}`}
-                                                                       onClick={() => handleIsFavorite(templateItem)}></i>
-                                                                    <i
-                                                                        className='far fa-trash-alt'
-                                                                        onClick={() => handleOpenModal(templateItem)}
-                                                                    ></i>
-                                                                </div>}
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                })}
+                                                                                }
+                                                                                delay={{ show: 250, hide: 400 }}
+                                                                            >
+                                                                                <i className='far fa-sticky-note d-flex justify-content-center'></i>
+                                                                            </OverlayTrigger> :
+                                                                            <i className='far fa-sticky-note d-flex justify-content-center'></i>}
+                                                                    </td> : <td />}
+                                                                <td>
+                                                                    {!templateItem?.IsTemplate && <div className='d-flex justify-content-between'>
+                                                                        <i className='fas fa-retweet'></i>
+                                                                        <i className={`far ${isFav ? 'text-danger fas fa-heart' : 'fa-heart'}`}
+                                                                            onClick={() => handleIsFavorite(templateItem)}></i>
+                                                                        <i
+                                                                            className='far fa-trash-alt'
+                                                                            onClick={() => handleOpenModal(templateItem)}
+                                                                        ></i>
+                                                                    </div>}
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })}
                                                 </tbody>
                                             </Table>
                                         </div>
@@ -1071,7 +1082,7 @@ const Products = (props) => {
 }
 
 export default Products;
-export const FilterItems = ({productFilter, brands, categories, items}) => {
+export const FilterItems = ({ productFilter, brands, categories, items }) => {
     const selectedCategories = categories?.filter(c => productFilter.categories.length > 0 && productFilter.categories.indexOf(c.ID) > -1);
     const allCategories = categories?.filter(c => {
         return c.Path && selectedCategories.filter(s => {
@@ -1085,23 +1096,23 @@ export const FilterItems = ({productFilter, brands, categories, items}) => {
     })
 }
 
-export const DrawDropdownSelection = ({items, selectedIds, nameProp, type}) => {
+export const DrawDropdownSelection = ({ items, selectedIds, nameProp, type }) => {
     const selectedLength = selectedIds?.length;
     const types = {
-        'room': {'single': 'Room', 'group': 'Rooms'},
-        'category': {'single': 'Category', 'group': 'Categories'},
-        'subcategory': {'single': 'SubCategory', 'group': 'SubCategory'},
-        'brand': {'single': 'Brand', 'group': 'Brands'}
+        'room': { 'single': 'Room', 'group': 'Rooms' },
+        'category': { 'single': 'Category', 'group': 'Categories' },
+        'subcategory': { 'single': 'SubCategory', 'group': 'SubCategory' },
+        'brand': { 'single': 'Brand', 'group': 'Brands' }
     };
     let name = `No ${types[type].group} selected`;
-    if(selectedLength === 1){
+    if (selectedLength === 1) {
         let item = items?.filter(p => selectedIds.indexOf(p.ID) > -1)[0];
         name = item ? item[nameProp] : null;
-    }else if(selectedLength > 1 && selectedLength < items.length){
+    } else if (selectedLength > 1 && selectedLength < items.length) {
         name = `Multiple ${types[type].group}`;
-    }else if(items?.length === selectedLength){
+    } else if (items?.length === selectedLength) {
         name = `All ${types[type].group}`;
     }
 
-    return  (<span className="custom-placeholder">{name?.replaceAll('&nbsp;', '')?.trim()}</span>)
+    return (<span className="custom-placeholder">{name?.replaceAll('&nbsp;', '')?.trim()}</span>)
 }
