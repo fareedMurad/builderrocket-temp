@@ -9,6 +9,7 @@ import {
   GET_BUILDER_SELECTED_ROOM_TYPE,
   GET_BUILDER_SELECTED_ROOM_GROUP,
   GET_BUILDER_SELECTED_ROOM_CATEGORY,
+  GET_BUILDER_SELECTED_ROOM_CATEGORY_PRODUCTS,
 } from "./types";
 
 export const getRooms = () => (dispatch) => {
@@ -345,6 +346,18 @@ export const setSelectedBuilderCategory = (category) => (dispatch) => {
   return new Promise((resolve, reject) => {
     try {
       dispatch({ type: GET_BUILDER_SELECTED_ROOM_CATEGORY, payload: category });
+
+      resolve(category);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const setSelectedGroupCategoryProducts = (category) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    try {
+      dispatch({ type: GET_BUILDER_SELECTED_ROOM_CATEGORY_PRODUCTS, payload: category });
 
       resolve(category);
     } catch (error) {
