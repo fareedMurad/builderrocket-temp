@@ -1,65 +1,49 @@
 import React, { useState, useEffect } from "react";
 import "react-bootstrap-accordion/dist/index.css";
 import { Accordion } from "react-bootstrap-accordion";
-import { Table, Modal, Button, Form } from "react-bootstrap";
+import { Table, Modal, Button, Form, Spinner } from "react-bootstrap";
 import Select from "react-select";
 import {
+  assignGroupToRoom,
   createRoom,
   createRoomTypes,
+  deleteRoom,
+  deleteRoomType,
+  getBuilderRoomGroups,
   getBuilderRoomTypes,
+  renameRoom,
+  renameRoomType,
 } from "../../actions/roomActions";
-import { useDispatch } from "react-redux";
-const RoomTypes = [
-  {
-    id: 1,
-    roomTypename: "Room Type 1",
-    noOfRooms: 10,
-    rooms: [
-      {
-        id: 1,
-        RoomName: "room1",
-        group: "Group 1",
-      },
-      {
-        id: 2,
-        RoomName: "room2",
-        group: "Group 2",
-      },
-    ],
-  },
-  {
-    id: 2,
-    roomTypename: "Room Type 2",
-    noOfRooms: 8,
-    rooms: [
-      {
-        id: 1,
-        RoomName: "room1",
-        group: "Group 1",
-      },
-      {
-        id: 2,
-        RoomName: "room2",
-        group: "Group 2",
-      },
-    ],
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
 
 const RoomsTypes = () => {
   const [modalVisible, setModalVisible] = useState("");
   const [roomTypeName, setRoomTypeName] = useState("");
   const [roomTypes, setRoomTypes] = useState([]);
+  const [roomGroups, setRoomGroups] = useState([]);
   const [selectedRoomType, setSelectedRoomType] = useState({});
+  const [selectedRoom, setSelectedRoom] = useState({});
   const [newRoom, setNewRoom] = useState({});
-  const [selecedItem, setSelectedItem] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
   useEffect(() => {
+    handleFetchRoomTypes();
+    handleFetchRoomGroups();
+  }, []);
+
+  const handleFetchRoomGroups = () => {
+    dispatch(getBuilderRoomGroups()).then((data) => {
+      setRoomGroups(data.Result);
+    });
+  }
+
+  const handleFetchRoomTypes = () => {
     dispatch(getBuilderRoomTypes()).then((data) => {
       setRoomTypes(data.RoomTypes);
+      setIsLoading(false);
     });
-  }, []);
+  }
 
   const handleInputChange = (event) => {
     setRoomTypeName(event.target.value);
@@ -75,31 +59,98 @@ const RoomsTypes = () => {
         setModalVisible("");
       })
       .catch(() => {
-        alert("Something went wrong creating contractor");
+        alert("Something went wrong, please try again!");
       });
     setRoomTypeName("");
   };
 
   const handleAddNewRoom = () => {
+    if (newRoom.name) {
+      const params = {
+        SourceName: newRoom.name,
+        DestinationID: selectedRoomType?.ID,
+      };
+      dispatch(createRoom(params))
+        .then((res) => {
+          if (newRoom.group?.ID) {
+            dispatch(assignGroupToRoom(res, parseInt(newRoom.group?.ID)));
+          }
+         
+        })
+        .then(() => {
+          setModalVisible("");
+          handleFetchRoomTypes();
+        })
+        .catch(() => {
+          alert("Something went wrong, please try again!");
+        });
+      setNewRoom({})
+    }
+  };
+
+  const handleEditRoom = () => {
+    if (newRoom.name) {
+      const params = {
+        SourceID: selectedRoom?.ID,
+        SourceName: newRoom.name,
+        DefaultRoomGroupID: selectedRoom?.DefaultRoomGroup?.ID,
+      };
+      dispatch(renameRoom(params))
+        .then((res) => {
+          if (newRoom.group?.ID) {
+            dispatch(assignGroupToRoom(selectedRoom?.ID, newRoom.group?.ID));
+          }
+          
+        })
+        .then(() => {
+          setModalVisible("");
+          handleFetchRoomTypes();
+        })
+        .catch(() => {
+          alert("Something went wrong, please try again!");
+        });
+      setNewRoom({})
+    }
+  };
+
+  const handleEditRoomType = () => {
     const params = {
-      SourceName: newRoom.name,
-      DestinationID: selectedRoomType?.ID,
+      SourceID: selectedRoomType?.ID,
+      SourceName: roomTypeName,
+      DefaultRoomGroupID: selectedRoomType?.BuilderDefaultRoomGroupID
     };
 
-    dispatch(createRoom(params))
+    dispatch(renameRoomType(params))
       .then((res) => {
-        console.log(res, "res");
         setModalVisible("");
       })
       .catch(() => {
-        alert("Something went wrong creating contractor");
+        alert("Something went wrong, please try again!");
       });
     setRoomTypeName("");
   };
 
-  const handleDeleteRoomType = () =>{
-    alert('hello')
+  const handleDeleteRoomType = () => {
+    dispatch(deleteRoomType(selectedRoomType.ID))
+      .then((res) => {
+        setModalVisible("");
+        handleFetchRoomTypes();
+      })
+      .catch(() => {
+        alert("Something went wrong, please try again!");
+      });
 
+  }
+
+  const handleDeleteRoom = () => {
+    dispatch(deleteRoom(selectedRoom.ID))
+      .then((res) => {
+        setModalVisible("");
+        handleFetchRoomTypes();
+      })
+      .catch(() => {
+        alert("Something went wrong, please try again!");
+      });
   }
 
   const deleteRoomTypeModal = () => {
@@ -129,7 +180,7 @@ const RoomsTypes = () => {
             </Button>
             <button
               className="primary-gray-btn next-btn ml-3"
-            onClick={handleDeleteRoomType}
+              onClick={isRoomType ? handleDeleteRoomType : handleDeleteRoom}
             >
               Delete
             </button>
@@ -171,7 +222,7 @@ const RoomsTypes = () => {
             </Button>
             <button
               className="primary-gray-btn next-btn ml-3"
-              onClick={handleAdd}
+              onClick={isAdd ? handleAdd : handleEditRoomType}
             >
               {isAdd ? "Add" : "Edit"}
             </button>
@@ -206,12 +257,10 @@ const RoomsTypes = () => {
           <Form.Group>
             <Form.Label className="input-label">Select Room Group</Form.Label>
             <Select
-              options={[]}
+              options={roomGroups?.map(c => { return { ...c, label: c.Name, value: c.ID } })}
               className="input-gray"
-            // value={newRoom.group}
-            // onChange={option => setNewRoom({...newRoom, group: option})}
-            // value={contractor.ContractorTypes}
-            // onChange={(options) => setContractor({ ...contractor, ContractorTypes: options })}
+              value={newRoom.group}
+              onChange={option => setNewRoom({ ...newRoom, group: option })}
             />
           </Form.Group>
           <div className="d-flex justify-content-center pt-5">
@@ -224,7 +273,7 @@ const RoomsTypes = () => {
             </Button>
             <button
               className="primary-gray-btn next-btn ml-3"
-              onClick={isAdd ? handleAddNewRoom : undefined}
+              onClick={isAdd ? handleAddNewRoom : handleEditRoom}
             >
               {isAdd ? "Add" : "Edit"}
             </button>
@@ -234,13 +283,20 @@ const RoomsTypes = () => {
     );
   };
 
-  const handleEditRoomType = (e) => {
+  const handleEditRoomTypeModal = (e, item) => {
     e.stopPropagation();
+    setRoomTypeName(item.Name);
+    setSelectedRoomType(item);
     setModalVisible("EDIT_ROOM_TYPE");
   };
 
-  const handleEditRoom = (e) => {
+  const handleEditRoomModal = (e, room) => {
     e.stopPropagation();
+    setSelectedRoom(room);
+    setNewRoom({
+      name: room?.Name,
+      group: room?.DefaultRoomGroup ? {...room?.DefaultRoomGroup, value: room?.DefaultRoomGroup?.ID, label: room?.DefaultRoomGroup?.Name } : {}
+    });
     setModalVisible("EDIT_ROOM");
   };
 
@@ -255,14 +311,14 @@ const RoomsTypes = () => {
     setModalVisible("ADD_ROOM_TYPE");
   };
 
-  const handleDeleteGroup = (e) => {
+  const handleDeleteRoomTypeModal = (e) => {
     e.stopPropagation();
     setModalVisible("DELETE_ROOM_TYPE");
   };
 
-  const handleDeleteRoom = (e,item) => {
+  const handleDeleteRoomModal = (e, room) => {
     e.stopPropagation();
-    setSelectedItem(item)
+    setSelectedRoom(room)
     setModalVisible("DELETE_ROOM");
   };
 
@@ -275,63 +331,71 @@ const RoomsTypes = () => {
       >
         + Add Room Type
       </Button>
-      {roomTypes?.map((item, index) => (
-        <Accordion
-          title={
-            <div className="d-flex justify-content-between w-100 pr-5">
-              <div className="d-flex align-selecItem-center">
-                <div className="font-weight-bold mr-5">{item.Name}</div>
-                <i
-                  className="far fa-pen fa-sm tab-icon p-2"
-                  onClick={(e) => handleEditRoomType(e)}
-                ></i>
-                <i
-                  className="far fa-plus fa-sm tab-icon p-2"
-                  onClick={(e) => handleAddRoom(e, item)}
-                ></i>
-                <i
-                  className="far fa-trash fa-sm tab-icon p-2"
-                  onClick={(e) => handleDeleteGroup(e)}
-                ></i>
+
+      {isLoading ? (
+        <div className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center">
+          <Spinner
+            animation='border'
+            variant='primary'
+          />
+        </div>
+      ) :
+        roomTypes?.map((item, index) => (
+          <Accordion
+            title={
+              <div className="d-flex justify-content-between w-100 pr-5">
+                <div className="d-flex align-selecItem-center">
+                  <div className="font-weight-bold mr-5">{item.Name}</div>
+                  <i
+                    className="far fa-pen fa-sm tab-icon p-2"
+                    onClick={(e) => handleEditRoomTypeModal(e, item)}
+                  ></i>
+                  <i
+                    className="far fa-plus fa-sm tab-icon p-2"
+                    onClick={(e) => handleAddRoom(e, item)}
+                  ></i>
+                  <i
+                    className="far fa-trash fa-sm tab-icon p-2"
+                    onClick={(e) => handleDeleteRoomTypeModal(e)}
+                  ></i>
+                </div>
+                <span className="px-2">{item.Rooms?.length} rooms</span>{" "}
               </div>
-              <span className="px-2">{item.Rooms?.length} rooms</span>{" "}
-            </div>
-          }
-          children={
-            <div>
-              {" "}
-              <Table>
-                <tbody>
-                  {item.Rooms?.length ? (
-                    item.Rooms?.map((room, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>{room.Name}</td>
-                          <td>{room.DefaultRoomGroup?.Name}</td>
-                          <td>
-                            <div className="d-flex">
-                              <i
-                                className="far fa-pen fa-sm tab-icon px-2"
-                                onClick={(e) => handleEditRoom(e)}
-                              ></i>
-                              <i
-                                className="far fa-trash fa-sm tab-icon px-2"
-                                onClick={(e) => handleDeleteRoom(e,room)}
-                              ></i>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <td>No rooms added</td>
-                  )}
-                </tbody>
-              </Table>
-            </div>
-          }
-        />
-      ))}
+            }
+            children={
+              <div>
+                {" "} <Table>
+                  <tbody>
+                    {item.Rooms?.length ? (
+                      item.Rooms?.map((room, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{room.Name}</td>
+                            <td>{room.DefaultRoomGroup?.Name ? `[ ${room.DefaultRoomGroup?.Name} ]`: ""}</td>
+                            <td>
+                              <div className="d-flex">
+                                <i
+                                  className="far fa-pen fa-sm tab-icon px-2"
+                                  onClick={(e) => handleEditRoomModal(e, room)}
+                                ></i>
+                                <i
+                                  className="far fa-trash fa-sm tab-icon px-2"
+                                  onClick={(e) => handleDeleteRoomModal(e, room)}
+                                ></i>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <td>No rooms added</td>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            }
+          />
+        ))}
       {deleteRoomTypeModal()}
       {editAddRoomTypeModal()}
       {editAddRoomModal()}

@@ -13,6 +13,7 @@ import contractorReducer from "./contractorReducer";
 import subdivisionReducer from "./subdivisionReducer";
 import reportReducer from "./reportReducer";
 import customerReducer from "./customerReducer";
+import builderRoomsReducer from "./builderRooms";
 
 const appReducer = combineReducers({
   auth: authReducer,
@@ -26,6 +27,7 @@ const appReducer = combineReducers({
   subdivision: subdivisionReducer,
   reportFilter: reportReducer,
   customer: customerReducer,
+  builderRooms: builderRoomsReducer,
 });
 
 const rootReducer = (state, action) => {

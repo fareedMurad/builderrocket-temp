@@ -67,7 +67,7 @@ const Routes = (props) => {
             <>
               <Route exact path="/project" component={Project} />
               <Route path="/project/:project/:tab" component={Project} />
-              <Route path="/rooms-management" component={RoomsManagement} />
+              <Route path="/rooms-management/:tab" component={RoomsManagement} />
               <Route path="/utility-management" component={UtilityManagement} />
               <Route
                 path="/contractor-management"

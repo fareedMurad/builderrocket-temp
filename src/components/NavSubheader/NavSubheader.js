@@ -57,7 +57,7 @@ const NavSubheader = () => {
                             Projects
                         </div>
                         <div className='header-item'
-                            onClick={() => history.push('/rooms-management')}>
+                            onClick={() => history.push('/rooms-management/roomTypes')}>
                             <i className='far fa-border-none fa-sm tab-icon'></i>
                             Rooms Management
                         </div>
