@@ -13,6 +13,7 @@ import contractorReducer from "./contractorReducer";
 import subdivisionReducer from "./subdivisionReducer";
 import reportReducer from "./reportReducer";
 import customerReducer from "./customerReducer";
+import builderRoomsReducer from "./builderRooms";
 import myProductReducer from "./myProductReducer";
 
 const appReducer = combineReducers({
@@ -27,6 +28,7 @@ const appReducer = combineReducers({
   subdivision: subdivisionReducer,
   reportFilter: reportReducer,
   customer: customerReducer,
+  builderRooms: builderRoomsReducer,
   myProduct: myProductReducer
 });
 

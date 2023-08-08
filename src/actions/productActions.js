@@ -44,21 +44,21 @@ export const getCategories = (categoryID) => dispatch => {
         method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response.status === 200) {
-            if(categoryID) {
-                dispatch({ type: SEARCH_PRODUCTS, payload: JSON.parse(response.data) });
-            }else
-            dispatch({ type: GET_CATEGORIES, payload: response.data });
+        .then((response) => {
+            if (response.status === 200) {
+                if (categoryID) {
+                    dispatch({ type: SEARCH_PRODUCTS, payload: JSON.parse(response.data) });
+                } else
+                    dispatch({ type: GET_CATEGORIES, payload: response.data });
 
-            return response.data;
-        }
-        return [];
-    })
-    .catch((error) => {
-        if (error?.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response.data;
+            }
+            return [];
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 export const getChildCategories = (categoryID) => dispatch => {
@@ -70,18 +70,18 @@ export const getChildCategories = (categoryID) => dispatch => {
         method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response.status === 200) {
-            dispatch({ type: GET_CHILD_CATEGORIES, payload: response.data });
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: GET_CHILD_CATEGORIES, payload: response.data });
 
-            return response.data;
-        }
-        return [];
-    })
-    .catch((error) => {
-        if (error?.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response.data;
+            }
+            return [];
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 
 }
 
@@ -109,27 +109,27 @@ export const getProducts = (filterObject) => dispatch => {
 
 export const searchProducts = (categoryID, searchObject) => dispatch => {
     let URL = '/product/Search';
-    
+
     if (categoryID) {
         URL = `${URL}/${categoryID}`;
-    }  
-    
+    }
+
     return api({
         method: 'POST',
         url: URL,
         data: searchObject
     })
-    .then((response) => {
-        if (response.status === 200) {
-            dispatch({ type: SEARCH_PRODUCTS, payload: response.data });
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SEARCH_PRODUCTS, payload: response.data });
 
-            return response.data;
-        }
-    })
-    .catch((error) => {
-        if (error?.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 export const setSelectedCategoryID = (categoryID) => dispatch => {
@@ -142,7 +142,7 @@ export const setSelectedCategoryID = (categoryID) => dispatch => {
             reject(error);
         }
     });
-} 
+}
 
 export const setProduct = (product) => dispatch => {
     return new Promise((resolve, reject) => {
@@ -213,17 +213,17 @@ export const getProductDetails = (productID) => dispatch => {
         method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response.status === 200) {
-            dispatch({ type: SET_PRODUCT_DETAIL, payload: response.data });
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SET_PRODUCT_DETAIL, payload: response.data });
 
-            return response.data;
-        }
-    })
-    .catch((error) => {
-        if (error?.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 export const getReplaceProduct = (productID) => dispatch => {
@@ -235,17 +235,17 @@ export const getReplaceProduct = (productID) => dispatch => {
         method: 'GET',
         url: URL
     })
-    .then((response) => {
-        if (response.status === 200) {
-            dispatch({ type: SET_REPLACE_PRODUCT, payload: response.data });
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SET_REPLACE_PRODUCT, payload: response.data });
 
-            return response.data;
-        }
-    })
-    .catch((error) => {
-        if (error?.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 export const setSelectedProductTab = (selectedProductTab) => dispatch => {
@@ -263,82 +263,82 @@ export const setSelectedProductTab = (selectedProductTab) => dispatch => {
 }
 
 export const replaceProductService = (projectId, data) => dispatch => {
-    let URL = `Project/${projectId}/product/replace`; 
-    
+    let URL = `Project/${projectId}/product/replace`;
+
     return api({
         method: 'POST',
         url: URL,
         data: data
     })
-    .then((response) => {
-        if (response.status === 200) {
-            dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
-            return response.data;
-        }
-    })
-    .catch((error) => {
-        if (error?.response?.status === 401) 
-            dispatch({ type: LOGOUT });
-    });
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }
 
 export const RoughInTrimOutEnum = (projectId, productId, value) => dispatch => {
     const URL = `/Project/${projectId}/Product/${productId}`;
 
     const data = [{
-        op:"replace",
-        path:"/RoughInTrimOutEnum",
+        op: "replace",
+        path: "/RoughInTrimOutEnum",
         value: value
     }]
 
-      return api({
-      method: 'PATCH',
-      url: URL,
-      data:data,
-      header: "Content-Type: application/json"
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data: data,
+        header: "Content-Type: application/json"
     })
-    .then((response) => {
-     if (response?.status === 200) {
-        dispatch({ type: ROUGHT_IN_TRIM_OUT, payload: response.data });
-        return response.data;
-     }
-    })
-    .catch((error) => {
-     if (error?.response?.status === 401) 
-        // dispatch({ type: LOGOUT });
-        console.log(error)
-     })
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: ROUGHT_IN_TRIM_OUT, payload: response.data });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                // dispatch({ type: LOGOUT });
+                console.log(error)
+        })
 
-   }
+}
 
-   export const setIsFavorite = (projectId, productId, value) => dispatch => {
-       
+export const setIsFavorite = (projectId, productId, value) => dispatch => {
+
     const URL = `/Project/${projectId}/Product/${productId}`;
 
     const data = [{
-        op:"replace",
-        path:"/IsFavorite",
+        op: "replace",
+        path: "/IsFavorite",
         value: value
     }]
 
-      return api({
-      method: 'PATCH',
-      url: URL,
-      data:data,
-      header: "Content-Type: application/json"
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data: data,
+        header: "Content-Type: application/json"
     })
-    .then((response) => {
-     if (response?.status === 200) {
-        dispatch({ type: IS_FAVORITE, payload: response.data });
-        return response.data;
-     }
-    })
-    .catch((error) => {
-     if (error?.response?.status === 401) 
-        // dispatch({ type: LOGOUT });
-        console.log(error)
-     })
-   }
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: IS_FAVORITE, payload: response.data });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                // dispatch({ type: LOGOUT });
+                console.log(error)
+        })
+}
 
 export const setFilter = (filter) => dispatch => {
     return new Promise((resolve, reject) => {
@@ -350,4 +350,45 @@ export const setFilter = (filter) => dispatch => {
             reject(error);
         }
     });
+}
+
+export const addCustomProduct = (params) => dispatch => {
+    let URL = '/product/AddProduct';
+    return api({
+        method: 'POST',
+        url: URL,
+        data: params
+    })
+        .then((response) => {
+            if (response.status === 200) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
+export const getProductsByCategoryID = (categoryID) => dispatch => {
+    let URL = '/product/ProductsByCategoryId';
+
+    if (categoryID)
+        URL = URL + `/${categoryID}`;
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SEARCH_PRODUCTS, payload: response.data });
+                return response.data;
+            }
+            return [];
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
 }

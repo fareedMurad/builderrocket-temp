@@ -4,6 +4,7 @@ import { Spinner } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { SET_CUSTOMER_PROJECT } from "./actions/types";
 import ScrollToTop from "./components/ScrollToTop";
+import RoomsManagement from "./pages/RoomsManagemant";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -67,6 +68,7 @@ const Routes = (props) => {
             <>
               <Route exact path="/project" component={Project} />
               <Route path="/project/:project/:tab" component={Project} />
+              <Route path="/rooms-management/:tab" component={RoomsManagement} />
               <Route path="/utility-management" component={UtilityManagement} />
               <Route path="/my-products-management" component={MyProductsManagement} />
               <Route
