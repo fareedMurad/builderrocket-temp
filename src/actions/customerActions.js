@@ -191,8 +191,8 @@ export const setSelectedProjectTab = (tab) => dispatch => {
  * @param {String} ID 
  *
  */
-export const customerApprovalProducts = (items) => dispatch => {
-  const URL = `/customer-portal/ApproveProjectProducts`;
+export const customerApprovalProducts = (items, IsCustomProduct) => dispatch => {
+  const URL = IsCustomProduct ? `/customer-portal/Custom/ApproveProjectProducts` : `/customer-portal/ApproveProjectProducts`;
   return api({
       method: 'POST',
       url: URL,
