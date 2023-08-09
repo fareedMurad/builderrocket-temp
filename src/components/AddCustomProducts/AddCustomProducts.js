@@ -3,8 +3,8 @@ import {
   setProductDetail,
 } from "../../actions/productActions";
 import {
-  handleAddProductForProject,
-} from "../../actions/projectActions";
+  handleAddMyProductToProject,
+} from "../../actions/myProductActions";
 import { Button, Form, Table, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../assets/images/img-placeholder.png";
@@ -40,37 +40,22 @@ const AddCustomProducts = () => {
     if (!product.ID || !ProductSelectedRoom.length) return;
 
     let newProduct = {
-      ProjectId: project.ID,
-      Categories: [product.CategoryID],
-      Brands: [0],
-      Rooms: [...ProductSelectedRoom],
+        "ProjectID": project.ID,
+        "ProjectRoomID": [...ProductSelectedRoom],
+        "ProductID": product.ID,
+        "Quantity": 0,
+        "VendorID": 0,
+        "IsApproved": product?.StatusID === 1,
+        "RequiresApproval": true,
+        "DefaultRoomProductID": 0,
+        "RoughInTrimOut": 0,
+        "Notes": ""
     };
-    // if (product && product.TemplateItemID) {
-    //     newProduct = [{
-    //         ...product,
-    //         ProductID: productID,
-    //         ProjectRoomID: selectedRoom.ID
-    //     }]
 
-    // } else {
-    //     const GetRoomId = project?.ProjectRooms.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
-    //     if (GetRoomId.length) {
-    //         newProduct = GetRoomId.map(list => { return { ProductID: productID, ProjectRoomID: list.ID } })
-    //     } else {
-    //         console.log(selectedRoom, "selectedRoom")
-    //         newProduct = [{
-    //             ...product,
-    //             ProductID: productID,
-    //             ProjectRoomID: selectedRoom.ID
-    //         }]
-    //     }
-    // }
-
-    // delete newProduct.CategoryID
-    // dispatch(handleAddProductForProject(newProduct))
-    //   .then
-    //   //   history.push(`/project/${project.ProjectNumber}/products`)
-    //   ();
+    dispatch(handleAddMyProductToProject(newProduct))
+      .then(() => {
+        //   history.push(`/project/${project.ProjectNumber}/products`)
+      });
   };
 
   const handleSelectedProductDetails = (productDetail) => {
@@ -120,7 +105,6 @@ const AddCustomProducts = () => {
                   <th>Distributor</th>
                   <th>Price</th>
                   <th></th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -168,12 +152,9 @@ const AddCustomProducts = () => {
                     </td>
                     <td>${product?.MSRP}</td>
                     <td>
-                      <i className={`far fa-heart`}></i>
-                    </td>
-                    <td>
                       <Button
                         className="add-product-btn"
-                        onClick={() => addProduct(product?.ID)}
+                        onClick={() => addProduct(product)}
                       >
                         Add
                       </Button>

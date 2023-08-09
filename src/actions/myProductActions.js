@@ -4,6 +4,7 @@ import {
     GET_MY_PRODUCTS,
     SET_SELECTED_MY_PRODUCT,
     LOGOUT,
+    GET_MY_PRODUCTS_BY_PROJECT,
 } from './types';
 
 export const getMyProducts = () => dispatch => {
@@ -96,4 +97,53 @@ export const setSelectedMyProduct = (product) => dispatch => {
 
         resolve();
     })
+}
+
+/**
+ * 
+ * @param {*} product 
+ * @returns 
+ */
+export const handleAddMyProductToProject = (product) => dispatch => {
+    const URL = `/builder-product/projectproduct`;
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: product
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                // dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
+
+export const getMyProductsForProject = (ID) => dispatch => {
+    const URL = `/builder-product/projectproduct/${ID}`;
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: GET_MY_PRODUCTS_BY_PROJECT, payload: response.data });
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+
+            console.log('Getting MyProducts', error);
+        })
+
 }

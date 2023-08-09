@@ -1,11 +1,13 @@
 import { 
     GET_MY_PRODUCTS, 
-    SET_SELECTED_MY_PRODUCT
+    SET_SELECTED_MY_PRODUCT,
+    GET_MY_PRODUCTS_BY_PROJECT
 } from '../actions/types';
 
 const intialState = {
     myProducts: [],
-    selectedMyProduct: {}
+    selectedMyProduct: {},
+    myProductsByProject: []
 }
 
 const myProductReducer = (state = intialState, action) => {
@@ -20,6 +22,12 @@ const myProductReducer = (state = intialState, action) => {
             return {
                 ...state, 
                 selectedMyProduct: action.payload
+            }
+        }
+        case GET_MY_PRODUCTS_BY_PROJECT: {
+            return {
+                ...state,
+                myProductsByProject: action.payload
             }
         }
         default: 
