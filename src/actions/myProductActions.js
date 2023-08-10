@@ -147,3 +147,47 @@ export const getMyProductsForProject = (ID) => dispatch => {
         })
 
 }
+
+
+export const updateMyProductsForProject = (params) => dispatch => {
+    const URL = `/builder-product/projectproduct`;
+
+    return api({
+        method: 'PUT',
+        url: URL,
+        data: params
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+
+            console.log('Getting MyProducts', error);
+        })
+
+}
+
+export const deleteMyProductsForProject = (ID) => dispatch => {
+    const URL = `/builder-product/projectproduct/${ID}`;
+
+    return api({
+        method: 'DELETE',
+        url: URL
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+
+            console.log('Getting MyProducts', error);
+        })
+
+}
