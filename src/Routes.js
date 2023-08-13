@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { SET_CUSTOMER_PROJECT } from "./actions/types";
 import ScrollToTop from "./components/ScrollToTop";
 import RoomsManagement from "./pages/RoomsManagemant";
+import Subdivisions from "./pages/Subdivisions/Subdivisions";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -71,6 +72,7 @@ const Routes = (props) => {
               <Route path="/rooms-management/:tab" component={RoomsManagement} />
               <Route path="/utility-management" component={UtilityManagement} />
               <Route path="/my-products-management" component={MyProductsManagement} />
+              <Route path="/subdivision-management" component={Subdivisions} />
               <Route
                 path="/contractor-management"
                 component={ContractorManagement}

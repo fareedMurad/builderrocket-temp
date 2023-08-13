@@ -130,7 +130,7 @@ export const createRoomGroup = (name) => (dispatch) => {
 export const renameRoomType = (params) => (dispatch) => {
   const URL = `/builder/renameroomtype`;
   return api({
-    method: "PUT",
+    method: "POST",
     url: URL,
     data:params
   })
