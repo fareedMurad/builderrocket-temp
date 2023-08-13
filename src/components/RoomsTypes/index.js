@@ -53,9 +53,10 @@ const RoomsTypes = () => {
     const params = {
       SourceName: roomTypeName,
     };
-    dispatch((params))
+    dispatch(createRoomTypes(params))
       .then((res) => {
         console.log(res, "res");
+        handleFetchRoomTypes();
         setModalVisible("");
       })
       .catch(() => {
@@ -122,6 +123,7 @@ const RoomsTypes = () => {
 
     dispatch(renameRoomType(params))
       .then((res) => {
+        handleFetchRoomTypes();
         setModalVisible("");
       })
       .catch(() => {
@@ -311,8 +313,9 @@ const RoomsTypes = () => {
     setModalVisible("ADD_ROOM_TYPE");
   };
 
-  const handleDeleteRoomTypeModal = (e) => {
+  const handleDeleteRoomTypeModal = (e, item) => {
     e.stopPropagation();
+    setSelectedRoomType(item)
     setModalVisible("DELETE_ROOM_TYPE");
   };
 
@@ -356,7 +359,7 @@ const RoomsTypes = () => {
                   ></i>
                   <i
                     className="far fa-trash fa-sm tab-icon p-2"
-                    onClick={(e) => handleDeleteRoomTypeModal(e)}
+                    onClick={(e) => handleDeleteRoomTypeModal(e, item)}
                   ></i>
                 </div>
                 <span className="px-2">{item.Rooms?.length} rooms</span>{" "}

@@ -123,26 +123,42 @@ const Header = ({ expanded, setExpanded }) => {
                 </div>
                 <div
                   className="header-item"
-                  onClick={() => handleRouteChange("/utility-management")}
+                  onClick={() => history.push("/rooms-management/roomTypes")}
+                >
+                  <i className="far fa-border-none fa-sm tab-icon"></i>
+                  Rooms Management
+                </div>
+                <div
+                  className="header-item"
+                  onClick={() => history.push("/utility-management")}
                 >
                   <i className="far fa-lightbulb fa-sm tab-icon"></i>
                   Utility Management
                 </div>
+                <div className="header-item">
+                  <i className="far fa-bookmark fa-sm tab-icon"></i>
+                  Vendor Management
+                </div>
                 <div
                   className="header-item"
-                  onClick={() => handleRouteChange("/contractor-management")}
+                  onClick={() => history.push("/contractor-management")}
                 >
                   <i className="far fa-user-hard-hat fa-sm tab-icon"></i>
                   Contractor Management
                 </div>
-                <div className="header-item">
-                  <i className="far fa-border-none fa-sm tab-icon"></i>
-                  Rooms Management
+                <div
+                  className="header-item"
+                  onClick={() => history.push("/subdivision-management")}
+                >
+                  <i className="far fa-house-day fa-sm tab-icon"></i>
+                  Subdivision Management
                 </div>
-
-                <div className="header-item">
-                  <i className="far fa-bookmark fa-sm tab-icon"></i>
-                  Vendor Management
+                <div
+                  className="header-item"
+                  onClick={() => history.push("/my-products-management")}
+                >
+                  <i className="fa fa-product-hunt fa-sm tab-icon"></i>
+                  My Products
                 </div>
 
                 {showTabLinks && (
@@ -227,7 +243,7 @@ const Header = ({ expanded, setExpanded }) => {
                 <i className="far fa-sign-out-alt"></i>
               </Nav.Link>
             )}
-            {!isSignedIn && !isCustomerSignedIn && !customerPortal &&(
+            {!isSignedIn && !isCustomerSignedIn && !customerPortal && (
               <div className="d-flex gap-2">
                 <Button onClick={() => history.push("/signup")}>Sign Up</Button>
                 <Button onClick={() => history.push("/login")}>Login</Button>
