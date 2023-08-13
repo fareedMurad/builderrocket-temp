@@ -236,6 +236,27 @@ export const addRoomsToProject = (projectID, rooms) => dispatch => {
         });
 }
 
+export const addBuilderRoomsToProject = (projectID, rooms) => dispatch => {
+    const URL = `/Project/${projectID}/AddBuilderRooms`;
+
+    return api({
+        method: 'POST',
+        url: URL,
+        data: rooms
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                dispatch({ type: ADD_PROJECT_ROOMS, payload: response?.data });
+
+                return response?.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
 /**
  * Deletes rooms from a selected project
  * @param {*} projectID 
@@ -253,6 +274,41 @@ export const deleteRoomsFromProject = (projectID, rooms) => dispatch => {
 
             if (response?.status === 204) {
                 return null;
+            }
+            if(response?.status === 200) {
+
+                dispatch({ type: GET_PROJECT, payload: response?.data });
+                return response.data
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
+/**
+ * Deletes builder rooms from a selected project
+ * @param {*} projectID 
+ * @param {*} rooms 
+ */
+export const deleteBuilderRoomsFromProject = (projectID, rooms) => dispatch => {
+    const URL = `/Project/${projectID}/BuilderRemoveRooms`;
+
+    return api({
+        method: 'DELETE',
+        url: URL,
+        data: rooms
+    })
+        .then((response) => {
+
+            if (response?.status === 204) {
+                return null;
+            }
+            if(response?.status === 200) {
+
+                dispatch({ type: GET_PROJECT, payload: response?.data });
+                return response.data
             }
         })
         .catch((error) => {
