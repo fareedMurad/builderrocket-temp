@@ -13,6 +13,7 @@ import {
   addBuilderSubdivsionDocument,
 } from "../../actions/builderSubdivisionActions";
 import FileUpload from "../../components/FileUpload";
+import { deleteDocument } from "../../actions/documentActions";
 
 const Subdivisions = () => {
   const [modalVisible, setModalVisible] = useState("");
@@ -81,6 +82,7 @@ const Subdivisions = () => {
           setProgress({ ...progress });
           handleFetchSubdivisions();
           setNewDocument({});
+          setModalVisible("")
         })
         .catch(() => {
           progress[1] = { progress: 0, loading: false };
@@ -119,7 +121,7 @@ const Subdivisions = () => {
   };
 
   const handleDeleteSubdivisionDocument = () => {
-    dispatch(deleteBuilderSubdivsion(selectedSubdivision.ID))
+    dispatch(deleteDocument(selectedSubdivision.ID))
       .then((res) => {
         setModalVisible("");
         handleFetchSubdivisions();
@@ -361,22 +363,25 @@ const Subdivisions = () => {
                         item.Documents?.map((room, index) => {
                           return (
                             <tr key={index}>
-                              <td>{room.Name}</td>
                               <td>
-                                {room.DefaultRoomGroup?.Name
-                                  ? `[ ${room.DefaultRoomGroup?.Name} ]`
-                                  : ""}
-                              </td>
+                              <a 
+                               href={room?.URL} 
+                               target='_blank'
+                               rel='noreferrer'
+                            >
+                                {room.FileName}
+                           </a>
+                               </td>
                               <td>
                                 <div className="d-flex">
-                                  <i
+                                  {/* <i
                                     className="far fa-pen fa-sm tab-icon px-2"
                                     onClick={(e) =>
                                       handleEditSubdivisionModal(e, room)
                                     }
-                                  ></i>
+                                  ></i> */}
                                   <i
-                                    className="far fa-trash fa-sm tab-icon px-2"
+                                    className="far fa-trash fa-sm tab-icon px-2 pointer"
                                     onClick={(e) =>
                                       handleDeleteSubdivisionDocumentModal(
                                         e,

@@ -2,6 +2,7 @@ import api from '../api';
 import {
     LOGOUT,
     GET_MY_PRODUCTS_BY_PROJECT,
+    GET_SUBDIVISIONS,
 } from './types';
 
 export const getBuilderSubdivisions = () => dispatch => {
@@ -13,6 +14,7 @@ export const getBuilderSubdivisions = () => dispatch => {
     })
         .then((response) => {
             if (response?.status === 200) {
+                dispatch({ type: GET_SUBDIVISIONS, payload: response.data });
                 return response.data;
             }
         })
@@ -117,16 +119,20 @@ export const addBuilderSubdivsionDocument = (ID, document, onUploadProgress) => 
 
 /**
  * 
- * @param {*} product 
+ * @param {*} SubdivisionID 
+ * @param {*} ProjectID 
  * @returns 
  */
-export const handleAddBuilderSubdivsionToProject = (product) => dispatch => {
-    const URL = `/builder-subdivision/projectproduct`;
+export const handleAddBuilderSubdivsionToProject = (SubdivisionID, ProjectID) => dispatch => {
+    const URL = `/builder-subdivision/document/assigntoproject`;
 
     return api({
-        method: 'POST',
+        method: 'PUT',
         url: URL,
-        data: product
+        data: {
+            SubdivisionID,
+            ProjectID
+        }
     })
         .then((response) => {
             if (response?.status === 200) {
