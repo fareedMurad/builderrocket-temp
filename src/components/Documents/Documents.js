@@ -49,7 +49,7 @@ const Documents = () => {
     if (project?.Subdivision)
       dispatch(getBuilderSubdivision(parseInt(project?.Subdivision))).then(
         (res) => {
-          setSubdivisionDocuments(res?.[1] || {});
+          setSubdivisionDocuments(res?.[0] || {});
         }
       );
   }, [dispatch]);

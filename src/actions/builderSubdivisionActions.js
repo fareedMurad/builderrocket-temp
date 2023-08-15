@@ -26,7 +26,7 @@ export const getBuilderSubdivisions = () => dispatch => {
 }
 
 export const getBuilderSubdivision = (SubdivisionID) => dispatch => {
-    const URL = `/builder-subdivision/All`;
+    const URL = `/builder-subdivision/${SubdivisionID}`;
 
     return api({
         method: 'GET',
