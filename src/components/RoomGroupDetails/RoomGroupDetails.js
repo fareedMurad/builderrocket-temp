@@ -94,12 +94,14 @@ const RoomGroupDetails = () => {
           selectedCategoryID?.value,
           productID
         )
-      ).then(() => {
+      ).then((pID) => {
         dispatch(
           setSelectedGroupCategoryProducts([
             ...builderSelectedRoomCategoryProducts,
             {
               ...product,
+              IsTemp: true,
+              pID: pID,
               Product: product,
             },
           ])
@@ -110,23 +112,27 @@ const RoomGroupDetails = () => {
   };
 
   const handleDeleteRoomGroupCategoryProduct = (ID) => {
-    setActionLoading(true);
-    setSelectedProductID(ID);
-    dispatch(deleteRoomGroupCategory(ID))
-      .then((res) => {
-        dispatch(
-          setSelectedGroupCategoryProducts(
-            builderSelectedRoomCategoryProducts.filter(
-              (p) => p.Product?.ID !== ID
-            )
-          )
-          );
-          setActionLoading(true);
-      })
-      .catch(() => {
-        alert("Something went wrong, please try again!");
-        setActionLoading(false);
-      });
+    if (isProductAdded(ID)?.ID) {
+      setActionLoading(true);
+      setSelectedProductID(ID);
+      dispatch(deleteRoomGroupCategory(isProductAdded(ID)?.pID ? isProductAdded(ID)?.pID : isProductAdded(ID)?.ID))
+        .then((res) => {
+          if(res) {
+            dispatch(
+              setSelectedGroupCategoryProducts(
+                builderSelectedRoomCategoryProducts.filter(
+                  (p) => p.Product?.ID !== ID
+                )
+              )
+            );
+          }
+          setActionLoading(false);
+        })
+        .catch(() => {
+          alert("Something went wrong, please try again!");
+          setActionLoading(false);
+        });
+    }
   };
 
   const Category = ({ category, type }) => {
@@ -292,7 +298,9 @@ const RoomGroupDetails = () => {
                             <Button
                               className="action-button btn-danger"
                               onClick={() =>
-                                handleDeleteRoomGroupCategoryProduct(product?.ID)
+                                handleDeleteRoomGroupCategoryProduct(
+                                  product?.ID
+                                )
                               }
                               disabled={!isProductAdded(product.ID)}
                             >
