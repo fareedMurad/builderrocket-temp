@@ -25,6 +25,25 @@ export const getBuilderSubdivisions = () => dispatch => {
 
 }
 
+export const getBuilderSubdivision = (SubdivisionID) => dispatch => {
+    const URL = `/builder-subdivision/${SubdivisionID}`;
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+        .then((response) => {
+            if (response?.status === 200) {
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        })
+
+}
+
 export const editBuilderSubdivsion = (subdivision) => dispatch => {
     const URL = `/builder-subdivision`;
 
