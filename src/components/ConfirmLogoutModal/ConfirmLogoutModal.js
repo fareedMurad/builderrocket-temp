@@ -6,7 +6,7 @@ const ClearChangesModal = ({ show, setShow, handleConfirm }) => {
   const history = useHistory();
 
   return (
-    <Modal size="md" centered show={show}>
+    <Modal size="md" centered show={show} backdrop>
       <Modal.Body>
         <div className="d-flex justify-content-center">
           You will be Logged out from your builder account, Are you sure?

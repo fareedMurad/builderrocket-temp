@@ -3,7 +3,7 @@ import { Row, Col, Button, Form, Spinner, Container } from "react-bootstrap";
 import {
   getCustomerInvites,
   signupEmailPassword,
-} from "../../../actions/customerActions";
+} from "../../../actions/vendorActions";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 import { Link, useParams } from "react-router-dom";
@@ -19,7 +19,6 @@ const Signup = (props) => {
   const [user, setUser] = useState({});
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [customer, setCustomer] = useState();
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
 
@@ -27,14 +26,6 @@ const Signup = (props) => {
     if (isSignedIn) {
       setLogoutModalVisible(true);
     }
-    if(customerParams?.id)
-    dispatch(getCustomerInvites(customerParams?.id)).then((response) => {
-      if (response) {
-        setCustomer(response);
-      } else {
-        setError("Please Enter valid email or password!");
-      }
-    });
   }, []);
 
   const handleSingup = (event) => {
@@ -47,7 +38,7 @@ const Signup = (props) => {
       return;
     }
 
-    const params = { ...user, ID: customer?.CustomerID, setError };
+    const params = { ...user, setError };
     delete params.confirmPassword;
 
     console.log(params, "Hey");
@@ -55,7 +46,7 @@ const Signup = (props) => {
       dispatch(signupEmailPassword(params)).then((response) => {
         setIsLoading(false);
         if (response) {
-          history.push("/customer/login");
+          history.push("/vendor/login");
         }
       })
   };
@@ -63,20 +54,15 @@ const Signup = (props) => {
   const handleLogout = () => {
     const customerDetails = {
       customerPortal: true,
-      inviteID: customerParams?.id
     }
     dispatch(logout(customerDetails)).then(() => {
       setLogoutModalVisible(false);
     });
   };
 
-  if (!customerParams?.id) {
-    return <div className="">Invalid Customer ID</div>;
-  }
-
   return (
-    <Container className="pt-5" fluid="md">   
-      <h2>Customer Signup</h2>
+    <Container className="pt-5" fluid="md">
+      <h2>Vendor Signup</h2>
       <br />
       <Form onSubmit={handleSingup}>
         <Row className="justify-content-center">
@@ -258,7 +244,7 @@ const Signup = (props) => {
           )}
           <div className="d-inline justify-self-end">
             Already have an account?{" "}
-            <Link className="d-inline ml-1" to="/customer/login">
+            <Link className="d-inline ml-1" to="/vendor/login">
               Login
             </Link>
           </div>

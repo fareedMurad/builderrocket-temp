@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-    const token = store.getState().customer?.isSignedIn ? store.getState().customer.token  :  store.getState().auth.token;    
+    const token = store.getState().customer?.isSignedIn ? store.getState().customer.token : store.getState().vendor?.isSignedIn  ? store.getState().vendor?.token : store.getState().auth.token;    
     config.headers.Authorization = `Bearer ${token}`;
 
     return config;

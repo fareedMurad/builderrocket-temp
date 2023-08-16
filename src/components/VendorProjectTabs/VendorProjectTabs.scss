@@ -1,0 +1,31 @@
+@import '../../assets/styles/variables';
+
+.project-tabs {  
+    .tab-pane {
+        background-color: $lightgray;
+        padding: 2rem 3rem;
+        min-height: 100vh;
+    }
+
+
+    .nav {
+        padding: 0 3rem;
+    }
+
+    .nav-item {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        font-size: 14px;
+        letter-spacing: -0.32px;
+        line-height: 19px;
+        border: none;
+        color: $tabblue;
+    }
+
+    .nav-item.active {
+        color: $activegray;
+        font-weight: bold;
+        border-bottom: 5px solid $activegray;
+        border-color: '';
+    }
+}
