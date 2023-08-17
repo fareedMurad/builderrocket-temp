@@ -1,5 +1,5 @@
 import api from "../api";
-import { GET_CUSTOMER_DOCUMENTS, LOGOUT, SET_VENDOR, SET_VENDOR_SELECTED_PROJECT_TAB, GET_CUSTOMER_PRODUCTS } from "./types";
+import { GET_CUSTOMER_DOCUMENTS, LOGOUT, SET_VENDOR, SET_VENDOR_SELECTED_PROJECT_TAB, GET_CUSTOMER_PRODUCTS, SET_VENDOR_PRODUCTS } from "./types";
 
 export const signupEmailPassword =
   ({
@@ -99,6 +99,24 @@ export const getProductsByCategoryAndBrandID = (brandID, categoryID) => dispatch
               dispatch({ type: LOGOUT });
       });
 }
+
+export const getVendorProducts = () => (dispatch) => {
+  const URL = "/Vendor/VendorProduct/All";
+
+  return api({
+    method: "GET",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        dispatch({type: SET_VENDOR_PRODUCTS, payload: response?.data})
+        return response?.data;
+      }
+    })
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
 
 export const getVendorCategories = () => (dispatch) => {
@@ -239,26 +257,14 @@ export const setSelectedProjectTab = (tab) => dispatch => {
   });
 }
 
-/**
- * Customer Approval Product
- * @param {String} ID 
- *
- */
-export const customerApprovalProducts = (items, IsCustomProduct) => dispatch => {
-  const URL = IsCustomProduct ? `/customer-portal/Custom/ApproveProjectProducts` : `/customer-portal/ApproveProjectProducts`;
-  return api({
-      method: 'POST',
-      url: URL,
-      data: {"Items":items}
-  })
-  .then((response) => {
-      if (response.status === 200) {
-          // dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: response.data });
-          return response.data;
+export const setVendorProducts = (products) => dispatch => {
+  return new Promise((resolve, reject) => {
+      try {
+          dispatch({ type: SET_VENDOR_PRODUCTS, payload: products });
+          
+          resolve();
+      } catch (error) {
+          reject(error);
       }
-  })
-  .catch((error) => {
-      if (error.response?.status === 401) 
-          dispatch({ type: LOGOUT }); 
   });
 }

@@ -32,7 +32,7 @@ const Login = (props) => {
         (response) => {
           setIsLoading(false);
           if (response) {
-            history.push("/vendor/project/products");
+            history.push("/vendor/products");
           } else {
             setError("Please Enter valid email or password!");
           }

@@ -1,4 +1,4 @@
-import { SET_VENDOR_SELECTED_PROJECT_TAB, LOGIN, SET_VENDOR,GET_CUSTOMER_DOCUMENTS, GET_CUSTOMER_PRODUCTS } from '../actions/types';
+import { SET_VENDOR_SELECTED_PROJECT_TAB, LOGIN, SET_VENDOR, SET_VENDOR_PRODUCTS } from '../actions/types';
 
 const intialState = {
     token: null,
@@ -23,23 +23,17 @@ const vendorReducer = (state = intialState, action) => {
                     isSignedIn: true
                 }
             }
-        case GET_CUSTOMER_DOCUMENTS: 
+        case SET_VENDOR_PRODUCTS: 
         {
             return {
                 ...state,
-                documents: action.payload
+                products: action.payload
             }
         }
         case SET_VENDOR_SELECTED_PROJECT_TAB: {
             return {
                 ...state, 
                 selectedProjectTab: action.payload
-            }
-        }
-        case GET_CUSTOMER_PRODUCTS: {
-            return {
-                ...state, 
-                products: action.payload
             }
         }
         

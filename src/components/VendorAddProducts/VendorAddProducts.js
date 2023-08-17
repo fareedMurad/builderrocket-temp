@@ -1,37 +1,23 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  getProductsByCategoryID,
-  searchProducts,
-} from "../../actions/productActions";
 import { Button, Form, Table, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../assets/images/img-placeholder.png";
 import "./VendorAddProducts.scss";
-import { useHistory } from "react-router";
 
 import CustomLightbox from "../Lightbox";
 import {
-  createRoomGroupCategoryProduct,
-  deleteRoomGroupCategory,
-  setSelectedGroupCategoryProducts,
-} from "../../actions/roomActions";
-import {
   addVendorProduct,
-  deleteVendorProduct,
   getProductsByCategoryAndBrandID,
   getVendorBrands,
   getVendorCategories,
   setSelectedProjectTab,
+  setVendorProducts,
 } from "../../actions/vendorActions";
 
 const VendorAddProducts = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const builderSelectedRoomGroup = useSelector(
-    (state) => state.vendor?.builderSelectedRoomGroup
-  );
 
-  const builderSelectedRoomCategoryProducts = [];
+  const vendorAddedProducts = useSelector((state) => state.vendor?.products);
 
   const [selectedCategoryID, setSelectedCategoryID] = useState(null);
   const [selectedBrandID, setSelectedBrandID] = useState(null);
@@ -62,7 +48,9 @@ const VendorAddProducts = () => {
       dispatch(
         getProductsByCategoryAndBrandID(
           selectedBrandID?.value,
+          // 7,
           selectedCategoryID?.value
+          // 931
         )
       )
         .then((res) => {
@@ -74,9 +62,7 @@ const VendorAddProducts = () => {
   }, [selectedCategoryID, selectedBrandID]);
 
   const isProductAdded = (ID) => {
-    return builderSelectedRoomCategoryProducts?.find(
-      (p) => p.Product?.ID === ID
-    );
+    return vendorAddedProducts?.find((p) => p?.ProductID === ID);
   };
 
   const onProductCategoryChange = (productCategoryID) => {
@@ -96,71 +82,38 @@ const VendorAddProducts = () => {
     if (!ID) return;
 
     setError(false);
-    const getBrand = brands?.find(
-      (c) => c.ID === parseInt(ID)
-    );
+    const getBrand = brands?.find((c) => c.ID === parseInt(ID));
     setSelectedBrandID({
       value: getBrand.ID,
       label: getBrand?.Name,
     });
   };
 
-  const addProduct = (productID, product) => {
+  const addProduct = (ProductID, product) => {
     if (!selectedCategoryID?.value) {
       setError(true);
     } else {
-      setSelectedProductID(productID);
+      setSelectedProductID(ProductID);
       setActionLoading(true);
       dispatch(
         addVendorProduct(
           selectedBrandID?.value,
           selectedCategoryID?.value,
-          productID
+          ProductID
         )
       ).then((pID) => {
-        // dispatch(
-        //   setSelectedGroupCategoryProducts([
-        //     ...builderSelectedRoomCategoryProducts,
-        //     {
-        //       ...product,
-        //       IsTemp: true,
-        //       pID: pID,
-        //       Product: product,
-        //     },
-        //   ])
-        // );
+        dispatch(
+          setVendorProducts([
+            ...vendorAddedProducts,
+            {
+              ...product,
+              ProductID,
+              ID: pID
+            },
+          ])
+        );
         setActionLoading(false);
       });
-    }
-  };
-
-  const hanldeDeleteVendorProduct = (ID) => {
-    if (isProductAdded(ID)?.ID) {
-      setActionLoading(true);
-      setSelectedProductID(ID);
-      dispatch(
-        deleteVendorProduct(
-          isProductAdded(ID)?.pID
-            ? isProductAdded(ID)?.pID
-            : isProductAdded(ID)?.ID
-        )
-      )
-        .then((res) => {
-          if (res) {
-            // dispatch(
-            //   setSelectedGroupCategoryProducts(
-            //     builderSelectedRoomCategoryProducts.filter(
-            //       (p) => p.Product?.ID !== ID
-            //     )
-            //   )
-            // );
-          }
-          setActionLoading(false);
-        })
-        .catch(() => {
-          alert("Something went wrong, please try again!");
-          setActionLoading(false);
-        });
     }
   };
 
@@ -174,7 +127,7 @@ const VendorAddProducts = () => {
   };
 
   const handleGoToProducts = () => {
-    dispatch(setSelectedProjectTab("products"))
+    dispatch(setSelectedProjectTab("products"));
   };
 
   const handleChangeSwitchFilter = () => {
@@ -202,7 +155,7 @@ const VendorAddProducts = () => {
               className="link-btn"
               onClick={handleGoToProducts}
             >
-              /Go to Added products 
+              Go to Added products
             </Button>
           </div>
         </div>
@@ -223,9 +176,7 @@ const VendorAddProducts = () => {
               <Form.Control
                 as="select"
                 value={selectedBrandID?.value}
-                onChange={(event) =>
-                  onProductBrandChange(event.target.value)
-                }
+                onChange={(event) => onProductBrandChange(event.target.value)}
               >
                 <option value="">Select Brand</option>
 
@@ -278,7 +229,7 @@ const VendorAddProducts = () => {
         </div>
       </div>
 
-      {(selectedCategoryID && selectedBrandID) ? (
+      {selectedCategoryID && selectedBrandID ? (
         <div className="add-products-body d-flex">
           <div className="add-product-table w-100 px-3">
             {isLoading ? (
@@ -286,78 +237,78 @@ const VendorAddProducts = () => {
                 <Spinner animation="border" variant="primary" />
               </div>
             ) : (
-              <Table hover responsive>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Product Name</th>
-                    <th>Model Number</th>
-                    <th>Color/Finish</th>
-                    <th>Price</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {getFilterProducts(products)?.map((product, index) => (
-                    <tr key={index}>
-                      <td>
-                        <CustomLightbox
-                          images={[
-                            product?.ThumbnailName
-                              ? product?.ThumbnailURL
-                              : Avatar,
-                          ]}
-                        />
-                      </td>
-                      <td>
-                        <div className="add-btn-product-details">
-                          <b className="d-block">{product?.ProductName}</b>
-
-                          <div className="d-flex mt-2">
-                            <div className="model-number">
-                              Model: {product?.ModelNumber}
-                            </div>
-                            <div>Part:</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{product?.ModelNumber}</td>
-                      <td>{product?.ColorFinish}</td>
-                      <td>${product?.MSRP}</td>
-                      <td>
-                        {loadingActions && product.ID === selectedProductID ? (
-                          <Spinner
-                            size="sm"
-                            animation="border"
-                            variant="primary"
-                          />
-                        ) : (
-                          <div className="d-flex">
-                            <Button
-                              className="action-button add-product-btn mr-2"
-                              onClick={() => addProduct(product?.ID, product)}
-                              disabled={isProductAdded(product.ID)}
-                            >
-                              {isProductAdded(product.ID) ? "Added" : "Add"}
-                            </Button>
-                            <Button
-                              className="action-button btn-danger"
-                              onClick={() =>
-                                hanldeDeleteVendorProduct(
-                                  product?.ID
-                                )
-                              }
-                              disabled={!isProductAdded(product.ID)}
-                            >
-                              Remove
-                            </Button>
-                          </div>
-                        )}
-                      </td>
+              <>
+                <Table hover responsive>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Product Name</th>
+                      <th>Model Number</th>
+                      <th>Color/Finish</th>
+                      <th>Price</th>
+                      <th></th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
+                  </thead>
+                  <tbody>
+                    {getFilterProducts(products)?.map((product, index) => (
+                      <tr key={index}>
+                        <td>
+                          <CustomLightbox
+                            images={[
+                              product?.ThumbnailName
+                                ? product?.ThumbnailURL
+                                : Avatar,
+                            ]}
+                          />
+                        </td>
+                        <td>
+                          <div className="add-btn-product-details">
+                            <b className="d-block">{product?.ProductName}</b>
+
+                            <div className="d-flex mt-2">
+                              <div className="model-number">
+                                Model: {product?.ModelNumber}
+                              </div>
+                              <div>Part:</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{product?.ModelNumber}</td>
+                        <td>{product?.ColorFinish}</td>
+                        <td>${product?.MSRP}</td>
+                        <td>
+                          {loadingActions &&
+                          product.ID === selectedProductID ? (
+                            <Spinner
+                              size="sm"
+                              animation="border"
+                              variant="primary"
+                            />
+                          ) : (
+                            <div className="d-flex">
+                              <Button
+                                className="action-button add-product-btn mr-2"
+                                onClick={() => addProduct(product?.ID, product)}
+                                disabled={isProductAdded(product.ID)}
+                              >
+                                {isProductAdded(product.ID) ? "Added" : "Add"}
+                              </Button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                {getFilterProducts(products)?.length < 1 && (
+                  <div className="mt-4 text-center d-flex flex-column align-items-center justify-content-center">
+                    <b>
+                      No products found for {selectedCategoryID?.label} and{" "}
+                      {selectedBrandID?.label}
+                    </b>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

@@ -67,8 +67,8 @@ const Routes = (props) => {
           {isVendorSignedIn && (
             <>
               {/* <Route path="/" exact component={CustomerHome} /> */}
-              <Route path="/vendor/project/:tab" component={Vendor} />
-              <Redirect to="/vendor/project/products" />
+              <Route path="/vendor/:tab" component={Vendor} />
+              <Redirect to="/vendor/products" />
             </>
           )}
           <Route path="/" exact component={Home} />
