@@ -15,6 +15,7 @@ import reportReducer from "./reportReducer";
 import customerReducer from "./customerReducer";
 import builderRoomsReducer from "./builderRooms";
 import myProductReducer from "./myProductReducer";
+import vendorReducer from "./vendorReducer";
 
 const appReducer = combineReducers({
   auth: authReducer,
@@ -28,6 +29,7 @@ const appReducer = combineReducers({
   subdivision: subdivisionReducer,
   reportFilter: reportReducer,
   customer: customerReducer,
+  vendor: vendorReducer,
   builderRooms: builderRoomsReducer,
   myProduct: myProductReducer
 });
