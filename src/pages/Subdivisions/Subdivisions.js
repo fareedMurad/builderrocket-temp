@@ -13,7 +13,7 @@ import {
   addBuilderSubdivsionDocument,
 } from "../../actions/builderSubdivisionActions";
 import FileUpload from "../../components/FileUpload";
-import { deleteDocument } from "../../actions/documentActions";
+import { deleteDocument, updateDocument } from "../../actions/documentActions";
 
 const Subdivisions = () => {
   const [modalVisible, setModalVisible] = useState("");
@@ -24,6 +24,8 @@ const Subdivisions = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState({});
   const [newDocument, setNewDocument] = useState();
+  const [selectedDocumentID, setSelectedDocumentID] = useState();
+  const [selectedDocument, setSelectedDocument] = useState({});
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -61,7 +63,7 @@ const Subdivisions = () => {
       // Save new file / document
       const formData = new FormData();
 
-      formData.append("DocumentTypeID", 1);
+      formData.append("DocumentTypeID", 18);
       formData.append("File", newDocument);
 
       dispatch(
@@ -74,15 +76,14 @@ const Subdivisions = () => {
               loading: true,
             };
             setProgress({ ...progress });
-          } 
+          }
         )
       )
         .then((response) => {
           progress[1] = { progress: 0, loading: false };
           setProgress({ ...progress });
           handleFetchSubdivisions();
-          setNewDocument({});
-          setModalVisible("")
+          hanldeHideAddDocumentsModal();
         })
         .catch(() => {
           progress[1] = { progress: 0, loading: false };
@@ -130,6 +131,22 @@ const Subdivisions = () => {
         alert("Something went wrong, please try again!");
       });
   };
+
+  const onUpdateDocument = (fileName) => {
+    dispatch(updateDocument({
+        ID: selectedDocument?.ID,
+        DocumentTypeID: selectedDocument?.DocumentTypeID,
+        FileName: selectedDocument?.FileName,
+        UserFileName: fileName
+    }))
+    .then(() => {
+     handleFetchSubdivisions();
+    })
+    .catch(() => {
+      alert("Something went wrong updating document name");
+    });
+  }
+
 
   const deleteSubdivisionModal = () => {
     const isSubdivision = modalVisible === "DELETE_SUBDIVISION";
@@ -206,7 +223,7 @@ const Subdivisions = () => {
               className="primary-gray-btn next-btn ml-3"
               onClick={isAdd ? handleAdd : handleEditSubdivision}
             >
-              {isAdd ? "Add" : "Edit"}
+              {isAdd ? "Add" : "Save"}
             </button>
           </div>
         </Modal.Body>
@@ -225,12 +242,16 @@ const Subdivisions = () => {
     setNewDocument(event.target?.files?.[0]);
   };
 
+  const hanldeHideAddDocumentsModal = () => {
+    setModalVisible("");
+    setNewDocument({});
+  };
 
   const addDocumentModal = () => {
     return (
       <Modal
         show={modalVisible === "ADD_SUBDIVISION_DOCUMENT"}
-        onHide={() => setModalVisible("")}
+        onHide={hanldeHideAddDocumentsModal}
         centered
         size="md"
       >
@@ -240,14 +261,14 @@ const Subdivisions = () => {
             short
             placeholder={newDocument?.name}
             buttonText={"Upload Document"}
-            progress={fileProgress(1)}
+            progress={fileProgress(10)}
             // label={findDocumentType(1)?.Name}
             handleDocumentDelete={handleDeleteSubdivisionDocument}
             onFileChange={(event) => onFileChange(1, event)}
           />
           <div className="d-flex justify-content-center pt-5">
             <Button
-              onClick={() => setModalVisible("")}
+              onClick={hanldeHideAddDocumentsModal}
               variant="link"
               className="cancel"
             >
@@ -305,8 +326,8 @@ const Subdivisions = () => {
     setModalVisible("DELETE_SUBDIVISION");
   };
 
-  const handleDeleteSubdivisionDocumentModal = (e, room) => {
-    e.stopPropagation();
+  const handleDeleteSubdivisionDocumentModal = (room) => {
+    // e.stopPropagation();
     setSelectedSubdivision(room);
     setModalVisible("DELETE_SUBDIVISION_DOCUMENT");
   };
@@ -363,33 +384,23 @@ const Subdivisions = () => {
                         item.Documents?.map((room, index) => {
                           return (
                             <tr key={index}>
-                              <td>
-                              <a 
-                               href={room?.URL} 
-                               target='_blank'
-                               rel='noreferrer'
-                            >
-                                {room.FileName}
-                           </a>
-                               </td>
-                              <td>
-                                <div className="d-flex">
-                                  {/* <i
-                                    className="far fa-pen fa-sm tab-icon px-2"
-                                    onClick={(e) =>
-                                      handleEditSubdivisionModal(e, room)
-                                    }
-                                  ></i> */}
-                                  <i
-                                    className="far fa-trash fa-sm tab-icon px-2 pointer"
-                                    onClick={(e) =>
-                                      handleDeleteSubdivisionDocumentModal(
-                                        e,
-                                        room
-                                      )
-                                    }
-                                  ></i>
-                                </div>
+                              <td className="border-top-0 p-0">
+                                <FileUpload
+                                  short
+                                  files={[room]}
+                                  selectedInput={selectedDocumentID || room}
+                                  setSelectedInput={id => {
+                                    setSelectedDocument(room)
+                                    setSelectedDocumentID(id)
+                                  }}
+                                  handleDocumentDelete={() =>
+                                    handleDeleteSubdivisionDocumentModal(
+                                      room
+                                    )
+                                  }
+                                  hideUpload
+                                  onUpdateDocument={onUpdateDocument}
+                                />
                               </td>
                             </tr>
                           );

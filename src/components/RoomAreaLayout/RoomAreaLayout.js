@@ -9,6 +9,7 @@ import {
   getProjects,
   addBuilderRoomsToProject,
   deleteBuilderRoomsFromProject,
+  getProjectByProjectID,
 } from "../../actions/projectActions";
 import { isEmpty } from "lodash";
 import "./RoomAreaLayout.scss";
@@ -41,7 +42,6 @@ const RoomAreaLayout = () => {
   const deleteRoomsRef = useRef();
   const projectIDRef = useRef();
 
-
   const builderRoomsRef = useRef();
   const deleteBuilderRoomsRef = useRef();
 
@@ -64,7 +64,10 @@ const RoomAreaLayout = () => {
   };
 
   const isRoomInProject = (id) => {
-    return [...(project?.BuilderProjectRooms || []), ...(project?.ProjectRooms || [])]?.find((room) => room?.RoomID === id);
+    return [
+      ...(project?.BuilderProjectRooms || []),
+      ...(project?.ProjectRooms || []),
+    ]?.find((room) => room?.RoomID === id);
   };
 
   const handleSelectedRoomTypeChange = useCallback(
@@ -74,6 +77,11 @@ const RoomAreaLayout = () => {
     },
     [dispatch, setTypesFilter]
   );
+
+  useEffect(() => {
+    if(roomList.length || builderRoomList?.length || deleteRoomList.length || deleteBuilerRoomList.length)
+    save(false);
+  }, [roomList, builderRoomList, deleteRoomList, deleteBuilerRoomList]);
 
   const handleCheckBox = (roomID, e) => {
     if (isRoomInProject(roomID)) {
@@ -139,14 +147,14 @@ const RoomAreaLayout = () => {
     }
   };
 
-  const handleAddRoomsToProject = () => {
+  const handleAddRoomsToProject = async () => {
     if (!isEmpty(roomList)) {
       setIsLoading(true);
       const roomsObj = {
         RoomIDs: roomList,
       };
 
-      dispatch(addRoomsToProject(project?.ID, roomsObj))
+      await dispatch(addRoomsToProject(project?.ID, roomsObj))
         .then(() => {
           setRoomList([]);
           setIsLoading(false);
@@ -164,7 +172,7 @@ const RoomAreaLayout = () => {
         RoomIDs: builderRoomList,
       };
 
-      dispatch(addBuilderRoomsToProject(project?.ID, roomsObj))
+      await dispatch(addBuilderRoomsToProject(project?.ID, roomsObj))
         .then(() => {
           setBuilderRoomList([]);
           setIsLoading(false);
@@ -177,7 +185,7 @@ const RoomAreaLayout = () => {
     }
   };
 
-  const handleRemoveProjectRooms = () => {
+  const handleRemoveProjectRooms = async () => {
     if (!isEmpty(deleteRoomList)) {
       setIsLoading(true);
 
@@ -185,7 +193,7 @@ const RoomAreaLayout = () => {
         IDs: deleteRoomList,
       };
 
-      dispatch(deleteRoomsFromProject(project?.ID, deleteRoomsObj))
+      await dispatch(deleteRoomsFromProject(project?.ID, deleteRoomsObj))
         .then(() => {
           setDeleteRoomList([]);
           setIsLoading(false);
@@ -198,33 +206,37 @@ const RoomAreaLayout = () => {
     }
 
     if (!isEmpty(deleteBuilerRoomList)) {
-        setIsLoading(true);
-  
-        const deleteBuilderRoomsObj = {
-          IDs: deleteBuilerRoomList,
-        };
-  
-        dispatch(deleteBuilderRoomsFromProject(project?.ID, deleteBuilderRoomsObj))
-          .then(() => {
-            setDeleteBuilerRoomList([]);
-            setIsLoading(false);
-            return;
-          })
-          .catch(() => {
-            setIsLoading(false);
-            alert("Something went wrong deleting rooms from project.");
-          });
-      }
+      setIsLoading(true);
+
+      const deleteBuilderRoomsObj = {
+        IDs: deleteBuilerRoomList,
+      };
+
+      await dispatch(
+        deleteBuilderRoomsFromProject(project?.ID, deleteBuilderRoomsObj)
+      )
+        .then(() => {
+          setDeleteBuilerRoomList([]);
+          setIsLoading(false);
+          return;
+        })
+        .catch(() => {
+          setIsLoading(false);
+          alert("Something went wrong deleting rooms from project.");
+        });
+    }
   };
 
-  const save = async () => {
+  const save = async (goToNext=true) => {
     setIsLoading(true);
 
     await handleAddRoomsToProject();
     await handleRemoveProjectRooms();
 
-    dispatch(getProjects());
-    // dispatch(setSelectedProjectTab('products'));
+    if(project?.ID)
+    dispatch(getProjectByProjectID(project.ID)).then(() => {
+      if(goToNext) dispatch(setSelectedProjectTab('products'));
+    })
   };
 
   const clearChanges = () => {
@@ -245,7 +257,13 @@ const RoomAreaLayout = () => {
     deleteRoomsRef.current = deleteRoomList;
     builderRoomsRef.current = builderRoomList;
     deleteBuilderRoomsRef.current = deleteBuilerRoomList;
-  }, [roomList, deleteRoomList, project, builderRoomList, deleteBuilerRoomList]);
+  }, [
+    roomList,
+    deleteRoomList,
+    project,
+    builderRoomList,
+    deleteBuilerRoomList,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -283,7 +301,7 @@ const RoomAreaLayout = () => {
         name: "Select All",
         value: "select_all",
       },
-      ...roomTypes?.map((b) => {
+      ...getRoomTypesConditionally()?.map((b) => {
         return {
           ...b,
           name: b.Name,
@@ -291,11 +309,14 @@ const RoomAreaLayout = () => {
         };
       }),
     ];
-    if (roomTypes?.length > 0) {
-      setTypesFilter(roomTypes.map((r) => r.ID));
+    if (getRoomTypesConditionally()?.length > 0) {
+      setTypesFilter(getRoomTypesConditionally().map((r) => r.ID));
     }
     setRoomTypeOptions(options);
-  }, [project]);
+  }, [roomTypes, builderRoomTypes, showCustomRooms]);
+
+  const getRoomTypesConditionally = () =>
+    (showCustomRooms ? builderRoomTypes : roomTypes) || [];
 
   return (
     <div className="d-flex room-area-layout">
@@ -324,19 +345,25 @@ const RoomAreaLayout = () => {
                   {typesFilter?.length > 0 ? (
                     <span className="custom-placeholder">
                       {
-                        roomTypes?.filter((p) => typesFilter.indexOf(p.ID) > -1)
-                          ?.length
+                        getRoomTypesConditionally()?.filter(
+                          (p) => typesFilter.indexOf(p.ID) > -1
+                        )?.length
                       }{" "}
-                      of {roomTypes?.length} selected
+                      of {getRoomTypesConditionally()?.length} selected
                     </span>
                   ) : null}
                 </span>
                 <Multiselect
-                  options={roomTypes?.length > 0 ? roomTypeOptions : []}
+                  options={
+                    getRoomTypesConditionally()?.length > 0
+                      ? roomTypeOptions
+                      : []
+                  }
                   selectedValues={
                     !typesFilter
                       ? []
-                      : roomTypes?.length === typesFilter?.length
+                      : getRoomTypesConditionally()?.length ===
+                        typesFilter?.length
                       ? roomTypeOptions
                       : roomTypeOptions.filter(
                           (b) => typesFilter.indexOf(b.ID) > -1
@@ -382,7 +409,7 @@ const RoomAreaLayout = () => {
           </div>
         ) : (
           <div className="rooms d-flex flex-wrap justify-content-around">
-            {(showCustomRooms ? builderRoomTypes : roomTypes)
+            {getRoomTypesConditionally()
               ?.filter((r) => typesFilter?.indexOf(r.ID) > -1)
               .map((roomType, index) => (
                 <div key={index} className="room-type-container">
@@ -415,7 +442,7 @@ const RoomAreaLayout = () => {
           ) : (
             <>
               <Button onClick={save} className="primary-gray-btn next-btn ml-3">
-                Save
+                Next
               </Button>
             </>
           )}

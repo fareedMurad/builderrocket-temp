@@ -11,6 +11,7 @@ import {
 import {
   handleAddProductForProject,
   handleProductForProject,
+  setSelectedProject,
 } from "../../actions/projectActions";
 import { Button, Form, Table, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,6 +44,7 @@ const AddProduct = () => {
     (state) => state.product.productCategories
   );
   const [roomsOptions, setRoomsOptions] = useState([]);
+  const [addActionLoading, setAddActionLoading] = useState();
 
   useEffect(() => {
     let options = [
@@ -135,41 +137,27 @@ const AddProduct = () => {
     setSearchObject(search);
   };
 
-  const addProduct = (productID) => {
-    if (!productID || !ProductSelectedRoom.length) return;
+  const addProduct = (product) => {
+    if (!product.ID || !ProductSelectedRoom.length) return;
 
+    console.log(product);
+    setAddActionLoading(product);
     let newProduct = {
-      ProjectId: project.ID,
-      Categories: [product.CategoryID],
-      Brands: [0],
-      Rooms: [...ProductSelectedRoom],
+      ProjectID: project.ID,
+      ProjectRoomID: [...ProductSelectedRoom],
+      ProductID: product.ID,
+      Quantity: 0,
+      VendorID: 0,
+      IsApproved: false,
+      RequiresApproval: true,
+      DefaultRoomProductID:0,
+      RoughInTrimOut: 0,
+      Notes: "",
     };
-    // if (product && product.TemplateItemID) {
-    //     newProduct = [{
-    //         ...product,
-    //         ProductID: productID,
-    //         ProjectRoomID: selectedRoom.ID
-    //     }]
-
-    // } else {
-    //     const GetRoomId = project?.ProjectRooms.filter(b => ProductSelectedRoom.indexOf(b.ID) > -1)
-    //     if (GetRoomId.length) {
-    //         newProduct = GetRoomId.map(list => { return { ProductID: productID, ProjectRoomID: list.ID } })
-    //     } else {
-    //         console.log(selectedRoom, "selectedRoom")
-    //         newProduct = [{
-    //             ...product,
-    //             ProductID: productID,
-    //             ProjectRoomID: selectedRoom.ID
-    //         }]
-    //     }
-    // }
-
-    // delete newProduct.CategoryID
-    dispatch(handleAddProductForProject(newProduct))
-      .then
-      //   history.push(`/project/${project.ProjectNumber}/products`)
-      ();
+    dispatch(handleAddProductForProject(newProduct)).then((project) => {
+      dispatch(setSelectedProject(project));
+      setAddActionLoading(null);
+    });
   };
 
   const handleClose = () => {
@@ -238,8 +226,8 @@ const AddProduct = () => {
                   ? []
                   : project?.ProjectRooms?.length ===
                     ProductSelectedRoom?.length
-                    ? roomsOptions
-                    : roomsOptions.filter(
+                  ? roomsOptions
+                  : roomsOptions.filter(
                       (b) => ProductSelectedRoom.indexOf(b.ID) > -1
                     )
               }
@@ -387,12 +375,20 @@ const AddProduct = () => {
                         <i className={`far fa-heart`}></i>
                       </td>
                       <td>
-                        <Button
-                          className="add-product-btn"
-                          onClick={() => addProduct(product?.ID)}
-                        >
-                          Add
-                        </Button>
+                        {addActionLoading?.ID === product.ID ? (
+                          <Spinner
+                            size="sm"
+                            animation="border"
+                            variant="primary"
+                          />
+                        ) : (
+                          <Button
+                            className="add-product-btn"
+                            onClick={() => addProduct(product)}
+                          >
+                            Add
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))}

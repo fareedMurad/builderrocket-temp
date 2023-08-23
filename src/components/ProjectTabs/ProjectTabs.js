@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router';
-import { setSelectedProjectTab } from '../../actions/projectActions';
+import { getProjectByProjectID, setSelectedProjectTab } from '../../actions/projectActions';
 import { setSelectedProductTab } from '../../actions/productActions';
 import './ProjectTabs.scss';
 

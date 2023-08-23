@@ -134,7 +134,7 @@ const ProjectInformation = withSwal((props) => {
     setShowCustomerModal(bool);
   };
 
-  const saveChanges = () => {
+  const saveChanges = (goToNext=true) => {
     if (projectInformation?.StatusID === -1) {
       dispatch(deleteProject(project.ID)).then((result) => {
         if (result.success) {
@@ -157,7 +157,7 @@ const ProjectInformation = withSwal((props) => {
       dispatch(saveProject(projectInformation))
         .then(() => {
           setIsLoading(false);
-          dispatch(setSelectedProjectTab("documents"));
+          if(goToNext) dispatch(setSelectedProjectTab("documents"));
         })
         .catch(() => {
           setIsLoading(false);
@@ -185,7 +185,7 @@ const ProjectInformation = withSwal((props) => {
           window.scrollTo(0, 0);
           alert("Something went wrong creating project try again");
         });
-      dispatch(setSelectedProjectTab("documents"));
+        if(goToNext) dispatch(setSelectedProjectTab("documents"));
     }
   };
 
@@ -219,6 +219,12 @@ const ProjectInformation = withSwal((props) => {
       dispatch(saveProject(valueRef.current));
     };
   }, [dispatch]);
+
+
+  useEffect(() => {
+    if(project?.ID)
+    saveChanges(false);
+  }, [projectInformation?.CloseDate])
 
   const customerFullName = () => {
     let customerName = "";
@@ -323,6 +329,12 @@ const ProjectInformation = withSwal((props) => {
       </Modal>
     );
   };
+  console.log(projectInformation, 'INfo')
+  if(!projectInformation) {
+return (
+  <Spinner animation="border" variant="primary" />
+)
+  }
 
   return (
     <div className="d-flex project-information">
@@ -342,6 +354,7 @@ const ProjectInformation = withSwal((props) => {
                     ProjectName: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
             <div className="form-col pb-4">
@@ -366,6 +379,7 @@ const ProjectInformation = withSwal((props) => {
                     LotNumber: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
             <div className="form-col pb-4"></div>
@@ -377,6 +391,7 @@ const ProjectInformation = withSwal((props) => {
               <div className="row">
                 <div className="col-12 col-sm-4">
                   <Form.Label className="input-label">First Name</Form.Label>
+                  {console.log(projectInformation, 'Info')}
                   <Form.Control
                     // readOnly
                     className="input-gray"
@@ -399,6 +414,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -425,6 +441,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -452,6 +469,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
               </div>
@@ -480,6 +498,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -506,6 +525,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -534,6 +554,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
               </div>
@@ -569,6 +590,7 @@ const ProjectInformation = withSwal((props) => {
                       });
                     }}
                     value={projectInformation?.Customers?.[0]?.Email}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
                 <div className="col-12">
@@ -599,6 +621,7 @@ const ProjectInformation = withSwal((props) => {
                       });
                     }}
                     value={projectInformation?.Customers?.[1]?.Email}
+                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
                   />
                 </div>
               </div>
@@ -614,6 +637,7 @@ const ProjectInformation = withSwal((props) => {
                     PlanName: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
             <div className="form-col select pb-4">
@@ -682,6 +706,7 @@ const ProjectInformation = withSwal((props) => {
                     StreetAddress1: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
             <div className="form-col pb-4">
@@ -695,6 +720,7 @@ const ProjectInformation = withSwal((props) => {
                     StreetAddress2: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
             <div className="form-col pb-2">
@@ -708,6 +734,7 @@ const ProjectInformation = withSwal((props) => {
                     City: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
             <div className="form-col pb-4">
@@ -721,6 +748,7 @@ const ProjectInformation = withSwal((props) => {
                     State: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
             <div className="form-col pb-4">
@@ -734,6 +762,7 @@ const ProjectInformation = withSwal((props) => {
                     Zip: event.target.value,
                   })
                 }
+                onBlur={() => project?.ID  ? saveChanges(false) : {}}
               />
             </div>
 

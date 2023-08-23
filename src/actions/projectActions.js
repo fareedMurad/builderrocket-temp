@@ -350,7 +350,7 @@ export const handleProductForProject = (product) => dispatch => {
  * @returns 
  */
 export const handleAddProductForProject = (product) => dispatch => {
-    const URL = `/product`;
+    const URL = `/Project/projectproduct`;
 
     return api({
         method: 'POST',

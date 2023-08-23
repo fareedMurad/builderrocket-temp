@@ -126,7 +126,7 @@ const Documents = () => {
     setShowModal(false);
   };
 
-  const saveChanges = () => {
+  const saveChanges = (goToNext = true) => {
     setIsLoading(true);
 
     const documentsInfoFinal = {
@@ -140,7 +140,7 @@ const Documents = () => {
     dispatch(saveProject(documentsInfoFinal))
       .then(() => {
         setIsLoading(false);
-        dispatch(setSelectedProjectTab("utilities"));
+        if (goToNext) dispatch(setSelectedProjectTab("utilities"));
       })
       .catch(() => {
         setIsLoading(false);
@@ -151,6 +151,14 @@ const Documents = () => {
     // reference latest changes
     documentsRef.current = documentsInfo;
   }, [documentsInfo]);
+
+  useEffect(() => {
+    saveChanges(false);
+  }, [
+    documentsInfo?.PolicyExpirationDate,
+    documentsInfo?.PermitDate,
+    documentsInfo?.OccupencyDate,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -243,6 +251,7 @@ const Documents = () => {
                   })
                 }
               />
+              onBlur={() => saveChanges(false)}
             </div>
             <div className="form-col pb-2">
               <FileUpload
@@ -269,6 +278,7 @@ const Documents = () => {
                     SepticPermitNumber: event.target.value,
                   })
                 }
+                onBlur={() => saveChanges(false)}
               />
             </div>
             <div className="form-col pb-2">
@@ -307,6 +317,7 @@ const Documents = () => {
                   })
                 }
               />
+              onBlur={() => saveChanges(false)}
             </div>
             <div className="form-col pb-2">
               <Form.Label className="input-label">
@@ -321,6 +332,7 @@ const Documents = () => {
                     BuildingRiskPolicy: event.target.value,
                   })
                 }
+                onBlur={() => saveChanges(false)}
               />
             </div>
             <div className="form-col pb-2">
@@ -336,6 +348,7 @@ const Documents = () => {
                         Policy: event.target.value,
                       })
                     }
+                    onBlur={() => saveChanges(false)}
                   />
                 </div>
                 <div className="w-50">
@@ -373,6 +386,7 @@ const Documents = () => {
                     PurchasePolicyButton: event.target.value,
                   })
                 }
+                onBlur={() => saveChanges(false)}
               />
             </div>
             <div className="form-col pb-2"></div>

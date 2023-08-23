@@ -21,6 +21,7 @@ import {
 } from "../../actions/productActions";
 import {
   editProduct,
+  getProjectByProjectID,
   handleProductForProject,
   saveProject,
   setSelectedProject,
@@ -40,6 +41,7 @@ import { PRODUCT_SELECTED_ROOM } from "../../actions/types";
 import {
   deleteMyProductsForProject,
   getMyProductsForProject,
+  updateBuilderRoomProduct,
   updateMyProductsForProject,
 } from "../../actions/myProductActions";
 
@@ -81,6 +83,7 @@ const Products = (props) => {
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [selectedProductItem, setSelectedProductItem] = useState({});
   const [showCustomProducts, setShowCustomProducts] = useState(false);
+  const [showBuilderRooms, setShowBuilderRooms] = useState(false);
 
   const [productFilter, setProductFilter] = useState({
     rooms: [],
@@ -227,8 +230,9 @@ const Products = (props) => {
       {
         name: "Select All",
         value: "select_all",
+        selected: true,
       },
-      ...project?.ProjectRooms?.map((b) => {
+      ...getProjectRoomsConditionally()?.map((b) => {
         return {
           ...b,
           name: b.RoomName,
@@ -236,34 +240,26 @@ const Products = (props) => {
         };
       }),
     ];
-    if (project?.ProjectRooms?.length > 0 && productFilter.rooms.length === 0) {
-      let roomId = selectedRoom?.ID ?? project?.ProjectRooms[0].ID;
-      if (
-        project?.ProjectRooms.filter((p) => p.ID === roomId).length === 0 ||
-        !roomId
-      ) {
-        roomId = project?.ProjectRooms[0].ID;
-      }
-      let rooms = [roomId];
-      if (!roomId) {
-        rooms = [];
-      }
-      setProductFilter({ ...productFilter, rooms: rooms, pageNumber: 1 });
-      dispatch({ type: PRODUCT_SELECTED_ROOM, payload: rooms });
-    }
+    handleSelectedRoom(options.filter((p) => p.value !== "select_all"));
     setRoomsOptions(options);
 
     setRoomsDropdownLoading(false);
-  }, [project]);
+  }, [project, showBuilderRooms]);
 
   useEffect(() => {
-    const rooms = project?.ProjectRooms.filter(
-      (r) => productFilter.rooms.indexOf(r.ID) > -1
-    ).map((room, index) => {
-      return { ...room, isOpen: index === 0 };
-    });
+    const rooms = getProjectRoomsConditionally()
+      .filter((r) => productFilter.rooms.indexOf(r.ID) > -1)
+      .map((room, index) => {
+        return { ...room, isOpen: index === 0 };
+      });
     setSelectedRooms(rooms);
-  }, [project, productFilter]);
+  }, [project, productFilter, showBuilderRooms]);
+
+  const getProjectRoomsConditionally = () => {
+    return showBuilderRooms
+      ? project?.BuilderProjectRooms
+      : project?.ProjectRooms;
+  };
 
   useEffect(() => {
     if (myProductsByProject?.length) {
@@ -272,19 +268,28 @@ const Products = (props) => {
         "ProjectRoomID"
       );
 
-      const rooms = filtered?.map((mp, index) => {
-        const isFound = project?.ProjectRooms?.find((r) => r.ID === mp.ID);
+      // const rooms = filtered?.map((mp, index) => {
+      //   const isFound = getProjectRoomsConditionally()?.find(
+      //     (r) => r.ID === mp.ID
+      //   );
 
-        if (isFound) {
-          return {
-            ...isFound,
-            ...mp,
-            isOpen: index === 0,
-          };
-        } else return { ...mp, isOpen: index === 0 };
-      }).filter(
-        (r) => productFilter.rooms.indexOf(r.ID) > -1
-      )
+      //   if (isFound) {
+      //     return {
+      //       ...isFound,
+      //       ...mp,
+      //       isOpen: index === 0,
+      //     };
+      //   } else return { ...mp, isOpen: index === 0 };
+      // });
+      // .filter((r) => productFilter.rooms.indexOf(r.ID) > -1);
+
+      let rooms = {items: []};
+      filtered?.map((mp, index) => {
+        rooms = {
+          items: [...rooms.items, ...mp.Items],
+        };
+        return mp;
+      });
 
       setSelectedMyProductsRooms(rooms);
     }
@@ -331,10 +336,16 @@ const Products = (props) => {
   };
 
   const handleDeleteProduct = (product) => {
-    if (showCustomProducts) {
+    if (showCustomProducts || showBuilderRooms) {
       dispatch(deleteMyProductsForProject(selectedProductItem?.ID)).then(() => {
-        dispatch(getMyProductsForProject(project?.ID));
-        setShowModal(false);
+        if (showBuilderRooms) {
+          dispatch(getProjectByProjectID(project?.ID)).then(() => {
+            setShowModal(false);
+          });
+        } else
+          dispatch(getMyProductsForProject(project?.ID)).then(() => {
+            setShowModal(false);
+          });
       });
     } else {
       if (!product || !product.room?.ID) return;
@@ -389,6 +400,19 @@ const Products = (props) => {
           callback,
           templateItem
         );
+      } else if (showBuilderRooms) {
+        dispatch(
+          updateBuilderRoomProduct(
+            project?.ID,
+            templateItem?.ID,
+            RequiresApproval,
+            "RequiresApproval"
+          )
+        ).then(() => {
+          dispatch(getProjectByProjectID(project?.ID)).then(() => {
+            setIsRequiresApprovalLoading({ loading: false });
+          });
+        });
       } else {
         dispatch(
           updateRequiresApproval(
@@ -419,6 +443,19 @@ const Products = (props) => {
 
       if (showCustomProducts) {
         handleUpdateMyProductsForProject("Quantity", quantity, callback);
+      } else if (showBuilderRooms) {
+        dispatch(
+          updateBuilderRoomProduct(
+            project?.ID,
+            templateItem?.ID,
+            quantity,
+            "Quantity"
+          )
+        ).then(() => {
+          dispatch(getProjectByProjectID(project?.ID)).then(() => {
+            setIsQuantityLoading({ loading: false });
+          });
+        });
       } else {
         dispatch(updateQuantity(project?.ID, templateItem?.ID, quantity)).then(
           (project) => {
@@ -442,6 +479,17 @@ const Products = (props) => {
         callback,
         incomingItem
       );
+    } else if (showBuilderRooms) {
+      dispatch(
+        updateBuilderRoomProduct(
+          project?.ID,
+          incomingItem?.ID,
+          value,
+          "RoughInTrimOutEnum"
+        )
+      ).then(() => {
+        dispatch(getProjectByProjectID(project?.ID));
+      });
     } else {
       dispatch(RoughInTrimOutEnum(project?.ID, incomingItem?.ID, value)).then(
         () => {
@@ -621,6 +669,20 @@ const Products = (props) => {
 
     if (showCustomProducts) {
       handleUpdateMyProductsForProject("Notes", notes, callback);
+    } else if (showBuilderRooms) {
+      dispatch(
+        updateBuilderRoomProduct(
+          project?.ID,
+          selectedProductItem?.ID,
+          notes,
+          "Notes"
+        )
+      ).then(() => {
+        dispatch(getProjectByProjectID(project?.ID)).then(() => {
+          setIsNotesLoading(false);
+          cancelNotesModal();
+        });
+      });
     } else {
       dispatch(
         updateProjectProdcutNotes(project?.ID, selectedProductItem?.ID, notes)
@@ -641,12 +703,12 @@ const Products = (props) => {
       ProjectID: project?.ID,
       ProductID: product?.ProductID,
       ProjectRoomID: [product?.ProjectRoomID],
-      Quantity: product?.Quantity,
+      Quantity: Number(product?.Quantity),
       VendorID: product?.VendorID,
       IsApproved: product?.IsApproved,
       RequiresApproval: product?.RequiresApproval,
       DefaultRoomProductID: product?.DefaultRoomProductID,
-      RoughInTrimOut: product?.RoughInTrimOut,
+      RoughInTrimOut: product?.RoughInTrimOut ? "RoughIn" : "TrimOut",
       Notes: product?.Notes,
       [key]: value,
     };
@@ -705,6 +767,254 @@ const Products = (props) => {
     );
   };
 
+  const getProductImages = (product) => {
+    const images = [];
+   if(product?.ProductThumbnailURl)
+   images.push(product?.ProductThumbnailURl)
+    
+   if(product?.ThumbnailURL)
+   images.push(product?.ThumbnailURL)
+
+   if(product?.ImageURL)
+   images.push(product?.ImageURL)
+
+   return images
+  }
+
+  const renderTable = (items) => {
+    return (
+      <div className="products-table">
+        <Table responsive>
+          <thead>
+            <tr>
+              <th>Needs Approval</th>
+              <th>
+                <div className="d-flex justify-content-center">
+                  Product Name
+                </div>
+              </th>
+              {(productFilter?.rooms.length > 1  && !showCustomProducts)? (
+                <th>
+                  <div className="d-flex justify-content-center">Room</div>
+                </th>
+              ) : null}
+              <th>Description</th>
+              <th>Category</th>
+              <th>UOM</th>
+              <th className="radios">Rough In / Trim Out</th>
+              <th>Distributor</th>
+              <th>QTY</th>
+              <th>Price</th>
+              <th>Customer Approval</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {items?.map((templateItem, index) => {
+              const tempTemplateItem = templateItems?.[templateItem?.ID];
+
+              let requiresApproval = !!templateItem?.RequiresApproval;
+              let isRoughIn = templateItem?.RoughInTrimOutEnum === "RoughIn";
+              let isTrimOut = templateItem?.RoughInTrimOutEnum === "TrimOut";
+              let quantity = templateItem?.Quantity
+                ? templateItem?.Quantity
+                : 1;
+              let isFav = templateItem?.IsFavorite;
+
+              if (!isEmpty(tempTemplateItem)) {
+                quantity = tempTemplateItem.Quantity;
+                requiresApproval = tempTemplateItem.RequiresApproval;
+                isRoughIn = tempTemplateItem.RoughInTrimOutEnum === "RoughIn";
+                isTrimOut = tempTemplateItem.RoughInTrimOutEnum === "TrimOut";
+              }
+              return (
+                <tr key={index}>
+                  <td className="approval-checkbox">
+                    <div className="d-flex justify-content-center">
+                      <Form>
+                        {itemLoading(
+                          templateItem,
+                          isRequiresApprovalLoading
+                        ) ? (
+                          <Spinner animation="border" variant="primary" />
+                        ) : (
+                          <Form.Check
+                            type="checkbox"
+                            checked={templateItem?.RequiresApproval}
+                            disabled={
+                              isUndefined(templateItem?.RequiresApproval)
+                                ? true
+                                : false
+                            }
+                            onChange={() =>
+                              handleRequiresApproval(
+                                templateItem,
+                                !templateItem?.RequiresApproval
+                              )
+                            }
+                          />
+                        )}
+                      </Form>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="d-flex add-btn-templateItem">
+                      {(getProductImages(templateItem)?.length) ? (
+                        <CustomLightbox
+                          images={getProductImages(templateItem)}
+                        />
+                      ):null}
+                      <div>
+                        <Button
+                          variant="link"
+                          className="link-btn item-button"
+                          onClick={() => handleSelectedCategoryID(templateItem)}
+                        >
+                          {templateItem?.IsTemplate ? (
+                            <>
+                              <i className="fas fa-plus-circle plus-circle"></i>
+                              {templateItem?.AddLabel}
+                            </>
+                          ) : (
+                            <>{templateItem?.ProductName}</>
+                          )}
+                        </Button>
+
+                        {!templateItem?.IsTemplate && (
+                          <div className="model-number">
+                            Model: {templateItem?.ModelNumber}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  {(productFilter?.rooms.length > 1 && !showCustomProducts) ? (
+                    <td>{templateItem?.room?.RoomName}</td>
+                  ) : null}
+                  <td>{templateItem?.ShortDescription}</td>
+                  <td>{templateItem?.CategoryName}</td>
+                  <td>{templateItem?.UnitOfMeasure}</td>
+                  <td>
+                    {!templateItem?.IsTemplate && (
+                      <Form className="d-flex justify-content-center">
+                        <Form.Check
+                          type="radio"
+                          checked={isRoughIn}
+                          disabled={templateItem?.IsTemplate}
+                          onChange={() =>
+                            handleItems(
+                              templateItem,
+                              "RoughInTrimOutEnum",
+                              "RoughIn"
+                            )
+                          }
+                        />
+                        <Form.Check
+                          type="radio"
+                          checked={isTrimOut}
+                          disabled={templateItem?.IsTemplate}
+                          onChange={() =>
+                            handleItems(
+                              templateItem,
+                              "RoughInTrimOutEnum",
+                              "TrimOut"
+                            )
+                          }
+                        />
+                      </Form>
+                    )}
+                  </td>
+                  <td>
+                    {!templateItem?.IsTemplate && (
+                      <div className="distributor-select">
+                        <Form.Control as="select"></Form.Control>
+                      </div>
+                    )}
+                  </td>
+                  <td>
+                    {!templateItem?.IsTemplate && (
+                      <div className="qty-input">
+                        {itemLoading(templateItem, isQuantityLoading) ? (
+                          <Spinner animation="border" variant="primary" />
+                        ) : (
+                          <Form.Control
+                            min="0"
+                            type="text"
+                            id={`quantity-${templateItem?.ID}`}
+                            // disabled={!templateItem?.Quantity}
+                            defaultValue={templateItem?.Quantity}
+                            onBlur={(e) =>
+                              handleQuantity(templateItem, e.target.value)
+                            }
+                            onFocus={() => {
+                              setSelectedProductItem(templateItem);
+                            }}
+                          ></Form.Control>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                  <td>
+                    {templateItem?.Price || templateItem?.MSRP
+                      ? `$${templateItem?.Price || templateItem?.MSRP}`
+                      : ""}
+                  </td>
+                  <td>{renderApproval(templateItem)}</td>
+                  {!templateItem?.IsTemplate ? (
+                    <td
+                      className={`${templateItem?.Notes && "sticky-note-red"}`}
+                      onClick={() => handleOpenNotesModal(templateItem)}
+                    >
+                      {templateItem?.Notes ? (
+                        <OverlayTrigger
+                          placement="top"
+                          overlay={
+                            <Tooltip id="button-tooltip">
+                              {templateItem?.Notes}
+                            </Tooltip>
+                          }
+                          delay={{ show: 250, hide: 400 }}
+                        >
+                          <i className="far fa-sticky-note d-flex justify-content-center"></i>
+                        </OverlayTrigger>
+                      ) : (
+                        <i className="far fa-sticky-note d-flex justify-content-center"></i>
+                      )}
+                    </td>
+                  ) : (
+                    <td />
+                  )}
+                  <td>
+                    {!templateItem?.IsTemplate && (
+                      <div className="d-flex justify-content-between">
+                        <i className="fas fa-retweet"></i>
+                        <i
+                          className={`far ${
+                            isFav ? "text-danger fas fa-heart" : "fa-heart"
+                          }`}
+                          onClick={() =>
+                            !showCustomProducts
+                              ? handleIsFavorite(templateItem)
+                              : {}
+                          }
+                        ></i>
+                        <i
+                          className="far fa-trash-alt"
+                          onClick={() => handleOpenModal(templateItem)}
+                        ></i>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
+    );
+  };
+
   const handleRefresh = () => {};
 
   const showProducts = () => {
@@ -721,7 +1031,7 @@ const Products = (props) => {
   };
 
   const onRemove = (selectedList, removedItem) => {};
-
+  console.log(showCustomProducts, selectedMyProductsRooms, "roomsOptions");
   return (
     <div className="d-flex products">
       <div className="products-container">
@@ -770,20 +1080,40 @@ const Products = (props) => {
           ) : (
             <>
               <div className="input-label mt-2 ml-3 mb-2">Selected Rooms</div>
-              <div className="mx-2">
+              <div className="mx-2 position-relative">
+                <span>
+                  {roomsOptions?.find((r) => r.value === "select_all")?.selected
+                    ? DrawDropdownSelection({
+                        items: getProjectRoomsConditionally(),
+                        selectedIds: productFilter?.rooms,
+                        nameProp: "Name",
+                        type: "room",
+                        styles: {
+                          position: "absolute",
+                          top: "8px",
+                          left: "8px",
+                        },
+                      })
+                    : null}
+                </span>
                 <Multiselect
                   tags
+                  showArrow
                   className="tags-dropdown readonly_ms"
                   // disable={true}
                   placeholder=""
                   showCheckbox={true}
                   keepSearchTerm={false}
                   hidePlaceholder={true}
+                  hideSelectedList={
+                    roomsOptions?.find((r) => r.value === "select_all")
+                      ?.selected
+                  }
                   options={roomsOptions} // Options to display in the dropdown
                   selectedValues={
                     !productFilter?.rooms
                       ? []
-                      : project?.ProjectRooms?.length ===
+                      : getProjectRoomsConditionally()?.length ===
                         productFilter?.rooms?.length
                       ? roomsOptions
                       : roomsOptions.filter(
@@ -796,12 +1126,20 @@ const Products = (props) => {
                       handleSelectedRoom(
                         roomsOptions.filter((p) => p.value !== "select_all")
                       );
-                    } else
+                      setRoomsOptions(
+                        roomsOptions.map((r) =>
+                          r.value === "select_all"
+                            ? { ...r, selected: !r.selected }
+                            : r
+                        )
+                      );
+                    } else {
                       handleSelectedRoom(
                         arr.sort((a, b) =>
                           a.name < b.name ? -1 : a.name > b.name ? 1 : 0
                         )
                       );
+                    }
                   }}
                   onRemove={(arr, target) => {
                     let rooms = arr
@@ -811,6 +1149,13 @@ const Products = (props) => {
                       );
                     if (target.value === "select_all") {
                       rooms = [];
+                      setRoomsOptions(
+                        roomsOptions.map((r) =>
+                          r.value === "select_all"
+                            ? { ...r, selected: false }
+                            : r
+                        )
+                      );
                     }
                     handleSelectedRoom(rooms);
                   }}
@@ -835,14 +1180,14 @@ const Products = (props) => {
                                     </div> :
                                 <>
                                     <span>
-                                    {DrawDropdownSelection({items: project?.ProjectRooms, selectedIds:  productFilter?.rooms, nameProp: "RoomName", type: "room"})}
+                                    {DrawDropdownSelection({items: getProjectRoomsConditionally(), selectedIds:  productFilter?.rooms, nameProp: "RoomName", type: "room"})}
                                     </span>
 
                                     <Multiselect
                                         options={
                                             roomsOptions?.length > 0 ? roomsOptions : []}
                                         selectedValues={!productFilter?.rooms ? [] : (
-                                            project?.ProjectRooms?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
+                                            getProjectRoomsConditionally()?.length === productFilter?.rooms?.length ? roomsOptions : roomsOptions.filter(b => productFilter?.rooms.indexOf(b.ID) > -1)
                                         )}
                                         onSelect={(arr, current) => {
                                             if (current.value === 'select_all') {
@@ -1069,8 +1414,26 @@ const Products = (props) => {
               <Form.Check
                 type="checkbox"
                 checked={showCustomProducts}
-                onChange={() => setShowCustomProducts(!showCustomProducts)}
+                onChange={() => { 
+                  if(showBuilderRooms && !showCustomProducts) {
+                    setShowBuilderRooms(false);
+                  }
+                  setShowCustomProducts(!showCustomProducts)
+                }}
                 label={`Show Custom Products`}
+              />
+            </div>
+            <div className="d-flex align-items-center pt-2 ml-3">
+              <Form.Check
+                type="checkbox"
+                checked={showBuilderRooms}
+                onChange={() => {
+                  if(showCustomProducts && !showBuilderRooms) {
+                    setShowCustomProducts(false);
+                  }
+                  setShowBuilderRooms(!showBuilderRooms)
+                }}
+                label={`Show Builder Rooms`}
               />
             </div>
           </div>
@@ -1079,8 +1442,8 @@ const Products = (props) => {
         {deleteModal()}
 
         {saveNotesModal()}
-        {(showCustomProducts ? selectedMyProductsRooms : selectedRooms).map(
-          (data, roomIndex) => {
+        {!showCustomProducts ? (
+          selectedRooms.map((data, roomIndex) => {
             let { Items, ...room } = data;
             let items = FilterItems({
               productFilter,
@@ -1114,296 +1477,37 @@ const Products = (props) => {
                 }}
                 render={({ toggle, setCollapsibleElement }) => (
                   <Card className="ml-4 my-3 mr-2 accordion">
-                    <Card.Header className="pointer" onClick={toggle}>
+                    <Card.Header
+                      className="pointer d-flex justify-content-between"
+                      onClick={toggle}
+                    >
                       {room.RoomName}{" "}
-                      <i
-                        className={`far float-right mt-1 ${
-                          room.isOpen
-                            ? "fa-chevron-double-up"
-                            : "fa-chevron-double-down"
-                        }`}
-                      ></i>
+                      <div className="d-flex">
+                        <span className="mx-2">
+                          Room Type: <b>{room.RoomTypeName}</b>
+                        </span>
+                        <i
+                          className={`far float-right mt-1 ${
+                            room.isOpen
+                              ? "fa-chevron-double-up"
+                              : "fa-chevron-double-down"
+                          }`}
+                        ></i>
+                      </div>
                     </Card.Header>
                     <Card.Body
                       id={"room-" + room.ID}
                       ref={setCollapsibleElement}
                     >
-                      <div className="products-table">
-                        <Table responsive>
-                          <thead>
-                            <tr>
-                              <th>Needs Approval</th>
-                              <th>
-                                <div className="d-flex justify-content-center">
-                                  Product Name
-                                </div>
-                              </th>
-                              {productFilter?.rooms.length > 1 ? (
-                                <th>
-                                  <div className="d-flex justify-content-center">
-                                    Room
-                                  </div>
-                                </th>
-                              ) : null}
-                              <th>Description</th>
-                              <th>Category</th>
-                              <th>UOM</th>
-                              <th className="radios">Rough In / Trim Out</th>
-                              <th>Distributor</th>
-                              <th>QTY</th>
-                              <th>Price</th>
-                              <th>Customer Approval</th>
-                              <th>Notes</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {items?.map((templateItem, index) => {
-                              const tempTemplateItem =
-                                templateItems?.[templateItem?.ID];
-
-                              let requiresApproval =
-                                !!templateItem?.RequiresApproval;
-                              let isRoughIn =
-                                templateItem?.RoughInTrimOutEnum === "RoughIn";
-                              let isTrimOut =
-                                templateItem?.RoughInTrimOutEnum === "TrimOut";
-                              let quantity = templateItem?.Quantity
-                                ? templateItem?.Quantity
-                                : 1;
-                              let isFav = templateItem?.IsFavorite;
-
-                              if (!isEmpty(tempTemplateItem)) {
-                                quantity = tempTemplateItem.Quantity;
-                                requiresApproval =
-                                  tempTemplateItem.RequiresApproval;
-                                isRoughIn =
-                                  tempTemplateItem.RoughInTrimOutEnum ===
-                                  "RoughIn";
-                                isTrimOut =
-                                  tempTemplateItem.RoughInTrimOutEnum ===
-                                  "TrimOut";
-                              }
-                              return (
-                                <tr key={index}>
-                                  <td className="approval-checkbox">
-                                    <div className="d-flex justify-content-center">
-                                      <Form>
-                                        {itemLoading(
-                                          templateItem,
-                                          isRequiresApprovalLoading
-                                        ) ? (
-                                          <Spinner
-                                            animation="border"
-                                            variant="primary"
-                                          />
-                                        ) : (
-                                          <Form.Check
-                                            type="checkbox"
-                                            checked={
-                                              templateItem?.RequiresApproval
-                                            }
-                                            disabled={
-                                              isUndefined(
-                                                templateItem?.RequiresApproval
-                                              )
-                                                ? true
-                                                : false
-                                            }
-                                            onChange={() =>
-                                              handleRequiresApproval(
-                                                templateItem,
-                                                !templateItem?.RequiresApproval
-                                              )
-                                            }
-                                          />
-                                        )}
-                                      </Form>
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div className="d-flex add-btn-templateItem">
-                                      {templateItem?.ProductThumbnailURl && (
-                                        <CustomLightbox
-                                          images={[
-                                            templateItem?.ProductThumbnailURl,
-                                          ]}
-                                        />
-                                      )}
-                                      <div>
-                                        <Button
-                                          variant="link"
-                                          className="link-btn item-button"
-                                          onClick={() =>
-                                            handleSelectedCategoryID(
-                                              templateItem
-                                            )
-                                          }
-                                        >
-                                          {templateItem?.IsTemplate ? (
-                                            <>
-                                              <i className="fas fa-plus-circle plus-circle"></i>
-                                              {templateItem?.AddLabel}
-                                            </>
-                                          ) : (
-                                            <>{templateItem?.ProductName}</>
-                                          )}
-                                        </Button>
-
-                                        {!templateItem?.IsTemplate && (
-                                          <div className="model-number">
-                                            Model: {templateItem?.ModelNumber}
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </td>
-                                  {productFilter?.rooms.length > 1 ? (
-                                    <td>{templateItem?.room?.RoomName}</td>
-                                  ) : null}
-                                  <td>{templateItem?.ShortDescription}</td>
-                                  <td>{templateItem?.CategoryName}</td>
-                                  <td>{templateItem?.UnitOfMeasure}</td>
-                                  <td>
-                                    {!templateItem?.IsTemplate && (
-                                      <Form className="d-flex justify-content-center">
-                                        <Form.Check
-                                          type="radio"
-                                          checked={isRoughIn}
-                                          disabled={templateItem?.IsTemplate}
-                                          onChange={() =>
-                                            handleItems(
-                                              templateItem,
-                                              "RoughInTrimOutEnum",
-                                              "RoughIn"
-                                            )
-                                          }
-                                        />
-                                        <Form.Check
-                                          type="radio"
-                                          checked={isTrimOut}
-                                          disabled={templateItem?.IsTemplate}
-                                          onChange={() =>
-                                            handleItems(
-                                              templateItem,
-                                              "RoughInTrimOutEnum",
-                                              "TrimOut"
-                                            )
-                                          }
-                                        />
-                                      </Form>
-                                    )}
-                                  </td>
-                                  <td>
-                                    {!templateItem?.IsTemplate && (
-                                      <div className="distributor-select">
-                                        <Form.Control as="select"></Form.Control>
-                                      </div>
-                                    )}
-                                  </td>
-                                  <td>
-                                    {!templateItem?.IsTemplate && (
-                                      <div className="qty-input">
-                                        {itemLoading(
-                                          templateItem,
-                                          isQuantityLoading
-                                        ) ? (
-                                          <Spinner
-                                            animation="border"
-                                            variant="primary"
-                                          />
-                                        ) : (
-                                          <Form.Control
-                                            min="0"
-                                            type="text"
-                                            id={`quantity-${templateItem?.ID}`}
-                                            // disabled={!templateItem?.Quantity}
-                                            defaultValue={
-                                              templateItem?.Quantity
-                                            }
-                                            onBlur={(e) =>
-                                              handleQuantity(
-                                                templateItem,
-                                                e.target.value
-                                              )
-                                            }
-                                            onFocus={() => {
-                                              setSelectedProductItem(
-                                                templateItem
-                                              );
-                                            }}
-                                          ></Form.Control>
-                                        )}
-                                      </div>
-                                    )}
-                                  </td>
-                                  <td>
-                                    {(templateItem?.Price || templateItem?.MSRP) ? `$${templateItem?.Price || templateItem?.MSRP}`:""}
-                                  </td>
-                                  <td>{renderApproval(templateItem)}</td>
-                                  {!templateItem?.IsTemplate ? (
-                                    <td
-                                      className={`${
-                                        templateItem?.Notes && "sticky-note-red"
-                                      }`}
-                                      onClick={() =>
-                                        handleOpenNotesModal(templateItem)
-                                      }
-                                    >
-                                      {templateItem?.Notes ? (
-                                        <OverlayTrigger
-                                          placement="top"
-                                          overlay={
-                                            <Tooltip id="button-tooltip">
-                                              {templateItem?.Notes}
-                                            </Tooltip>
-                                          }
-                                          delay={{ show: 250, hide: 400 }}
-                                        >
-                                          <i className="far fa-sticky-note d-flex justify-content-center"></i>
-                                        </OverlayTrigger>
-                                      ) : (
-                                        <i className="far fa-sticky-note d-flex justify-content-center"></i>
-                                      )}
-                                    </td>
-                                  ) : (
-                                    <td />
-                                  )}
-                                  <td>
-                                    {!templateItem?.IsTemplate && (
-                                      <div className="d-flex justify-content-between">
-                                        <i className="fas fa-retweet"></i>
-                                        <i
-                                          className={`far ${
-                                            isFav
-                                              ? "text-danger fas fa-heart"
-                                              : "fa-heart"
-                                          }`}
-                                          onClick={() =>
-                                            !showCustomProducts ? handleIsFavorite(templateItem) : {}
-                                          }
-                                        ></i>
-                                        <i
-                                          className="far fa-trash-alt"
-                                          onClick={() =>
-                                            handleOpenModal(templateItem)
-                                          }
-                                        ></i>
-                                      </div>
-                                    )}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </Table>
-                      </div>
+                      {renderTable(items)}
                     </Card.Body>
                   </Card>
                 )}
               />
             );
-          }
+          })
+        ) : (
+          <div>{renderTable(selectedMyProductsRooms?.items)}</div>
         )}
 
         <div className="d-flex justify-content-center pt-5">
@@ -1466,6 +1570,7 @@ export const DrawDropdownSelection = ({
   selectedIds,
   nameProp,
   type,
+  styles = {},
 }) => {
   const selectedLength = selectedIds?.length;
   const types = {
@@ -1485,7 +1590,7 @@ export const DrawDropdownSelection = ({
   }
 
   return (
-    <span className="custom-placeholder">
+    <span className="custom-placeholder" style={styles}>
       {name?.replaceAll("&nbsp;", "")?.trim()}
     </span>
   );

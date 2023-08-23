@@ -99,3 +99,29 @@ export const renameDocument = (documentID, documentNameObj) => dispatch => {
 
     });
 }
+
+/**
+ * 
+ * @param {*} documentNameObj - Object of document
+ *  
+ */
+export const updateDocument = (documentNameObj) => dispatch => {    
+    const URL = `/Document`;
+
+    return api({
+        method: 'PUT',
+        url: URL,
+        data: documentNameObj
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            return response.data;
+        }
+
+        return;
+    })
+    .catch((error) => {
+
+    });
+}
+
