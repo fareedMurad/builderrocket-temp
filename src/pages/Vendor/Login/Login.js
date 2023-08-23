@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Button, Form, Spinner } from "react-bootstrap";
-import { loginEmailPassword } from "../../../actions/customerActions";
+import { loginEmailPassword } from "../../../actions/vendorActions";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 import { Link } from "react-router-dom";
@@ -11,7 +11,6 @@ const Login = (props) => {
   const { history } = props;
 
   const dispatch = useDispatch();
-  let inviteID = useSelector((state) => state.customer.inviteID);
 
   const [login, setLogin] = useState({});
   const [error, setError] = useState("");
@@ -33,7 +32,7 @@ const Login = (props) => {
         (response) => {
           setIsLoading(false);
           if (response) {
-            history.push("/customer/project/documents");
+            history.push("/vendor/products");
           } else {
             setError("Please Enter valid email or password!");
           }
@@ -54,7 +53,7 @@ const Login = (props) => {
   return (
     <Row className="justify-content-center pt-5">
       <Col sm={10} md={6} lg={6} xl={4}>
-        <h2>Customer Login</h2>
+        <h2>Vendor Login</h2>
         <br />
         <Form>
           <Form.Group>
@@ -87,7 +86,7 @@ const Login = (props) => {
               Create a new account{" "}
               <Link
                 className="d-inline ml-1"
-                to={`/customer/signup/${inviteID}`}
+                to={`/vendor/singup`}
               >
                 Sign Up
               </Link>

@@ -34,7 +34,9 @@ const Header = ({ expanded, setExpanded }) => {
   );
   const [showTabLinks, setShowTabLinks] = useState(false);
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);
+
   const [isopen , setIsOpen] = useState(false)
+  const isVendorSignedIn = useSelector((state) => state.vendor?.isSignedIn);
 
   useEffect(() => {
     if (history?.location?.pathname?.includes?.("/project/")) {
@@ -244,13 +246,12 @@ const Header = ({ expanded, setExpanded }) => {
                 </Nav.Link>
               </>
             )}
-            
-            {!isSignedIn && isCustomerSignedIn && (
+            {!isSignedIn && (isCustomerSignedIn || isVendorSignedIn) && (
               <Nav.Link className="item" onClick={handleLogout}>
                 <i className="far fa-sign-out-alt"></i>
               </Nav.Link>
             )}
-            {!isSignedIn && !isCustomerSignedIn && !customerPortal && (
+            {!isSignedIn && !isCustomerSignedIn && !customerPortal && !isVendorSignedIn && (
               <div className="d-flex gap-2">
                 <Button onClick={() => history.push("/signup")}>Sign Up</Button>
                 <Button onClick={() => history.push("/login")}>Login</Button>
