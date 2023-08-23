@@ -344,7 +344,7 @@ const ContractorTable = ({
                                                         placement='top'
                                                         overlay={
                                                             <Tooltip id='button-tooltip'>
-                                                                {contractor?.Notes}
+                                                                {contractor?.Notes ? contractor?.Notes : "No Notes"}
                                                             </Tooltip>
                                                         }
                                                         delay={{ show: 250, hide: 400 }}

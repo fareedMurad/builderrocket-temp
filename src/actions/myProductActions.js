@@ -171,6 +171,33 @@ export const updateMyProductsForProject = (params) => dispatch => {
 
 }
 
+
+export const updateBuilderRoomProduct = (projectId, productId, value, field) => dispatch => {
+    const URL = `/builder-product/${projectId}/Product/${productId}`;
+
+    const data = [{
+            op:"replace",
+            path: `/${field}`,
+            value: value
+    }]
+
+    return api({
+        method: 'PATCH',
+        url: URL,
+        data:data
+    })
+    .then((response) => {
+        if (response?.status === 200) {
+            return response.data;
+        }
+    })
+    .catch((error) => {
+        if (error?.response?.status === 401) 
+            dispatch({ type: LOGOUT });
+    })
+
+}
+
 export const deleteMyProductsForProject = (ID) => dispatch => {
     const URL = `/builder-product/projectproduct/${ID}`;
 

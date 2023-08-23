@@ -19,7 +19,7 @@ import NavSubheader from "../NavSubheader";
 import "react-bootstrap-accordion/dist/index.css";
 import { Accordion } from "react-bootstrap-accordion";
 import Logo from "../../assets/images/builder-rocket-logo.png";
-
+import Megaphone from "../Megaphone ";
 const Header = ({ expanded, setExpanded }) => {
   const history = useHistory();
   const location = useLocation();
@@ -34,6 +34,8 @@ const Header = ({ expanded, setExpanded }) => {
   );
   const [showTabLinks, setShowTabLinks] = useState(false);
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);
+
+  const [isopen , setIsOpen] = useState(false)
   const isVendorSignedIn = useSelector((state) => state.vendor?.isSignedIn);
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const Header = ({ expanded, setExpanded }) => {
       history.push("/login");
     });
   };
-
+ 
   const title = user?.FirstName
     ? `${user?.FirstName} ${user?.LastName}`
     : user?.Company;
@@ -192,6 +194,7 @@ const Header = ({ expanded, setExpanded }) => {
         <Navbar.Brand href="/" className="brand">
           <img src={Logo} alt="builder rocket" height="45" width="100" />
         </Navbar.Brand>
+       
         {isSignedIn && (
           <div className="profile-dropdown">
             <OverlayTrigger
@@ -227,6 +230,9 @@ const Header = ({ expanded, setExpanded }) => {
                 <Nav.Link className="item">
                   <i className="far fa-cog"></i>
                 </Nav.Link>
+                <Nav.Link className="item">
+                  <i className="far fa-bullhorn" onClick={()=>setIsOpen(true)}></i>
+                </Nav.Link>
                 {user?.FirstName ? (
                   <Navbar.Text className="item">
                     {user?.FirstName} {user?.LastName}
@@ -234,6 +240,7 @@ const Header = ({ expanded, setExpanded }) => {
                 ) : (
                   <Navbar.Text className="item">{user?.Company}</Navbar.Text>
                 )}
+                
                 <Nav.Link className="item" onClick={handleLogout}>
                   <i className="far fa-sign-out-alt"></i>
                 </Nav.Link>
@@ -250,11 +257,18 @@ const Header = ({ expanded, setExpanded }) => {
                 <Button onClick={() => history.push("/login")}>Login</Button>
               </div>
             )}
+            
           </Nav>
         </Navbar.Collapse>
       </Navbar>
 
       {isSignedIn && !isCustomerSignedIn && <NavSubheader />}
+      {isopen && (
+                <Megaphone
+                    show={isopen}
+                    handleClose={() => setIsOpen(false)}
+                />
+            )}
     </>
   );
 };
