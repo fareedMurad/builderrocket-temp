@@ -176,7 +176,7 @@ const Reports = (props) => {
                         </div>
                         <div className="d-flex align-items-center">
                             <span>Group By:</span>
-                            <div className="layout-select">
+                            <div className="layout-select" style={{zIndex: 9999}}>
                                 <Select
                                     options={LayoutOptions}
                                     value={layout}

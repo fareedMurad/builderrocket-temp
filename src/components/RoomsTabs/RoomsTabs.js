@@ -47,15 +47,15 @@ const RoomsTabs = (props) => {
         onSelect={(tab) => handleSelectedTab(tab)}
         transition={false}
       >
-        <Tab eventKey="roomTypes" title="Room Types">
+        <Tab eventKey="roomTypes" title="Group Types">
           {selectedTab === "roomTypes" && (
             <RoomsTypes />
           )}
         </Tab>
-        <Tab eventKey="groups" title="Groups">
+        <Tab eventKey="groups" title="Templates">
           {selectedTab === "groups" && <RoomGroups />}
         </Tab>
-        <Tab eventKey="groupDetails" title="Manage Products" disabled={!builderSelectedRoomGroup}>
+        <Tab eventKey="groupDetails" title="Template Details" disabled={!builderSelectedRoomGroup?.ID}>
           {selectedTab === "groupDetails" && <RoomGroupDetails />}
         </Tab>
       </Tabs>

@@ -16,9 +16,6 @@ const ReportHeader = ({ hideTotals }) => {
         2: 'Completed',
         3: 'Closed'
     }
-
-
-
     return (
         <div className='report-header p-2'>
             <div className='d-flex justify-content-between flex-wrap'>

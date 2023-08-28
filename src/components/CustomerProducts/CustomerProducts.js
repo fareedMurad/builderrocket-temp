@@ -157,17 +157,17 @@ const CustomerProducts = (props) => {
           <div></div>
           <div className="d-flex justify-content-between">
             <button
-              class="bg-success text-light mr-1 border-0 rounded px-2 py-1 fs-1"
+              className="bg-success text-light mr-1 border-0 rounded px-2 py-1 fs-1"
               onClick={() => setConfirmApproveModal(true)}
             >
-              <i class="fas fa-check-double"></i> Approve All
+              <i className="fas fa-check-double"></i> Approve All
             </button>
 
             <button
-              class="bg-danger text-light border-0 rounded px-2 py-1 fs-1"
+              className="bg-danger text-light border-0 rounded px-2 py-1 fs-1"
               onClick={() => setConfirmRejectModal(true)}
             >
-              <i class="fas fa-times"></i> Reject All
+              <i className="fas fa-times"></i> Reject All
             </button>
           </div>
         </div>
@@ -219,7 +219,7 @@ const CustomerProducts = (props) => {
                             className="mr-2"
                           />
                         )}
-                        <div class="pl-1">
+                        <div className="pl-1">
                           {Product?.ProductName}
                           {!Product?.IsTemplate && (
                             <div className="model-number">
@@ -270,17 +270,17 @@ const CustomerProducts = (props) => {
                     <td>
                       <div className="d-flex ">
                         <button
-                          class="bg-success text-light mr-1 border-0 rounded py-2"
+                          className="bg-success text-light mr-1 border-0 rounded py-2"
                           onClick={() => approvalSingle(templateItem.ID, Product?.ID, templateItem?.IsCustomProduct, 1)}
                         >
-                          <i class="fas fa-check-double"></i> Approve
+                          <i className="fas fa-check-double"></i> Approve
                         </button>
 
                         <button
-                          class="bg-danger text-light border-0 rounded py-2"
+                          className="bg-danger text-light border-0 rounded py-2"
                             onClick={() => approvalSingle(templateItem.ID, Product?.ID, templateItem?.IsCustomProduct, 2)}
                         >
-                          <i class="fas fa-times"></i> Reject
+                          <i className="fas fa-times"></i> Reject
                         </button>
                       </div>
                     </td>

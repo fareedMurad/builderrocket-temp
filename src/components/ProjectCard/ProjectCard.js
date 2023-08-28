@@ -5,18 +5,20 @@ import Utils from "../../utils";
 import "./ProjectCard.scss";
 import toast from "react-hot-toast";
 import Toaster from "react-hot-toast";
+import { Spinner } from "react-bootstrap";
 
 const ProjectCard = (props) => {
-  const { project, history, isCustomer } = props;
+  const { project, history, isCustomer, handlePinChanged, pinLoader } = props;
 
   const dispatch = useDispatch();
 
   const goToProject = () => {
     dispatch(getProjectByProjectID(project?.ID))
       .then((response) => {
-        if(isCustomer)
-        history.push(`/customer/project/${response?.ID}/projectInformation`);
-        else history.push(`/project/${project?.ProjectNumber}/projectInformation`);
+        if (isCustomer)
+          history.push(`/customer/project/${response?.ID}/projectInformation`);
+        else
+          history.push(`/project/${project?.ProjectNumber}/projectInformation`);
       })
       .catch((response) => {
         alert("Error! Can't load the project");
@@ -35,8 +37,25 @@ const ProjectCard = (props) => {
       }}
     >
       <div className="card-container">
-        <Toaster position="top-center" />
         <div className="top-section">
+          <div className="pr-2 float-right">
+            {pinLoader.includes(project.ID) ? (
+              <Spinner size="sm" animation="border" variant="primary" />
+            ) : (
+              <i
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  await handlePinChanged();
+                }}
+                class={`fa fa-thumb-tack text-2xl  ${
+                  project?.IsPinned ? "text-danger" : ""
+                }`}
+                style={{ paddingTop: "12px" }}
+                aria-hidden="true"
+              ></i>
+            )}
+          </div>
           {(project?.ProjectNumber || project?.Status) && (
             <div className="lot-number">
               {project?.ProjectNumber}

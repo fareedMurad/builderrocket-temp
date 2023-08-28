@@ -297,7 +297,7 @@ export const createRoomGroupCategoryProduct = (GroupID, TemplateID, ProductID) =
   const URL = `/builder/adddefaultroomproductbyproductid/${GroupID}/${TemplateID}/${ProductID}`;
   return api({
     method: "POST",
-    url: URL
+    url: URL,
   })
     .then((response) => {
       if (response?.status === 200) {

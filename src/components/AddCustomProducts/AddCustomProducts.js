@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-  setProductDetail,
-} from "../../actions/productActions";
-import {
-  handleAddMyProductToProject,
-} from "../../actions/myProductActions";
+import { setProductDetail } from "../../actions/productActions";
+import { handleAddMyProductToProject } from "../../actions/myProductActions";
 import { Button, Form, Table, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../assets/images/img-placeholder.png";
@@ -14,14 +10,18 @@ import { useHistory } from "react-router";
 import CustomLightbox from "../Lightbox";
 
 import { getMyProducts } from "../../actions/myProductActions";
-import ProjectPlaceholder from '../../assets/images/img-placeholder.png';
+import ProjectPlaceholder from "../../assets/images/img-placeholder.png";
+import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProductConfirmationModal";
 
 const AddCustomProducts = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const products = useSelector(state => state.myProduct.myProducts);
+  const products = useSelector((state) => state.myProduct.myProducts);
   const project = useSelector((state) => state.project.project);
+  const [addActionLoading, setAddActionLoading] = useState();
+  const [addProductModal, setAddProductModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const ProductSelectedRoom = useSelector(
     (state) => state.room.ProductSelectedRoom
@@ -30,32 +30,33 @@ const AddCustomProducts = () => {
 
   useEffect(() => {
     dispatch(getMyProducts()).then(() => {
-      setIsLoading(false)
+      setIsLoading(false);
     });
   }, [dispatch]);
 
-
-
-  const addProduct = (product) => {
+  const addProduct = (values) => {
+    const product = selectedProduct;
     if (!product.ID || !ProductSelectedRoom.length) return;
 
+    setAddActionLoading(product);
     let newProduct = {
-        "ProjectID": project.ID,
-        "ProjectRoomID": [...ProductSelectedRoom],
-        "ProductID": product.ID,
-        "Quantity": 0,
-        "VendorID": 0,
-        "IsApproved": product?.StatusID === 1,
-        "RequiresApproval": true,
-        "DefaultRoomProductID": 0,
-        "RoughInTrimOut": 0,
-        "Notes": ""
+      ProjectID: project.ID,
+      ProjectRoomID: [...values?.roomIDs],
+      ProductID: product.ID,
+      Quantity: 0,
+      VendorID: 0,
+      IsApproved: product?.StatusID === 1,
+      RequiresApproval: values.RequiresApproval,
+      DefaultRoomProductID: 0,
+      RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn" ? 1 : 2,
+      Notes: "",
     };
 
-    dispatch(handleAddMyProductToProject(newProduct))
-      .then(() => {
-        //   history.push(`/project/${project.ProjectNumber}/products`)
-      });
+    dispatch(handleAddMyProductToProject(newProduct)).then(() => {
+      setAddProductModal(false);
+      setAddActionLoading(null);
+      //   history.push(`/project/${project.ProjectNumber}/products`)
+    });
   };
 
   const handleSelectedProductDetails = (productDetail) => {
@@ -82,9 +83,7 @@ const AddCustomProducts = () => {
               Go Back
             </Button>
           </div>
-          <div className="page-title pl-2">
-           / Add Custom Products
-          </div>
+          <div className="page-title pl-2">/ Add Custom Products</div>
         </div>
       </div>
 
@@ -111,25 +110,29 @@ const AddCustomProducts = () => {
                 {products?.Products?.slice(0, 25)?.map((product, index) => (
                   <tr key={index}>
                     <td>
-                      {!product?.ThumbnailURL ?
+                      {!product?.ThumbnailURL ? (
                         <img
-                          width='50'
-                          alt='my product'
-                          className='mr-2'
+                          width="50"
+                          alt="my product"
+                          className="mr-2"
                           src={ProjectPlaceholder}
                         />
-                        :
-                        <CustomLightbox images={product?.ImageURL ? [product?.ImageURL, product?.ThumbnailURL] : [product?.ThumbnailURL]} />
-                      }
+                      ) : (
+                        <CustomLightbox
+                          images={
+                            product?.ImageURL
+                              ? [product?.ImageURL, product?.ThumbnailURL]
+                              : [product?.ThumbnailURL]
+                          }
+                        />
+                      )}
                     </td>
                     <td>
                       <div className="add-btn-product-details">
                         <Button
                           variant="link"
                           className="link-btn item-button"
-                          onClick={() =>
-                            handleSelectedProductDetails(product)
-                          }
+                          onClick={() => handleSelectedProductDetails(product)}
                         >
                           {product?.ProductName}
                         </Button>
@@ -152,12 +155,23 @@ const AddCustomProducts = () => {
                     </td>
                     <td>${product?.MSRP}</td>
                     <td>
-                      <Button
-                        className="add-product-btn"
-                        onClick={() => addProduct(product)}
-                      >
-                        Add
-                      </Button>
+                      {addActionLoading?.ID === product.ID ? (
+                        <Spinner
+                          size="sm"
+                          animation="border"
+                          variant="primary"
+                        />
+                      ) : (
+                        <Button
+                          className="add-product-btn"
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setAddProductModal(true);
+                          }}
+                        >
+                          Add
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -166,6 +180,12 @@ const AddCustomProducts = () => {
           )}
         </div>
       </div>
+      <AddProductConfirmationModal
+        show={addProductModal}
+        handleClose={() => setAddProductModal(false)}
+        isShowRooms
+        handleAdd={(values) => addProduct(values)}
+      />
     </div>
   );
 };
