@@ -102,7 +102,7 @@ const PhotosTab = () => {
                 return (
                   <div className='item' key={list.ID}>
                     <Button className='btn cut-btn' ref={ref} variant='' onClick={(e) => handlerDelete(list.ID, e)}>
-                      <i class="far fa-trash-alt" aria-hidden="true"></i>
+                      <i className="far fa-trash-alt" aria-hidden="true"></i>
                     </Button>
                     <img src={list.URL} alt={list.FileName} />
                   </div>

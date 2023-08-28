@@ -1,151 +1,218 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Container, Form, FormControl, Spinner } from 'react-bootstrap';
-import {getProjects, resetProject} from '../../actions/projectActions.js';
-import { getUserProfile } from '../../actions/userActions.js';
-import { Link } from 'react-router-dom';
-import './Home.scss';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Container, Form, FormControl, Spinner } from "react-bootstrap";
+import {
+  getProjects,
+  resetProject,
+  saveProject,
+  setProjects,
+  updateProjectIsPinned,
+} from "../../actions/projectActions.js";
+import { getUserProfile } from "../../actions/userActions.js";
+import { Link } from "react-router-dom";
+import "./Home.scss";
 
-// components 
-import ProjectCard from '../../components/ProjectCard';
-import MarketingBlock from '../../components/MarketingBlock';
+// components
+import ProjectCard from "../../components/ProjectCard";
+import MarketingBlock from "../../components/MarketingBlock";
 import Multiselect from "multiselect-react-dropdown";
-import {ProjectStatus} from "../../utils/contants";
+import { ProjectStatus } from "../../utils/contants";
 
 const Home = (props) => {
-    const { history } = props;
+  const { history } = props;
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const isSignedIn = useSelector(state => state.auth.isSignedIn);
-    const projects = useSelector(state => state.project.projects);
+  const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+  const projects = useSelector((state) => state.project.projects);
 
-    const [searchTerm, setSearchTerm] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState(ProjectStatus.filter((item) => item.id === 1));
-    const [projectsStatus, setProjectsStatus] = useState('Active');
-    const [filteredProjects, setFilteredProjects] = useState(projects);
-    
-    useEffect(() => {
-        if (isSignedIn) {
-            setIsLoading(true);
-            
-            dispatch(getProjects())
-                .then(() => {
-                    setIsLoading(false);
-                })
-                .catch(() => setIsLoading(false));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState(
+    ProjectStatus.filter((item) => item.id === 1)
+  );
+  const [projectsStatus, setProjectsStatus] = useState("Active");
+  const [filteredProjects, setFilteredProjects] = useState(projects);
+  const [showPinnedProjects, setShowPinnedProjects] = useState(false);
+  const [pinLoader, setPinLoader] = useState([]);
 
-            dispatch(getUserProfile());
-        }
+  useEffect(() => {
+    if (isSignedIn) {
+      setIsLoading(true);
 
-    }, [dispatch, isSignedIn]);
+      dispatch(getProjects())
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch(() => setIsLoading(false));
 
-    useEffect(() => {
-        /* Filter projects on project name, project #, lot #, street address, or customer first name.
+      dispatch(getUserProfile());
+    }
+  }, [dispatch, isSignedIn]);
+
+  useEffect(() => {
+    /* Filter projects on project name, project #, lot #, street address, or customer first name.
         Filter delayed by 1 second */
-        const timer = setTimeout(() => {
-            const filter = projects?.filter(project => 
-                project?.ProjectName?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.ProjectNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-                project?.Subdivision?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-                project?.LotNumber?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-                project?.StreetAddress1?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.StreetAddress2?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.State?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.City?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.Zip?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.PlanName?.toLowerCase().includes(searchTerm?.toLowerCase()) || 
-                project?.Customers?.find(customer => customer?.Email?.toLocaleLowerCase().includes(searchTerm?.toLowerCase())) ||
-                project?.Customers?.find(customer => customer?.Phone?.toLocaleLowerCase().includes(searchTerm?.toLowerCase())) ||
-                project?.Customers?.find(customer => customer?.CustomerName?.toLowerCase().includes(searchTerm?.toLowerCase()))
-        );
+    const timer = setTimeout(() => {
+      const filter = projects?.filter(
+        (project) =>
+          project?.ProjectName?.toLowerCase().includes(
+            searchTerm?.toLowerCase()
+          ) ||
+          project?.ProjectNumber?.toLowerCase().includes(
+            searchTerm?.toLowerCase()
+          ) ||
+          project?.Subdivision?.toLowerCase().includes(
+            searchTerm?.toLowerCase()
+          ) ||
+          project?.LotNumber?.toLowerCase().includes(
+            searchTerm?.toLowerCase()
+          ) ||
+          project?.StreetAddress1?.toLowerCase().includes(
+            searchTerm?.toLowerCase()
+          ) ||
+          project?.StreetAddress2?.toLowerCase().includes(
+            searchTerm?.toLowerCase()
+          ) ||
+          project?.State?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+          project?.City?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+          project?.Zip?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
+          project?.PlanName?.toLowerCase().includes(
+            searchTerm?.toLowerCase()
+          ) ||
+          project?.Customers?.find((customer) =>
+            customer?.Email?.toLocaleLowerCase().includes(
+              searchTerm?.toLowerCase()
+            )
+          ) ||
+          project?.Customers?.find((customer) =>
+            customer?.Phone?.toLocaleLowerCase().includes(
+              searchTerm?.toLowerCase()
+            )
+          ) ||
+          project?.Customers?.find((customer) =>
+            customer?.CustomerName?.toLowerCase().includes(
+              searchTerm?.toLowerCase()
+            )
+          )
+      );
 
-            setFilteredProjects(filter);
-        }, 1000);
+      setFilteredProjects(filter);
+    }, 1000);
 
-        return () => clearTimeout(timer);
-    }, [searchTerm, projects]);
+    return () => clearTimeout(timer);
+  }, [searchTerm, projects]);
 
-    const goToAddProject = () => {
-        dispatch(resetProject());
-    }
+  const handlePinChanged = (project) => {
+    setPinLoader([...pinLoader, project.ID]);
+    dispatch(updateProjectIsPinned(project.ID, !project.IsPinned)).then(async () => {
+      await dispatch(
+        setProjects(
+          projects.map((p) => {
+            if (p.ID === project.ID) return { ...p, IsPinned: !p.IsPinned };
+            else return p;
+          })
+        )
+      );
+      setPinLoader((prev) => prev.filter((p) => p !== project.ID));
+    });
+  };
 
-    const filterProjects = () => {
-        const selected = selectedStatus.map((item) => item.id);
-        return filteredProjects.filter(project => selected.indexOf(parseInt(project?.StatusID)) > -1);
-    }
+  const goToAddProject = () => {
+    dispatch(resetProject());
+  };
 
-    function onSelectStatus(selectedList, selectedItem) {
-        setSelectedStatus(selectedList);
-    }
+  const filterProjects = () => {
+    const selected = selectedStatus.map((item) => item.id);
+    return filteredProjects
+      .filter((project) => selected.indexOf(parseInt(project?.StatusID)) > -1)
+      .filter((p) => (showPinnedProjects ? p.IsPinned : p));
+  };
 
+  function onSelectStatus(selectedList, selectedItem) {
+    setSelectedStatus(selectedList);
+  }
 
-    
-    return (
-        <div className='home'>
-            <Container>
-                <div className='d-flex title-container'>
-                    <div id='home-title'>Projects</div>
-                    <Link 
-                        onClick={goToAddProject} 
-                        to='/project' 
-                        className='link-btn'
-                    >
-                        + Add Project
-                    </Link>
-                </div>
-                <div className='d-flex project-tabs flex-wrap'>
-                    <div className='d-flex'>
-                        <Multiselect
-                            showCheckbox={true}
-                            placeholder="Select Status"
-                            hidePlaceholder={true}
-                            options={ProjectStatus.filter((item) => item.id !== -1)} // Options to display in the dropdown
-                            selectedValues={selectedStatus} // Preselected value to persist in dropdown
-                            onSelect={onSelectStatus} // Function will trigger on select event
-                            onRemove={onSelectStatus} // Function will trigger on remove event
-                            displayValue="text" // Property name to display in the dropdown options
-                        />
-                    </div>
-                    <div className='d-flex search-bar'> 
-                        {/* <Form inline > */}
-                            <FormControl 
-                                className='search-container' 
-                                placeholder='Search'
-                                type='text'
-                                onChange={(e) => setSearchTerm(e.target.value)}    
-                            />
-                        {/* </Form> */}
-                    </div>
-                </div>
-
-                {!isLoading && (
-                    <div className='d-flex justify-content-between cards-container'>
-                            <div className='d-flex flex-wrap cards'>
-                                {filterProjects()?.map((project, index) => (
-                                    <ProjectCard 
-                                        key={index} 
-                                        project={project} 
-                                        history={history} 
-                                    />
-                                ))}
-                            </div>
-                            <MarketingBlock />
-                    </div>
-                )}
-            </Container>
-            
-            {isLoading && (
-                <div className='spinner d-flex justify-content-center'>
-                    <Spinner 
-                        animation='border'
-                        variant='primary' 
-                    />
-                </div>
-            )}
+  return (
+    <div className="home">
+      <Container>
+        <div className="d-flex title-container">
+          <div id="home-title">Projects</div>
+          <Link onClick={goToAddProject} to="/project" className="link-btn">
+            + Add Project
+          </Link>
         </div>
-    );
+        <div className="d-flex project-tabs flex-wrap">
+          <div className="d-flex align-items-center">
+            <Multiselect
+              showCheckbox={true}
+              placeholder="Select Status"
+              hidePlaceholder={true}
+              options={ProjectStatus.filter((item) => item.id !== -1)} // Options to display in the dropdown
+              selectedValues={selectedStatus} // Preselected value to persist in dropdown
+              onSelect={onSelectStatus} // Function will trigger on select event
+              onRemove={onSelectStatus} // Function will trigger on remove event
+              displayValue="text" // Property name to display in the dropdown options
+            />
+            <div className="ml-4 pointer d-flex align-items-center">
+              {/* <i class="fa fa-thumb-tack text-2xl" aria-hidden="true"></i> */}
+              <div className="d-flex mr-2 align-items-center">
+                {" "}
+                Show pinned{" "}
+                <i
+                  class={`fa fa-thumb-tack text-2xl mx-2 ${
+                    showPinnedProjects ? "text-danger" : ""
+                  }`}
+                  aria-hidden="true"
+                ></i>{" "}
+                projects
+              </div>{" "}
+              <Form.Check
+                type="checkbox"
+                checked={showPinnedProjects}
+                onChange={() => {
+                  setShowPinnedProjects(!showPinnedProjects);
+                }}
+              />
+            </div>
+          </div>
+          <div className="d-flex search-bar">
+            {/* <Form inline > */}
+            <FormControl
+              className="search-container"
+              placeholder="Search"
+              type="text"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {/* </Form> */}
+          </div>
+        </div>
+
+        {!isLoading && (
+          <div className="d-flex justify-content-between cards-container">
+            <div className="d-flex flex-wrap cards">
+              {filterProjects()?.map((project, index) => (
+                <ProjectCard
+                  key={index}
+                  project={project}
+                  history={history}
+                  handlePinChanged={() => handlePinChanged(project)}
+                  pinLoader={pinLoader}
+                />
+              ))}
+            </div>
+            <MarketingBlock />
+          </div>
+        )}
+      </Container>
+
+      {isLoading && (
+        <div className="spinner d-flex justify-content-center">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Home;

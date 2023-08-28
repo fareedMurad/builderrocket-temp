@@ -178,7 +178,7 @@ const ProjectHeader = () => {
                             {(project?.Customers?.[0]?.FirstName || project?.Customers?.[0]?.LastName) &&
                                 <>
                                     <div className=''>
-                                        <i class="far fa-user-hard-hat fa-sm tab-icon mr-2"></i> {project?.Customers?.[0]?.FirstName}{' '}{project?.Customers?.[0]?.LastName}
+                                        <i className="far fa-user-hard-hat fa-sm tab-icon mr-2"></i> {project?.Customers?.[0]?.FirstName}{' '}{project?.Customers?.[0]?.LastName}
                                     </div>
                                 </>
                             }
@@ -201,7 +201,7 @@ const ProjectHeader = () => {
                                         onClick={() => handleInviteCustomer(project?.Customers?.[0]?.ID)}
                                         className='snapshot-btn'
                                         style={{ width: '120px', height: '26px' }}
-                                    ><i class="fa fa-copy tab-icon mr-1"></i> Invite Link</button>
+                                    ><i className="fa fa-copy tab-icon mr-1"></i> Invite Link</button>
 
                                 </div>}
 
@@ -211,7 +211,7 @@ const ProjectHeader = () => {
                             {(project?.Customers?.[1]?.FirstName || project?.Customers?.[1]?.LastName) &&
                                 <>
                                     <div className=''>
-                                        <i class="far fa-user-hard-hat fa-sm tab-icon mr-2" aria-hidden="true"></i> {project?.Customers?.[1]?.FirstName}{' '}{project?.Customers?.[1]?.LastName}
+                                        <i className="far fa-user-hard-hat fa-sm tab-icon mr-2" aria-hidden="true"></i> {project?.Customers?.[1]?.FirstName}{' '}{project?.Customers?.[1]?.LastName}
                                     </div>
                                 </>}
                             {project?.Customers?.[1]?.Phone && <div className='pr-3 text phone'>
@@ -232,7 +232,7 @@ const ProjectHeader = () => {
                                     onClick={() => handleInviteCustomer(project?.Customers?.[1]?.ID)}
                                     className='snapshot-btn'
                                     style={{ width: '120px', height: '26px' }}
-                                ><i class="fa fa-copy tab-icon mr-1"></i> Invite Link</button>
+                                ><i className="fa fa-copy tab-icon mr-1"></i> Invite Link</button>
 
                             </div>}
                         </div>

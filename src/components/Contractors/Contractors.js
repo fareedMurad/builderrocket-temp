@@ -253,7 +253,7 @@ const Contractors = () => {
                                 )}
                             </div>
                         ))}
-                        <div className='select contractor'>
+                        {/* <div className='select contractor'>
                             <Form.Label className='input-label'>Soil Treatment Contractor</Form.Label>
                              <FileUpload
                                 short
@@ -265,7 +265,7 @@ const Contractors = () => {
                                 handleDocumentDelete={handleDocumentDelete}
                                 onFileChange={(event) => onFileChange(4, event)}
                             />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

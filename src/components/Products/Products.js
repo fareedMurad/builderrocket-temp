@@ -84,6 +84,7 @@ const Products = (props) => {
   const [selectedProductItem, setSelectedProductItem] = useState({});
   const [showCustomProducts, setShowCustomProducts] = useState(false);
   const [showBuilderRooms, setShowBuilderRooms] = useState(false);
+  const [showSelectedRooms, setShowSelectedRooms] = useState(false);
 
   const [productFilter, setProductFilter] = useState({
     rooms: [],
@@ -268,28 +269,28 @@ const Products = (props) => {
         "ProjectRoomID"
       );
 
-      // const rooms = filtered?.map((mp, index) => {
-      //   const isFound = getProjectRoomsConditionally()?.find(
-      //     (r) => r.ID === mp.ID
-      //   );
+      const rooms = filtered?.map((mp, index) => {
+        const isFound = getProjectRoomsConditionally()?.find(
+          (r) => r.ID === mp.ID
+        );
 
-      //   if (isFound) {
-      //     return {
-      //       ...isFound,
-      //       ...mp,
-      //       isOpen: index === 0,
-      //     };
-      //   } else return { ...mp, isOpen: index === 0 };
+        if (isFound) {
+          return {
+            ...isFound,
+            ...mp,
+            isOpen: index === 0,
+          };
+        } else return { ...mp, isOpen: index === 0 };
+      })
+      .filter((r) => productFilter.rooms.indexOf(r.ID) > -1);
+
+      // let rooms = {items: []};
+      // filtered?.map((mp, index) => {
+      //   rooms = {
+      //     items: [...rooms.items, ...mp.Items],
+      //   };
+      //   return mp;
       // });
-      // .filter((r) => productFilter.rooms.indexOf(r.ID) > -1);
-
-      let rooms = {items: []};
-      filtered?.map((mp, index) => {
-        rooms = {
-          items: [...rooms.items, ...mp.Items],
-        };
-        return mp;
-      });
 
       setSelectedMyProductsRooms(rooms);
     }
@@ -1079,10 +1080,13 @@ const Products = (props) => {
             </div>
           ) : (
             <>
-              <div className="input-label mt-2 ml-3 mb-2">Selected Rooms</div>
+              <div className="input-label mt-2 ml-3 mb-2 d-flex justify-content-between align-items-center">
+                Selected Rooms
+                <div className="pointer text-primary" onClick={() => setShowSelectedRooms(!showSelectedRooms)}>{showSelectedRooms ? "Hide Selected Rooms" : "Visible Selected Rooms" }</div>
+                </div>
               <div className="mx-2 position-relative">
                 <span>
-                  {roomsOptions?.find((r) => r.value === "select_all")?.selected
+                  {(roomsOptions?.find((r) => r.value === "select_all")?.selected || !showSelectedRooms)
                     ? DrawDropdownSelection({
                         items: getProjectRoomsConditionally(),
                         selectedIds: productFilter?.rooms,
@@ -1106,8 +1110,8 @@ const Products = (props) => {
                   keepSearchTerm={false}
                   hidePlaceholder={true}
                   hideSelectedList={
-                    roomsOptions?.find((r) => r.value === "select_all")
-                      ?.selected
+                    (roomsOptions?.find((r) => r.value === "select_all")
+                      ?.selected && !showSelectedRooms)
                   }
                   options={roomsOptions} // Options to display in the dropdown
                   selectedValues={
@@ -1440,10 +1444,9 @@ const Products = (props) => {
         </div>
 
         {deleteModal()}
-
         {saveNotesModal()}
-        {!showCustomProducts ? (
-          selectedRooms.map((data, roomIndex) => {
+        {/* {!showCustomProducts ? ( */}
+          {(showCustomProducts ? selectedMyProductsRooms : selectedRooms).map((data, roomIndex) => {
             let { Items, ...room } = data;
             let items = FilterItems({
               productFilter,
@@ -1483,9 +1486,9 @@ const Products = (props) => {
                     >
                       {room.RoomName}{" "}
                       <div className="d-flex">
-                        <span className="mx-2">
+                        {room.RoomTypeName ? <span className="mx-2">
                           Room Type: <b>{room.RoomTypeName}</b>
-                        </span>
+                        </span>:null}
                         <i
                           className={`far float-right mt-1 ${
                             room.isOpen
@@ -1506,10 +1509,10 @@ const Products = (props) => {
               />
             );
           })
-        ) : (
-          <div>{renderTable(selectedMyProductsRooms?.items)}</div>
-        )}
-
+        // ) : (
+        //   <div>{renderTable(selectedMyProductsRooms?.items)}</div>
+        // )}
+        }
         <div className="d-flex justify-content-center pt-5">
           {isLoading ? (
             <Spinner animation="border" variant="primary" />

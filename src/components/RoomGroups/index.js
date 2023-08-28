@@ -263,14 +263,14 @@ const RoomGroups = () => {
     setShowVisibleModal("DELETE_GROUP_CATEGORY");
   };
 
-  const handleManageProducts = (groupID, category, allProducts) => {
+  const handleManageProducts = (group, category, allProducts) => {
     dispatch(
       setSelectedGroupCategoryProducts(
         getProductsByCategory({ CategoryID: category.ID }, allProducts)
       )
     ).then(() =>
       dispatch(setSelectedBuilderCategory(category)).then(() => {
-        dispatch(setSelectedBuilderRoomGroup(groupID)).then(() => {
+        dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
           history.push(`/rooms-management/groupDetails`);
         });
       })
@@ -368,7 +368,7 @@ const RoomGroups = () => {
                                   size="sm"
                                   onClick={() =>
                                     handleManageProducts(
-                                      item.ID,
+                                      item,
                                       templateItem.Category,
                                       item.products
                                     )

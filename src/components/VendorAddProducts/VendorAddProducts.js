@@ -287,7 +287,7 @@ const VendorAddProducts = () => {
                           ) : (
                             <div className="d-flex">
                               <Button
-                                className="action-button add-product-btn mr-2"
+                              className={`action-button add-product-btn mr-2 ${isProductAdded(product.ID) ? "btn-success" : ""}`}
                                 onClick={() => addProduct(product?.ID, product)}
                                 disabled={isProductAdded(product.ID)}
                               >

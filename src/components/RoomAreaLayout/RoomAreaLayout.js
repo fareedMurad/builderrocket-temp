@@ -64,10 +64,10 @@ const RoomAreaLayout = () => {
   };
 
   const isRoomInProject = (id) => {
-    return [
-      ...(project?.BuilderProjectRooms || []),
-      ...(project?.ProjectRooms || []),
-    ]?.find((room) => room?.RoomID === id);
+    if(showCustomRooms) {
+      return (project?.BuilderProjectRooms || [])?.find((room) => room?.RoomID === id)
+    }
+    else return (project?.ProjectRooms || [])?.find((room) => room?.RoomID === id)
   };
 
   const handleSelectedRoomTypeChange = useCallback(

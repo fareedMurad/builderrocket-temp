@@ -152,9 +152,14 @@ const ProjectInformation = withSwal((props) => {
 
     setIsLoading(true);
 
+    const payload = {
+      ...projectInformation,
+      Customers: projectInformation.Customers.filter(c => (c.FirstName || c.LastName || c.Phone || c.Email))
+    }
+
     if (project?.ID) {
       // Save Project then navigate to documents tab
-      dispatch(saveProject(projectInformation))
+      dispatch(saveProject(payload))
         .then(() => {
           setIsLoading(false);
           if(goToNext) dispatch(setSelectedProjectTab("documents"));
@@ -165,10 +170,10 @@ const ProjectInformation = withSwal((props) => {
         });
     } else {
       const newProject = {
-        ...projectInformation,
+        ...payload,
         DateCreated: new Date(),
         UserID: user.UserID,
-        StatusID: projectInformation?.StatusID || 1,
+        StatusID: payload?.StatusID || 1,
       };
 
       dispatch(createProject(newProject))
@@ -399,7 +404,7 @@ return (
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[0]?.FirstName) {
+                        if (NewState.Customers?.[0]) {
                           NewState.Customers[0].FirstName = e.target.value;
                           return NewState;
                         } else {
@@ -425,7 +430,7 @@ return (
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[0]?.LastName) {
+                        if (NewState.Customers?.[0]) {
                           NewState.Customers[0].LastName = e.target.value;
                           return NewState;
                         } else {
@@ -453,7 +458,7 @@ return (
                       console.log(e.target.value);
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[0]?.Phone) {
+                        if (NewState.Customers?.[0]) {
                           NewState.Customers[0].Phone = e.target.value;
                           return NewState;
                         } else {
@@ -483,7 +488,7 @@ return (
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[1]?.FirstName) {
+                        if (NewState.Customers?.[1]) {
                           NewState.Customers[1].FirstName = e.target.value;
                           return NewState;
                         } else {
@@ -509,7 +514,7 @@ return (
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[1]?.LastName) {
+                        if (NewState.Customers?.[1]) {
                           NewState.Customers[1].LastName = e.target.value;
                           return NewState;
                         } else {
@@ -538,7 +543,7 @@ return (
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[1]?.Phone) {
+                        if (NewState.Customers?.[1]) {
                           NewState.Customers[1].Phone = e.target.value;
                           return NewState;
                         } else {
@@ -604,7 +609,7 @@ return (
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[1]?.Email) {
+                        if (NewState.Customers?.[1]) {
                           NewState.Customers[1].Email = e.target.value;
                           return NewState;
                         } else {

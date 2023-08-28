@@ -28,6 +28,7 @@ import CustomLightbox from "../Lightbox";
 import ProductModal from "../ProductModal";
 import ColorProductModal from "../ColorProductModal";
 import Multiselect from "multiselect-react-dropdown";
+import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProductConfirmationModal";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,8 @@ const AddProduct = () => {
   );
   const [roomsOptions, setRoomsOptions] = useState([]);
   const [addActionLoading, setAddActionLoading] = useState();
+  const [addProductModal, setAddProductModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     let options = [
@@ -137,25 +140,26 @@ const AddProduct = () => {
     setSearchObject(search);
   };
 
-  const addProduct = (product) => {
+  const addProduct = (values) => {
+    const product = selectedProduct;
     if (!product.ID || !ProductSelectedRoom.length) return;
 
-    console.log(product);
     setAddActionLoading(product);
     let newProduct = {
       ProjectID: project.ID,
-      ProjectRoomID: [...ProductSelectedRoom],
+      ProjectRoomID: [...values?.roomIDs],
       ProductID: product.ID,
       Quantity: 0,
       VendorID: 0,
       IsApproved: false,
-      RequiresApproval: true,
+      RequiresApproval: values?.RequiresApproval,
       DefaultRoomProductID:0,
-      RoughInTrimOut: 0,
+      RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn" ? 1 : 2,
       Notes: "",
     };
     dispatch(handleAddProductForProject(newProduct)).then((project) => {
       dispatch(setSelectedProject(project));
+      setAddProductModal(false);
       setAddActionLoading(null);
     });
   };
@@ -384,7 +388,10 @@ const AddProduct = () => {
                         ) : (
                           <Button
                             className="add-product-btn"
-                            onClick={() => addProduct(product)}
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setAddProductModal(true);
+                            }}
                           >
                             Add
                           </Button>
@@ -418,6 +425,13 @@ const AddProduct = () => {
         handleClose={handleClose}
         handleCloseModal={() => setShowModal(false)}
       />
+
+        <AddProductConfirmationModal
+          show={addProductModal}
+          handleClose={() => setAddProductModal(false)}
+          isShowRooms
+          handleAdd={values => addProduct(values)}
+        />
 
       {/*<ColorProductModal
                 show={showColorModal}
