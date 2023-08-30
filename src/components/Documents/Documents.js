@@ -250,8 +250,8 @@ const Documents = () => {
                     BuildingPermitNumber: event.target.value,
                   })
                 }
+                onBlur={() => saveChanges(false)}
               />
-              onBlur={() => saveChanges(false)}
             </div>
             <div className="form-col pb-2">
               <FileUpload
@@ -316,8 +316,8 @@ const Documents = () => {
                     TaxMapNumber: event.target.value,
                   })
                 }
+                onBlur={() => saveChanges(false)}
               />
-              onBlur={() => saveChanges(false)}
             </div>
             <div className="form-col pb-2">
               <Form.Label className="input-label">

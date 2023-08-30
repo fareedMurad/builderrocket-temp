@@ -269,20 +269,21 @@ const Products = (props) => {
         "ProjectRoomID"
       );
 
-      const rooms = filtered?.map((mp, index) => {
-        const isFound = getProjectRoomsConditionally()?.find(
-          (r) => r.ID === mp.ID
-        );
+      const rooms = filtered
+        ?.map((mp, index) => {
+          const isFound = getProjectRoomsConditionally()?.find(
+            (r) => r.ID === mp.ID
+          );
 
-        if (isFound) {
-          return {
-            ...isFound,
-            ...mp,
-            isOpen: index === 0,
-          };
-        } else return { ...mp, isOpen: index === 0 };
-      })
-      .filter((r) => productFilter.rooms.indexOf(r.ID) > -1);
+          if (isFound) {
+            return {
+              ...isFound,
+              ...mp,
+              isOpen: index === 0,
+            };
+          } else return { ...mp, isOpen: index === 0 };
+        })
+        .filter((r) => productFilter.rooms.indexOf(r.ID) > -1);
 
       // let rooms = {items: []};
       // filtered?.map((mp, index) => {
@@ -770,17 +771,14 @@ const Products = (props) => {
 
   const getProductImages = (product) => {
     const images = [];
-   if(product?.ProductThumbnailURl)
-   images.push(product?.ProductThumbnailURl)
-    
-   if(product?.ThumbnailURL)
-   images.push(product?.ThumbnailURL)
+    if (product?.ProductThumbnailURl) images.push(product?.ProductThumbnailURl);
 
-   if(product?.ImageURL)
-   images.push(product?.ImageURL)
+    if (product?.ThumbnailURL) images.push(product?.ThumbnailURL);
 
-   return images
-  }
+    if (product?.ImageURL) images.push(product?.ImageURL);
+
+    return images;
+  };
 
   const renderTable = (items) => {
     return (
@@ -794,7 +792,7 @@ const Products = (props) => {
                   Product Name
                 </div>
               </th>
-              {(productFilter?.rooms.length > 1  && !showCustomProducts)? (
+              {productFilter?.rooms.length > 1 && !showCustomProducts ? (
                 <th>
                   <div className="d-flex justify-content-center">Room</div>
                 </th>
@@ -861,11 +859,11 @@ const Products = (props) => {
                   </td>
                   <td>
                     <div className="d-flex add-btn-templateItem">
-                      {(getProductImages(templateItem)?.length) ? (
+                      {getProductImages(templateItem)?.length ? (
                         <CustomLightbox
                           images={getProductImages(templateItem)}
                         />
-                      ):null}
+                      ) : null}
                       <div>
                         <Button
                           variant="link"
@@ -890,7 +888,7 @@ const Products = (props) => {
                       </div>
                     </div>
                   </td>
-                  {(productFilter?.rooms.length > 1 && !showCustomProducts) ? (
+                  {productFilter?.rooms.length > 1 && !showCustomProducts ? (
                     <td>{templateItem?.room?.RoomName}</td>
                   ) : null}
                   <td>{templateItem?.ShortDescription}</td>
@@ -1082,11 +1080,19 @@ const Products = (props) => {
             <>
               <div className="input-label mt-2 ml-3 mb-2 d-flex justify-content-between align-items-center">
                 Selected Rooms
-                <div className="pointer text-primary" onClick={() => setShowSelectedRooms(!showSelectedRooms)}>{showSelectedRooms ? "Hide Selected Rooms" : "Visible Selected Rooms" }</div>
+                <div
+                  className="pointer text-primary"
+                  onClick={() => setShowSelectedRooms(!showSelectedRooms)}
+                >
+                  {showSelectedRooms
+                    ? "Hide Selected Rooms"
+                    : "Visible Selected Rooms"}
                 </div>
+              </div>
               <div className="mx-2 position-relative">
                 <span>
-                  {(roomsOptions?.find((r) => r.value === "select_all")?.selected || !showSelectedRooms)
+                  {roomsOptions?.find((r) => r.value === "select_all")
+                    ?.selected || !showSelectedRooms
                     ? DrawDropdownSelection({
                         items: getProjectRoomsConditionally(),
                         selectedIds: productFilter?.rooms,
@@ -1110,8 +1116,8 @@ const Products = (props) => {
                   keepSearchTerm={false}
                   hidePlaceholder={true}
                   hideSelectedList={
-                    (roomsOptions?.find((r) => r.value === "select_all")
-                      ?.selected && !showSelectedRooms)
+                    roomsOptions?.find((r) => r.value === "select_all")
+                      ?.selected && !showSelectedRooms
                   }
                   options={roomsOptions} // Options to display in the dropdown
                   selectedValues={
@@ -1418,11 +1424,11 @@ const Products = (props) => {
               <Form.Check
                 type="checkbox"
                 checked={showCustomProducts}
-                onChange={() => { 
-                  if(showBuilderRooms && !showCustomProducts) {
+                onChange={() => {
+                  if (showBuilderRooms && !showCustomProducts) {
                     setShowBuilderRooms(false);
                   }
-                  setShowCustomProducts(!showCustomProducts)
+                  setShowCustomProducts(!showCustomProducts);
                 }}
                 label={`Show Custom Products`}
               />
@@ -1432,10 +1438,10 @@ const Products = (props) => {
                 type="checkbox"
                 checked={showBuilderRooms}
                 onChange={() => {
-                  if(showCustomProducts && !showBuilderRooms) {
+                  if (showCustomProducts && !showBuilderRooms) {
                     setShowCustomProducts(false);
                   }
-                  setShowBuilderRooms(!showBuilderRooms)
+                  setShowBuilderRooms(!showBuilderRooms);
                 }}
                 label={`Show Builder Rooms`}
               />
@@ -1446,72 +1452,84 @@ const Products = (props) => {
         {deleteModal()}
         {saveNotesModal()}
         {/* {!showCustomProducts ? ( */}
-          {(showCustomProducts ? selectedMyProductsRooms : selectedRooms).map((data, roomIndex) => {
-            let { Items, ...room } = data;
-            let items = FilterItems({
-              productFilter,
-              items: Items,
-              brands,
-              categories,
-            })
-              ?.map((i) => {
-                return { room: room, ...i };
+        {
+          (showCustomProducts ? selectedMyProductsRooms : selectedRooms).map(
+            (data, roomIndex) => {
+              let { Items, ...room } = data;
+              let items = FilterItems({
+                productFilter,
+                items: Items,
+                brands,
+                categories,
+                SubCategoriesOptions,
               })
-              ?.sort((a, b) => {
-                if (a.ShortDescription !== b.ShortDescription) {
-                  return a.ShortDescription?.localeCompare(b.ShortDescription);
-                }
-                if (a.room?.RoomName !== b.room?.RoomName) {
-                  return a.room?.RoomName?.localeCompare(b.room?.RoomName);
-                }
-                return 0;
-              });
-            return (
-              <SlideToggle
-                onExpanded={({ hasReversed }) => {
-                  let _room = selectedRooms.filter((r) => r.ID === room.ID)[0];
-                  _room.isOpen = true;
-                  setSelectedRooms([...selectedRooms]);
-                }}
-                onCollapsed={({ hasReversed }) => {
-                  let _room = selectedRooms.filter((r) => r.ID === room.ID)[0];
-                  _room.isOpen = false;
-                  setSelectedRooms([...selectedRooms]);
-                }}
-                render={({ toggle, setCollapsibleElement }) => (
-                  <Card className="ml-4 my-3 mr-2 accordion">
-                    <Card.Header
-                      className="pointer d-flex justify-content-between"
-                      onClick={toggle}
-                    >
-                      {room.RoomName}{" "}
-                      <div className="d-flex">
-                        {room.RoomTypeName ? <span className="mx-2">
-                          Room Type: <b>{room.RoomTypeName}</b>
-                        </span>:null}
-                        <i
-                          className={`far float-right mt-1 ${
-                            room.isOpen
-                              ? "fa-chevron-double-up"
-                              : "fa-chevron-double-down"
-                          }`}
-                        ></i>
-                      </div>
-                    </Card.Header>
-                    <Card.Body
-                      id={"room-" + room.ID}
-                      ref={setCollapsibleElement}
-                    >
-                      {renderTable(items)}
-                    </Card.Body>
-                  </Card>
-                )}
-              />
-            );
-          })
-        // ) : (
-        //   <div>{renderTable(selectedMyProductsRooms?.items)}</div>
-        // )}
+                ?.map((i) => {
+                  return { room: room, ...i };
+                })
+                ?.sort((a, b) => {
+                  if (a.ShortDescription !== b.ShortDescription) {
+                    return a.ShortDescription?.localeCompare(
+                      b.ShortDescription
+                    );
+                  }
+                  if (a.room?.RoomName !== b.room?.RoomName) {
+                    return a.room?.RoomName?.localeCompare(b.room?.RoomName);
+                  }
+                  return 0;
+                });
+              return (
+                <SlideToggle
+                  onExpanded={({ hasReversed }) => {
+                    let _room = selectedRooms.filter(
+                      (r) => r.ID === room.ID
+                    )[0];
+                    _room.isOpen = true;
+                    setSelectedRooms([...selectedRooms]);
+                  }}
+                  onCollapsed={({ hasReversed }) => {
+                    let _room = selectedRooms.filter(
+                      (r) => r.ID === room.ID
+                    )[0];
+                    _room.isOpen = false;
+                    setSelectedRooms([...selectedRooms]);
+                  }}
+                  render={({ toggle, setCollapsibleElement }) => (
+                    <Card className="ml-4 my-3 mr-2 accordion">
+                      <Card.Header
+                        className="pointer d-flex justify-content-between"
+                        onClick={toggle}
+                      >
+                        {room.RoomName}{" "}
+                        <div className="d-flex">
+                          {room.RoomTypeName ? (
+                            <span className="mx-2">
+                              Room Type: <b>{room.RoomTypeName}</b>
+                            </span>
+                          ) : null}
+                          <i
+                            className={`far float-right mt-1 ${
+                              room.isOpen
+                                ? "fa-chevron-double-up"
+                                : "fa-chevron-double-down"
+                            }`}
+                          ></i>
+                        </div>
+                      </Card.Header>
+                      <Card.Body
+                        id={"room-" + room.ID}
+                        ref={setCollapsibleElement}
+                      >
+                        {renderTable(items)}
+                      </Card.Body>
+                    </Card>
+                  )}
+                />
+              );
+            }
+          )
+          // ) : (
+          //   <div>{renderTable(selectedMyProductsRooms?.items)}</div>
+          // )}
         }
         <div className="d-flex justify-content-center pt-5">
           {isLoading ? (
@@ -1540,30 +1558,51 @@ const Products = (props) => {
 };
 
 export default Products;
-export const FilterItems = ({ productFilter, brands, categories, items }) => {
+export const FilterItems = ({
+  productFilter,
+  brands,
+  categories,
+  items,
+  SubCategoriesOptions,
+}) => {
   const selectedCategories = categories?.filter(
     (c) =>
       productFilter.categories.length > 0 &&
       productFilter.categories.indexOf(c.ID) > -1
   );
-  const allCategories = categories
-    ?.filter((c) => {
-      return (
-        c.Path &&
-        selectedCategories.filter((s) => {
-          return s.Path && c.Path.startsWith(s.Path);
-        }).length > 0
-      );
-    })
+
+  const selectedBrands = brands
+    ?.filter(
+      (c) =>
+        productFilter.brands.length > 0 &&
+        productFilter.brands.indexOf(c.ID) > -1
+    )
+    .map((b) => b.ID);
+
+  const selectedSubCategoriesOptions = SubCategoriesOptions?.filter(
+    (c) =>
+      productFilter.subcategories.length > 0 &&
+      productFilter.subcategories.indexOf(c.ID) > -1
+  ).map((b) => b.ID);
+
+  const allCategories = selectedCategories
+    // ?.filter((c) => {
+    //   return (
+    //     c.Path &&
+    //     selectedCategories.filter((s) => {
+    //       return s.Path && c.Path.startsWith(s.Path);
+    //     }).length > 0
+    //   );
+    // })
     .map((c) => c.ID);
   return items?.filter((i) => {
     return (
       (productFilter.brands.length === 0 ||
-        productFilter.brands.indexOf(i.BrandID) > -1) &&
+        selectedBrands.indexOf(i.BrandID) > -1) &&
       (productFilter.categories.length === 0 ||
         allCategories.indexOf(i.CategoryID) > -1) &&
       (productFilter.subcategories.length === 0 ||
-        productFilter.subcategories.indexOf(i.CategoryID) > -1)
+        selectedSubCategoriesOptions.indexOf(i.CategoryID) > -1)
     );
   });
 };

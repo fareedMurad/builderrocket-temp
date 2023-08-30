@@ -48,7 +48,7 @@ const ProjectCard = (props) => {
                   e.stopPropagation();
                   await handlePinChanged();
                 }}
-                class={`fa fa-thumb-tack text-2xl  ${
+                className={`fa fa-thumb-tack text-2xl  ${
                   project?.IsPinned ? "text-danger" : ""
                 }`}
                 style={{ paddingTop: "12px" }}

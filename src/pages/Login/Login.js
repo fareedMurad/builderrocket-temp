@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Form, Spinner } from 'react-bootstrap';
 import { loginEmailPassword } from '../../actions/authActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash'
 import { Link } from 'react-router-dom';
 
 const Login = (props) => {
   const { history } = props;
+  const token = useSelector((state) => state.auth.token);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if(token) history.push("/")
+  }, [])
 
   const [login, setLogin] = useState({});
   const [error, setError] = useState("");
