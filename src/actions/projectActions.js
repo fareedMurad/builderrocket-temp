@@ -745,7 +745,7 @@ export const getCategorizedReportByProjectID = (projectID) => (dispatch) => {
   return api({
     method: "GET",
     url: URL,
-  })
+  })      
     .then((response) => {
       if (response?.status === 200) {
         dispatch({ type: GET_CATEGORIZED_REPORT, payload: response?.data });

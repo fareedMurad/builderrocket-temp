@@ -6,7 +6,7 @@ const RoomsManagement = () => {
     return (
         <div className=' room-management'>
             <div className='page-title'>Rooms Management</div>
-            <RoomsTabs />
+            <RoomsTabs/>
         </div>
     );
 }

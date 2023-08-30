@@ -578,7 +578,7 @@ return (
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
-                        if (NewState.Customers?.[0]?.Email) {
+                        if (NewState.Customers?.[0]) {
                           NewState.Customers[0].Email = e.target.value;
                           return NewState;
                         } else {

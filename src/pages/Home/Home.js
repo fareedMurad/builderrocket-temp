@@ -126,7 +126,10 @@ const Home = (props) => {
     const selected = selectedStatus.map((item) => item.id);
     return filteredProjects
       .filter((project) => selected.indexOf(parseInt(project?.StatusID)) > -1)
-      .filter((p) => (showPinnedProjects ? p.IsPinned : p));
+      .sort(
+        (objA, objB) => new Date(objB.CreatedAt) - new Date(objA.CreatedAt),
+      )
+      .sort((a, b) => Number(b.IsPinned) - Number(a.IsPinned))
   };
 
   function onSelectStatus(selectedList, selectedItem) {
@@ -154,8 +157,7 @@ const Home = (props) => {
               onRemove={onSelectStatus} // Function will trigger on remove event
               displayValue="text" // Property name to display in the dropdown options
             />
-            <div className="ml-4 pointer d-flex align-items-center">
-              {/* <i class="fa fa-thumb-tack text-2xl" aria-hidden="true"></i> */}
+            {/* <div className="ml-4 pointer d-flex align-items-center">
               <div className="d-flex mr-2 align-items-center">
                 {" "}
                 Show pinned{" "}
@@ -174,7 +176,7 @@ const Home = (props) => {
                   setShowPinnedProjects(!showPinnedProjects);
                 }}
               />
-            </div>
+            </div> */}
           </div>
           <div className="d-flex search-bar">
             {/* <Form inline > */}
