@@ -9,7 +9,7 @@ import './ColorProductModal.scss';
 import {PaintSheens, PaintTypes, ProjectStatus} from "../../utils/contants";
 
 const ColorProductModal = (props) => {
-    const { show, handleClose, handleCloseModal } = props;
+    const { show , handleCloseModal } = props;
 
     const dispatch = useDispatch();
 
@@ -20,7 +20,7 @@ const ColorProductModal = (props) => {
     const roomTypes = useSelector(state => state.room.roomTypes);
     const selectedRoom = useSelector(state => state.room.selectedRoom);
     const productDetails = useSelector(state => state.product.productDetail);
-    const [roomList, setRoomList] = useState([selectedRoom.RoomID]);
+    const [roomList, setRoomList] = useState([selectedRoom?.RoomID]);
     const [selectedPaint, setSelectedPaint] = useState(1);
     const [paintInfo, setPaintInfo] = useState({
         PaintCode: '',

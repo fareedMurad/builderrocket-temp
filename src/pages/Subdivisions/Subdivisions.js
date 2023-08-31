@@ -261,10 +261,10 @@ const Subdivisions = () => {
             short
             placeholder={newDocument?.name}
             buttonText={"Upload Document"}
-            progress={fileProgress(10)}
+            progress={fileProgress(18)}
             // label={findDocumentType(1)?.Name}
             handleDocumentDelete={handleDeleteSubdivisionDocument}
-            onFileChange={(event) => onFileChange(1, event)}
+            onFileChange={(event) => onFileChange(18, event)}
           />
           <div className="d-flex justify-content-center pt-5">
             <Button
