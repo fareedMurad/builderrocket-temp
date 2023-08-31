@@ -154,7 +154,7 @@ const AddProduct = () => {
       IsApproved: false,
       RequiresApproval: values?.RequiresApproval,
       DefaultRoomProductID:0,
-      RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn" ? 1 : 2,
+      RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn",
       Notes: "",
     };
     dispatch(handleAddProductForProject(newProduct)).then((project) => {

@@ -44,6 +44,7 @@ import {
   updateBuilderRoomProduct,
   updateMyProductsForProject,
 } from "../../actions/myProductActions";
+import ColorProductModal from "../ColorProductModal";
 
 const Products = (props) => {
   const dispatch = useDispatch();
@@ -723,6 +724,11 @@ const Products = (props) => {
       });
   };
 
+  const [showColorModal, setShowColorModal] = useState(false);
+  const handleColorClose = () => {
+    setShowColorModal(false);
+  };
+
   const saveNotesModal = () => {
     return (
       <Modal
@@ -987,7 +993,7 @@ const Products = (props) => {
                   <td>
                     {!templateItem?.IsTemplate && (
                       <div className="d-flex justify-content-between">
-                        <i className="fas fa-retweet"></i>
+                        <i className="fas fa-retweet" onClick={() => setShowColorModal(true)}></i>
                         <i
                           className={`far ${
                             isFav ? "text-danger fas fa-heart" : "fa-heart"
@@ -1553,6 +1559,11 @@ const Products = (props) => {
           )}
         </div>
       </div>
+
+      <ColorProductModal
+        show={showColorModal}
+        handleCloseModal={handleColorClose}
+      />
     </div>
   );
 };
