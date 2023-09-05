@@ -1,98 +1,43 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Modal, Form, Col, Button, Row, Spinner } from "react-bootstrap";
-import {
-  createContractor,
-  getContractorTypes,
-  setSelectedContractor,
-} from "../../actions/contractorActions";
-import { isEmpty, uniqueId } from "lodash";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Modal, Form, Col, Button, Row, Spinner, } from "react-bootstrap";
+import { uniqueId } from "lodash";
 import "./Megaphone.scss";
 import FileUpload from "../FileUpload";
-
+import { sendBugs } from "../../actions/bugReportActions";
 const Megaphone = ({ show, handleClose }) => {
   const dispatch = useDispatch();
 
-  const selectedContractor = useSelector(
-    (state) => state.contractor.contractor
-  );
-  const contractorTypes = useSelector(
-    (state) => state.contractor.contractorTypes
-  );
-
-  const [contractor, setContractor] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [form, setForm] = useState({});
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const handleSelectedContractor = useCallback(() => {
-    // Set selected contractor to component state to edit
-    if (!isEmpty(selectedContractor)) {
-      const tempContractor = {
-        ...selectedContractor,
-        ContractorTypes: selectedContractor.ContractorTypes.map(
-          (contractorType) => {
-            return {
-              value: contractorType.ID,
-              label: contractorType.Name,
-            };
-          }
-        ),
-      };
-
-      setContractor(tempContractor);
-    }
-  }, [selectedContractor]);
-
-  useEffect(() => {
-    handleSelectedContractor();
-  }, [handleSelectedContractor]);
-
-  useEffect(() => {
-    if (isEmpty(contractorTypes)) dispatch(getContractorTypes());
-  }, [dispatch, contractorTypes]);
-
-  const handleSaveContractor = () => {
-    if (!contractor.CompanyName) {
-      return alert("Company Name is Required");
-    } else if (isEmpty(contractor?.ContractorTypes)) {
-      return alert("Contractor Types are Required");
-    }
-
-    setIsLoading(true);
-
-    // remap contractor types to save properly
-    const contractorFinal = {
-      ...contractor,
-      ContractorTypes: contractor.ContractorTypes?.map((type) => {
-        return {
-          ID: type.value,
-        };
-      }),
-    };
-
-    dispatch(createContractor(contractorFinal))
-      .then(() => {
-        dispatch(setSelectedContractor({}));
-        setIsLoading(false);
-        handleClose();
-      })
-      .catch(() => {
-        setIsLoading(false);
-        alert("Something went wrong creating contractor");
-      });
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleMagaphoneCross = () => {
-    handleClose();
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("Type", form.title);
+    formData.append("Message", form.description);
+    formData.append("URL", window?.location?.href);
+    selectedFiles?.forEach(item => {
+      formData.append("Attachments[]", item.file);
+    })
+ 
+    dispatch(sendBugs(formData)).then(() => {
+      setLoading(false);
+      handleClose()
+    }).catch(() => {
+      setLoading(false)
+    });
   };
+ 
   const handleFileChange = (e) => {
     let file = e.target?.files?.[0];
-    setSelectedFiles([...selectedFiles, {file, id: uniqueId()}]);
+    setSelectedFiles([...selectedFiles, { file, id: uniqueId() }]);
   };
 
   const handleDeleteAttachment = (file) => {
-    setSelectedFiles(prevs => prevs.filter(f => f.id !== file.id));
-  }
-  console.log(selectedFiles)
+    setSelectedFiles((prevs) => prevs.filter((f) => f.id !== file.id));
+  };
   return (
     <Modal
       size="lg"
@@ -112,10 +57,8 @@ const Megaphone = ({ show, handleClose }) => {
               <Form.Control
                 type="text"
                 className="input-gray"
-                onChange={(e) =>
-                  setContractor({ ...contractor, Address1: e.target.value })
-                }
-                defaultValue={contractor?.Address1}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                defaultValue={form?.title}
               />
             </Form.Group>
           </Col>
@@ -129,9 +72,9 @@ const Megaphone = ({ show, handleClose }) => {
                 as="textarea"
                 className="input-gray"
                 onChange={(e) =>
-                  setContractor({ ...contractor, Notes: e.target.value })
+                  setForm({ ...form, description: e.target.value })
                 }
-                defaultValue={contractor?.Notes}
+                defaultValue={form?.description}
               />
             </Form.Group>
           </Col>
@@ -139,7 +82,7 @@ const Megaphone = ({ show, handleClose }) => {
           <Col md={12}>
             <Form.Group>
               <Form.Label className="input-label">Attachments</Form.Label>
-              <div className="form-col pb-4">
+              <div className="form-col pb-1">
                 <FileUpload
                   className="custom-file-label"
                   onFileChange={handleFileChange}
@@ -147,10 +90,16 @@ const Megaphone = ({ show, handleClose }) => {
               </div>
               <div className="d-flex flex-column gap-4">
                 {selectedFiles.map((file, index) => (
-                  <div className="file-item d-flex justify-content-between gap- text-primary" key={index}>
+                  <div
+                    className="file-item d-flex justify-content-between text-primary"
+                    key={index}
+                  >
                     {file.file.name}
-                    <span className="pointer mb-2 text-danger" onClick={() => handleDeleteAttachment(file)}>
-                        <i className="fa fa-trash" />
+                    <span
+                      className="pointer mb-2 text-danger"
+                      onClick={() => handleDeleteAttachment(file)}
+                    >
+                      <i className="fa fa-trash" />
                     </span>
                   </div>
                 ))}
@@ -164,9 +113,9 @@ const Megaphone = ({ show, handleClose }) => {
             <Button
               type="submit"
               onClick={handleMagaphoneCross}
-              className="primary-gray-btn next-btn ml-3"
+              className="primary-gray-btn next-btn ml-3 px-5"
             >
-              submit
+              {loading ? <Spinner animation="border" variant="white"  size="sm"/> : "Submit" }
             </Button>
           </>
         </div>

@@ -25,12 +25,13 @@ const ProjectCard = (props) => {
       });
   };
 
+  console.log(project?.ProjectNumber, project?.ThumbnailURL)
   return (
     <div
       className="project-card"
       onClick={goToProject}
       style={{
-        backgroundImage: `url(${project?.ThumbnailURL})`,
+        backgroundImage: `url("${project?.ThumbnailURL}")`,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

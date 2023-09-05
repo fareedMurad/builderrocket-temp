@@ -171,8 +171,6 @@ const ReportsTable = React.forwardRef(({layout, hideTotals}, ref) => {
 export default ReportsTable;
 
 export const TableRow = ({item, renderTableBody, renderHeader, allRooms, localFilters}) => {
-
-
     const [expend, setExpend] = useState(false);
     const items = FilterItems({localFilters, items: item?.Items});
     if((!items || items.length === 0) && !localFilters.showEmptyData){
@@ -206,9 +204,9 @@ export const TableRow = ({item, renderTableBody, renderHeader, allRooms, localFi
     )
 }
 
-export const FilterItems = ({localFilters, items}) => {
-    return items?.filter(value => {
-        return (localFilters.isCustomer ? value.RequiresApproval : true) &&
-            (localFilters.roughInTrimOut !== null ? value.RoughInTrimOutEnum === localFilters.roughInTrimOut : true)
-    })
-}
+    export const FilterItems = ({localFilters, items}) => {
+        return items?.filter(value => {
+            return (localFilters.isCustomer ? value.RequiresApproval : true) &&
+                (localFilters.roughInTrimOut !== null ? value.RoughInTrimOutEnum === localFilters.roughInTrimOut : true)
+        })
+    }
