@@ -71,7 +71,7 @@ const AddProduct = () => {
     Description: null,
     Filter: null,
     CustomFilters: {},
-  });
+}); 
 
   const productRef = useRef();
   const searchRef = useRef("");
@@ -153,8 +153,8 @@ const AddProduct = () => {
       VendorID: 0,
       IsApproved: false,
       RequiresApproval: values?.RequiresApproval,
-      DefaultRoomProductID:0,
-      RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn",
+        DefaultRoomProductID:0,
+        RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn",
       Notes: "",
     };
     dispatch(handleAddProductForProject(newProduct)).then((project) => {

@@ -227,7 +227,7 @@ const MyProducts = () => {
                                     <td>{product?.Materials}</td>
                                     <td>{product?.Collection}</td>
                                     <td>{product?.Length}</td>
-                                    <td>{product?.IsActive ? <i className="fas fa-check-double text-success"></i> : <i className="fas fa-times text-danger"></i>}</td>
+                                    <td>{product?.IsActive ? <i class="fas fa-check-double text-success"></i> : <i class="fas fa-times text-danger"></i>}</td>
                                     <td>
                                         {(isLoading && selectedMyProduct?.ID === product.ID) ? (
                                             <Spinner

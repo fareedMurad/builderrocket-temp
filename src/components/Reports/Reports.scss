@@ -100,6 +100,7 @@
         .link-btn {
             padding: 0;
             font-size: 14px;
+           margin-top: 0px !important;
         }
     
         .total {
@@ -152,8 +153,8 @@
             border-spacing:0 1px;
         }
         .layout-select {
-            width: 300px;
-            margin: 13px 10px;
+            width: 233px;
+            margin: 0px 10px;
             position: relative;
             .custom-placeholder{
                 position: absolute;
@@ -162,8 +163,9 @@
             }
         }
         .rough-in-select {
-            width: 225px;
+            width: 233px;
             margin: 13px 10px;
+            // margin-bottom: 0.1rem;
             position: relative;
             .custom-placeholder{
                 position: absolute;
@@ -171,7 +173,18 @@
                 left: 8px;
             }
         }
-
+        .room_option{display: inline-block;
+            padding-left: 0.8rem;
+        }
+.multiple_categries{
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    margin-left: 0.5rem;
+}
+.category_option{
+    margin-left: 0.5rem; 
+}
 
 
         tr.contractor-type-name{

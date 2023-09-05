@@ -55,7 +55,7 @@ const Reports = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [layout, setLayout] = useState(LayoutOptions[0]);
-  // const [groupLayout, setGroupLayout] = useState(null)
+//   const [newgroupcategory, setGroupCategory] = useState(true);
   const roughInTrimOut = useSelector(
     (state) => state.reportFilter.roughInTrimOut
   );
@@ -311,8 +311,8 @@ const Reports = (props) => {
         {!hideReportsHeader && <ReportsHeader hideTotals={hideTotals} />}
         {hideReportsHeader && (
           <>
-            <div className="d-flex justify-content-between">
-              <div className="mx-3 my-3">
+            <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
+              <div className=" d-flex align-items-center mx-3  mt-3">
                 <Form>
                   <Form.Check
                     value={true}
@@ -323,11 +323,24 @@ const Reports = (props) => {
                     label="Builder/Customer"
                   />
                 </Form>
+                <div className="ml-3">
+                  {["category", "room"].indexOf(layout?.value) > -1 ? (
+                    <div className={"d-inline-block"}>
+                      <Form.Check
+                        value={false}
+                        checked={localFilters.showEmptyData}
+                        onChange={onChangeShowEmptyData}
+                        type="switch"
+                        id="empty-data-switch"
+                        label="Show Empty Categories/Rooms"
+                      />
+                    </div>
+                  ) : null}
+                </div>
               </div>
+
               <div className="d-flex flex-wrap align-items-center mx-2">
-                <div
-                  className={layout?.value === "category" ? "mt-3 mx-3" : ""}
-                >
+                <div className={layout?.value === "category" ? " mx-3" : ""}>
                   <Button
                     onClick={handleSaveReportModal}
                     variant="link"
@@ -385,12 +398,12 @@ const Reports = (props) => {
                 style={{ zIndex: 9 }}
               >
                 <div className="layout-select" style={{ zIndex: 9999 }}>
-                  <span>My Reports:</span>
+                  <span>My Saved Reports:</span>
                   <Select
                     options={listSavedReports}
                     value={selectedSavedFilter}
                     onChange={hanldeChangeSelectedFilter}
-                    placeholder="Room Filter"
+                    placeholder="Select saved reports..."
                     components={{ Option }}
                   />
                 </div>
@@ -404,235 +417,238 @@ const Reports = (props) => {
                     placeholder="Room Filter"
                   />
                 </div>
-              </div>
-              <div className="d-flex my-3 align-items-center">
                 {layout?.value === "category" && (
                   <div className="d-flex align-items-center">
-                    <div className="layout-select">
-                      <span>
-                        {reportFilter?.length ? (
-                          <span className="custom-placeholder">
-                            {
-                              reportFilter?.filter(
-                                (p) => p.value !== "select_all"
-                              )?.length
-                            }{" "}
-                            of {reportByCategory?.Groups?.length} selected
-                          </span>
-                        ) : null}
-                      </span>
-                      <Multiselect
-                        options={
-                          reportByCategory?.Groups?.length > 0
-                            ? [
-                                {
-                                  name: "Select All",
-                                  value: "select_all",
-                                },
-                                ...reportByCategory?.Groups?.map((a) => {
-                                  return {
-                                    ...a,
-                                    name: a.Name,
-                                    value: a.ID,
-                                  };
-                                }),
-                              ]
-                            : []
-                        }
-                        selectedValues={
-                          !reportFilter
-                            ? []
-                            : reportFilter?.length ===
-                              reportByCategory?.Groups?.length
-                            ? [
-                                {
-                                  name: "Select All",
-                                  value: "select_all",
-                                },
-                                ...reportFilter,
-                              ]
-                            : reportFilter
-                        }
-                        onSelect={(arr, current) => {
-                          if (current.value === "select_all") {
-                            dispatch(
-                              setReportFilter(
-                                reportByCategory?.Groups?.length > 0
-                                  ? [
-                                      {
-                                        name: "Select All",
-                                        value: "select_all",
-                                      },
-                                      ...reportByCategory?.Groups?.map((a) => {
-                                        return {
-                                          ...a,
-                                          name: a.Name,
-                                          value: a.ID,
-                                        };
-                                      }),
-                                    ].sort((a, b) =>
-                                      a.name < b.name
-                                        ? -1
-                                        : a.name > b.name
-                                        ? 1
-                                        : 0
-                                    )
-                                  : []
-                              )
-                            );
-                          } else
-                            dispatch(
-                              setReportFilter(
-                                arr.sort((a, b) =>
-                                  a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                                )
-                              )
-                            );
-                        }}
-                        onRemove={(arr, target) => {
-                          let categories = arr
-                            .filter((p) => p.value !== "select_all")
-                            .sort((a, b) =>
-                              a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                            );
-                          if (target.value === "select_all") {
-                            categories = [];
+                    <div>
+                      <span className="room_option">Category Filter:</span>
+                      <div className="layout-select">
+                        <span>
+                          {reportFilter?.length ? (
+                            <span className="custom-placeholder">
+                              {
+                                reportFilter?.filter(
+                                  (p) => p.value !== "select_all"
+                                )?.length
+                              }{" "}
+                              of {reportByCategory?.Groups?.length} selected
+                            </span>
+                          ) : null}
+                        </span>
+                        <Multiselect
+                          options={
+                            reportByCategory?.Groups?.length > 0
+                              ? [
+                                  {
+                                    name: "Select All",
+                                    value: "select_all",
+                                  },
+                                  ...reportByCategory?.Groups?.map((a) => {
+                                    return {
+                                      ...a,
+                                      name: a.Name,
+                                      value: a.ID,
+                                    };
+                                  }),
+                                ]
+                              : []
                           }
-                          dispatch(setReportFilter(categories));
-                        }}
-                        displayValue="name"
-                        placeholder="Group Filter"
-                        showCheckbox={true}
-                        keepSearchTerm={false}
-                        hidePlaceholder={true}
-                      />
+                          selectedValues={
+                            !reportFilter
+                              ? []
+                              : reportFilter?.length ===
+                                reportByCategory?.Groups?.length
+                              ? [
+                                  {
+                                    name: "Select All",
+                                    value: "select_all",
+                                  },
+                                  ...reportFilter,
+                                ]
+                              : reportFilter
+                          }
+                          onSelect={(arr, current) => {
+                            if (current.value === "select_all") {
+                              dispatch(
+                                setReportFilter(
+                                  reportByCategory?.Groups?.length > 0
+                                    ? [
+                                        {
+                                          name: "Select All",
+                                          value: "select_all",
+                                        },
+                                        ...reportByCategory?.Groups?.map(
+                                          (a) => {
+                                            return {
+                                              ...a,
+                                              name: a.Name,
+                                              value: a.ID,
+                                            };
+                                          }
+                                        ),
+                                      ].sort((a, b) =>
+                                        a.name < b.name
+                                          ? -1
+                                          : a.name > b.name
+                                          ? 1
+                                          : 0
+                                      )
+                                    : []
+                                )
+                              );
+                            } else
+                              dispatch(
+                                setReportFilter(
+                                  arr.sort((a, b) =>
+                                    a.name < b.name
+                                      ? -1
+                                      : a.name > b.name
+                                      ? 1
+                                      : 0
+                                  )
+                                )
+                              );
+                          }}
+                          onRemove={(arr, target) => {
+                            let categories = arr
+                              .filter((p) => p.value !== "select_all")
+                              .sort((a, b) =>
+                                a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                              );
+                            if (target.value === "select_all") {
+                              categories = [];
+                            }
+                            dispatch(setReportFilter(categories));
+                          }}
+                          displayValue="name"
+                          placeholder="Category Filter"
+                          showCheckbox={true}
+                          keepSearchTerm={false}
+                          hidePlaceholder={true}
+                        />
+                      </div>
                     </div>
-                    <div className="layout-select">
-                      <span>
-                        {roomFilter?.length ? (
-                          <span className="custom-placeholder">
-                            {
-                              roomFilter?.filter(
-                                (p) => p.value !== "select_all"
-                              )?.length
-                            }{" "}
-                            of {reportByCategory?.Rooms?.length} selected
-                          </span>
-                        ) : null}
-                      </span>
-                      <Multiselect
-                        options={
-                          reportByCategory?.Rooms?.length > 0
-                            ? [
-                                {
-                                  name: "Select All",
-                                  value: "select_all",
-                                },
-                                ...reportByCategory?.Rooms?.map((a) => {
-                                  return {
-                                    ...a,
-                                    name: a.Name,
-                                    value: a.ID,
-                                  };
-                                }),
-                              ]
-                            : []
-                        }
-                        selectedValues={
-                          !roomFilter
-                            ? []
-                            : roomFilter?.length ===
-                              reportByCategory?.Rooms?.length
-                            ? [
-                                {
-                                  name: "Select All",
-                                  value: "select_all",
-                                },
-                                ...roomFilter,
-                              ]
-                            : roomFilter
-                        }
-                        onSelect={(arr, current) => {
-                          if (current.value === "select_all") {
-                            dispatch(
-                              setRoomFilter(
-                                reportByCategory?.Rooms?.length > 0
-                                  ? [
-                                      {
-                                        name: "Select All",
-                                        value: "select_all",
-                                      },
-                                      ...reportByCategory?.Rooms?.map((a) => {
-                                        return {
-                                          ...a,
-                                          name: a.Name,
-                                          value: a.ID,
-                                        };
-                                      }),
-                                    ].sort((a, b) =>
-                                      a.name < b.name
-                                        ? -1
-                                        : a.name > b.name
-                                        ? 1
-                                        : 0
-                                    )
-                                  : []
-                              )
-                            );
-                          } else
-                            dispatch(
-                              setRoomFilter(
-                                arr.sort((a, b) =>
-                                  a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                                )
-                              )
-                            );
-                        }}
-                        onRemove={(arr, target) => {
-                          let rooms = arr
-                            .filter((p) => p.value !== "select_all")
-                            .sort((a, b) =>
-                              a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                            );
-                          if (target.value === "select_all") {
-                            rooms = [];
+                    <div className="">
+                      <span className="room_option">Room Filter:</span>
+                      <div className="layout-select">
+                        <span>
+                          {roomFilter?.length ? (
+                            <span className="custom-placeholder">
+                              {
+                                roomFilter?.filter(
+                                  (p) => p.value !== "select_all"
+                                )?.length
+                              }{" "}
+                              of {reportByCategory?.Rooms?.length} selected
+                            </span>
+                          ) : null}
+                        </span>
+                        <Multiselect
+                          options={
+                            reportByCategory?.Rooms?.length > 0
+                              ? [
+                                  {
+                                    name: "Select All",
+                                    value: "select_all",
+                                  },
+                                  ...reportByCategory?.Rooms?.map((a) => {
+                                    return {
+                                      ...a,
+                                      name: a.Name,
+                                      value: a.ID,
+                                    };
+                                  }),
+                                ]
+                              : []
                           }
-                          dispatch(setRoomFilter(rooms));
-                        }}
-                        displayValue="name"
-                        placeholder="Room Filter"
-                        showCheckbox={true}
-                        keepSearchTerm={false}
-                        hidePlaceholder={true}
-                      />
+                          selectedValues={
+                            !roomFilter
+                              ? []
+                              : roomFilter?.length ===
+                                reportByCategory?.Rooms?.length
+                              ? [
+                                  {
+                                    name: "Select All",
+                                    value: "select_all",
+                                  },
+                                  ...roomFilter,
+                                ]
+                              : roomFilter
+                          }
+                          onSelect={(arr, current) => {
+                            if (current.value === "select_all") {
+                              dispatch(
+                                setRoomFilter(
+                                  reportByCategory?.Rooms?.length > 0
+                                    ? [
+                                        {
+                                          name: "Select All",
+                                          value: "select_all",
+                                        },
+                                        ...reportByCategory?.Rooms?.map((a) => {
+                                          return {
+                                            ...a,
+                                            name: a.Name,
+                                            value: a.ID,
+                                          };
+                                        }),
+                                      ].sort((a, b) =>
+                                        a.name < b.name
+                                          ? -1
+                                          : a.name > b.name
+                                          ? 1
+                                          : 0
+                                      )
+                                    : []
+                                )
+                              );
+                            } else
+                              dispatch(
+                                setRoomFilter(
+                                  arr.sort((a, b) =>
+                                    a.name < b.name
+                                      ? -1
+                                      : a.name > b.name
+                                      ? 1
+                                      : 0
+                                  )
+                                )
+                              );
+                          }}
+                          onRemove={(arr, target) => {
+                            let rooms = arr
+                              .filter((p) => p.value !== "select_all")
+                              .sort((a, b) =>
+                                a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                              );
+                            if (target.value === "select_all") {
+                              rooms = [];
+                            }
+                            dispatch(setRoomFilter(rooms));
+                          }}
+                          displayValue="name"
+                          placeholder="Room Filter"
+                          showCheckbox={true}
+                          keepSearchTerm={false}
+                          hidePlaceholder={true}
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
-                <div className="d-inline-flex align-items-center">
+
+                <div className="d-flex align-items-center mb-[0.1rem]">
                   <div className="rough-in-select">
                     <span>Rough In/Trim Out:</span>
                     <Select
-                      options={RoughInTrimOutOptions}
-                      value={RoughInTrimOutOptions.find(
-                        (v) => v.value === localFilters?.roughInTrimOut
-                      )}
-                      onChange={handleUpdateRoughInTrimOut}
-                      placeholder="Rough In/Trim Out Filter"
-                    />
+                        options={RoughInTrimOutOptions}
+                        value={RoughInTrimOutOptions.find(
+                          (v) => v.value === localFilters?.roughInTrimOut
+                        )}
+                        onChange={handleUpdateRoughInTrimOut}
+                        placeholder="Rough In/Trim Out Filter"
+                      />
                   </div>
                 </div>
-                {["category", "room"].indexOf(layout?.value) > -1 ? (
-                  <div className={"d-inline-block"}>
-                    <Form.Check
-                      value={false}
-                      checked={localFilters.showEmptyData}
-                      onChange={onChangeShowEmptyData}
-                      type="switch"
-                      id="empty-data-switch"
-                      label="Show Empty Categories/Rooms"
-                    />
-                  </div>
-                ) : null}
               </div>
             </div>
           </>
