@@ -8,12 +8,15 @@ import {
     SET_SELECTED_CATEGORY_ID,
     SET_SELECTED_PRODUCT_TAB,
     ROUGHT_IN_TRIM_OUT,
-    IS_FAVORITE, GET_BRANDS, SET_PRODUCT_LOADING
+    IS_FAVORITE, GET_BRANDS, SET_PRODUCT_LOADING, SET_REPLACE_PRODUCT_ROOMS, SET_REPLACE_OLD_PRODUCT, SET_REPLACE_OLD_PRODUCT_DETAILS
 } from '../actions/types';
 
 const intialState = {
+    replaceOldProduct:{},
     products: [],
     productDetail: {},
+    replaceOldProductDetails: {},
+    replaceProductRooms: [],
     productCategories: [],
     selectedCategoryID: '',
     selectedProductTab: 'products',
@@ -56,10 +59,30 @@ const productReducer = (state = intialState, action) => {
             }
         }
 
+        case SET_REPLACE_OLD_PRODUCT: {
+            return {
+                ...state, 
+                replaceOldProduct: action.payload
+            }
+        }
+
+        case SET_REPLACE_OLD_PRODUCT_DETAILS: {
+            return {
+                ...state, 
+                replaceOldProductDetails: action.payload
+            }
+        }
+
         case SET_REPLACE_PRODUCT: {
             return {
                 ...state, 
                 replaceProduct: action.payload
+            }
+        }
+        case SET_REPLACE_PRODUCT_ROOMS: {
+            return {
+                ...state, 
+                replaceProductRooms: action.payload
             }
         }
         case SET_PRODUCTS: {

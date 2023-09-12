@@ -15,9 +15,11 @@ import {
   getBrands,
   getCategories,
   getProductDetails,
+  getReplaceOldProductDetails,
   RoughInTrimOutEnum,
   setIsFavorite,
   setProduct,
+  setReplaceOldProduct,
 } from "../../actions/productActions";
 import {
   editProduct,
@@ -45,6 +47,7 @@ import {
   updateMyProductsForProject,
 } from "../../actions/myProductActions";
 import ColorProductModal from "../ColorProductModal";
+import Utils from "../../utils";
 
 const Products = (props) => {
   const dispatch = useDispatch();
@@ -312,13 +315,18 @@ const Products = (props) => {
       };
 
       dispatch(setSelectedRoom(templateItem.room));
-
+      dispatch(setReplaceOldProduct(product));
       dispatch(setProduct(product))
         .then(dispatch(getCategories(product?.CategoryID)))
         .then(() => {
           if (templateItem.ProductID) {
+            dispatch(getReplaceOldProductDetails(templateItem.ProductID));
             dispatch(getProductDetails(templateItem.ProductID)).then(() => {
-              if (templateItem?.IsTemplate) {
+              if (
+                templateItem?.IsTemplate ||
+                showCustomProducts ||
+                showCustomProducts
+              ) {
                 history.push(
                   `/project/${project.ProjectNumber}/product/addProduct`
                 );
@@ -775,17 +783,6 @@ const Products = (props) => {
     );
   };
 
-  const getProductImages = (product) => {
-    const images = [];
-    if (product?.ProductThumbnailURl) images.push(product?.ProductThumbnailURl);
-
-    if (product?.ThumbnailURL) images.push(product?.ThumbnailURL);
-
-    if (product?.ImageURL) images.push(product?.ImageURL);
-
-    return images;
-  };
-
   const renderTable = (items) => {
     return (
       <div className="products-table">
@@ -865,9 +862,9 @@ const Products = (props) => {
                   </td>
                   <td>
                     <div className="d-flex add-btn-templateItem">
-                      {getProductImages(templateItem)?.length ? (
+                      {Utils.getProductImages(templateItem)?.length ? (
                         <CustomLightbox
-                          images={getProductImages(templateItem)}
+                          images={Utils.getProductImages(templateItem)}
                         />
                       ) : null}
                       <div>
@@ -993,7 +990,10 @@ const Products = (props) => {
                   <td>
                     {!templateItem?.IsTemplate && (
                       <div className="d-flex justify-content-between">
-                        <i className="fas fa-retweet" onClick={() => setShowColorModal(true)}></i>
+                        <i
+                          className="fas fa-retweet"
+                          onClick={() => setShowColorModal(true)}
+                        ></i>
                         <i
                           className={`far ${
                             isFav ? "text-danger fas fa-heart" : "fa-heart"
@@ -1036,7 +1036,6 @@ const Products = (props) => {
   };
 
   const onRemove = (selectedList, removedItem) => {};
-  console.log(showCustomProducts, selectedMyProductsRooms, "roomsOptions");
   return (
     <div className="d-flex products">
       <div className="products-container">

@@ -39,11 +39,23 @@ const textEllipsis = (str, maxLength, { side = "end", ellipsis = "..." } = {}) =
     return str;
   }
 
+  const getProductImages = (product) => {
+    const images = [];
+    if (product?.ProductThumbnailURl) images.push(product?.ProductThumbnailURl);
+
+    if (product?.ThumbnailURL) images.push(product?.ThumbnailURL);
+
+    if (product?.ImageURL) images.push(product?.ImageURL);
+
+    return images;
+  };
+
 const Utils = {
     formatShortDateUS,
     formatDateDashes,
     textEllipsis,
-    formatDate
+    formatDate,
+    getProductImages
 }
 
 export default Utils;
