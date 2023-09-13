@@ -88,7 +88,6 @@ const ColorProductModal = (props) => {
     }
 
     function includedRooms(roomId){
-        console.log(roomId, roomList?.includes(roomId));
         return roomList?.includes(roomId);
     }
 

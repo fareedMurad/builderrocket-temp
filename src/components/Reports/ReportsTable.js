@@ -3,7 +3,7 @@ import {Table} from 'react-bootstrap';
 import {setSelectedRoom} from '../../actions/roomActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {isEmpty} from 'lodash';
-import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
+import ProjectPlaceholder from '../../assets/images/img-placeholder.png';
 import Utils from '../../utils'
 
 import './Reports.scss';

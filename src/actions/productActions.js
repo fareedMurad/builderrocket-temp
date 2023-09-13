@@ -11,7 +11,9 @@ import {
     SET_SELECTED_CATEGORY_ID,
     SET_SELECTED_PRODUCT_TAB,
     ROUGHT_IN_TRIM_OUT,
-    IS_FAVORITE, GET_SUBDIVISIONS, GET_BRANDS, SET_REPORTS_FILTER, SET_PRODUCT_FILTER, GET_PRODUCTS, SET_PRODUCT_LOADING
+    IS_FAVORITE, GET_SUBDIVISIONS, GET_BRANDS, SET_REPORTS_FILTER, SET_PRODUCT_FILTER, GET_PRODUCTS, SET_PRODUCT_LOADING, SET_REPLACE_PRODUCT_ROOMS,
+    SET_REPLACE_OLD_PRODUCT,
+    SET_REPLACE_OLD_PRODUCT_DETAILS
 } from '../actions/types';
 import api from '../api';
 
@@ -156,6 +158,40 @@ export const setProduct = (product) => dispatch => {
     });
 }
 
+export const setReplaceOldProduct = (product) => dispatch => {
+    return new Promise((resolve, reject) => {
+        try {
+            dispatch({ type: SET_REPLACE_OLD_PRODUCT, payload: product });
+
+            resolve(product);
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+export const getReplaceOldProductDetails = (productID) => dispatch => {
+    if (!productID) return;
+
+    const URL = `/Product/${productID}/details`;
+
+    return api({
+        method: 'GET',
+        url: URL
+    })
+        .then((response) => {
+            if (response.status === 200) {
+                dispatch({ type: SET_REPLACE_OLD_PRODUCT_DETAILS, payload: response.data });
+
+                return response.data;
+            }
+        })
+        .catch((error) => {
+            if (error?.response?.status === 401)
+                dispatch({ type: LOGOUT });
+        });
+}
+
 export const setReplaceProduct = (product) => dispatch => {
     return new Promise((resolve, reject) => {
         try {
@@ -226,7 +262,7 @@ export const getProductDetails = (productID) => dispatch => {
         });
 }
 
-export const getReplaceProduct = (productID) => dispatch => {
+export const getReplaceProduct = (productID, rooms) => dispatch => {
     if (!productID) return;
 
     const URL = `/Product/${productID}/details`;
@@ -238,6 +274,7 @@ export const getReplaceProduct = (productID) => dispatch => {
         .then((response) => {
             if (response.status === 200) {
                 dispatch({ type: SET_REPLACE_PRODUCT, payload: response.data });
+                dispatch({ type: SET_REPLACE_PRODUCT_ROOMS, payload: rooms });
 
                 return response.data;
             }

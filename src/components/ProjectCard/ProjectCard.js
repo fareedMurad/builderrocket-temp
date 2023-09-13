@@ -6,6 +6,7 @@ import "./ProjectCard.scss";
 import toast from "react-hot-toast";
 import Toaster from "react-hot-toast";
 import { Spinner } from "react-bootstrap";
+import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
 
 const ProjectCard = (props) => {
   const { project, history, isCustomer, handlePinChanged, pinLoader } = props;
@@ -25,13 +26,12 @@ const ProjectCard = (props) => {
       });
   };
 
-  console.log(project?.ProjectNumber, project?.ThumbnailURL)
   return (
     <div
       className="project-card"
       onClick={goToProject}
       style={{
-        backgroundImage: `url("${project?.ThumbnailURL}")`,
+        backgroundImage: `url("${project?.ThumbnailURL || ProjectPlaceholder}")`,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

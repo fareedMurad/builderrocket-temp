@@ -55,7 +55,7 @@ const Reports = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [layout, setLayout] = useState(LayoutOptions[0]);
-//   const [newgroupcategory, setGroupCategory] = useState(true);
+  //   const [newgroupcategory, setGroupCategory] = useState(true);
   const roughInTrimOut = useSelector(
     (state) => state.reportFilter.roughInTrimOut
   );
@@ -259,6 +259,7 @@ const Reports = (props) => {
       handleFetchSavedReports();
     });
   };
+
   function Option({ children, ...props }) {
     return (
       <div>
@@ -640,13 +641,13 @@ const Reports = (props) => {
                   <div className="rough-in-select">
                     <span>Rough In/Trim Out:</span>
                     <Select
-                        options={RoughInTrimOutOptions}
-                        value={RoughInTrimOutOptions.find(
-                          (v) => v.value === localFilters?.roughInTrimOut
-                        )}
-                        onChange={handleUpdateRoughInTrimOut}
-                        placeholder="Rough In/Trim Out Filter"
-                      />
+                      options={RoughInTrimOutOptions}
+                      value={RoughInTrimOutOptions.find(
+                        (v) => v.value === localFilters?.roughInTrimOut
+                      )}
+                      onChange={handleUpdateRoughInTrimOut}
+                      placeholder="Rough In/Trim Out Filter"
+                    />
                   </div>
                 </div>
               </div>
