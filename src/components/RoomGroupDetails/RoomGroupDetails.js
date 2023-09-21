@@ -180,7 +180,7 @@ const RoomGroupDetails = () => {
               className="link-btn"
               onClick={handleGoToProducts}
             >
-              Templates / {builderSelectedRoomGroup?.Name} /
+              Room Types / {builderSelectedRoomGroup?.Name} /
             </Button>
           </div>
           <div className="page-title">{selectedCategoryID?.label}</div>
@@ -199,7 +199,7 @@ const RoomGroupDetails = () => {
               </Form>
             </div>
             <div className="mr-3">
-              <Form.Control
+              {/* <Form.Control
                 as="select"
                 disabled
                 value={selectedCategoryID?.value}
@@ -212,7 +212,7 @@ const RoomGroupDetails = () => {
                 {productCategories?.map((category) => (
                   <Category key={category.ID} category={category} />
                 ))}
-              </Form.Control>
+              </Form.Control> */}
               {error ? (
                 <small className="text-danger">Please select a category</small>
               ) : null}

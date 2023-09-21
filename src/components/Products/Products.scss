@@ -22,7 +22,6 @@
         i {
             margin-right: .5rem;
         }
-
         .subtext { 
             margin-top: .5rem;
             @include media-breakpoint-down(md) {
@@ -116,7 +115,7 @@
                 select {
                     padding: 0;
                     height: 25px;
-                    width: 160px;
+                    width: 140px;
                     font-size: 14px;
                 }
             }
@@ -128,7 +127,7 @@
             .qty-input { 
                 input {
                     padding: 0 .35rem;
-                    width: 60px;
+                    width: 50px;
                     height: 25px;
                     font-size: 14px;
                 }
@@ -157,4 +156,10 @@
         }
     }
 
+}
+
+.replace-btn {
+    height: 20px;
+    font-size: 10px;
+    padding: 2px 5px;
 }

@@ -48,6 +48,16 @@
     color: white;
 }
 
+button { 
+    &:disabled {
+        cursor: not-allowed;
+        background-color: #aaa;
+        &:hover {
+            background-color: #aaa !important;
+        }
+    }
+}
+
 .search-container {
     height: 30px;
     border: none;
