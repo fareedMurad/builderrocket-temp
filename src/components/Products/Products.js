@@ -301,7 +301,7 @@ const Products = (props) => {
     }
   }, [myProductsByProject, productFilter, project]);
 
-  const handleSelectedCategoryID = (templateItem) => {
+  const handleSelectedCategoryID = (templateItem, redirectToReplace) => {
     if (!templateItem) return;
 
     if (templateItem) {
@@ -323,17 +323,23 @@ const Products = (props) => {
             dispatch(getReplaceOldProductDetails(templateItem.ProductID));
             dispatch(getProductDetails(templateItem.ProductID)).then(() => {
               if (
-                templateItem?.IsTemplate ||
-                showCustomProducts ||
-                showCustomProducts
+                !templateItem?.IsTemplate ||
+                !showCustomProducts ||
+                !showCustomProducts
               ) {
-                history.push(
-                  `/project/${project.ProjectNumber}/product/addProduct`
-                );
-              } else {
-                history.push(
-                  `/project/${project.ProjectNumber}/product/replaceProduct`
-                );
+                if (redirectToReplace) {
+                  history.push(
+                    `/project/${project.ProjectNumber}/product/replaceProduct`
+                  );
+                } else {
+                  history.push(
+                    `/project/${project.ProjectNumber}/product/productDetail`
+                  );
+                }
+                //   history.push(
+                //     `/project/${project.ProjectNumber}/product/addProduct`
+                //   );
+                // } else {
               }
             });
           } else {
@@ -602,8 +608,8 @@ const Products = (props) => {
       case 0 | null:
         {
           status = {
-            label: "",
-            className: "",
+            label: "Pending",
+            className: "text-secondary",
           };
         }
         break;
@@ -981,7 +987,7 @@ const Products = (props) => {
                           <i className="far fa-sticky-note d-flex justify-content-center"></i>
                         </OverlayTrigger>
                       ) : (
-                        <i className="far fa-sticky-note d-flex justify-content-center"></i>
+                        <i className="far fa-sticky-note d-flex justify-content-center mr-0"></i>
                       )}
                     </td>
                   ) : (
@@ -989,15 +995,28 @@ const Products = (props) => {
                   )}
                   <td>
                     {!templateItem?.IsTemplate && (
-                      <div className="d-flex justify-content-between">
-                        <i
+                      <div
+                        className="d-flex justify-content-between align-items-center"
+                        style={{ gap: "5px" }}
+                      >
+                        {/* <i
                           className="fas fa-retweet"
                           onClick={() => setShowColorModal(true)}
-                        ></i>
+                        ></i> */}
+                        <Button
+                          size="sm"
+                          className="replace-btn"
+                          variant="secondary"
+                          onClick={() =>
+                            handleSelectedCategoryID(templateItem, true)
+                          }
+                        >
+                          Replace
+                        </Button>
                         <i
                           className={`far ${
                             isFav ? "text-danger fas fa-heart" : "fa-heart"
-                          }`}
+                          } mr-0`}
                           onClick={() =>
                             !showCustomProducts
                               ? handleIsFavorite(templateItem)
@@ -1005,7 +1024,7 @@ const Products = (props) => {
                           }
                         ></i>
                         <i
-                          className="far fa-trash-alt"
+                          className="far fa-trash-alt mr-0"
                           onClick={() => handleOpenModal(templateItem)}
                         ></i>
                       </div>
@@ -1559,10 +1578,10 @@ const Products = (props) => {
         </div>
       </div>
 
-      <ColorProductModal
+      {/* <ColorProductModal
         show={showColorModal}
         handleCloseModal={handleColorClose}
-      />
+      /> */}
     </div>
   );
 };

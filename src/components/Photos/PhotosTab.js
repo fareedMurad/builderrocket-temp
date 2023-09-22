@@ -1,11 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Photo.scss";
-import { Button, Card, Form, Modal, Overlay, Popover, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Form,
+  Modal,
+  Overlay,
+  Popover,
+  Spinner,
+} from "react-bootstrap";
 import { getProjectByProjectID } from "../../actions/projectActions";
 import { useDispatch, useSelector } from "react-redux";
 import FileUpload from "../FileUpload";
 import { addDocument, deleteDocument } from "../../actions/documentActions";
 import CustomLightbox from "../Lightbox";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 const DocumentTypeID = 19;
 const PhotosTab = () => {
@@ -41,7 +50,7 @@ const PhotosTab = () => {
   const handleSubmit = () => {
     const File = uploadFiles;
     const formData = new FormData();
-      formData.append("File", File);
+    formData.append("File", File);
 
     formData.append("DocumentTypeID", DocumentTypeID);
 
@@ -100,8 +109,10 @@ const PhotosTab = () => {
   };
 
   const getProjectPhotos = () => {
-    return project?.Documents?.filter(p => p.DocumentTypeID === DocumentTypeID);
-  }
+    return project?.Documents?.filter(
+      (p) => p.DocumentTypeID === DocumentTypeID
+    );
+  };
 
   return (
     <div className="d-flex products">
@@ -117,8 +128,13 @@ const PhotosTab = () => {
           </div>
         </div>
         <div className="photos-grid">
-          {project && getProjectPhotos().length
-            ? getProjectPhotos().map((list) => {
+        {project && getProjectPhotos().length ? (
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 300: 1, 500: 2, 700: 3, 900: 4, 1300: 5 }}
+           
+          >
+            <Masonry>
+              {getProjectPhotos().map((list) => {
                 return (
                   <div className="item" key={list.ID}>
                     <Button
@@ -129,11 +145,15 @@ const PhotosTab = () => {
                     >
                       <i className="far fa-trash-alt" aria-hidden="true"></i>
                     </Button>
-                    <CustomLightbox images={[list.URL]} />
+                    <CustomLightbox images={[list.URL]} singleImageProps={{width: "100%", height: "100%"}} />
                   </div>
                 );
-              })
-            : false}
+              })}
+            </Masonry>
+          </ResponsiveMasonry>
+        ) : (
+          <></>
+        )}
         </div>
       </div>
       <Overlay
@@ -164,11 +184,11 @@ const PhotosTab = () => {
               className="po-btn position-static"
               onClick={handlerConfirmDelete}
             >
-             {loading ? (
+              {loading ? (
                 <Spinner size="sm" animation="border" variant="primary" />
               ) : (
                 "Yes"
-              )} 
+              )}
             </Button>
           </div>
         </Popover>
@@ -191,7 +211,11 @@ const PhotosTab = () => {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleSubmit} disabled={!uploadFiles}>
+            <Button
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={!uploadFiles}
+            >
               Save
             </Button>
           </div>

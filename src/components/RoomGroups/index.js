@@ -14,6 +14,9 @@ import {
   deleteRoomGroupCategory,
   renameRoomGroup,
   setSelectedGroupCategoryProducts,
+  renameRoomType,
+  getBuilderRoomTypes,
+  deleteRoomType,
 } from "../../actions/roomActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -22,16 +25,19 @@ const RoomGroups = () => {
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
   const [roomGroups, setRoomGroups] = useState([]);
+  const [roomTypes, setRoomTypes] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [newCategory, setNewCategory] = useState({});
+  const [dublicateEditAttempted, setdublicateEditAttempted] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
   const categories = useSelector((state) => state.product.productCategories);
 
   useEffect(() => {
     handleFetchRoomGroups();
+    handleFetchRoomTypes();
   }, []);
 
   const handleFetchRoomGroups = () => {
@@ -39,6 +45,12 @@ const RoomGroups = () => {
     dispatch(getBuilderRoomGroups()).then((data) => {
       setRoomGroups(data.Result);
       setIsLoading(false);
+    });
+  };
+
+  const handleFetchRoomTypes = () => {
+    dispatch(getBuilderRoomTypes()).then((data) => {
+      setRoomTypes(data.RoomTypes);
     });
   };
 
@@ -51,16 +63,22 @@ const RoomGroups = () => {
       .then((res) => {
         handleFetchRoomGroups();
         setShowVisibleModal("");
+        setGroupName("");
       })
       .catch(() => {
         alert("Something went wrong, please try again!");
       });
-    setGroupName("");
   };
   //
   const handleDeleteRoomGroup = () => {
     dispatch(deleteRoomGroup(selectedGroup.ID))
       .then((res) => {
+        const findRoomType = roomTypes.find(
+          (rt) => rt.Name === selectedGroup?.Name
+        );
+        if (findRoomType) {
+          dispatch(deleteRoomType(findRoomType.ID));
+        }
         setShowVisibleModal("");
         handleFetchRoomGroups();
         setSelectedGroup({});
@@ -98,12 +116,29 @@ const RoomGroups = () => {
 
   const handleEditGroup = () => {
     if (groupName) {
+      if (roomGroups?.find((rg) => rg.Name === groupName)) {
+        setdublicateEditAttempted(true);
+        return;
+      }
       dispatch(renameRoomGroup(selectedGroup?.ID, groupName))
         .then(() => {
+          const findRoomType = roomTypes.find(
+            (rt) => rt.Name === selectedGroup?.Name
+          );
+          if (findRoomType) {
+            const params = {
+              SourceID: findRoomType?.ID,
+              SourceName: groupName,
+              DefaultRoomGroupID: findRoomType?.BuilderDefaultRoomGroupID,
+            };
+            dispatch(renameRoomType(params));
+          }
+
           handleFetchRoomGroups();
           setShowVisibleModal("");
           setSelectedGroup({});
           setGroupName("");
+          setdublicateEditAttempted(false);
         })
         .catch(() => {
           alert("Something went wrong, please try again!");
@@ -122,11 +157,11 @@ const RoomGroups = () => {
       >
         <Modal.Body>
           <div className="page-title pl-0">
-            Delete {isGroup ? "Group" : "Group Category"}
+            Delete {isGroup ? "Room Type" : "Category"}
           </div>
           <div className="d-flex">
             Are you sure you want to delete this{" "}
-            {isGroup ? "Room Group" : "Category"}?
+            {isGroup ? "Room Type" : "Category"}?
           </div>
           <div iv className="d-flex justify-content-center pt-5">
             <Button
@@ -152,6 +187,10 @@ const RoomGroups = () => {
 
   const editAddGroupModal = () => {
     const isAdd = showVisibleModal === "ADD_GROUP";
+    const isDublicate = isAdd
+      ? roomGroups?.find((rg) => rg.Name === groupName)
+      : roomGroups?.find((rg) => rg.Name === groupName) &&
+        dublicateEditAttempted;
     return (
       <Modal
         show={showVisibleModal === "EDIT_GROUP" || isAdd}
@@ -161,16 +200,19 @@ const RoomGroups = () => {
       >
         <Modal.Body>
           <div className="page-title pl-0">
-            {isAdd ? "Add New" : "Edit"} Group
+            {isAdd ? "Create" : "Edit"} Room Type
           </div>
           <Form.Group>
-            <Form.Label className="input-label">Group Name*</Form.Label>
+            <Form.Label className="input-label">Room Type Name*</Form.Label>
             <Form.Control
               type="text"
               className="input-gray"
               value={groupName}
               onChange={handleGroupNameChange}
             />
+            <small className="text-danger h-5">
+              {isDublicate && "Name already exist."}
+            </small>
           </Form.Group>
           <div className="d-flex justify-content-center pt-5">
             <Button
@@ -183,8 +225,9 @@ const RoomGroups = () => {
             <button
               className="primary-gray-btn next-btn ml-3"
               onClick={isAdd ? handleAddGroup : handleEditGroup}
+              disabled={isDublicate}
             >
-              {isAdd ? "Add" : "Edit"}
+              {isAdd ? "Add" : "Save"}
             </button>
           </div>
         </Modal.Body>
@@ -201,7 +244,7 @@ const RoomGroups = () => {
         size="md"
       >
         <Modal.Body>
-          <div className="page-title pl-0">Add New Category</div>
+          <div className="page-title pl-0">Create Category</div>
           <Form.Group>
             <Form.Label className="input-label">Select Category</Form.Label>
             <Select
@@ -293,7 +336,7 @@ const RoomGroups = () => {
   return (
     <div className="room-management-container">
       <Button variant="link" className="link-btn" onClick={(e) => handleAdd(e)}>
-        + Add Room Group
+        + Add Room Type
       </Button>
       {isLoading ? (
         <div className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center">

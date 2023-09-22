@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 
 
-const CustomLightbox = ({ images, size }) => {
+const CustomLightbox = ({ images, size, singleImageProps={} }) => {
 
     const [photoIndex, setPhotoIndex] = useState(0);
     const [isOpen, setIsOpen]  = useState(false)
@@ -17,6 +17,7 @@ const CustomLightbox = ({ images, size }) => {
                 src={images[0]}
                 onClick={() => setIsOpen(true)}
                 style={{cursor: 'pointer'}}
+                {...singleImageProps}
             />
             {isOpen && (
                 <Lightbox

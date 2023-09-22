@@ -28,9 +28,12 @@ const ProductModal = (props) => {
   );
   const roomTypes = useSelector((state) => state.room.roomTypes);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
-  const productDetails = useSelector((state) => state.product.replaceOldProductDetails);
+  const productDetails = useSelector(
+    (state) => state.product.replaceOldProductDetails
+  );
 
   const [roomList, setRoomList] = useState([selectedRoom.ID]);
+  const [isAllRoomsSelected, setIsAllRoomsSelected] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +41,21 @@ const ProductModal = (props) => {
     if (isEmpty(roomTypes)) dispatch(getRoomTypes());
   }, [dispatch, roomTypes]);
 
-  const handleCheckBox = (roomID) => {
+  const handleCheckBox = async (roomID, selectAll) => {
+    if (selectAll === "SELECT_ALL") {
+      const arr = [];
+      await getFilteredRooms()?.map((item) => {
+        item.Items?.map((room) => {
+          arr.push(room.ID);
+        });
+      });
+      setIsAllRoomsSelected(true);
+      return setRoomList(arr);
+    } else if (selectAll === "DESELECT_ALL") {
+      setIsAllRoomsSelected(false);
+      return setRoomList([selectedRoom.ID]);
+    }
+
     if (!roomID) return;
 
     if (roomList?.includes(roomID)) {
@@ -133,7 +150,21 @@ const ProductModal = (props) => {
           <>
             <div className="body-header">
               This item is currently assigned to the following rooms. Would you
-              like to replace to these rooms as well?
+              like to replace to these rooms as well?{" "}
+              <Button
+                variant="link"
+                size="sm"
+                className="d-inline py-0"
+                style={{fontSize: '12px'}}
+                onClick={() =>
+                  handleCheckBox(
+                    null,
+                    isAllRoomsSelected ? "DESELECT_ALL" : "SELECT_ALL"
+                  )
+                }
+              >
+                {isAllRoomsSelected ? "Deselect All" : "Select All"}
+              </Button>
             </div>
 
             <div className="rooms d-flex flex-wrap justify-content-around">
@@ -145,9 +176,7 @@ const ProductModal = (props) => {
                     <div key={index} className="room-name">
                       <Form.Check
                         type="checkbox"
-                        // defaultChecked={includedRooms(
-                        //   replaceProduct?.ID
-                        // )?.includes(room.ID)}
+                        checked={roomList?.includes(room.ID)}
                         onChange={() => handleCheckBox(room?.ID)}
                         label={`${room?.Name}`}
                       />

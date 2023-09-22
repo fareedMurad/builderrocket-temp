@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "react-bootstrap-accordion/dist/index.css";
-import { Accordion } from "react-bootstrap-accordion";
 import { Table, Modal, Button, Form, Spinner } from "react-bootstrap";
 import Select from "react-select";
 import {
@@ -12,13 +10,11 @@ import {
   getBuilderRoomGroups,
   getBuilderRoomTypes,
   renameRoom,
-  renameRoomType,
 } from "../../actions/roomActions";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const RoomsTypes = () => {
   const [modalVisible, setModalVisible] = useState("");
-  const [roomTypeName, setRoomTypeName] = useState("");
   const [roomTypes, setRoomTypes] = useState([]);
   const [roomGroups, setRoomGroups] = useState([]);
   const [selectedRoomType, setSelectedRoomType] = useState({});
@@ -35,57 +31,53 @@ const RoomsTypes = () => {
   const handleFetchRoomGroups = () => {
     dispatch(getBuilderRoomGroups()).then((data) => {
       setRoomGroups(data.Result);
+      setIsLoading(false);
     });
-  }
+  };
 
   const handleFetchRoomTypes = () => {
     dispatch(getBuilderRoomTypes()).then((data) => {
       setRoomTypes(data.RoomTypes);
       setIsLoading(false);
     });
-  }
-
-  const handleInputChange = (event) => {
-    setRoomTypeName(event.target.value);
-  };
-
-  const handleAdd = () => {
-    const params = {
-      SourceName: roomTypeName,
-    };
-    dispatch(createRoomTypes(params))
-      .then((res) => {
-        console.log(res, "res");
-        handleFetchRoomTypes();
-        setModalVisible("");
-      })
-      .catch(() => {
-        alert("Something went wrong, please try again!");
-      });
-    setRoomTypeName("");
   };
 
   const handleAddNewRoom = () => {
     if (newRoom.name) {
-      const params = {
-        SourceName: newRoom.name,
-        DestinationID: selectedRoomType?.ID,
-      };
-      dispatch(createRoom(params))
-        .then((res) => {
-          if (newRoom.group?.ID) {
+      function handleCreateRoom(ID) {
+        const params = {
+          SourceName: newRoom.name,
+          DestinationID: ID,
+        };
+        dispatch(createRoom(params))
+          .then((res) => {
             dispatch(assignGroupToRoom(res, parseInt(newRoom.group?.ID)));
-          }
-         
-        })
-        .then(() => {
-          setModalVisible("");
-          handleFetchRoomTypes();
+          })
+          .then(() => {
+            setModalVisible("");
+            handleFetchRoomTypes();
+            setNewRoom({});
+          })
+          .catch(() => {
+            alert("Something went wrong, please try again!!");
+          });
+      }
+
+      const isFound = roomTypes.find((rt) => rt.Name === newRoom.group?.Name);
+      if (isFound) {
+        handleCreateRoom(isFound.ID);
+        return;
+      }
+      const params = {
+        SourceName: newRoom.group?.Name,
+      };
+      dispatch(createRoomTypes(params))
+        .then((res) => {
+          handleCreateRoom(res.ID);
         })
         .catch(() => {
           alert("Something went wrong, please try again!");
         });
-      setNewRoom({})
     }
   };
 
@@ -97,39 +89,25 @@ const RoomsTypes = () => {
         DefaultRoomGroupID: selectedRoom?.DefaultRoomGroup?.ID,
       };
       dispatch(renameRoom(params))
-        .then((res) => {
+        .then(async (res) => {
           if (newRoom.group?.ID) {
-            dispatch(assignGroupToRoom(selectedRoom?.ID, newRoom.group?.ID));
+            handleDeleteRoom();
+            handleAddNewRoom();
+            setModalVisible("");
+            handleFetchRoomTypes();
           }
-          
         })
         .then(() => {
-          setModalVisible("");
-          handleFetchRoomTypes();
+          if (!newRoom?.group?.ID) {
+            setModalVisible("");
+            handleFetchRoomTypes();
+          }
         })
         .catch(() => {
           alert("Something went wrong, please try again!");
         });
-      setNewRoom({})
+      setNewRoom({});
     }
-  };
-
-  const handleEditRoomType = () => {
-    const params = {
-      SourceID: selectedRoomType?.ID,
-      SourceName: roomTypeName,
-      DefaultRoomGroupID: selectedRoomType?.BuilderDefaultRoomGroupID
-    };
-
-    dispatch(renameRoomType(params))
-      .then((res) => {
-        handleFetchRoomTypes();
-        setModalVisible("");
-      })
-      .catch(() => {
-        alert("Something went wrong, please try again!");
-      });
-    setRoomTypeName("");
   };
 
   const handleDeleteRoomType = () => {
@@ -141,8 +119,7 @@ const RoomsTypes = () => {
       .catch(() => {
         alert("Something went wrong, please try again!");
       });
-
-  }
+  };
 
   const handleDeleteRoom = () => {
     dispatch(deleteRoom(selectedRoom.ID))
@@ -153,7 +130,7 @@ const RoomsTypes = () => {
       .catch(() => {
         alert("Something went wrong, please try again!");
       });
-  }
+  };
 
   const deleteRoomTypeModal = () => {
     const isRoomType = modalVisible === "DELETE_ROOM_TYPE";
@@ -192,48 +169,6 @@ const RoomsTypes = () => {
     );
   };
 
-  const editAddRoomTypeModal = () => {
-    const isAdd = modalVisible === "ADD_ROOM_TYPE";
-    return (
-      <Modal
-        show={modalVisible === "EDIT_ROOM_TYPE" || isAdd}
-        onHide={() => setModalVisible("")}
-        centered
-        size="md"
-      >
-        <Modal.Body>
-          <div className="page-title pl-0">
-            {isAdd ? "Add New" : "Edit"} Room Type
-          </div>
-          <Form.Group>
-            <Form.Label className="input-label">Room Type Name*</Form.Label>
-            <Form.Control
-              type="text"
-              className="input-gray"
-              value={roomTypeName}
-              onChange={handleInputChange}
-            />
-          </Form.Group>
-          <div className="d-flex justify-content-center pt-5">
-            <Button
-              onClick={() => setModalVisible("")}
-              variant="link"
-              className="cancel"
-            >
-              Cancel
-            </Button>
-            <button
-              className="primary-gray-btn next-btn ml-3"
-              onClick={isAdd ? handleAdd : handleEditRoomType}
-            >
-              {isAdd ? "Add" : "Edit"}
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
-    );
-  };
-
   const editAddRoomModal = () => {
     const isAdd = modalVisible === "ADD_ROOM";
     return (
@@ -245,7 +180,7 @@ const RoomsTypes = () => {
       >
         <Modal.Body>
           <div className="page-title pl-0">
-            {isAdd ? "Add New" : "Edit"} Room
+            {isAdd ? "Create" : "Edit"} Room
           </div>
           <Form.Group>
             <Form.Label className="input-label">Room Name*</Form.Label>
@@ -257,12 +192,14 @@ const RoomsTypes = () => {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label className="input-label">Select Room Group</Form.Label>
+            <Form.Label className="input-label">Select Room Type*</Form.Label>
             <Select
-              options={roomGroups?.map(c => { return { ...c, label: c.Name, value: c.ID } })}
+              options={roomGroups?.map((c) => {
+                return { ...c, label: c.Name, value: c.ID };
+              })}
               className="input-gray"
               value={newRoom.group}
-              onChange={option => setNewRoom({ ...newRoom, group: option })}
+              onChange={(option) => setNewRoom({ ...newRoom, group: option })}
             />
           </Form.Group>
           <div className="d-flex justify-content-center pt-5">
@@ -276,8 +213,9 @@ const RoomsTypes = () => {
             <button
               className="primary-gray-btn next-btn ml-3"
               onClick={isAdd ? handleAddNewRoom : handleEditRoom}
+              disabled={!newRoom.group?.ID}
             >
-              {isAdd ? "Add" : "Edit"}
+              {isAdd ? "Add" : "Save"}
             </button>
           </div>
         </Modal.Body>
@@ -285,43 +223,33 @@ const RoomsTypes = () => {
     );
   };
 
-  const handleEditRoomTypeModal = (e, item) => {
-    e.stopPropagation();
-    setRoomTypeName(item.Name);
-    setSelectedRoomType(item);
-    setModalVisible("EDIT_ROOM_TYPE");
-  };
-
-  const handleEditRoomModal = (e, room) => {
+  const handleEditRoomModal = (e, item, room) => {
     e.stopPropagation();
     setSelectedRoom(room);
+    setSelectedRoomType(item);
     setNewRoom({
       name: room?.Name,
-      group: room?.DefaultRoomGroup ? {...room?.DefaultRoomGroup, value: room?.DefaultRoomGroup?.ID, label: room?.DefaultRoomGroup?.Name } : {}
+      group: room?.DefaultRoomGroup
+        ? {
+            ...room?.DefaultRoomGroup,
+            value: room?.DefaultRoomGroup?.ID,
+            label: room?.DefaultRoomGroup?.Name,
+          }
+        : {},
     });
     setModalVisible("EDIT_ROOM");
   };
 
   const handleAddRoom = (e, item) => {
     e.stopPropagation();
-    setSelectedRoomType(item);
+    // setSelectedRoomType(item);
     setModalVisible("ADD_ROOM");
   };
 
-  const handleAddRoomType = (e) => {
+  const handleDeleteRoomModal = (e, item, room) => {
     e.stopPropagation();
-    setModalVisible("ADD_ROOM_TYPE");
-  };
-
-  const handleDeleteRoomTypeModal = (e, item) => {
-    e.stopPropagation();
-    setSelectedRoomType(item)
-    setModalVisible("DELETE_ROOM_TYPE");
-  };
-
-  const handleDeleteRoomModal = (e, room) => {
-    e.stopPropagation();
-    setSelectedRoom(room)
+    setSelectedRoomType(item);
+    setSelectedRoom(room);
     setModalVisible("DELETE_ROOM");
   };
 
@@ -330,77 +258,59 @@ const RoomsTypes = () => {
       <Button
         variant="link"
         className="link-btn"
-        onClick={(e) => handleAddRoomType(e)}
+        // onClick={(e) => handleAddRoomType(e)}
+        onClick={(e) => handleAddRoom(e)}
       >
-        + Add Room Type
+        + Create Room
       </Button>
 
       {isLoading ? (
         <div className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center">
-          <Spinner
-            animation='border'
-            variant='primary'
-          />
+          <Spinner animation="border" variant="primary" />
         </div>
-      ) :
-        roomTypes?.map((item, index) => (
-          <Accordion
-            title={
-              <div className="d-flex justify-content-between w-100 pr-5">
-                <div className="d-flex align-selecItem-center">
-                  <div className="font-weight-bold mr-5">{item.Name}</div>
-                  <i
-                    className="far fa-pen fa-sm tab-icon p-2"
-                    onClick={(e) => handleEditRoomTypeModal(e, item)}
-                  ></i>
-                  <i
-                    className="far fa-plus fa-sm tab-icon p-2"
-                    onClick={(e) => handleAddRoom(e, item)}
-                  ></i>
-                  <i
-                    className="far fa-trash fa-sm tab-icon p-2"
-                    onClick={(e) => handleDeleteRoomTypeModal(e, item)}
-                  ></i>
-                </div>
-                <span className="px-2">{item.Rooms?.length} rooms</span>{" "}
-              </div>
-            }
-            children={
-              <div>
-                {" "} <Table>
-                  <tbody>
-                    {item.Rooms?.length ? (
-                      item.Rooms?.map((room, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{room.Name}</td>
-                            <td>{room.DefaultRoomGroup?.Name ? `[ ${room.DefaultRoomGroup?.Name} ]`: ""}</td>
-                            <td>
-                              <div className="d-flex">
-                                <i
-                                  className="far fa-pen fa-sm tab-icon px-2"
-                                  onClick={(e) => handleEditRoomModal(e, room)}
-                                ></i>
-                                <i
-                                  className="far fa-trash fa-sm tab-icon px-2"
-                                  onClick={(e) => handleDeleteRoomModal(e, room)}
-                                ></i>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    ) : (
-                      <td>No rooms added</td>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            }
-          />
-        ))}
+      ) : roomTypes?.length ? (
+        <div>
+          <Table>
+            <tbody>
+              {roomTypes?.map((item, index) =>
+                item.Rooms?.length
+                  ? item.Rooms?.map((room, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{room.Name}</td>
+                          <td>
+                            {room.DefaultRoomGroup?.Name
+                              ? `[ ${room.DefaultRoomGroup?.Name} ]`
+                              : ""}
+                          </td>
+                          <td>
+                            <div className="d-flex">
+                              <i
+                                className="far fa-pen fa-sm tab-icon px-2"
+                                onClick={(e) =>
+                                  handleEditRoomModal(e, item, room)
+                                }
+                              ></i>
+                              <i
+                                className="far fa-trash fa-sm tab-icon px-2"
+                                onClick={(e) =>
+                                  handleDeleteRoomModal(e, item, room)
+                                }
+                              ></i>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  : null
+              )}
+            </tbody>
+          </Table>
+        </div>
+      ) : (
+        <div className="py-5 text-center">No rooms added yet!</div>
+      )}
       {deleteRoomTypeModal()}
-      {editAddRoomTypeModal()}
       {editAddRoomModal()}
     </div>
   );
