@@ -411,6 +411,7 @@ const RoomAreaLayout = () => {
           <div className="rooms d-flex flex-wrap justify-content-around">
             {getRoomTypesConditionally()
               ?.filter((r) => typesFilter?.indexOf(r.ID) > -1)
+              ?.filter(r => r.Rooms?.length)
               .map((roomType, index) => (
                 <div key={index} className="room-type-container">
                   <div className="room-type">{roomType?.Name}</div>
