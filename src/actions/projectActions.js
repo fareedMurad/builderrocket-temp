@@ -169,6 +169,7 @@ export const getProjectByProjectID = (projectID) => (dispatch) => {
 };
 
 export const setSelectedProject = (selectedProject) => (dispatch) => {
+  if(!selectedProject) return;
   return new Promise((resolve, reject) => {
     try {
       dispatch({ type: SET_SELECTED_PROJECT, payload: selectedProject });
@@ -368,7 +369,7 @@ export const handleAddProductForProject = (product) => (dispatch) => {
  *
  */
 export const saveProject = (project) => (dispatch) => {
-  if (!project.ID) return;
+  if (!project?.ID) return;
 
   const URL = `/Project/${project.ID}`;
 

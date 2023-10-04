@@ -20,7 +20,7 @@ const FileUpload = (props) => {
     progress,
     hideUpload,
     onUpdateDocument,
-    multiple,
+    multiple=false,
   } = props;
 
   const dispatch = useDispatch();
@@ -92,11 +92,12 @@ const FileUpload = (props) => {
                 id="actual-btn"
                 ref={inputFile}
                 onChange={onFileChange}
+                multiple={multiple}
               />
             </div>
           ) : (
             <label className="custom-file-label">
-              <input type="file" onChange={onFileChange} />
+              <input type="file" onChange={onFileChange} multiple={multiple} />
             </label>
           ))}
       </div>

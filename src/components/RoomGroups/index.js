@@ -33,7 +33,30 @@ const RoomGroups = () => {
   const [dublicateEditAttempted, setdublicateEditAttempted] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
-  const categories = useSelector((state) => state.product.productCategories);
+  const listCategories = useSelector(
+    (state) => state.product.productCategories
+  );
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const list = [];
+
+    listCategories.forEach((c) => {
+      list.push({
+        ...c,
+        value: c.ID,
+        label: c.Name?.replaceAll("&nbsp;", ""),
+      });
+      c.SubCategories?.forEach((sc) => {
+        list.push({
+          ...sc,
+          value: sc.ID,
+          label: sc.Name?.replaceAll("&nbsp;", ""),
+        });
+      });
+    });
+    setCategories(list);
+  }, [listCategories]);
 
   useEffect(() => {
     handleFetchRoomGroups();
@@ -235,6 +258,7 @@ const RoomGroups = () => {
     );
   };
 
+  console.log(categories);
   const addGroupCategoryModal = () => {
     return (
       <Modal

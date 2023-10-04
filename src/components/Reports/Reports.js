@@ -28,6 +28,7 @@ import { CustomPrinter } from "../../components/PDF";
 
 import "./Reports.scss";
 import SaveReportsFilterModal from "../SaveReportsFilterModal/SaveReportsFilterModal";
+import { getCategories } from "../../actions/productActions";
 
 const LayoutOptions = [
   { value: "list", label: "List" },
@@ -100,14 +101,13 @@ const Reports = (props) => {
           setIsLoading(false);
         })
         .catch(() => setIsLoading(false));
-    } else if (layout?.value === "category") {
+    } else if (layout?.value === "category" || layout?.value === "room") {
       dispatch(getCategorizedReportByProjectID(project?.ID))
         .then((response) => {
           handleSetChildFilters(response);
           setIsLoading(false);
         })
         .catch(() => setIsLoading(false));
-    } else if (layout?.value === "room") {
       dispatch(getRoomReportByProjectID(project?.ID))
         .then(() => {
           setIsLoading(false);
@@ -121,6 +121,11 @@ const Reports = (props) => {
         .catch(() => setIsLoading(false));
     }
   }, [dispatch, layout]);
+
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
 
   const handleSetChildFilters = (array) => {
     dispatch(
@@ -418,7 +423,7 @@ const Reports = (props) => {
                     placeholder="Room Filter"
                   />
                 </div>
-                {layout?.value === "category" && (
+                {(layout?.value === "category" || layout?.value === "room") && (
                   <div className="d-flex align-items-center">
                     <div>
                       <span className="room_option">Category Filter:</span>

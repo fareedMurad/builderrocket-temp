@@ -32,7 +32,7 @@ const ProductModal = (props) => {
     (state) => state.product.replaceOldProductDetails
   );
 
-  const [roomList, setRoomList] = useState([selectedRoom.ID]);
+  const [roomList, setRoomList] = useState([selectedRoom?.ID]);
   const [isAllRoomsSelected, setIsAllRoomsSelected] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ const ProductModal = (props) => {
       return setRoomList(arr);
     } else if (selectAll === "DESELECT_ALL") {
       setIsAllRoomsSelected(false);
-      return setRoomList([selectedRoom.ID]);
+      return setRoomList([selectedRoom?.ID]);
     }
 
     if (!roomID) return;
@@ -91,7 +91,7 @@ const ProductModal = (props) => {
         project?.ProjectRooms,
         "RoomTypeID",
         replaceProductRooms,
-        selectedRoom.ID
+        selectedRoom?.ID
       ) || []
     );
   };
