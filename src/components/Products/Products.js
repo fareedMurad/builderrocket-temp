@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Button,
   Form,
@@ -53,6 +53,11 @@ const Products = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const parentCategoryRef = useRef(null);
+  const subCategoryRef = useRef(null);
+  const brandCategoryRef = useRef(null);
+  const roomCategoryRef = useRef(null);
+
   const project = useSelector((state) => state.project.project);
   const productsLoading = useSelector((state) => state.productsLoading);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
@@ -89,6 +94,7 @@ const Products = (props) => {
   const [showCustomProducts, setShowCustomProducts] = useState(false);
   const [showBuilderRooms, setShowBuilderRooms] = useState(false);
   const [showSelectedRooms, setShowSelectedRooms] = useState(false);
+  const [searchableField, setSearchableField] = useState("");
 
   const [productFilter, setProductFilter] = useState({
     rooms: [],
@@ -120,11 +126,29 @@ const Products = (props) => {
   );
 
   const handleCategoryChange = useCallback(
-    (selectedCategories) => {
+    (selectedCategories, currentItem, action) => {
       const categories = [...selectedCategories.map((b) => b.ID)];
+      let subcategories = [];
+
+      if(action === "ADD") {
+        subcategories =  [...productFilter?.subcategories, ...currentItem?.SubCategories?.map((b) => b.ID)].filter(a => a);
+      }
+
+      if(action === "ADD_ALL") {
+        selectedCategories?.forEach(sb => sb?.SubCategories?.forEach((b) => {
+          subcategories.push(b.ID);
+        }))
+        subcategories = subcategories.filter(a => a);
+      }
+
+      if(action === "REMOVE") {
+        subcategories =  selectedCategories?.length === 0 ? [] : [...productFilter?.subcategories].filter(a => Boolean(currentItem.SubCategories?.find(sc => sc.ID !== a)));
+      }
+     
       setProductFilter({
         ...productFilter,
         categories: categories,
+        subcategories,
         pageNumber: 1,
       });
     },
@@ -167,7 +191,7 @@ const Products = (props) => {
           };
         }),
       ];
-      setBrandOptions(options);
+      setBrandOptions(options.filter(b => b.Name));
       setBrandsDropdownLoading(false);
     }
   }, [brands]);
@@ -186,19 +210,19 @@ const Products = (props) => {
           value: "select_all",
         },
         ...categories
-          .filter((c) => c.ParentId === null)
+          // .filter((c) => c.ParentId === null)
           ?.map((b) => {
             return {
               ...b,
               name: b.Name?.replaceAll("&nbsp;", ""),
               value: b.ID,
             };
-          })
-          .sort((a, b) => {
-            return a.Path?.localeCompare(b.Path);
           }),
+        // .sort((a, b) => {
+        //   return a.Path?.localeCompare(b.Path);
+        // }),
       ];
-      setCategoriesOptions(options);
+      setCategoriesOptions(options.filter(b => b.name));
       setCategoriesDropdownLoading(false);
     }
   }, [categories]);
@@ -208,26 +232,29 @@ const Products = (props) => {
     // if(productFilter?.categories.length){
     let options = [
       {
+        parentCategory: "All",
         name: "Select All",
         value: "select_all",
       },
-      ...categories
-        .filter((c) => productFilter?.categories.some((d) => d === c.ParentId))
-        ?.map((b) => {
-          return {
-            ...b,
-            name: b.Name?.replaceAll("&nbsp;", ""),
-            value: b.ParentId,
-          };
-        })
-        .sort((a, b) => {
-          return a.Path?.localeCompare(b.Path);
-        }),
     ];
-    setSubCategoriesOptions(options);
+
+    categories
+      .filter((c) => productFilter?.categories?.includes(c.ID))
+      ?.map((pc) => {
+        pc?.SubCategories?.forEach((c) =>
+          options.push({
+            parentCategoryId: pc.ID,
+            parentCategory: `${pc.Name?.replaceAll("&nbsp;", "")} - [${pc.ID}]`,
+            name: c.Name?.replaceAll("&nbsp;", ""),
+            value: c.ID,
+            ...c,
+          })
+        );
+      });
+    setSubCategoriesOptions(options.filter(b => b.name));
     setCategoriesDropdownLoading(false);
     // }
-  }, [productFilter, categories]);
+  }, [productFilter?.categories, categories]);
 
   useEffect(() => {
     setRoomsDropdownLoading(true);
@@ -259,6 +286,50 @@ const Products = (props) => {
       });
     setSelectedRooms(rooms);
   }, [project, productFilter, showBuilderRooms]);
+
+  useEffect(() => {
+    if (parentCategoryRef?.current) {
+      parentCategoryRef?.current?.searchBox?.current?.addEventListener(
+        "blur",
+        () => {
+          setSearchableField({ ...searchableField, category: "" });
+        }
+      );
+    }
+  }, [parentCategoryRef?.current]);
+
+  useEffect(() => {
+    if (subCategoryRef?.current) {
+      subCategoryRef?.current?.searchBox?.current?.addEventListener(
+        "blur",
+        () => {
+          setSearchableField({ ...searchableField, subcategory: "" });
+        }
+      );
+    }
+  }, [subCategoryRef?.current]);
+
+  useEffect(() => {
+    if (brandCategoryRef?.current) {
+      brandCategoryRef?.current?.searchBox?.current?.addEventListener(
+        "blur",
+        () => {
+          setSearchableField({ ...searchableField, brand: "" });
+        }
+      );
+    }
+  }, [brandCategoryRef?.current]);
+
+  useEffect(() => {
+    if (roomCategoryRef?.current) {
+      roomCategoryRef?.current?.searchBox?.current?.addEventListener(
+        "blur",
+        () => {
+          setSearchableField({ ...searchableField, room: "" });
+        }
+      );
+    }
+  }, [roomCategoryRef?.current]);
 
   const getProjectRoomsConditionally = () => {
     return showBuilderRooms
@@ -1068,7 +1139,7 @@ const Products = (props) => {
               className="link-btn"
               onClick={handleShowCustomProducts}
             >
-              + Add Custom Products
+              + Add My Products
             </Button>
             <Button variant="link" className="link-btn" onClick={showProducts}>
               + Add Products
@@ -1127,17 +1198,25 @@ const Products = (props) => {
                           top: "8px",
                           left: "8px",
                         },
+                        searchableField,
                       })
                     : null}
                 </span>
                 <Multiselect
+                  ref={roomCategoryRef}
+                  onSearch={(value) =>
+                    setSearchableField({
+                      ...searchableField,
+                      room: Boolean(value),
+                    })
+                  }
                   tags
                   showArrow
                   className="tags-dropdown readonly_ms"
                   // disable={true}
                   placeholder=""
                   showCheckbox={true}
-                  keepSearchTerm={false}
+                  keepSearchTerm={true}
                   hidePlaceholder={true}
                   hideSelectedList={
                     roomsOptions?.find((r) => r.value === "select_all")
@@ -1248,7 +1327,7 @@ const Products = (props) => {
                         </div> */}
 
             <div>
-              <div className="input-label mt-2 ml-3">Parent Category</div>
+              <div className="input-label mt-2 ml-3">Categories</div>
               <div className="layout-select custom-dropdown">
                 {categoriesDropdownLoading ? (
                   <div className="text-center">
@@ -1262,9 +1341,12 @@ const Products = (props) => {
                         selectedIds: productFilter?.categories,
                         nameProp: "Name",
                         type: "category",
+                        styles: {},
+                        searchableField,
                       })}
                     </span>
                     <Multiselect
+                      ref={parentCategoryRef}
                       options={
                         categoriesOptions?.length > 0 ? categoriesOptions : []
                       }
@@ -1280,17 +1362,22 @@ const Products = (props) => {
                             )
                       }
                       onSelect={(arr, current) => {
+                        console.log(arr, current, "Filter 2");
                         if (current.value === "select_all") {
                           handleCategoryChange(
                             categoriesOptions.filter(
                               (p) => p.value !== "select_all"
-                            )
+                            ),
+                            current,
+                            "ADD_ALL"
                           );
                         } else
                           handleCategoryChange(
                             arr.sort((a, b) =>
                               a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                            )
+                            ), 
+                            current,
+                            "ADD"
                           );
                       }}
                       onRemove={(arr, target) => {
@@ -1302,20 +1389,26 @@ const Products = (props) => {
                         if (target.value === "select_all") {
                           categories = [];
                         }
-                        handleCategoryChange(categories);
+                        handleCategoryChange(categories, target, "REMOVE");
                       }}
                       displayValue="name"
                       placeholder=""
                       showCheckbox={true}
-                      keepSearchTerm={false}
+                      keepSearchTerm={true}
                       hidePlaceholder={true}
+                      onSearch={(value) =>
+                        setSearchableField({
+                          ...searchableField,
+                          category: Boolean(value),
+                        })
+                      }
                     />
                   </>
                 )}
               </div>
             </div>
             <div>
-              <div className="input-label mt-2 ml-3">Child Category</div>
+              <div className="input-label mt-2 ml-3">Subcategories</div>
               <div className="layout-select custom-dropdown">
                 {categoriesDropdownLoading ? (
                   <div className="text-center">
@@ -1325,13 +1418,23 @@ const Products = (props) => {
                   <>
                     <span>
                       {DrawDropdownSelection({
-                        items: categories,
+                        items: SubCategoriesOptions,
                         selectedIds: productFilter?.subcategories,
                         nameProp: "Name",
                         type: "subcategory",
+                        styles: {},
+                        searchableField,
                       })}
                     </span>
                     <Multiselect
+                      ref={subCategoryRef}
+                      groupBy={"parentCategory"}
+                      onSearch={(value) =>
+                        setSearchableField({
+                          ...searchableField,
+                          subcategory: Boolean(value),
+                        })
+                      }
                       options={
                         SubCategoriesOptions?.length > 0
                           ? SubCategoriesOptions
@@ -1340,7 +1443,7 @@ const Products = (props) => {
                       selectedValues={
                         !productFilter?.subcategories
                           ? []
-                          : categories?.length ===
+                          : SubCategoriesOptions?.length - 1 ===
                             productFilter?.subcategories?.length
                           ? SubCategoriesOptions
                           : SubCategoriesOptions.filter(
@@ -1376,7 +1479,7 @@ const Products = (props) => {
                       displayValue="name"
                       placeholder=""
                       showCheckbox={true}
-                      keepSearchTerm={false}
+                      keepSearchTerm={true}
                       hidePlaceholder={true}
                     />
                   </>
@@ -1398,9 +1501,18 @@ const Products = (props) => {
                         selectedIds: productFilter?.brands,
                         nameProp: "Name",
                         type: "brand",
+                        styles: {},
+                        searchableField,
                       })}
                     </span>
                     <Multiselect
+                      ref={brandCategoryRef}
+                      onSearch={(value) =>
+                        setSearchableField({
+                          ...searchableField,
+                          brand: Boolean(value),
+                        })
+                      }
                       options={brandOptions?.length > 0 ? brandOptions : []}
                       selectedValues={
                         !productFilter?.brands
@@ -1437,7 +1549,7 @@ const Products = (props) => {
                       displayValue="name"
                       placeholder=""
                       showCheckbox={true}
-                      keepSearchTerm={false}
+                      keepSearchTerm={true}
                       hidePlaceholder={true}
                     />
                   </>
@@ -1454,7 +1566,7 @@ const Products = (props) => {
                   }
                   setShowCustomProducts(!showCustomProducts);
                 }}
-                label={`Show Custom Products`}
+                label={`Show My Products`}
               />
             </div>
             <div className="d-flex align-items-center pt-2 ml-3">
@@ -1629,7 +1741,8 @@ export const FilterItems = ({
       (productFilter.brands.length === 0 ||
         selectedBrands.indexOf(i.BrandID) > -1) &&
       (productFilter.categories.length === 0 ||
-        allCategories.indexOf(i.CategoryID) > -1) &&
+        allCategories.indexOf(i.CategoryID) > -1 ||
+        selectedSubCategoriesOptions.indexOf(i.CategoryID) > -1) &&
       (productFilter.subcategories.length === 0 ||
         selectedSubCategoriesOptions.indexOf(i.CategoryID) > -1)
     );
@@ -1642,12 +1755,16 @@ export const DrawDropdownSelection = ({
   nameProp,
   type,
   styles = {},
+  searchableField,
 }) => {
+  if (searchableField[type]) {
+    return "";
+  }
   const selectedLength = selectedIds?.length;
   const types = {
     room: { single: "Room", group: "Rooms" },
     category: { single: "Category", group: "Categories" },
-    subcategory: { single: "SubCategory", group: "SubCategory" },
+    subcategory: { single: "Subcategory", group: "Subcategories" },
     brand: { single: "Brand", group: "Brands" },
   };
   let name = `No ${types[type].group} selected`;

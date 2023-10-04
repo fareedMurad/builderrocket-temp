@@ -20,6 +20,7 @@ import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import "./ReplaceProduct.scss";
 import { useHistory } from "react-router";
+import Select, { components } from "react-select";
 
 // components
 import ProductModal from "../ProductModal";
@@ -37,9 +38,9 @@ const ReplaceProduct = () => {
   const productDetials = useSelector((state) => state.product.replaceOldProductDetails);
   const products = useSelector((state) => state.product.products);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
-  const productCategories = useSelector(
-    (state) => state.product.productCategories
-  );
+
+  const listCatgories = useSelector((state) => state.product.productCategories);
+  const [productCategories, setProductCategories] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,12 +55,34 @@ const ReplaceProduct = () => {
     CustomFilters: {},
   });
   const [pageCount, setPageCount] = useState(25);
+  const[selectedCategory, setSelectedCategory] = useState();
 
   const [openReplaceProductModal, setOpenReplaceProductModal] = useState(false);
 
   const productRef = useRef();
   const searchRef = useRef("");
   const productCategoriesRef = useRef();
+
+
+  useEffect(() => {
+    const list = [];
+
+    listCatgories.forEach((c) => {
+      list.push({
+        ...c,
+        value: c.ID,
+        label: c.Name?.replaceAll("&nbsp;", ""),
+      });
+      c.SubCategories?.forEach((sc) => {
+        list.push({
+          ...sc,
+          value: sc.ID,
+          label: sc.Name?.replaceAll("&nbsp;", ""),
+        });
+      });
+    });
+    setProductCategories(list);
+  }, [listCatgories]);
 
   useEffect(() => {
     productRef.current = product;
@@ -82,21 +105,23 @@ const ReplaceProduct = () => {
   useEffect(() => {
     const updatedSearch = {
       ...searchObject,
-      CategoryID: productRef?.current?.CategoryID,
+      CategoryID: selectedCategory?.value || productRef.current?.CategoryID,
       Filter: searchRef?.current?.value,
     };
-    dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch))
+    dispatch(searchProducts(updatedSearch.CategoryID, updatedSearch))
       .then(setIsLoading(false))
       .catch(setIsLoading(false));
-  }, [dispatch, product]);
+  }, [dispatch, product, selectedCategory]);
 
-  const onProductCategoryChange = (productCategoryID) => {
-    if (!productCategoryID) return;
+  const onProductCategoryChange = (option) => {
+    if (!option) return;
+
+    setSelectedCategory(option);
 
     dispatch(
       setProduct({
         ...product,
-        CategoryID: parseInt(productCategoryID),
+        CategoryID: parseInt(option.value),
       })
     );
   };
@@ -169,7 +194,7 @@ const ReplaceProduct = () => {
       Filter: searchRef.current.value,
     };
 
-    dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch));
+    dispatch(searchProducts(selectedCategory?.value, updatedSearch));
     setSearchObject(updatedSearch);
   };
 
@@ -226,22 +251,20 @@ const ReplaceProduct = () => {
 
       <div className="filter-section">
         <div className="d-flex flex-wrap">
-          <div className="mr-3">
-            <Form.Control
-              as="select"
-              value={product?.CategoryID}
-              onChange={(event) => onProductCategoryChange(event.target.value)}
-            >
-              <option value="">Select Category</option>
-              {productCategories?.map?.((category) => (
-                <Category key={category.ID} category={category} />
-              ))}
-            </Form.Control>
+          <div className="mr-3"  style={{ width: "300px" }}>
+            <Select
+              options={productCategories}
+              value={selectedCategory}
+              onChange={onProductCategoryChange}
+              placeholder="Select Category"
+              isSearchable
+            />
           </div>
           <div className="d-flex">
             <Form.Control
               placeholder="Search Keywords"
               ref={searchRef}
+              style={{ height: "36px" }}
             ></Form.Control>
             <Button
               onClick={handleSearch}

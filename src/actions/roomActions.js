@@ -34,7 +34,7 @@ export const getRooms = () => (dispatch) => {
 };
 
 export const getRoomTypes = () => (dispatch) => {
-  const URL = "/RoomType";
+  const URL = "/builder/getstandardroomtypes";
 
   return api({
     method: "GET",

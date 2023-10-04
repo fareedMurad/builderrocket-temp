@@ -48,33 +48,37 @@ const PhotosTab = () => {
   };
 
   const handleSubmit = () => {
-    const File = uploadFiles;
-    const formData = new FormData();
-    formData.append("File", File);
+    for (let i = 0; i < uploadFiles?.length; i++) {
+      const File = uploadFiles[i];
+      const formData = new FormData();
+      formData.append("File", File);
 
-    formData.append("DocumentTypeID", DocumentTypeID);
+      formData.append("DocumentTypeID", DocumentTypeID);
 
-    dispatch(
-      addDocument(project.ID, formData, (event) => {
-        progress[DocumentTypeID] = {
-          progress: Math.round((100 * event.loaded) / event.total),
-          loading: true,
-        };
-        setProgress({ ...progress });
-      })
-    )
-      .then(async (response) => {
-        await dispatch(getProjectByProjectID(project.ID));
-
-        progress[DocumentTypeID] = { progress: 0, loading: false };
-        setProgress({ ...progress });
-        handleClose();
-      })
-      .catch(() => {
-        progress[DocumentTypeID] = { progress: 0, loading: false };
-        setProgress({ ...progress });
-        alert("Something is wrong, please try!");
-      });
+      dispatch(
+        addDocument(project.ID, formData, (event) => {
+          progress[DocumentTypeID] = {
+            progress: Math.round((100 * event.loaded) / event.total),
+            loading: true,
+          };
+          setProgress({ ...progress });
+        })
+      )
+        .then(async (response) => {
+          if((uploadFiles?.length - 1) === i) {
+            await dispatch(getProjectByProjectID(project.ID));
+  
+            progress[DocumentTypeID] = { progress: 0, loading: false };
+            setProgress({ ...progress });
+            handleClose();
+          }
+        })
+        .catch(() => {
+          progress[DocumentTypeID] = { progress: 0, loading: false };
+          setProgress({ ...progress });
+          alert("Something is wrong, please try!");
+        });
+    }
   };
 
   const handlerDelete = (id, event) => {
@@ -86,7 +90,7 @@ const PhotosTab = () => {
   const onFileChange = (documentTypeID, event) => {
     progress[documentTypeID] = { progress: 0, loading: true };
     setProgress({ ...progress });
-    setUploadFiles(event.target?.files?.[0]);
+    setUploadFiles(event.target?.files);
   };
 
   const handlerConfirmDelete = () => {
@@ -128,32 +132,40 @@ const PhotosTab = () => {
           </div>
         </div>
         <div className="photos-grid">
-        {project && getProjectPhotos().length ? (
-          <ResponsiveMasonry
-            columnsCountBreakPoints={{ 300: 1, 500: 2, 700: 3, 900: 4, 1300: 5 }}
-           
-          >
-            <Masonry>
-              {getProjectPhotos().map((list) => {
-                return (
-                  <div className="item" key={list.ID}>
-                    <Button
-                      className="btn cut-btn"
-                      ref={ref}
-                      variant=""
-                      onClick={(e) => handlerDelete(list.ID, e)}
-                    >
-                      <i className="far fa-trash-alt" aria-hidden="true"></i>
-                    </Button>
-                    <CustomLightbox images={[list.URL]} singleImageProps={{width: "100%", height: "100%"}} />
-                  </div>
-                );
-              })}
-            </Masonry>
-          </ResponsiveMasonry>
-        ) : (
-          <></>
-        )}
+          {project && getProjectPhotos().length ? (
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{
+                300: 1,
+                500: 2,
+                700: 3,
+                900: 4,
+                1300: 5,
+              }}
+            >
+              <Masonry>
+                {getProjectPhotos().map((list) => {
+                  return (
+                    <div className="item" key={list.ID}>
+                      <Button
+                        className="btn cut-btn"
+                        ref={ref}
+                        variant=""
+                        onClick={(e) => handlerDelete(list.ID, e)}
+                      >
+                        <i className="far fa-trash-alt" aria-hidden="true"></i>
+                      </Button>
+                      <CustomLightbox
+                        images={[list.URL]}
+                        singleImageProps={{ width: "100%", height: "100%" }}
+                      />
+                    </div>
+                  );
+                })}
+              </Masonry>
+            </ResponsiveMasonry>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <Overlay
@@ -204,9 +216,11 @@ const PhotosTab = () => {
                 buttonText={"Upload Photo"}
                 progress={fileProgress(DocumentTypeID)}
                 onFileChange={(event) => onFileChange(DocumentTypeID, event)}
+                multiple
               />
             </Card.Body>
           </Card>
+         {uploadFiles?.length && <small> {uploadFiles.length} File{uploadFiles?.length > 1 ? "s" : ""} Selected</small>}
           <div className="d-flex justify-content-center align-items-center gap-2 p-3">
             <Button variant="secondary" onClick={handleClose}>
               Close

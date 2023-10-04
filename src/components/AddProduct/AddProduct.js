@@ -29,6 +29,7 @@ import ProductModal from "../ProductModal";
 import ColorProductModal from "../ColorProductModal";
 import Multiselect from "multiselect-react-dropdown";
 import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProductConfirmationModal";
+import Select, { components } from "react-select";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -41,13 +42,35 @@ const AddProduct = () => {
   const ProductSelectedRoom = useSelector(
     (state) => state.room.ProductSelectedRoom
   );
-  const productCategories = useSelector(
-    (state) => state.product.productCategories
-  );
+
+  const listCatgories = useSelector((state) => state.product.productCategories);
+  const [productCategories, setProductCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState();
+
   const [roomsOptions, setRoomsOptions] = useState([]);
   const [addActionLoading, setAddActionLoading] = useState();
   const [addProductModal, setAddProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  useEffect(() => {
+    const list = [];
+
+    listCatgories.forEach((c) => {
+      list.push({
+        ...c,
+        value: c.ID,
+        label: c.Name?.replaceAll("&nbsp;", ""),
+      });
+      c.SubCategories?.forEach((sc) => {
+        list.push({
+          ...sc,
+          value: sc.ID,
+          label: sc.Name?.replaceAll("&nbsp;", ""),
+        });
+      });
+    });
+    setProductCategories(list);
+  }, [listCatgories]);
 
   useEffect(() => {
     let options = [
@@ -62,6 +85,12 @@ const AddProduct = () => {
     setRoomsOptions(options);
   }, [project]);
 
+  useEffect(() => {
+    if (productCategories.length < 1) {
+      dispatch(getCategories(""));
+    }
+  }, []);
+
   const [showModal, setShowModal] = useState(false);
   const [showColorModal, setShowColorModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -71,7 +100,7 @@ const AddProduct = () => {
     Description: null,
     Filter: null,
     CustomFilters: {},
-}); 
+  });
 
   const productRef = useRef();
   const searchRef = useRef("");
@@ -107,13 +136,14 @@ const AddProduct = () => {
       .catch(setIsLoading(false));
   }, [dispatch, product]);
 
-  const onProductCategoryChange = (productCategoryID) => {
-    if (!productCategoryID) return;
+  const onProductCategoryChange = (option) => {
+    if (!option) return;
 
+    setSelectedCategory(option);
     dispatch(
       setProduct({
         ...product,
-        CategoryID: parseInt(productCategoryID),
+        CategoryID: parseInt(option.value),
       })
     );
   };
@@ -153,8 +183,8 @@ const AddProduct = () => {
       VendorID: 0,
       IsApproved: false,
       RequiresApproval: values?.RequiresApproval,
-        DefaultRoomProductID:0,
-        RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn" ? 1 : 2,
+      DefaultRoomProductID: 0,
+      RoughInTrimOut: values.RoughInTrimOutEnum === "RoughIn" ? 1 : 2,
       Notes: "",
     };
     dispatch(handleAddProductForProject(newProduct)).then((project) => {
@@ -181,6 +211,14 @@ const AddProduct = () => {
   };
 
   const handleSelectedProductDetails = (productDetail) => {
+    dispatch(setProduct({
+      ID: productDetail?.ID,
+      Quantity: 1,
+      TemplateItemID: productDetail.ID,
+      CategoryID: productDetail.CategoryID,
+      RoughInTrimOutEnum: "RoughIn",
+      IsApproved: false,
+    }))
     dispatch(setProductDetail(productDetail)).then(() => {
       //setShowColorModal(true);
       history.push(`/project/${project.ProjectNumber}/product/productDetail`);
@@ -245,23 +283,20 @@ const AddProduct = () => {
 
       <div className="filter-section">
         <div className="d-flex flex-wrap">
-          <div className="mr-3">
-            <Form.Control
-              as="select"
-              value={product?.CategoryID}
-              onChange={(event) => onProductCategoryChange(event.target.value)}
-            >
-              <option value="">Select Category</option>
-
-              {productCategories?.map((category) => (
-                <Category key={category.ID} category={category} />
-              ))}
-            </Form.Control>
+          <div className="mr-3" style={{ width: "300px" }}>
+            <Select
+              options={productCategories}
+              value={selectedCategory}
+              onChange={onProductCategoryChange}
+              placeholder="Select Category"
+              isSearchable
+            />
           </div>
           <div className="d-flex">
             <Form.Control
               placeholder="Search Keywords"
               ref={searchRef}
+              style={{ height: "36px" }}
             ></Form.Control>
             <Button
               onClick={handleSearch}
@@ -426,12 +461,12 @@ const AddProduct = () => {
         handleCloseModal={() => setShowModal(false)}
       />
 
-        <AddProductConfirmationModal
-          show={addProductModal}
-          handleClose={() => setAddProductModal(false)}
-          isShowRooms
-          handleAdd={values => addProduct(values)}
-        />
+      <AddProductConfirmationModal
+        show={addProductModal}
+        handleClose={() => setAddProductModal(false)}
+        isShowRooms
+        handleAdd={(values) => addProduct(values)}
+      />
 
       {/*<ColorProductModal
                 show={showColorModal}
