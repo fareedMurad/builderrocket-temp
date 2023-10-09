@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { renameDocument } from "../../actions/documentActions";
-import { getProjectByProjectID } from "../../actions/projectActions";
+import { updateDocument } from "../../actions/documentActions";
+import { getProjectByProjectID, setSelectedProject } from "../../actions/projectActions";
 import "./FileUpload.scss";
 
 const FileUpload = (props) => {
@@ -36,23 +36,31 @@ const FileUpload = (props) => {
     inputFile.current.click();
   };
 
-  const updateFileName = async (fileID) => {
-    if (!fileID) return;
+  const updateFileName = async (file) => {
+    if (!file?.ID) return;
 
     setIsLoading(true);
 
     const fileNameObj = {
-      userFileName: newFileName,
+      ID: file.ID,
+      DocumentTypeID: file.DocumentTypeID,
+      FileName: file.FileName,
+      UserFileName: newFileName,
     };
     if (onUpdateDocument) {
      await onUpdateDocument(newFileName);
      clearInput();
      setIsLoading(false);
     } else {
-      dispatch(renameDocument(fileID, fileNameObj))
+      dispatch(updateDocument(fileNameObj))
         .then(() => clearInput())
         .then(() => {
-          dispatch(getProjectByProjectID(project.ID));
+          project.Documents = project?.Documents?.map((d) => {
+            if (d?.ID === file.ID) {
+              return { ...d, UserFileName: newFileName };
+            } else return d;
+          });
+          dispatch(setSelectedProject({ ...project }));
         })
         .then(() => setIsLoading(false))
         .catch(() => {
@@ -150,7 +158,7 @@ const FileUpload = (props) => {
                         <div className="icon-container"></div>
                         <div
                           className="icon-container"
-                          onClick={() => updateFileName(file?.ID)}
+                          onClick={() => updateFileName(file)}
                         >
                           <i className="fa fa-check"></i>
                         </div>

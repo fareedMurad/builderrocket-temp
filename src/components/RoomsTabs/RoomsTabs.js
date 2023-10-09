@@ -26,9 +26,9 @@ const RoomsTabs = (props) => {
     setSelectedTab(tab);
 }, [location])
 
-  useEffect(() => {
-    dispatch(getCategories());
-  }, [])
+  // useEffect(() => {
+  //   dispatch(getCategories());
+  // }, [])
 
   useEffect(() => {
     if(selectedTab) {
@@ -47,13 +47,14 @@ const RoomsTabs = (props) => {
         onSelect={(tab) => handleSelectedTab(tab)}
         transition={false}
       >
+       
+        <Tab eventKey="groups" title="Room Types">
+          {selectedTab === "groups" && <RoomGroups />}
+        </Tab>
         <Tab eventKey="roomTypes" title="Rooms">
           {selectedTab === "roomTypes" && (
             <RoomsTypes />
           )}
-        </Tab>
-        <Tab eventKey="groups" title="Room Types">
-          {selectedTab === "groups" && <RoomGroups />}
         </Tab>
         <Tab eventKey="groupDetails" title="Room Type Details" disabled={!builderSelectedRoomGroup?.ID}>
           {selectedTab === "groupDetails" && <RoomGroupDetails />}

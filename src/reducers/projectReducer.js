@@ -72,7 +72,8 @@ const projectReducer = (state = intialState, action) => {
         case GET_PROJECT: {
             return {
                 ...state, 
-                project: action.payload
+                project: action.payload,
+                originalProject: action.payload,
             }
         }
         case GET_REPORT: {
@@ -102,13 +103,15 @@ const projectReducer = (state = intialState, action) => {
         case SET_SELECTED_PROJECT: {
             return {
                 ...state, 
-                project: action.payload
+                project: action.payload,
+                originalProject: action.payload,
             }
         }
         case RESET_PROJECT: {
             return {
                 ...state, 
-                project: intialState.project
+                project: intialState.project,
+                originalProject: action.payload,
             }
         }
         case SET_SELECTED_PROJECT_TAB: {
@@ -120,13 +123,15 @@ const projectReducer = (state = intialState, action) => {
         case ADD_PROJECT_ROOMS: {
             return {
                 ...state, 
-                project: action.payload
+                project: action.payload,
+                originalProject: action.payload,
             }
         }
         case DELETE_PROJECT_ROOMS: {
             return {
                 ...state, 
-                project: action.payload
+                project: action.payload,
+                originalProject: action.payload,
             }
         }
         case SET_REFRESH_THUMBNAIL: {

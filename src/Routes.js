@@ -35,7 +35,7 @@ const Routes = (props) => {
   const path_array = getpath.split("/");
   console.log(path_array[1]);
   useEffect(() => {
-    if (path_array[1] !== "customer" && path_array[1] !== "vendor") {
+    if (path_array[1] !== "customer" &&  [1] !== "vendor") {
       if (!token) history.push("/login");
     } else {
       dispatch({ type: SET_CUSTOMER_PROJECT, payload: path_array[2] });

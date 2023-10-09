@@ -31,6 +31,7 @@ import { ProjectStatus } from "../../utils/contants";
 import {
   handleAddBuilderSubdivsionToProject,
   getBuilderSubdivisions,
+  createBuilderSubdivsion,
 } from "../../actions/builderSubdivisionActions";
 
 const ProjectInformation = withSwal((props) => {
@@ -39,6 +40,7 @@ const ProjectInformation = withSwal((props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const project = useSelector((state) => state.project.project);
+  const originalProject = useSelector((state) => state.project.originalProject);
   const subdivisions = useSelector(
     (state) => state.subdivision.subdivisions
   )?.filter((s) => s.SubdivisionName != null);
@@ -218,41 +220,41 @@ const ProjectInformation = withSwal((props) => {
     valueRef.current = projectInformation;
   }, [projectInformation]);
 
-  useEffect(() => {
-    return () => {
-      // save any changes when navigating away
-      dispatch(saveProject(valueRef.current));
-    };
-  }, [dispatch]);
+  // useEffect(() => {
+  //   return () => {
+  //     // save any changes when navigating away
+  //     dispatch(saveProject(valueRef.current));
+  //   };
+  // }, [dispatch]);
 
 
   useEffect(() => {
-    if(project?.ID)
+    if(project?.ID && originalProject?.CloseDate !== projectInformation?.CloseDate)
     saveChanges(false);
   }, [projectInformation?.CloseDate])
 
-  const customerFullName = () => {
-    let customerName = "";
+  // const customerFullName = () => {
+  //   let customerName = "";
 
-    if (
-      projectInformation?.Customers?.[0]?.FirstName &&
-      !projectInformation?.Customers?.[0]?.LastName
-    ) {
-      customerName = projectInformation?.Customers?.[0]?.FirstName;
-    }
+  //   if (
+  //     projectInformation?.Customers?.[0]?.FirstName &&
+  //     !projectInformation?.Customers?.[0]?.LastName
+  //   ) {
+  //     customerName = projectInformation?.Customers?.[0]?.FirstName;
+  //   }
 
-    if (
-      projectInformation?.Customers?.[0]?.FirstName &&
-      projectInformation?.Customers?.[0]?.LastName
-    ) {
-      customerName =
-        projectInformation?.Customers?.[0]?.FirstName +
-        " " +
-        projectInformation?.Customers?.[0]?.LastName;
-    }
+  //   if (
+  //     projectInformation?.Customers?.[0]?.FirstName &&
+  //     projectInformation?.Customers?.[0]?.LastName
+  //   ) {
+  //     customerName =
+  //       projectInformation?.Customers?.[0]?.FirstName +
+  //       " " +
+  //       projectInformation?.Customers?.[0]?.LastName;
+  //   }
 
-    return customerName;
-  };
+  //   return customerName;
+  // };
 
   const cancelModal = () => {
     setShowSubdivisionModal(false);
@@ -263,15 +265,15 @@ const ProjectInformation = withSwal((props) => {
 
     setIsLoading(true);
 
-    dispatch(addSubdivision({ SubdivisionName: newSubdivisionName }))
+    dispatch(createBuilderSubdivsion(newSubdivisionName))
       .then((subdivisions) => {
         setIsLoading(false);
-        setNewSubdivisionName(newSubdivisionName);
+        dispatch(getBuilderSubdivisions());
         setProjectInformation({
           ...projectInformation,
           Subdivision: subdivisions.find(
             (d) => d.SubdivisionName === newSubdivisionName
-          )?.SubdivisionName,
+          )?.ID,
         });
         cancelModal();
       })
@@ -286,12 +288,6 @@ const ProjectInformation = withSwal((props) => {
       ...projectInformation,
       Subdivision: ID,
     });
-
-    dispatch(handleAddBuilderSubdivsionToProject(parseInt(ID), project?.ID)).then(
-      () => {
-
-      }
-    );
   };
 
   const saveNewSubdivisionModal = () => {
@@ -334,7 +330,6 @@ const ProjectInformation = withSwal((props) => {
       </Modal>
     );
   };
-  console.log(projectInformation, 'INfo')
   if(!projectInformation) {
 return (
   <Spinner animation="border" variant="primary" />

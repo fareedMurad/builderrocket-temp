@@ -74,31 +74,31 @@ export const deleteDocument = (documentID) => dispatch => {
     });
 }
 
-/**
- * 
- * @param {*} documentID - ID of selected document  
- * @param {*} documentNameObj - Object of document name { userFileName: 'NEW NAME' }
- *  
- */
-export const renameDocument = (documentID, documentNameObj) => dispatch => {    
-    const URL = `/Document/${documentID}`;
+// /**
+//  * 
+//  * @param {*} documentID - ID of selected document  
+//  * @param {*} documentNameObj - Object of document name { userFileName: 'NEW NAME' }
+//  *  
+//  */
+// export const renameDocument = (documentID, documentNameObj) => dispatch => {    
+//     const URL = `/Document/${documentID}`;
 
-    return api({
-        method: 'PATCH',
-        url: URL,
-        data: documentNameObj
-    })
-    .then((response) => {
-        if (response?.status === 200) {
-            return response.data;
-        }
+//     return api({
+//         method: 'PATCH',
+//         url: URL,
+//         data: documentNameObj
+//     })
+//     .then((response) => {
+//         if (response?.status === 200) {
+//             return response.data;
+//         }
 
-        return;
-    })
-    .catch((error) => {
+//         return;
+//     })
+//     .catch((error) => {
 
-    });
-}
+//     });
+// }
 
 /**
  * 

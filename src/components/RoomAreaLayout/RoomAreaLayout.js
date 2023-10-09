@@ -38,12 +38,12 @@ const RoomAreaLayout = () => {
   const [showCustomRooms, setShowCustomRooms] = useState(false);
 
   // Ref to access changes on unmount
-  const roomsRef = useRef();
-  const deleteRoomsRef = useRef();
-  const projectIDRef = useRef();
+  // const roomsRef = useRef();
+  // const deleteRoomsRef = useRef();
+  // const projectIDRef = useRef();
 
-  const builderRoomsRef = useRef();
-  const deleteBuilderRoomsRef = useRef();
+  // const builderRoomsRef = useRef();
+  // const deleteBuilderRoomsRef = useRef();
 
   useEffect(() => {
     setIsLoadingRoomTypes(true);
@@ -64,10 +64,12 @@ const RoomAreaLayout = () => {
   };
 
   const isRoomInProject = (id) => {
-    if(showCustomRooms) {
-      return (project?.BuilderProjectRooms || [])?.find((room) => room?.RoomID === id)
-    }
-    else return (project?.ProjectRooms || [])?.find((room) => room?.RoomID === id)
+    if (showCustomRooms) {
+      return (project?.BuilderProjectRooms || [])?.find(
+        (room) => room?.RoomID === id
+      );
+    } else
+      return (project?.ProjectRooms || [])?.find((room) => room?.RoomID === id);
   };
 
   const handleSelectedRoomTypeChange = useCallback(
@@ -79,8 +81,13 @@ const RoomAreaLayout = () => {
   );
 
   useEffect(() => {
-    if(roomList.length || builderRoomList?.length || deleteRoomList.length || deleteBuilerRoomList.length)
-    save(false);
+    if (
+      roomList.length ||
+      builderRoomList?.length ||
+      deleteRoomList.length ||
+      deleteBuilerRoomList.length
+    )
+      save(false);
   }, [roomList, builderRoomList, deleteRoomList, deleteBuilerRoomList]);
 
   const handleCheckBox = (roomID, e) => {
@@ -227,16 +234,17 @@ const RoomAreaLayout = () => {
     }
   };
 
-  const save = async (goToNext=true) => {
+  const save = async (goToNext = true) => {
     setIsLoading(true);
 
     await handleAddRoomsToProject();
     await handleRemoveProjectRooms();
 
-    if(project?.ID)
-    dispatch(getProjectByProjectID(project.ID)).then(() => {
-      if(goToNext) dispatch(setSelectedProjectTab('products'));
-    })
+    if (project?.ID && goToNext) {
+      // dispatch(getProjectByProjectID(project.ID)).then(() => {
+      dispatch(setSelectedProjectTab("products"));
+      // })
+    }
   };
 
   const clearChanges = () => {
@@ -250,50 +258,50 @@ const RoomAreaLayout = () => {
     }, 250);
   };
 
-  useEffect(() => {
-    // reference latest changes
-    roomsRef.current = roomList;
-    projectIDRef.current = project?.ID;
-    deleteRoomsRef.current = deleteRoomList;
-    builderRoomsRef.current = builderRoomList;
-    deleteBuilderRoomsRef.current = deleteBuilerRoomList;
-  }, [
-    roomList,
-    deleteRoomList,
-    project,
-    builderRoomList,
-    deleteBuilerRoomList,
-  ]);
+  // useEffect(() => {
+  //   // reference latest changes
+  //   roomsRef.current = roomList;
+  //   projectIDRef.current = project?.ID;
+  //   deleteRoomsRef.current = deleteRoomList;
+  //   builderRoomsRef.current = builderRoomList;
+  //   deleteBuilderRoomsRef.current = deleteBuilerRoomList;
+  // }, [
+  //   roomList,
+  //   deleteRoomList,
+  //   project,
+  //   builderRoomList,
+  //   deleteBuilerRoomList,
+  // ]);
 
-  useEffect(() => {
-    return () => {
-      // save any changes when navigating away
-      dispatch(
-        addRoomsToProject(projectIDRef.current, { RoomIDs: roomsRef.current })
-      );
-      dispatch(
-        addBuilderRoomsToProject(projectIDRef.current, {
-          RoomIDs: deleteBuilderRoomsRef.current,
-        })
-      );
-    };
-  }, [dispatch]);
+  // useEffect(() => {
+  //   return () => {
+  //     // save any changes when navigating away
+  //     dispatch(
+  //       addRoomsToProject(projectIDRef.current, { RoomIDs: roomsRef.current })
+  //     );
+  //     dispatch(
+  //       addBuilderRoomsToProject(projectIDRef.current, {
+  //         RoomIDs: builderRoomsRef.current,
+  //       })
+  //     );
+  //   };
+  // }, [dispatch]);
 
-  useEffect(() => {
-    return () => {
-      // save any changes when navigating away
-      dispatch(
-        deleteRoomsFromProject(projectIDRef.current, {
-          IDs: deleteRoomsRef.current,
-        })
-      );
-      dispatch(
-        deleteBuilderRoomsFromProject(projectIDRef.current, {
-          IDs: deleteBuilderRoomsRef.current,
-        })
-      );
-    };
-  }, [dispatch]);
+  // useEffect(() => {
+  //   return () => {
+  //     // save any changes when navigating away
+  //     dispatch(
+  //       deleteRoomsFromProject(projectIDRef.current, {
+  //         IDs: deleteRoomsRef.current,
+  //       })
+  //     );
+  //     dispatch(
+  //       deleteBuilderRoomsFromProject(projectIDRef.current, {
+  //         IDs: deleteBuilderRoomsRef.current,
+  //       })
+  //     );
+  //   };
+  // }, [dispatch]);
 
   useEffect(() => {
     let options = [
@@ -411,7 +419,7 @@ const RoomAreaLayout = () => {
           <div className="rooms d-flex flex-wrap justify-content-around">
             {getRoomTypesConditionally()
               ?.filter((r) => typesFilter?.indexOf(r.ID) > -1)
-              ?.filter(r => r.Rooms?.length)
+              ?.filter((r) => r.Rooms?.length)
               .map((roomType, index) => (
                 <div key={index} className="room-type-container">
                   <div className="room-type">{roomType?.Name}</div>

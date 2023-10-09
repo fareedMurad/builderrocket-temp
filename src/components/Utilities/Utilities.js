@@ -54,11 +54,12 @@ const Utilities = () => {
     if (id) {
       utilityID = parseInt(id);
 
-      dispatch(saveProjectUtility(project.ID, utilityTypeID, utilityID)).then(
-        (data) => {
-          console.log(data);
-        }
-      );
+      dispatch(saveProjectUtility(project.ID, utilityTypeID, utilityID))
+    //   .then(
+    //     (data) => {
+    //       console.log(data);
+    //     }
+    //   );
 
       selectedUtility = utilities.find((utility) => utility.ID === utilityID);
 
@@ -117,18 +118,18 @@ const Utilities = () => {
     locatePermitNumberRef.current = locatePermitNumber;
   }, [utilitiesInfo, locatePermitNumber, project]);
 
-  useEffect(() => {
-    return () => {
-      // save any changes when navigating away
-      dispatch(
-        saveProject({
-          ...projectRef.current,
-          Utilities: utilitiesRef.current,
-          LocatePermitNumber: locatePermitNumberRef.current,
-        })
-      );
-    };
-  }, [dispatch]);
+  // useEffect(() => {
+  //   return () => {
+  //     // save any changes when navigating away
+  //     dispatch(
+  //       saveProject({
+  //         ...projectRef.current,
+  //         Utilities: utilitiesRef.current,
+  //         LocatePermitNumber: locatePermitNumberRef.current,
+  //       })
+  //     );
+  //   };
+  // }, [dispatch]);
 
   return (
     <div className="d-flex utilities">

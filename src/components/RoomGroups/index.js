@@ -22,10 +22,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 const RoomGroups = () => {
+  const roomTypes = useSelector((state) => state.builderRooms.builderRoomTypes?.RoomsTypes);
+  const roomGroups = useSelector(
+    (state) => state.builderRooms.builderRoomGroups?.Result
+  );
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
-  const [roomGroups, setRoomGroups] = useState([]);
-  const [roomTypes, setRoomTypes] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
   const [isLoading, setIsLoading] = useState(true);
@@ -64,17 +66,21 @@ const RoomGroups = () => {
   }, []);
 
   const handleFetchRoomGroups = () => {
-    setIsLoading(true);
-    dispatch(getBuilderRoomGroups()).then((data) => {
-      setRoomGroups(data.Result);
-      setIsLoading(false);
-    });
+    // FOR TESTING ONLY
+    if(!roomGroups?.length) {
+      setIsLoading(true);
+      dispatch(getBuilderRoomGroups()).then((data) => {
+        setIsLoading(false);
+      });
+    }
+    
   };
 
-  const handleFetchRoomTypes = () => {
-    dispatch(getBuilderRoomTypes()).then((data) => {
-      setRoomTypes(data.RoomTypes);
-    });
+  const handleFetchRoomTypes = () => {   
+    // FOR TESTING ONLY
+    if(!roomTypes?.length) {
+    dispatch(getBuilderRoomTypes()).then((data) => {});
+    }
   };
 
   const handleGroupNameChange = (event) => {
@@ -331,17 +337,17 @@ const RoomGroups = () => {
   };
 
   const handleManageProducts = (group, category, allProducts) => {
-    dispatch(
-      setSelectedGroupCategoryProducts(
-        getProductsByCategory({ CategoryID: category.ID }, allProducts)
-      )
-    ).then(() =>
+    // dispatch(
+    //   setSelectedGroupCategoryProducts(
+    //     getProductsByCategory({ CategoryID: category.ID }, allProducts)
+    //   )
+    // ).then(() =>
       dispatch(setSelectedBuilderCategory(category)).then(() => {
         dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
           history.push(`/rooms-management/groupDetails`);
         });
       })
-    );
+    // );
   };
 
   const getCategoriesFromProducts = (products) => {
