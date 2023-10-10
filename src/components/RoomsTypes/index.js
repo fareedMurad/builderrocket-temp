@@ -11,12 +11,14 @@ import {
   getBuilderRoomTypes,
   renameRoom,
 } from "../../actions/roomActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const RoomsTypes = () => {
+  const roomTypes = useSelector((state) => state.builderRooms.builderRoomTypes?.RoomsTypes);
+  const roomGroups = useSelector(
+    (state) => state.builderRooms.builderRoomGroups?.Result
+  );
   const [modalVisible, setModalVisible] = useState("");
-  const [roomTypes, setRoomTypes] = useState([]);
-  const [roomGroups, setRoomGroups] = useState([]);
   const [selectedRoomType, setSelectedRoomType] = useState({});
   const [selectedRoom, setSelectedRoom] = useState({});
   const [newRoom, setNewRoom] = useState({});
@@ -29,17 +31,21 @@ const RoomsTypes = () => {
   }, []);
 
   const handleFetchRoomGroups = () => {
+     // FOR TESTING ONLY
+    if(!roomGroups?.length) {
     dispatch(getBuilderRoomGroups()).then((data) => {
-      setRoomGroups(data.Result);
       setIsLoading(false);
     });
+  }
   };
 
-  const handleFetchRoomTypes = () => {
+  const handleFetchRoomTypes = () => { 
+    // FOR TESTING ONLY
+    if(!roomTypes?.length) {
     dispatch(getBuilderRoomTypes()).then((data) => {
-      setRoomTypes(data.RoomTypes);
       setIsLoading(false);
     });
+    }
   };
 
   const handleAddNewRoom = () => {
@@ -272,7 +278,7 @@ const RoomsTypes = () => {
         <div>
           <Table>
             <tbody>
-              {roomTypes?.map((item, index) =>
+              {roomTypes?.sort()?.map((item, index) =>
                 item.Rooms?.length
                   ? item.Rooms?.map((room, index) => {
                       return (

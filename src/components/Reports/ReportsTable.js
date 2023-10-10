@@ -86,9 +86,9 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
       return rooms.map((room) => {
         return {
           ...room,
-        //   Items: room.Items?.filter((product) =>
-        //     reportFilter?.find((category) => category.ID === product.CategoryID)
-        //   ),
+          Items: room.Items?.filter((product) =>
+            reportFilter?.find((category) => category.ID === product.CategoryID)
+          ),
         };
       });
     };

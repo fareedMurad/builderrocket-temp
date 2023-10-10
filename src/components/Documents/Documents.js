@@ -28,6 +28,7 @@ const Documents = () => {
   const dispatch = useDispatch();
 
   const project = useSelector((state) => state.project.project);
+  const originalProject = useSelector((state) => state.project.originalProject);
   const documentTypes = useSelector((state) => state.document.documentTypes);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +46,6 @@ const Documents = () => {
 
   useEffect(() => {
     dispatch(getDocumentTypes());
-    dispatch(getProjectByProjectID(project.ID));
     if (project?.Subdivision)
       dispatch(getBuilderSubdivision(parseInt(project?.Subdivision))).then(
         (res) => {
@@ -153,22 +153,17 @@ const Documents = () => {
   }, [documentsInfo]);
 
   useEffect(() => {
+    if(
+      documentsInfo?.PolicyExpirationDate !== originalProject?.PolicyExpirationDate ||
+      documentsInfo?.PermitDate !== Utils.formatShortDateUS(originalProject?.PermitDate) ||
+      documentsInfo?.OccupencyDate !== originalProject?.OccupencyDate
+      )
     saveChanges(false);
   }, [
     documentsInfo?.PolicyExpirationDate,
     documentsInfo?.PermitDate,
     documentsInfo?.OccupencyDate,
   ]);
-
-  useEffect(() => {
-    return () => {
-      // dispatch(saveProject({
-      //     ...documentsRef.current,
-      //     PermitDate: Utils.formatDate(documentsRef.current?.PermitDate),
-      //     OccupencyDate: Utils.formatDate(documentsRef.current?.OccupencyDate)
-      // }));
-    };
-  }, [dispatch]);
 
   const handleDownloadFile = (url) => {
     const a = document.createElement("a");
@@ -236,6 +231,18 @@ const Documents = () => {
                 onChange={(date) =>
                   setDocumentsInfo({ ...documentsInfo, OccupencyDate: date })
                 }
+              />
+            </div>
+            <div className="form-col pb-2">
+              <FileUpload
+                progress={fileProgress(20)}
+                short
+                label={findDocumentType(20)?.Name}
+                files={findDocumentTypeFiles(20)}
+                selectedInput={selectedInput}
+                setSelectedInput={setSelectedInput}
+                handleDocumentDelete={handleDocumentDelete}
+                onFileChange={(event) => onFileChange(20, event)}
               />
             </div>
 

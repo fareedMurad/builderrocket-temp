@@ -12,18 +12,16 @@ const AddProductConfirmationModal = ({
 }) => {
   const [form, setForm] = useState({
     RequiresApproval: true,
-    RoughInTrimOutEnum: "RoughIn"
+    RoughInTrimOutEnum: "RoughIn",
   });
   const project = useSelector((state) => state.project.project);
   const room = useSelector((state) => state.room);
   const roomTypes = room?.roomTypes;
-  const [selectedRoomIDs, setSelectedRoomIDs] = useState(
-    room.ProductSelectedRoom || []
-  );
+  const [selectedRoomIDs, setSelectedRoomIDs] = useState([]);
 
   useEffect(() => {
-    setForm({...form, roomIDs: selectedRoomIDs})
-  }, [selectedRoomIDs])
+    setForm({ ...form, roomIDs: selectedRoomIDs });
+  }, [selectedRoomIDs]);
 
   const handleSave = () => {
     handleAdd?.(form);
@@ -34,7 +32,7 @@ const AddProductConfirmationModal = ({
   };
 
   const handleCheckBox = (ID) => {
-    if(selectedRoomIDs.includes(ID))
+    if (selectedRoomIDs.includes(ID))
       setSelectedRoomIDs((prev) => prev.filter((prevID) => prevID !== ID));
     else setSelectedRoomIDs((prevs) => [...prevs, ID]);
   };
@@ -100,7 +98,7 @@ const AddProductConfirmationModal = ({
                 type="radio"
                 checked={form.RoughInTrimOutEnum === "RoughIn"}
                 onChange={(event) =>
-                  setForm({ ...form, RoughInTrimOutEnum: "RoughIn"})
+                  setForm({ ...form, RoughInTrimOutEnum: "RoughIn" })
                 }
                 label="RoughIn"
                 name="RoughInTrimOutEnum"
@@ -125,10 +123,8 @@ const AddProductConfirmationModal = ({
                       The product becomes added only to the selected rooms.
                     </h6>
                     <span className="px-2 text-secondary">
-                    currently selected <b>{selectedRoomIDs?.length}</b> room
-                      {projectRoomTypes()?.length > 1
-                        ? "s"
-                        : ""}
+                      currently selected <b>{selectedRoomIDs?.length}</b> room
+                      {selectedRoomIDs?.length > 1 ? "s" : ""}
                     </span>{" "}
                   </div>
                 }
@@ -164,6 +160,7 @@ const AddProductConfirmationModal = ({
             <Button
               onClick={handleSave}
               className="primary-gray-btn next-btn ml-3"
+              disabled={!selectedRoomIDs?.length}
             >
               Add
             </Button>
@@ -178,7 +175,7 @@ function mergeDuplicatesAsArray(array, key) {
   const map = new Map();
 
   for (const obj of array) {
-    const keyValue = obj[key];  
+    const keyValue = obj[key];
 
     if (map.has(keyValue)) {
       const existingObj = map.get(keyValue);

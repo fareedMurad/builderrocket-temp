@@ -83,7 +83,7 @@ const AddCustomProducts = () => {
               Go Back
             </Button>
           </div>
-          <div className="page-title pl-2">/ Add Custom Products</div>
+          <div className="page-title pl-2">/ Add My Products</div>
         </div>
       </div>
 

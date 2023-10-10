@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Form, Spinner } from 'react-bootstrap';
 import { getContractors, getContractorTypes } from '../../actions/contractorActions';
-import { getProductDetails, setSelectedProductTab } from '../../actions/productActions';
+// import { getProductDetails, setSelectedProductTab } from '../../actions/productActions';
 import {
     saveProject,
     setSelectedProjectTab,
     saveProjectContractor,
-    setSelectedProject,
+    // setSelectedProject,
 } from '../../actions/projectActions';
 import './Contractors.scss';
 
@@ -15,8 +15,8 @@ import './Contractors.scss';
 import ClearChangesModal from '../ClearChangesModal';
 import MarketingBlock from '../MarketingBlock';
 import AddContractor from '../AddContractor';
-import { addDocument, deleteDocument } from '../../actions/documentActions';
-import FileUpload from '../FileUpload';
+// import { addDocument, deleteDocument } from '../../actions/documentActions';
+// import FileUpload from '../FileUpload';
 
 const Contractors = () => {
     const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const Contractors = () => {
     const project = useSelector(state => state.project.project);
     const contractors = useSelector(state => state.contractor.contractors);
     const contractorTypes = useSelector(state => state.contractor.contractorTypes);
-    const documentTypes = useSelector(state => state.document.documentTypes)
+    // const documentTypes = useSelector(state => state.document.documentTypes)
 
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -45,61 +45,61 @@ const Contractors = () => {
         return contractors?.filter((contractor) => contractor.ContractorTypes.find((type) => type.ID === id)).sort(function (x, y) { return (y.IsFavorite - x.IsFavorite) });
     }
 
-    const [progress, setProgress] = useState({});
-    const [selectedInput, setSelectedInput] = useState();
+    // const [progress, setProgress] = useState({});
+    // const [selectedInput, setSelectedInput] = useState();
 
-    const onFileChange = (documentTypeID, event) => {
-        // Save new file / document
-        const formData = new FormData();
+    // const onFileChange = (documentTypeID, event) => {
+    //     // Save new file / document
+    //     const formData = new FormData();
 
-        formData.append('DocumentTypeID', documentTypeID);
-        formData.append('File', event.target?.files?.[0]);
-        progress[documentTypeID] = { progress: 0, loading: false };
-        setProgress({ ...progress });
+    //     formData.append('DocumentTypeID', documentTypeID);
+    //     formData.append('File', event.target?.files?.[0]);
+    //     progress[documentTypeID] = { progress: 0, loading: false };
+    //     setProgress({ ...progress });
 
-        dispatch(addDocument(project.ID, formData, (event) => {
-            progress[documentTypeID] = { progress: Math.round((100 * event.loaded) / event.total), loading: true };
-            setProgress({ ...progress });
-            console.log(progress);
-        }))
-            .then((response) => {
-                progress[documentTypeID] = { progress: 0, loading: false };
-                setProgress({ ...progress });
-                if (response) {
-                    let documents = project?.Documents?.filter((d) => d?.DocumentTypeID !== documentTypeID);
-                    documents = documents.concat(response.Documents?.filter((d) => d?.DocumentTypeID === documentTypeID));
-                    project.Documents = documents;
-                    dispatch(setSelectedProject({ ...project }));
-                }
-                //dispatch(getProjectByProjectID(project.ID));
-            });
-    }
+    //     dispatch(addDocument(project.ID, formData, (event) => {
+    //         progress[documentTypeID] = { progress: Math.round((100 * event.loaded) / event.total), loading: true };
+    //         setProgress({ ...progress });
+    //         console.log(progress);
+    //     }))
+    //         .then((response) => {
+    //             progress[documentTypeID] = { progress: 0, loading: false };
+    //             setProgress({ ...progress });
+    //             if (response) {
+    //                 let documents = project?.Documents?.filter((d) => d?.DocumentTypeID !== documentTypeID);
+    //                 documents = documents.concat(response.Documents?.filter((d) => d?.DocumentTypeID === documentTypeID));
+    //                 project.Documents = documents;
+    //                 dispatch(setSelectedProject({ ...project }));
+    //             }
+    //             //dispatch(getProjectByProjectID(project.ID));
+    //         });
+    // }
 
-    let findDocumentType = (id) => {
-        // return document type to use for label
-        return documentTypes?.find((documentType) => documentType?.ID === id);
-    }
+    // let findDocumentType = (id) => {
+    //     // return document type to use for label
+    //     return documentTypes?.find((documentType) => documentType?.ID === id);
+    // }
 
-    let findDocumentTypeFiles = (id) => {
-        // return document list based on type
-        return [...project?.Documents?.filter((d) => d?.DocumentTypeID === id)];
-    }
-    let fileProgress = (id) => {
-        if (!progress) return {};
-        return { ...progress[id] };
-    }
+    // let findDocumentTypeFiles = (id) => {
+    //     // return document list based on type
+    //     return [...project?.Documents?.filter((d) => d?.DocumentTypeID === id)];
+    // }
+    // let fileProgress = (id) => {
+    //     if (!progress) return {};
+    //     return { ...progress[id] };
+    // }
 
-    const handleDocumentDelete = (documentID) => {
-        // delete document by document ID then refresh project
-        dispatch(deleteDocument(documentID))
-            .then((response) => {
-                if (response) {
-                    project.Documents = project?.Documents?.filter((d) => d?.ID !== documentID);
-                    dispatch(setSelectedProject({ ...project }));
-                }
-            })
-            .catch(() => { });
-    }
+    // const handleDocumentDelete = (documentID) => {
+    //     // delete document by document ID then refresh project
+    //     dispatch(deleteDocument(documentID))
+    //         .then((response) => {
+    //             if (response) {
+    //                 project.Documents = project?.Documents?.filter((d) => d?.ID !== documentID);
+    //                 dispatch(setSelectedProject({ ...project }));
+    //             }
+    //         })
+    //         .catch(() => { });
+    // }
 
 
     const handleContractor = (contractorID, contractorTypeID) => {
@@ -110,9 +110,9 @@ const Contractors = () => {
                 console.log(data)
 
 
-                dispatch(getProductDetails(projectRef.current?.ID))
-                    .then(() => setIsLoading(false))
-                    .catch(() => setIsLoading(false));
+                // dispatch(getProductDetails(projectRef.current?.ID))
+                //     .then(() => setIsLoading(false))
+                //     .catch(() => setIsLoading(false));
             });
 
 
@@ -170,15 +170,15 @@ const Contractors = () => {
         projectRef.current = project;
     }, [contractorsInfo, project]);
 
-    useEffect(() => {
-        return () => {
-            // save any changes when navigating away
-            dispatch(saveProject({
-                ...projectRef.current,
-                Contractors: contractorsRef.current
-            }));
-        }
-    }, [dispatch]);
+    // useEffect(() => {
+    //     return () => {
+    //         // save any changes when navigating away
+    //         dispatch(saveProject({
+    //             ...projectRef.current,
+    //             Contractors: contractorsRef.current
+    //         }));
+    //     }
+    // }, [dispatch]);
 
     return (
         <div className='d-flex contractors'>

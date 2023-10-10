@@ -1,4 +1,6 @@
 import { 
+    GET_BUILDER_ROOM_GROUPS,
+    GET_BUILDER_ROOM_TYPES,
     GET_BUILDER_SELECTED_ROOM_TYPE,
     GET_BUILDER_SELECTED_ROOM_GROUP,
     GET_BUILDER_SELECTED_ROOM_CATEGORY,
@@ -6,6 +8,8 @@ import {
 } from '../actions/types';
 
 const intialState = {
+    builderRoomGroups:[],
+    builderRoomTypes: [],
     builderSelectedRoomType: {}, 
     builderSelectedRoomGroup: {},
     builderSelectedRoomCategory: {},
@@ -14,6 +18,18 @@ const intialState = {
 
 const builderRoomsReducer = (state = intialState, action) => {
     switch (action.type) {
+        case GET_BUILDER_ROOM_GROUPS: {
+            return {
+                ...state, 
+                builderRoomGroups: action.payload
+            }
+        }
+        case GET_BUILDER_ROOM_TYPES: {
+            return {
+                ...state, 
+                builderRoomTypes: action.payload
+            }
+        }
         case GET_BUILDER_SELECTED_ROOM_TYPE: {
             return {
                 ...state, 

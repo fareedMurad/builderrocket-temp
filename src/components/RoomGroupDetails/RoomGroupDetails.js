@@ -8,17 +8,22 @@ import { useDispatch, useSelector } from "react-redux";
 import Avatar from "../../assets/images/img-placeholder.png";
 import "./RoomGroupDetails.scss";
 import { useHistory } from "react-router";
+import Select from "react-select";
 
 import CustomLightbox from "../Lightbox";
 import {
   createRoomGroupCategoryProduct,
   deleteRoomGroupCategory,
   setSelectedGroupCategoryProducts,
+  setSelectedBuilderRoomGroup,
+  setSelectedBuilderCategory,
 } from "../../actions/roomActions";
 
 const RoomGroupDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const searchRef = useRef("");
 
   const products = useSelector((state) => state.product.products);
   const builderSelectedRoomGroup = useSelector(
@@ -27,15 +32,23 @@ const RoomGroupDetails = () => {
   const builderSelectedRoomCategory = useSelector(
     (state) => state.builderRooms.builderSelectedRoomCategory
   );
-  const productCategories = useSelector(
-    (state) => state.product.productCategories
-  );
+  // const productCategories = useSelector(
+  //   (state) => state.product.productCategories
+  // );
 
   const builderSelectedRoomCategoryProducts = useSelector(
     (state) => state.builderRooms.builderSelectedRoomCategoryProducts
   );
+  const roomGroups = useSelector(
+    (state) => state.builderRooms.builderRoomGroups?.Result
+  );
+
+  const roomTypes = useSelector(
+    (state) => state.builderRooms.builderRoomTypes?.RoomTypes
+  );
 
   const [selectedCategoryID, setSelectedCategoryID] = useState(null);
+  const [selectedRoomType, setSelectedRoomType] = useState(null);
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +57,13 @@ const RoomGroupDetails = () => {
   const [isOnlyAdded, setIsOnlyAdded] = useState(false);
 
   const [loadingActions, setActionLoading] = useState(false);
+  const [searchObject, setSearchObject] = useState({
+    CategoryID: "",
+    ModelName: null,
+    Description: null,
+    Filter: null,
+    CustomFilters: {},
+  });
 
   useEffect(() => {
     if (builderSelectedRoomCategory) {
@@ -52,17 +72,44 @@ const RoomGroupDetails = () => {
         label: builderSelectedRoomCategory?.Name,
       });
     }
-  }, [builderSelectedRoomCategory]);
+    if (builderSelectedRoomGroup) {
+      setSelectedRoomType({
+        value: builderSelectedRoomGroup?.ID,
+        label: builderSelectedRoomGroup?.Name,
+      });
+    }
+  }, [builderSelectedRoomCategory, builderSelectedRoomGroup]);
 
   useEffect(() => {
-    if (selectedCategoryID) {
-      setIsLoading(true);
+    const updatedSearch = {
+      ...searchObject,
+      Filter: searchRef?.current?.value,
+    };
+    setSearchObject(updatedSearch);
+  }, [searchRef?.current?.value]);
 
-      dispatch(getProductsByCategoryID(selectedCategoryID?.value))
+  // useEffect(() => {
+  //   if (selectedCategoryID) {
+  //     setIsLoading(true);
+
+  //     dispatch(getProductsByCategoryID(selectedCategoryID?.value))
+  //       .then(() => setIsLoading(false))
+  //       .catch(() => setIsLoading(false));
+  //   }
+  // }, [selectedCategoryID]);
+
+  useEffect(() => {
+    if (selectedCategoryID?.value) {
+      setIsLoading(true);
+      const updatedSearch = {
+        ...searchObject,
+        CategoryID: selectedCategoryID?.value,
+      };
+      dispatch(searchProducts(selectedCategoryID?.value, updatedSearch))
         .then(() => setIsLoading(false))
         .catch(() => setIsLoading(false));
     }
-  }, [selectedCategoryID]);
+  }, [dispatch, selectedCategoryID]);
 
   const isProductAdded = (ID) => {
     return builderSelectedRoomCategoryProducts?.find(
@@ -70,16 +117,29 @@ const RoomGroupDetails = () => {
     );
   };
 
-  const onProductCategoryChange = (productCategoryID) => {
-    if (!productCategoryID) return;
+  const onRoomTypeChange = (roomType) => {
+    if (!roomType) return;
 
+    // const group = builderRoomGroups?.find(g => g.ID === )
+
+    setSelectedRoomType(roomType)
+    setError(true);
+    dispatch(setSelectedBuilderRoomGroup(roomType));
+    dispatch(setSelectedBuilderCategory({})).then(() => {
+      // dispatch(setSelectedBuilderRoomGroup(group));
+    });
+  };
+
+  const onProductCategoryChange = (productCategory) => {
+    if (!productCategory) return;
+
+    setSelectedCategoryID(productCategory)
     setError(false);
-    const getCategory = productCategories?.find(
-      (c) => c.ID === parseInt(productCategoryID)
-    );
-    setSelectedCategoryID({
-      value: getCategory.ID,
-      label: getCategory?.Name,
+    // const getCategory = getFilteredCategories()?.find(
+    //   (c) => c.ID === parseInt(productCategory)
+    // );
+    dispatch(setSelectedBuilderCategory(productCategory)).then(() => {
+      // dispatch(setSelectedBuilderRoomGroup(group));
     });
   };
 
@@ -170,25 +230,129 @@ const RoomGroupDetails = () => {
     return pagedProducts;
   };
 
+  // update individual filter checkbox
+  const handleFilters = (filterType, filterChild, filterChildIndex) => {
+    let updatedFilterChild = filterChild;
+
+    updatedFilterChild.IsChecked = !updatedFilterChild.IsChecked;
+
+    let updatedFilters = products?.CustomFilters;
+
+    updatedFilters[filterType][filterChildIndex] = updatedFilterChild;
+
+    const search = {
+      CategoryID: selectedCategoryID?.value,
+      ModelName: null,
+      Description: null,
+      Filter: searchObject.Filter,
+      CustomFilters: updatedFilters,
+    };
+
+    dispatch(searchProducts(selectedCategoryID?.value, search));
+    setSearchObject(search);
+  };
+
+  const getFilteredCategories = () => {
+    return (
+      builderSelectedRoomGroup?.products
+        ?.filter((p) => p.Category)
+        ?.map((p) => p?.Category) || []
+    );
+  };
+
+  const handleSearch = () => {
+    const updatedSearch = {
+      ...searchObject,
+      Filter: searchRef.current.value,
+    };
+
+    dispatch(searchProducts(selectedCategoryID?.value, updatedSearch));
+    setSearchObject(updatedSearch);
+  };
+
+  console.log(
+    getFilteredCategories(),
+    builderSelectedRoomGroup,
+    "getFilteredCategories"
+  );
+
   return (
     <div className="add-product-container">
-      <div className="d-flex justify-content-between pr-3">
-        <div className="d-flex">
-          <div>
-            <Button
-              variant="link"
-              className="link-btn"
-              onClick={handleGoToProducts}
-            >
-              Room Types / {builderSelectedRoomGroup?.Name} /
-            </Button>
-          </div>
-          <div className="page-title">{selectedCategoryID?.label}</div>
+      <div className="d-flex">
+        <div>
+          <Button
+            variant="link"
+            className="link-btn"
+            onClick={handleGoToProducts}
+          >
+            Room Types / {builderSelectedRoomGroup?.Name} /
+          </Button>
         </div>
+        <div className="page-title">{selectedCategoryID?.label}</div>
+      </div>
+      <div className="d-flex justify-content-between pr-3">
         <div className="filter-section">
           <div className="d-flex flex-wrap align-items-center">
-            <div className="mx-5">
-              <Form>
+            <div>
+              <Form
+                className="d-flex  flex-wrap align-items-center h-auto"
+                style={{ gap: "20px" }}
+              >
+                <Form.Group>
+                  <Form.Label className="input-label">
+                    Search Products
+                  </Form.Label>
+                  <div className="d-flex" style={{ gap: "10px" }}>
+                    <Form.Control
+                      placeholder="Search Products"
+                      ref={searchRef}
+                      style={{ height: "36px" }}
+                    ></Form.Control>
+                    <Button
+                      onClick={handleSearch}
+                      className="primary-gray-btn search-btn"
+                    >
+                      Search
+                    </Button>
+                  </div>
+                </Form.Group>
+                <Form.Group style={{ width: "250px", zIndex: 9999 }}>
+                  <Form.Label className="input-label">
+                    Room Type{" "}
+                    {!builderSelectedRoomGroup?.ID ? (
+                      <small className="text-danger">
+                        Please select a room type
+                      </small>
+                    ) : null}
+                  </Form.Label>
+                  <Select
+                    options={roomGroups?.map((c) => {
+                      return { ...c, label: c.Name, value: c.ID };
+                    })}
+                    value={selectedRoomType}
+                    onChange={onRoomTypeChange}
+                    placeholder="Select room type"
+                  />
+                </Form.Group>
+                <Form.Group style={{ width: "250px", zIndex: 9999 }}>
+                  <Form.Label className="input-label">
+                    Category{" "}
+                    {!builderSelectedRoomCategory?.ID ? (
+                      <small className="text-danger">
+                        Please select a category
+                      </small>
+                    ) : null}
+                  </Form.Label>
+                  <Select
+                    options={getFilteredCategories()?.map((c) => {
+                      return { ...c, label: c.Name, value: c.ID };
+                    })}
+                    value={selectedCategoryID}
+                    onChange={onProductCategoryChange}
+                    placeholder="Select category"
+                  />
+                </Form.Group>
+
                 <Form.Check
                   checked={isOnlyAdded}
                   onChange={handleChangeSwitchFilter}
@@ -196,136 +360,155 @@ const RoomGroupDetails = () => {
                   id="custom-switch"
                   label={<small>Only Added Products</small>}
                 />
+                <div className="d-flex qty-items-select justify-content-end">
+                  <Form.Control
+                    as="select"
+                    value={pageCount}
+                    onChange={(e) =>
+                      setPageCount(
+                        e.target.value === "all"
+                          ? "all"
+                          : parseInt(e.target.value)
+                      )
+                    }
+                  >
+                    <option value="all">All</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                    <option value={200}>200</option>
+                    <option value={300}>300</option>
+                  </Form.Control>
+                  <div className="select-text">Items Per Page</div>
+                </div>
               </Form>
-            </div>
-            <div className="mr-3">
-              {/* <Form.Control
-                as="select"
-                disabled
-                value={selectedCategoryID?.value}
-                onChange={(event) =>
-                  onProductCategoryChange(event.target.value)
-                }
-              >
-                <option value="">Select Category</option>
-
-                {productCategories?.map((category) => (
-                  <Category key={category.ID} category={category} />
-                ))}
-              </Form.Control> */}
-              {error ? (
-                <small className="text-danger">Please select a category</small>
-              ) : null}
-            </div>
-            <div className="d-flex qty-items-select justify-content-end">
-              <Form.Control
-                as="select"
-                value={pageCount}
-                onChange={(e) =>
-                  setPageCount(
-                    e.target.value === "all" ? "all" : parseInt(e.target.value)
-                  )
-                }
-              >
-                <option value="all">All</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                <option value={200}>200</option>
-                <option value={300}>300</option>
-              </Form.Control>
-              <div className="select-text">Items Per Page</div>
             </div>
           </div>
         </div>
       </div>
 
-      {selectedCategoryID ? (
-        <div className="add-products-body d-flex">
-          <div className="add-product-table w-100 px-3">
-            {isLoading ? (
-              <div className="add-products-spinner d-flex justify-content-center">
-                <Spinner animation="border" variant="primary" />
-              </div>
-            ) : (
-              <Table hover responsive>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Product Name</th>
-                    <th>Model Number</th>
-                    <th>Color/Finish</th>
-                    <th>Price</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {getFilterProducts(products)?.map((product, index) => (
-                    <tr key={index}>
-                      <td>
-                        <CustomLightbox
-                          images={[
-                            product?.ThumbnailName
-                              ? product?.ThumbnailURL
-                              : Avatar,
-                          ]}
-                        />
-                      </td>
-                      <td>
-                        <div className="add-btn-product-details">
-                          <b className="d-block">{product?.ProductName}</b>
-
-                          <div className="d-flex mt-2">
-                            <div className="model-number">
-                              Model: {product?.ModelNumber}
-                            </div>
-                            <div>Part:</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{product?.ModelNumber}</td>
-                      <td>{product?.ColorFinish}</td>
-                      <td>${product?.MSRP}</td>
-                      <td>
-                        {loadingActions && product.ID === selectedProductID ? (
-                          <Spinner
-                            size="sm"
-                            animation="border"
-                            variant="primary"
-                          />
-                        ) : (
-                          <div className="d-flex">
-                            <Button
-                              className={`action-button add-product-btn mr-2 ${isProductAdded(product.ID) ? "btn-success" : ""}`}
-                              onClick={() => addProduct(product?.ID, product)}
-                              disabled={isProductAdded(product.ID)}
-                            >
-                              {isProductAdded(product.ID) ? "Added" : "Add"}
-                            </Button>
-                            <Button
-                              className="action-button btn-danger"
-                              onClick={() =>
-                                handleDeleteRoomGroupCategoryProduct(
-                                  product?.ID
-                                )
-                              }
-                              disabled={!isProductAdded(product.ID)}
-                            >
-                              Remove
-                            </Button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            )}
-          </div>
+      {isLoading ? (
+        <div className="add-products-spinner d-flex justify-content-center">
+          <Spinner animation="border" variant="primary" />
         </div>
       ) : (
-        <div className="text-secondary" style={{ minHeight: "200px" }}>
-          <p>Please select the category</p>
+        <div className="add-products-body d-flex">
+          <div className="checkbox-filter">
+            {products?.CustomFilters &&
+              Object.keys(products?.CustomFilters)
+                ?.reverse()
+                ?.map((filter, index) => (
+                  <div key={index} className="mt-3 mb-5">
+                    <div className="bold-text mb-3">{filter}</div>
+
+                    {products?.CustomFilters?.[filter]?.map(
+                      (filterChild, childIndex) => (
+                        <Form.Check
+                          key={childIndex}
+                          type="checkbox"
+                          className="mt-2"
+                          label={filterChild?.Name}
+                          value={filterChild?.IsChecked}
+                          onClick={() =>
+                            handleFilters(filter, filterChild, childIndex)
+                          }
+                        />
+                      )
+                    )}
+                  </div>
+                ))}
+          </div>
+          {selectedCategoryID ? (
+            <div className="add-products-body d-flex">
+              <div className="add-product-table w-100 px-3">
+                <Table hover responsive>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Product Name</th>
+                      <th>Model Number</th>
+                      <th>Color/Finish</th>
+                      <th>Price</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {getFilterProducts(products?.Products)?.map(
+                      (product, index) => (
+                        <tr key={index}>
+                          <td>
+                            <CustomLightbox
+                              images={[
+                                product?.ThumbnailName
+                                  ? product?.ThumbnailURL
+                                  : Avatar,
+                              ]}
+                            />
+                          </td>
+                          <td>
+                            <div className="add-btn-product-details">
+                              <b className="d-block">{product?.ProductName}</b>
+
+                              <div className="d-flex mt-2">
+                                <div className="model-number">
+                                  Model: {product?.ModelNumber}
+                                </div>
+                                <div>Part:</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{product?.ModelNumber}</td>
+                          <td>{product?.ColorFinish}</td>
+                          <td>${product?.MSRP}</td>
+                          <td>
+                            {loadingActions &&
+                            product.ID === selectedProductID ? (
+                              <Spinner
+                                size="sm"
+                                animation="border"
+                                variant="primary"
+                              />
+                            ) : (
+                              <div className="d-flex">
+                                <Button
+                                  className={`action-button add-product-btn mr-2 ${
+                                    isProductAdded(product.ID)
+                                      ? "btn-success"
+                                      : ""
+                                  }`}
+                                  onClick={() =>
+                                    addProduct(product?.ID, product)
+                                  }
+                                  disabled={isProductAdded(product.ID)}
+                                >
+                                  {isProductAdded(product.ID) ? "Added" : "Add"}
+                                </Button>
+                                <Button
+                                  className="action-button btn-danger"
+                                  onClick={() =>
+                                    handleDeleteRoomGroupCategoryProduct(
+                                      product?.ID
+                                    )
+                                  }
+                                  disabled={!isProductAdded(product.ID)}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+          ) : (
+            <div className="text-secondary" style={{ minHeight: "200px" }}>
+              <p>Please select the category</p>
+            </div>
+          )}
         </div>
       )}
     </div>
