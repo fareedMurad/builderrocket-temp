@@ -22,10 +22,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 const RoomGroups = () => {
-  const roomTypes = useSelector((state) => state.builderRooms.builderRoomTypes?.RoomsTypes);
+  const roomTypes = useSelector(
+    (state) => state.builderRooms.builderRoomTypes?.RoomTypes
+  );
   const roomGroups = useSelector(
     (state) => state.builderRooms.builderRoomGroups?.Result
   );
+
+  console.log(roomGroups, "roomGroups");
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState();
@@ -66,21 +70,14 @@ const RoomGroups = () => {
   }, []);
 
   const handleFetchRoomGroups = () => {
-    // FOR TESTING ONLY
-    if(!roomGroups?.length) {
-      setIsLoading(true);
-      dispatch(getBuilderRoomGroups()).then((data) => {
-        setIsLoading(false);
-      });
-    }
-    
+    setIsLoading(true);
+    dispatch(getBuilderRoomGroups()).then((data) => {
+      setIsLoading(false);
+    });
   };
 
-  const handleFetchRoomTypes = () => {   
-    // FOR TESTING ONLY
-    if(!roomTypes?.length) {
+  const handleFetchRoomTypes = () => {
     dispatch(getBuilderRoomTypes()).then((data) => {});
-    }
   };
 
   const handleGroupNameChange = (event) => {
@@ -342,11 +339,11 @@ const RoomGroups = () => {
     //     getProductsByCategory({ CategoryID: category.ID }, allProducts)
     //   )
     // ).then(() =>
-      dispatch(setSelectedBuilderCategory(category)).then(() => {
-        dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
-          history.push(`/rooms-management/groupDetails`);
-        });
-      })
+    dispatch(setSelectedBuilderCategory(category)).then(() => {
+      dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
+        history.push(`/rooms-management/groupDetails`);
+      });
+    });
     // );
   };
 
@@ -393,10 +390,8 @@ const RoomGroups = () => {
                   ></i>
                 </div>
                 <span className="px-2">
-                  {getCategoriesFromProducts(item.products)?.length} categor
-                  {getCategoriesFromProducts(item.products)?.length > 1
-                    ? "ies"
-                    : "y"}
+                  {item.products?.length} categor
+                  {item.products?.length > 1 ? "ies" : "y"}
                 </span>{" "}
               </div>
             }
@@ -405,56 +400,46 @@ const RoomGroups = () => {
                 {" "}
                 <Table>
                   <tbody>
-                    {getCategoriesFromProducts(item.products)?.map(
-                      (templateItem, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>
-                              <div className="d-flex">
-                                {templateItem?.Category?.Name}
-                                <i
-                                  className="far fa-trash fa-sm tab-icon ml-5"
-                                  onClick={(e) =>
-                                    handleDeleteGroupCategory(e, templateItem)
-                                  }
-                                ></i>
-                              </div>
-                            </td>
-                            <td>
-                              <div className="d-flex justify-content-end align-items-center">
-                                <small className="mr-5 text-secondary">
-                                  {
-                                    getProductsByCategory(
-                                      templateItem,
-                                      item.products
-                                    )?.length
-                                  }{" "}
-                                  {getProductsByCategory(
-                                    templateItem,
+                    {item.products?.map((templateItem, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>
+                            <div className="d-flex">
+                              {templateItem?.Category?.Name}
+                              <i
+                                className="far fa-trash fa-sm tab-icon ml-5"
+                                onClick={(e) =>
+                                  handleDeleteGroupCategory(e, templateItem)
+                                }
+                              ></i>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="d-flex justify-content-end align-items-center">
+                              <small className="mr-5 text-secondary">
+                                {templateItem.ProductCounts}{" "}
+                                {templateItem.ProductCounts > 1
+                                  ? "Products"
+                                  : "Product"}{" "}
+                                Added
+                              </small>
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  handleManageProducts(
+                                    item,
+                                    templateItem.Category,
                                     item.products
-                                  )?.length > 1
-                                    ? "Products"
-                                    : "Product"}{" "}
-                                  Added
-                                </small>
-                                <Button
-                                  size="sm"
-                                  onClick={() =>
-                                    handleManageProducts(
-                                      item,
-                                      templateItem.Category,
-                                      item.products
-                                    )
-                                  }
-                                >
-                                  Manage Products
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      }
-                    )}
+                                  )
+                                }
+                              >
+                                Manage Products
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
               </div>

@@ -17,6 +17,7 @@ import {
   setSelectedGroupCategoryProducts,
   setSelectedBuilderRoomGroup,
   setSelectedBuilderCategory,
+  getBuilderRoomGroups,
 } from "../../actions/roomActions";
 
 const RoomGroupDetails = () => {
@@ -88,6 +89,17 @@ const RoomGroupDetails = () => {
     setSearchObject(updatedSearch);
   }, [searchRef?.current?.value]);
 
+  useEffect(() => {
+    handleFetchRoomGroups();
+  }, []);
+
+  const handleFetchRoomGroups = () => {
+    setIsLoading(true);
+    dispatch(getBuilderRoomGroups()).then((data) => {
+      setIsLoading(false);
+    });
+  };
+
   // useEffect(() => {
   //   if (selectedCategoryID) {
   //     setIsLoading(true);
@@ -122,7 +134,7 @@ const RoomGroupDetails = () => {
 
     // const group = builderRoomGroups?.find(g => g.ID === )
 
-    setSelectedRoomType(roomType)
+    setSelectedRoomType(roomType);
     setError(true);
     dispatch(setSelectedBuilderRoomGroup(roomType));
     dispatch(setSelectedBuilderCategory({})).then(() => {
@@ -133,7 +145,7 @@ const RoomGroupDetails = () => {
   const onProductCategoryChange = (productCategory) => {
     if (!productCategory) return;
 
-    setSelectedCategoryID(productCategory)
+    setSelectedCategoryID(productCategory);
     setError(false);
     // const getCategory = getFilteredCategories()?.find(
     //   (c) => c.ID === parseInt(productCategory)
@@ -387,128 +399,141 @@ const RoomGroupDetails = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="add-products-spinner d-flex justify-content-center">
-          <Spinner animation="border" variant="primary" />
-        </div>
-      ) : (
-        <div className="add-products-body d-flex">
-          <div className="checkbox-filter">
-            {products?.CustomFilters &&
-              Object.keys(products?.CustomFilters)
-                ?.reverse()
-                ?.map((filter, index) => (
-                  <div key={index} className="mt-3 mb-5">
-                    <div className="bold-text mb-3">{filter}</div>
-
-                    {products?.CustomFilters?.[filter]?.map(
-                      (filterChild, childIndex) => (
-                        <Form.Check
-                          key={childIndex}
-                          type="checkbox"
-                          className="mt-2"
-                          label={filterChild?.Name}
-                          value={filterChild?.IsChecked}
-                          onClick={() =>
-                            handleFilters(filter, filterChild, childIndex)
-                          }
-                        />
-                      )
-                    )}
-                  </div>
-                ))}
+      {selectedCategoryID?.value && selectedRoomType.value ? (
+        isLoading ? (
+          <div className="add-products-spinner d-flex justify-content-center">
+            <Spinner animation="border" variant="primary" />
           </div>
-          {selectedCategoryID ? (
-            <div className="add-products-body d-flex">
-              <div className="add-product-table w-100 px-3">
-                <Table hover responsive>
-                  <thead>
-                    <tr>
-                      <th></th>
-                      <th>Product Name</th>
-                      <th>Model Number</th>
-                      <th>Color/Finish</th>
-                      <th>Price</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {getFilterProducts(products?.Products)?.map(
-                      (product, index) => (
-                        <tr key={index}>
-                          <td>
-                            <CustomLightbox
-                              images={[
-                                product?.ThumbnailName
-                                  ? product?.ThumbnailURL
-                                  : Avatar,
-                              ]}
-                            />
-                          </td>
-                          <td>
-                            <div className="add-btn-product-details">
-                              <b className="d-block">{product?.ProductName}</b>
+        ) : (
+          <div className="add-products-body d-flex">
+            <div className="checkbox-filter">
+              {products?.CustomFilters &&
+                Object.keys(products?.CustomFilters)
+                  ?.reverse()
+                  ?.map((filter, index) => (
+                    <div key={index} className="mt-3 mb-5">
+                      <div className="bold-text mb-3">{filter}</div>
 
-                              <div className="d-flex mt-2">
-                                <div className="model-number">
-                                  Model: {product?.ModelNumber}
-                                </div>
-                                <div>Part:</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td>{product?.ModelNumber}</td>
-                          <td>{product?.ColorFinish}</td>
-                          <td>${product?.MSRP}</td>
-                          <td>
-                            {loadingActions &&
-                            product.ID === selectedProductID ? (
-                              <Spinner
-                                size="sm"
-                                animation="border"
-                                variant="primary"
+                      {products?.CustomFilters?.[filter]?.map(
+                        (filterChild, childIndex) => (
+                          <Form.Check
+                            key={childIndex}
+                            type="checkbox"
+                            className="mt-2"
+                            label={filterChild?.Name}
+                            value={filterChild?.IsChecked}
+                            onClick={() =>
+                              handleFilters(filter, filterChild, childIndex)
+                            }
+                          />
+                        )
+                      )}
+                    </div>
+                  ))}
+            </div>
+            {selectedCategoryID ? (
+              <div className="add-products-body d-flex">
+                <div className="add-product-table w-100 px-3">
+                  <Table hover responsive>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Product Name</th>
+                        <th>Model Number</th>
+                        <th>Color/Finish</th>
+                        <th>Price</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getFilterProducts(products?.Products)?.map(
+                        (product, index) => (
+                          <tr key={index}>
+                            <td>
+                              <CustomLightbox
+                                images={[
+                                  product?.ThumbnailName
+                                    ? product?.ThumbnailURL
+                                    : Avatar,
+                                ]}
                               />
-                            ) : (
-                              <div className="d-flex">
-                                <Button
-                                  className={`action-button add-product-btn mr-2 ${
-                                    isProductAdded(product.ID)
-                                      ? "btn-success"
-                                      : ""
-                                  }`}
-                                  onClick={() =>
-                                    addProduct(product?.ID, product)
-                                  }
-                                  disabled={isProductAdded(product.ID)}
-                                >
-                                  {isProductAdded(product.ID) ? "Added" : "Add"}
-                                </Button>
-                                <Button
-                                  className="action-button btn-danger"
-                                  onClick={() =>
-                                    handleDeleteRoomGroupCategoryProduct(
-                                      product?.ID
-                                    )
-                                  }
-                                  disabled={!isProductAdded(product.ID)}
-                                >
-                                  Remove
-                                </Button>
+                            </td>
+                            <td>
+                              <div className="add-btn-product-details">
+                                <b className="d-block">
+                                  {product?.ProductName}
+                                </b>
+
+                                <div className="d-flex mt-2">
+                                  <div className="model-number">
+                                    Model: {product?.ModelNumber}
+                                  </div>
+                                  <div>Part:</div>
+                                </div>
                               </div>
-                            )}
-                          </td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </Table>
+                            </td>
+                            <td>{product?.ModelNumber}</td>
+                            <td>{product?.ColorFinish}</td>
+                            <td>${product?.MSRP}</td>
+                            <td>
+                              {loadingActions &&
+                              product.ID === selectedProductID ? (
+                                <Spinner
+                                  size="sm"
+                                  animation="border"
+                                  variant="primary"
+                                />
+                              ) : (
+                                <div className="d-flex">
+                                  <Button
+                                    className={`action-button add-product-btn mr-2 ${
+                                      isProductAdded(product.ID)
+                                        ? "btn-success"
+                                        : ""
+                                    }`}
+                                    onClick={() =>
+                                      addProduct(product?.ID, product)
+                                    }
+                                    disabled={isProductAdded(product.ID)}
+                                  >
+                                    {isProductAdded(product.ID)
+                                      ? "Added"
+                                      : "Add"}
+                                  </Button>
+                                  <Button
+                                    className="action-button btn-danger"
+                                    onClick={() =>
+                                      handleDeleteRoomGroupCategoryProduct(
+                                        product?.ID
+                                      )
+                                    }
+                                    disabled={!isProductAdded(product.ID)}
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </Table>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="text-secondary" style={{ minHeight: "200px" }}>
-              <p>Please select the category</p>
-            </div>
-          )}
+            ) : (
+              <div className="text-secondary" style={{ minHeight: "200px" }}>
+                <p>Please select the category</p>
+              </div>
+            )}
+          </div>
+        )
+      ) : (
+        <div className="add-products-spinner d-flex justify-content-center">
+          <p>
+            Please select a room type and a category to list down their
+            products!
+          </p>
         </div>
       )}
     </div>

@@ -26,9 +26,9 @@ const RoomsTabs = (props) => {
     setSelectedTab(tab);
 }, [location])
 
-  // useEffect(() => {
-  //   dispatch(getCategories());
-  // }, [])
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [])
 
   useEffect(() => {
     if(selectedTab) {
