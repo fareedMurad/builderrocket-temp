@@ -14,7 +14,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 const RoomsTypes = () => {
-  const roomTypes = useSelector((state) => state.builderRooms.builderRoomTypes?.RoomsTypes);
+  const roomTypes = useSelector(
+    (state) => state.builderRooms.builderRoomTypes?.RoomTypes
+  );
   const roomGroups = useSelector(
     (state) => state.builderRooms.builderRoomGroups?.Result
   );
@@ -31,21 +33,15 @@ const RoomsTypes = () => {
   }, []);
 
   const handleFetchRoomGroups = () => {
-     // FOR TESTING ONLY
-    if(!roomGroups?.length) {
     dispatch(getBuilderRoomGroups()).then((data) => {
       setIsLoading(false);
     });
-  }
   };
 
-  const handleFetchRoomTypes = () => { 
-    // FOR TESTING ONLY
-    if(!roomTypes?.length) {
+  const handleFetchRoomTypes = () => {
     dispatch(getBuilderRoomTypes()).then((data) => {
       setIsLoading(false);
     });
-    }
   };
 
   const handleAddNewRoom = () => {
