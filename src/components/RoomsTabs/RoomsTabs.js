@@ -51,8 +51,8 @@ const RoomsTabs = (props) => {
         <Tab eventKey="groups" title="Room Types">
           {selectedTab === "groups" && <RoomGroups />}
         </Tab>
-        <Tab eventKey="roomTypes" title="Rooms">
-          {selectedTab === "roomTypes" && (
+        <Tab eventKey="rooms" title="Rooms">
+          {selectedTab === "rooms" && (
             <RoomsTypes />
           )}
         </Tab>

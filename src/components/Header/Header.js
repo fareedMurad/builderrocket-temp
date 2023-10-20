@@ -126,7 +126,7 @@ const Header = ({ expanded, setExpanded }) => {
                 </div>
                 <div
                   className="header-item"
-                  onClick={() => history.push("/rooms-management/roomTypes")}
+                  onClick={() => history.push("/rooms-management/rooms")}
                 >
                   <i className="far fa-border-none fa-sm tab-icon"></i>
                   Rooms Management

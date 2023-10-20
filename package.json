@@ -23,7 +23,7 @@
     "multiselect-react-dropdown": "^2.0.25",
     "node-sass": "^8.0.0",
     "react": "^17.0.2",
-    "react-bootstrap": "^1.5.2",
+    "react-bootstrap": "^2.9.0",
     "react-bootstrap-accordion": "^1.0.0",
     "react-collapsible": "^2.8.4",
     "react-datepicker": "^4.2.1",

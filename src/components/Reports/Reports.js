@@ -448,13 +448,13 @@ const Reports = (props) => {
                                     name: "Select All",
                                     value: "select_all",
                                   },
-                                  ...reportByCategory?.Groups?.map((a) => {
+                                  ...(reportByCategory?.Groups?.map((a) => {
                                     return {
                                       ...a,
                                       name: a.Name,
                                       value: a.ID,
                                     };
-                                  }),
+                                  }).sort((a, b) => a.Name.localeCompare(b.Name))),
                                 ]
                               : []
                           }
@@ -556,13 +556,13 @@ const Reports = (props) => {
                                     name: "Select All",
                                     value: "select_all",
                                   },
-                                  ...reportByCategory?.Rooms?.map((a) => {
+                                  ...(reportByCategory?.Rooms?.map((a) => {
                                     return {
                                       ...a,
                                       name: a.Name,
                                       value: a.ID,
                                     };
-                                  }),
+                                  }).sort((a, b) => a.Name.localeCompare(b.Name))),
                                 ]
                               : []
                           }

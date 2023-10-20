@@ -18,6 +18,8 @@ import {
   setSelectedBuilderRoomGroup,
   setSelectedBuilderCategory,
   getBuilderRoomGroups,
+  getBuilderRoomGroupDetails,
+  getRoomGroupCategoryProduct,
 } from "../../actions/roomActions";
 
 const RoomGroupDetails = () => {
@@ -56,6 +58,9 @@ const RoomGroupDetails = () => {
   const [pageCount, setPageCount] = useState(25);
   const [error, setError] = useState(false);
   const [isOnlyAdded, setIsOnlyAdded] = useState(false);
+  const [selectedGroupCategories, setSelectedGroupCategories] = useState([]);
+  const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
+    useState(false);
 
   const [loadingActions, setActionLoading] = useState(false);
   const [searchObject, setSearchObject] = useState({
@@ -78,6 +83,13 @@ const RoomGroupDetails = () => {
         value: builderSelectedRoomGroup?.ID,
         label: builderSelectedRoomGroup?.Name,
       });
+      setIsGroupCategoriesLoading(true);
+      dispatch(getBuilderRoomGroupDetails(builderSelectedRoomGroup.ID)).then(
+        (res) => {
+          setSelectedGroupCategories(res.Result);
+          setIsGroupCategoriesLoading(false);
+        }
+      );
     }
   }, [builderSelectedRoomCategory, builderSelectedRoomGroup]);
 
@@ -117,11 +129,24 @@ const RoomGroupDetails = () => {
         ...searchObject,
         CategoryID: selectedCategoryID?.value,
       };
-      dispatch(searchProducts(selectedCategoryID?.value, updatedSearch))
-        .then(() => setIsLoading(false))
-        .catch(() => setIsLoading(false));
+      fetchaddedProducts(updatedSearch);
     }
-  }, [dispatch, selectedCategoryID]);
+  }, [selectedCategoryID]);
+
+  const fetchaddedProducts = async (searchObject) => {
+    dispatch(
+      getRoomGroupCategoryProduct(
+        builderSelectedRoomGroup.ID,
+        selectedCategoryID.value
+      )
+    ).then((res) => {
+      dispatch(setSelectedGroupCategoryProducts(res?.Result || [])).then(() =>
+        dispatch(searchProducts(selectedCategoryID?.value, searchObject))
+          .then(() => setIsLoading(false))
+          .catch(() => setIsLoading(false))
+      );
+    });
+  };
 
   const isProductAdded = (ID) => {
     return builderSelectedRoomCategoryProducts?.find(
@@ -145,12 +170,12 @@ const RoomGroupDetails = () => {
   const onProductCategoryChange = (productCategory) => {
     if (!productCategory) return;
 
-    setSelectedCategoryID(productCategory);
+    setSelectedCategoryID(productCategory.Category);
     setError(false);
     // const getCategory = getFilteredCategories()?.find(
     //   (c) => c.ID === parseInt(productCategory)
     // );
-    dispatch(setSelectedBuilderCategory(productCategory)).then(() => {
+    dispatch(setSelectedBuilderCategory(productCategory.Category)).then(() => {
       // dispatch(setSelectedBuilderRoomGroup(group));
     });
   };
@@ -265,11 +290,8 @@ const RoomGroupDetails = () => {
   };
 
   const getFilteredCategories = () => {
-    return (
-      builderSelectedRoomGroup?.products
-        ?.filter((p) => p.Category)
-        ?.map((p) => p?.Category) || []
-    );
+    if (isGroupCategoriesLoading) return [];
+    return selectedGroupCategories || [];
   };
 
   const handleSearch = () => {
@@ -281,12 +303,6 @@ const RoomGroupDetails = () => {
     dispatch(searchProducts(selectedCategoryID?.value, updatedSearch));
     setSearchObject(updatedSearch);
   };
-
-  console.log(
-    getFilteredCategories(),
-    builderSelectedRoomGroup,
-    "getFilteredCategories"
-  );
 
   return (
     <div className="add-product-container">
@@ -357,11 +373,17 @@ const RoomGroupDetails = () => {
                   </Form.Label>
                   <Select
                     options={getFilteredCategories()?.map((c) => {
-                      return { ...c, label: c.Name, value: c.ID };
+                      return {
+                        ...c,
+                        label: c.CategoryLabel,
+                        value: c.CategoryID,
+                      };
                     })}
                     value={selectedCategoryID}
                     onChange={onProductCategoryChange}
                     placeholder="Select category"
+                    isLoading={isGroupCategoriesLoading}
+                    isDisabled={!selectedRoomType}
                   />
                 </Form.Group>
 

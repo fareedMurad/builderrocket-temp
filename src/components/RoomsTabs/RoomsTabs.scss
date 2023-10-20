@@ -26,9 +26,7 @@
         }
     }
 
-    .nav-item {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
+    .nav-item button {
         font-size: 14px;
         letter-spacing: -0.32px;
         line-height: 19px;
@@ -40,13 +38,11 @@
             min-width: fit-content;
             align-items: center;
             height: fit-content;
-            padding-left: 1rem;
-            padding-right: 1rem;
 
         }
     }
 
-    .nav-item.active {
+    .nav-item button.active{
         color: $activegray;
         font-weight: bold;
         border-bottom: 5px solid $activegray;
