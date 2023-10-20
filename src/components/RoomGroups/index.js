@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import "react-bootstrap-accordion/dist/index.css";
-import { Accordion } from "react-bootstrap-accordion";
-import { Table, Modal, Button, Form, Spinner } from "react-bootstrap";
+// import "react-bootstrap-accordion/dist/index.css";
+// import { Accordion } from "react-bootstrap-accordion";
+import {
+  Table,
+  Modal,
+  Button,
+  Form,
+  Spinner,
+  Accordion,
+} from "react-bootstrap";
 import Select from "react-select";
 import {
   createRoomGroup,
@@ -17,6 +24,8 @@ import {
   renameRoomType,
   getBuilderRoomTypes,
   deleteRoomType,
+  getBuilderRoomGroupDetails,
+  getRoomGroupCategoryProduct,
 } from "../../actions/roomActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -28,8 +37,6 @@ const RoomGroups = () => {
   const roomGroups = useSelector(
     (state) => state.builderRooms.builderRoomGroups?.Result
   );
-
-  console.log(roomGroups, "roomGroups");
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState();
@@ -43,6 +50,10 @@ const RoomGroups = () => {
     (state) => state.product.productCategories
   );
   const [categories, setCategories] = useState([]);
+  const [selectedGroupCategories, setSelectedGroupCategories] = useState([]);
+  const [expandID, setExpandID] = useState();
+  const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
+    useState(false);
 
   useEffect(() => {
     const list = [];
@@ -63,6 +74,16 @@ const RoomGroups = () => {
     });
     setCategories(list);
   }, [listCategories]);
+
+  useEffect(() => {
+    if (expandID) {
+      setIsGroupCategoriesLoading(true);
+      dispatch(getBuilderRoomGroupDetails(expandID)).then((res) => {
+        setSelectedGroupCategories(res.Result);
+        setIsGroupCategoriesLoading(false);
+      });
+    }
+  }, [expandID]);
 
   useEffect(() => {
     handleFetchRoomGroups();
@@ -261,7 +282,6 @@ const RoomGroups = () => {
     );
   };
 
-  console.log(categories);
   const addGroupCategoryModal = () => {
     return (
       <Modal
@@ -333,31 +353,18 @@ const RoomGroups = () => {
     setShowVisibleModal("DELETE_GROUP_CATEGORY");
   };
 
-  const handleManageProducts = (group, category, allProducts) => {
-    // dispatch(
-    //   setSelectedGroupCategoryProducts(
-    //     getProductsByCategory({ CategoryID: category.ID }, allProducts)
-    //   )
-    // ).then(() =>
+  const handleManageProducts = async (group, category) => {
     dispatch(setSelectedBuilderCategory(category)).then(() => {
       dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
         history.push(`/rooms-management/groupDetails`);
       });
     });
-    // );
   };
 
   const getCategoriesFromProducts = (products) => {
     if (products.length) {
       return products.filter((obj) => !obj.Product);
     } else return [];
-  };
-
-  const getProductsByCategory = (item, products) => {
-    return (
-      products.filter((p) => p.CategoryID === item.CategoryID && p.Product) ||
-      []
-    );
   };
 
   return (
@@ -370,82 +377,93 @@ const RoomGroups = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       ) : (
-        roomGroups?.map((item, index) => (
-          <Accordion
-            title={
-              <div className="d-flex justify-content-between w-100 pr-5">
-                <div className="d-flex align-items-center">
-                  <div className="font-weight-bold mr-5">{item.Name}</div>
-                  <i
-                    className="far fa-pen fa-sm tab-icon p-2"
-                    onClick={(e) => handleEdit(e, item)}
-                  ></i>
-                  <i
-                    className="far fa-plus fa-sm tab-icon p-2"
-                    onClick={(e) => handleAddCategory(e, item)}
-                  ></i>
-                  <i
-                    className="far fa-trash fa-sm tab-icon p-2"
-                    onClick={(e) => handleDeleteGroup(e, item)}
-                  ></i>
+        <Accordion flush activeKey={expandID} onSelect={setExpandID}>
+          {roomGroups?.map((item, index) => (
+            <Accordion.Item eventKey={item.ID}>
+              <Accordion.Header>
+                <div className="d-flex justify-content-between w-100 pr-5">
+                  <div className="d-flex align-items-center">
+                    <div className="font-weight-bold mr-5">{item.Name}</div>
+                    <i
+                      className="far fa-pen fa-sm tab-icon p-2"
+                      onClick={(e) => handleEdit(e, item)}
+                    ></i>
+                    <i
+                      className="far fa-plus fa-sm tab-icon p-2"
+                      onClick={(e) => handleAddCategory(e, item)}
+                    ></i>
+                    <i
+                      className="far fa-trash fa-sm tab-icon p-2"
+                      onClick={(e) => handleDeleteGroup(e, item)}
+                    ></i>
+                  </div>
+                  <span className="px-2">
+                    {item.Count} categor
+                    {item.Count > 1 ? "ies" : "y"}
+                  </span>{" "}
                 </div>
-                <span className="px-2">
-                  {item.products?.length} categor
-                  {item.products?.length > 1 ? "ies" : "y"}
-                </span>{" "}
-              </div>
-            }
-            children={
-              <div>
-                {" "}
-                <Table>
-                  <tbody>
-                    {item.products?.map((templateItem, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <div className="d-flex">
-                              {templateItem?.Category?.Name}
-                              <i
-                                className="far fa-trash fa-sm tab-icon ml-5"
-                                onClick={(e) =>
-                                  handleDeleteGroupCategory(e, templateItem)
-                                }
-                              ></i>
-                            </div>
-                          </td>
-                          <td>
-                            <div className="d-flex justify-content-end align-items-center">
-                              <small className="mr-5 text-secondary">
-                                {templateItem.ProductCounts}{" "}
-                                {templateItem.ProductCounts > 1
-                                  ? "Products"
-                                  : "Product"}{" "}
-                                Added
-                              </small>
-                              <Button
-                                size="sm"
-                                onClick={() =>
-                                  handleManageProducts(
-                                    item,
-                                    templateItem.Category,
-                                    item.products
-                                  )
-                                }
-                              >
-                                Manage Products
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              </div>
-            }
-          />
-        ))
+              </Accordion.Header>
+              <Accordion.Body>
+                <div>
+                  {" "}
+                  {isGroupCategoriesLoading ? (
+                    <div
+                      className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center"
+                      style={{ minHeight: "200px" }}
+                    >
+                      <Spinner animation="border" variant="primary" />
+                    </div>
+                  ) : (
+                    <Table>
+                      <tbody>
+                        {selectedGroupCategories?.map((templateItem, index) => {
+                          return (
+                            <tr key={index}>
+                              <td>
+                                <div className="d-flex">
+                                  {templateItem?.Category?.Name}
+                                  <i
+                                    className="far fa-trash fa-sm tab-icon ml-5"
+                                    onClick={(e) =>
+                                      handleDeleteGroupCategory(e, templateItem)
+                                    }
+                                  ></i>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="d-flex justify-content-end align-items-center">
+                                  <small className="mr-5 text-secondary">
+                                    {templateItem.ProductCounts}{" "}
+                                    {templateItem.ProductCounts > 1
+                                      ? "Products"
+                                      : "Product"}{" "}
+                                    Added
+                                  </small>
+                                  <Button
+                                    size="sm"
+                                    onClick={() =>
+                                      handleManageProducts(
+                                        item,
+                                        templateItem.Category,
+                                        item.products
+                                      )
+                                    }
+                                  >
+                                    Manage Products
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                  )}
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          ))}
+        </Accordion>
       )}
 
       {deleteGroupModal()}
