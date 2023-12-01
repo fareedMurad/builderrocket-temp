@@ -28,6 +28,7 @@ const Home = (props) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [goToProjectLoader, setGoToProjectLoader] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(
     ProjectStatus.filter((item) => item.id === 1)
   );
@@ -105,17 +106,19 @@ const Home = (props) => {
 
   const handlePinChanged = (project) => {
     setPinLoader([...pinLoader, project.ID]);
-    dispatch(updateProjectIsPinned(project.ID, !project.IsPinned)).then(async () => {
-      await dispatch(
-        setProjects(
-          projects.map((p) => {
-            if (p.ID === project.ID) return { ...p, IsPinned: !p.IsPinned };
-            else return p;
-          })
-        )
-      );
-      setPinLoader((prev) => prev.filter((p) => p !== project.ID));
-    });
+    dispatch(updateProjectIsPinned(project.ID, !project.IsPinned)).then(
+      async () => {
+        await dispatch(
+          setProjects(
+            projects.map((p) => {
+              if (p.ID === project.ID) return { ...p, IsPinned: !p.IsPinned };
+              else return p;
+            })
+          )
+        );
+        setPinLoader((prev) => prev.filter((p) => p !== project.ID));
+      }
+    );
   };
 
   const goToAddProject = () => {
@@ -126,10 +129,8 @@ const Home = (props) => {
     const selected = selectedStatus.map((item) => item.id);
     return filteredProjects
       .filter((project) => selected.indexOf(parseInt(project?.StatusID)) > -1)
-      .sort(
-        (objA, objB) => new Date(objB.CreatedAt) - new Date(objA.CreatedAt),
-      )
-      .sort((a, b) => Number(b.IsPinned) - Number(a.IsPinned))
+      .sort((objA, objB) => new Date(objB.CreatedAt) - new Date(objA.CreatedAt))
+      .sort((a, b) => Number(b.IsPinned) - Number(a.IsPinned));
   };
 
   function onSelectStatus(selectedList, selectedItem) {
@@ -200,6 +201,7 @@ const Home = (props) => {
                   history={history}
                   handlePinChanged={() => handlePinChanged(project)}
                   pinLoader={pinLoader}
+                  setGoToProjectLoader={setGoToProjectLoader}
                 />
               ))}
             </div>
@@ -211,6 +213,29 @@ const Home = (props) => {
       {isLoading && (
         <div className="spinner d-flex justify-content-center">
           <Spinner animation="border" variant="primary" />
+        </div>
+      )}
+
+      {goToProjectLoader && (
+        <div
+          className="h-100 w-100"
+          style={{
+            zIndex: 9999999,
+            position: "fixed",
+            background: "rgba(0,0,0,0.6)",
+            top: 0,
+          }}
+        >
+          <div
+            className="h-100 w-100 spinner d-flex justify-content-center "
+            style={{
+              zIndex: 9999999,
+              position: "fixed",
+              top: "25%",
+            }}
+          >
+            <Spinner animation="border" variant="primary" />
+          </div>
         </div>
       )}
     </div>

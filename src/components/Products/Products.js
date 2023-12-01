@@ -48,6 +48,7 @@ import {
 } from "../../actions/myProductActions";
 import ColorProductModal from "../ColorProductModal";
 import Utils from "../../utils";
+import SelectRooms from "./SelectRooms";
 
 const Products = (props) => {
   const dispatch = useDispatch();
@@ -56,7 +57,6 @@ const Products = (props) => {
   const parentCategoryRef = useRef(null);
   const subCategoryRef = useRef(null);
   const brandCategoryRef = useRef(null);
-  const roomCategoryRef = useRef(null);
 
   const project = useSelector((state) => state.project.project);
   const productsLoading = useSelector((state) => state.productsLoading);
@@ -92,7 +92,7 @@ const Products = (props) => {
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [selectedProductItem, setSelectedProductItem] = useState({});
   const [showCustomProducts, setShowCustomProducts] = useState(false);
-  const [showBuilderRooms, setShowBuilderRooms] = useState(false);
+  const [showBuilderRooms, setShowBuilderRooms] = useState(true);
   const [showSelectedRooms, setShowSelectedRooms] = useState(false);
   const [searchableField, setSearchableField] = useState("");
 
@@ -130,21 +130,31 @@ const Products = (props) => {
       const categories = [...selectedCategories.map((b) => b.ID)];
       let subcategories = [];
 
-      if(action === "ADD") {
-        subcategories =  [...productFilter?.subcategories, ...currentItem?.SubCategories?.map((b) => b.ID)].filter(a => a);
+      if (action === "ADD") {
+        subcategories = [
+          ...productFilter?.subcategories,
+          ...currentItem?.SubCategories?.map((b) => b.ID),
+        ].filter((a) => a);
       }
 
-      if(action === "ADD_ALL") {
-        selectedCategories?.forEach(sb => sb?.SubCategories?.forEach((b) => {
-          subcategories.push(b.ID);
-        }))
-        subcategories = subcategories.filter(a => a);
+      if (action === "ADD_ALL") {
+        selectedCategories?.forEach((sb) =>
+          sb?.SubCategories?.forEach((b) => {
+            subcategories.push(b.ID);
+          })
+        );
+        subcategories = subcategories.filter((a) => a);
       }
 
-      if(action === "REMOVE") {
-        subcategories =  selectedCategories?.length === 0 ? [] : [...productFilter?.subcategories].filter(a => Boolean(currentItem.SubCategories?.find(sc => sc.ID !== a)));
+      if (action === "REMOVE") {
+        subcategories =
+          selectedCategories?.length === 0
+            ? []
+            : [...productFilter?.subcategories].filter((a) =>
+                Boolean(currentItem.SubCategories?.find((sc) => sc.ID !== a))
+              );
       }
-     
+
       setProductFilter({
         ...productFilter,
         categories: categories,
@@ -191,7 +201,7 @@ const Products = (props) => {
           };
         }),
       ];
-      setBrandOptions(options.filter(b => b.Name));
+      setBrandOptions(options.filter((b) => b.Name));
       setBrandsDropdownLoading(false);
     }
   }, [brands]);
@@ -217,12 +227,10 @@ const Products = (props) => {
               name: b.Name?.replaceAll("&nbsp;", ""),
               value: b.ID,
             };
-          }),
-        // .sort((a, b) => {
-        //   return a.Path?.localeCompare(b.Path);
-        // }),
+          })
+          .sort((a, b) => a.name?.localeCompare(b.name)),
       ];
-      setCategoriesOptions(options.filter(b => b.name));
+      setCategoriesOptions(options.filter((b) => b.name));
       setCategoriesDropdownLoading(false);
     }
   }, [categories]);
@@ -251,7 +259,7 @@ const Products = (props) => {
           })
         );
       });
-    setSubCategoriesOptions(options.filter(b => b.name));
+    setSubCategoriesOptions(options.filter((b) => b.name));
     setCategoriesDropdownLoading(false);
     // }
   }, [productFilter?.categories, categories]);
@@ -319,17 +327,6 @@ const Products = (props) => {
       );
     }
   }, [brandCategoryRef?.current]);
-
-  useEffect(() => {
-    if (roomCategoryRef?.current) {
-      roomCategoryRef?.current?.searchBox?.current?.addEventListener(
-        "blur",
-        () => {
-          setSearchableField({ ...searchableField, room: "" });
-        }
-      );
-    }
-  }, [roomCategoryRef?.current]);
 
   const getProjectRoomsConditionally = () => {
     return showBuilderRooms
@@ -1166,117 +1163,10 @@ const Products = (props) => {
         <div className="subtext">
           The products assigned to each room are displayed below.
         </div>
-        <div className="ml-3">
-          {roomsDropdownLoading ? (
-            <div className="text-center">
-              <Spinner animation="border" variant="primary" />
-            </div>
-          ) : (
-            <>
-              <div className="input-label mt-2 ml-3 mb-2 d-flex justify-content-between align-items-center">
-                Selected Rooms
-                <div
-                  className="pointer text-primary"
-                  onClick={() => setShowSelectedRooms(!showSelectedRooms)}
-                >
-                  {showSelectedRooms
-                    ? "Hide Selected Rooms"
-                    : "Visible Selected Rooms"}
-                </div>
-              </div>
-              <div className="mx-2 position-relative">
-                <span>
-                  {roomsOptions?.find((r) => r.value === "select_all")
-                    ?.selected || !showSelectedRooms
-                    ? DrawDropdownSelection({
-                        items: getProjectRoomsConditionally(),
-                        selectedIds: productFilter?.rooms,
-                        nameProp: "Name",
-                        type: "room",
-                        styles: {
-                          position: "absolute",
-                          top: "8px",
-                          left: "8px",
-                        },
-                        searchableField,
-                      })
-                    : null}
-                </span>
-                <Multiselect
-                  ref={roomCategoryRef}
-                  onSearch={(value) =>
-                    setSearchableField({
-                      ...searchableField,
-                      room: Boolean(value),
-                    })
-                  }
-                  tags
-                  showArrow
-                  className="tags-dropdown readonly_ms"
-                  // disable={true}
-                  placeholder=""
-                  showCheckbox={true}
-                  keepSearchTerm={true}
-                  hidePlaceholder={true}
-                  hideSelectedList={
-                    roomsOptions?.find((r) => r.value === "select_all")
-                      ?.selected && !showSelectedRooms
-                  }
-                  options={roomsOptions} // Options to display in the dropdown
-                  selectedValues={
-                    !productFilter?.rooms
-                      ? []
-                      : getProjectRoomsConditionally()?.length ===
-                        productFilter?.rooms?.length
-                      ? roomsOptions
-                      : roomsOptions.filter(
-                          (b) => productFilter?.rooms.indexOf(b.ID) > -1
-                        )
-                  }
-                  displayValue="name" // Property name to display in the dropdown options
-                  onSelect={(arr, current) => {
-                    if (current.value === "select_all") {
-                      handleSelectedRoom(
-                        roomsOptions.filter((p) => p.value !== "select_all")
-                      );
-                      setRoomsOptions(
-                        roomsOptions.map((r) =>
-                          r.value === "select_all"
-                            ? { ...r, selected: !r.selected }
-                            : r
-                        )
-                      );
-                    } else {
-                      handleSelectedRoom(
-                        arr.sort((a, b) =>
-                          a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                        )
-                      );
-                    }
-                  }}
-                  onRemove={(arr, target) => {
-                    let rooms = arr
-                      .filter((p) => p.value !== "select_all")
-                      .sort((a, b) =>
-                        a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                      );
-                    if (target.value === "select_all") {
-                      rooms = [];
-                      setRoomsOptions(
-                        roomsOptions.map((r) =>
-                          r.value === "select_all"
-                            ? { ...r, selected: false }
-                            : r
-                        )
-                      );
-                    }
-                    handleSelectedRoom(rooms);
-                  }}
-                />
-              </div>
-            </>
-          )}
-        </div>
+        <SelectRooms
+          setProductFilter={setProductFilter}
+          productFilter={productFilter}
+        />
 
         <div className="ml-3">
           <div className="d-flex flex-wrap">
@@ -1375,7 +1265,7 @@ const Products = (props) => {
                           handleCategoryChange(
                             arr.sort((a, b) =>
                               a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                            ), 
+                            ),
                             current,
                             "ADD"
                           );
@@ -1561,15 +1451,13 @@ const Products = (props) => {
                 type="checkbox"
                 checked={showCustomProducts}
                 onChange={() => {
-                  if (showBuilderRooms && !showCustomProducts) {
-                    setShowBuilderRooms(false);
-                  }
+                  // setShowBuilderRooms(showCustomProducts);
                   setShowCustomProducts(!showCustomProducts);
                 }}
                 label={`Show My Products`}
               />
             </div>
-            <div className="d-flex align-items-center pt-2 ml-3">
+            {/* <div className="d-flex align-items-center pt-2 ml-3">
               <Form.Check
                 type="checkbox"
                 checked={showBuilderRooms}
@@ -1581,7 +1469,7 @@ const Products = (props) => {
                 }}
                 label={`Show Builder Rooms`}
               />
-            </div>
+            </div> */}
           </div>
         </div>
 

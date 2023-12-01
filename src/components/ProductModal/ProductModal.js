@@ -26,7 +26,7 @@ const ProductModal = (props) => {
   const replaceProductRooms = useSelector(
     (state) => state.product.replaceProductRooms
   );
-  const roomTypes = useSelector((state) => state.room.roomTypes);
+  // const roomTypes = useSelector((state) => state.room.roomTypes);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const productDetails = useSelector(
     (state) => state.product.replaceOldProductDetails
@@ -37,9 +37,9 @@ const ProductModal = (props) => {
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isEmpty(roomTypes)) dispatch(getRoomTypes());
-  }, [dispatch, roomTypes]);
+  // useEffect(() => {
+  //   if (isEmpty(roomTypes)) dispatch(getRoomTypes());
+  // }, [dispatch, roomTypes]);
 
   const handleCheckBox = async (roomID, selectAll) => {
     if (selectAll === "SELECT_ALL") {
@@ -88,7 +88,7 @@ const ProductModal = (props) => {
   const getFilteredRooms = () => {
     return (
       mergeDuplicatesAsArray(
-        project?.ProjectRooms,
+        project?.BuilderProjectRooms,
         "RoomTypeID",
         replaceProductRooms,
         selectedRoom?.ID
@@ -150,12 +150,12 @@ const ProductModal = (props) => {
           <>
             <div className="body-header">
               This item is currently assigned to the following rooms. Would you
-              like to replace to these rooms as well?{" "}
+              like to replace to these rooms as well?
               <Button
                 variant="link"
                 size="sm"
                 className="d-inline py-0"
-                style={{fontSize: '12px'}}
+                style={{ fontSize: "12px" }}
                 onClick={() =>
                   handleCheckBox(
                     null,

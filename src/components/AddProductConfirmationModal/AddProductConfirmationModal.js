@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, Modal, Button, Row } from "react-bootstrap";
+import { Col, Form, Modal, Button, Row, Spinner } from "react-bootstrap";
 import "./AddProductConfirmationModal.scss";
 import { useSelector } from "react-redux";
 import { Accordion } from "react-bootstrap-accordion";
@@ -9,6 +9,7 @@ const AddProductConfirmationModal = ({
   handleClose,
   handleAdd,
   isShowRooms,
+  loader,
 }) => {
   const [form, setForm] = useState({
     RequiresApproval: true,
@@ -40,7 +41,10 @@ const AddProductConfirmationModal = ({
   const projectRoomTypes = () => {
     let array = [];
 
-    const filtered = mergeDuplicatesAsArray(project.ProjectRooms, "RoomTypeID");
+    const filtered = mergeDuplicatesAsArray(
+      project.BuilderProjectRooms,
+      "RoomTypeID"
+    );
 
     array = filtered?.map((roomType, index) => {
       const isFound = roomTypes?.find((r) => r.ID === roomType.ID);
@@ -162,7 +166,11 @@ const AddProductConfirmationModal = ({
               className="primary-gray-btn next-btn ml-3"
               disabled={!selectedRoomIDs?.length}
             >
-              Add
+              {loader ? (
+                <Spinner animation="border" variant="primary" size="sm" />
+              ) : (
+                "Add"
+              )}
             </Button>
           </>
         </div>

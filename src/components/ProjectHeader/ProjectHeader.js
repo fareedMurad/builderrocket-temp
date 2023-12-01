@@ -111,7 +111,7 @@ const ProjectHeader = () => {
 
   return (
     <div className="project-header">
-      {/* <Toaster position="top-center" /> */}
+      <Toaster position="top-center" />
       <div className="d-flex flex-wrap justify-content-between">
         <div className="d-flex pt-2 flex-wrap">
           <div className="project-image justify-content-center d-flex">

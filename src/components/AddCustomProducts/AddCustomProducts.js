@@ -36,7 +36,8 @@ const AddCustomProducts = () => {
 
   const addProduct = (values) => {
     const product = selectedProduct;
-    if (!product.ID || !ProductSelectedRoom.length) return;
+    console.log(product, ProductSelectedRoom);
+    if (!product.ID || !values.roomIDs?.length) return;
 
     setAddActionLoading(product);
     let newProduct = {
