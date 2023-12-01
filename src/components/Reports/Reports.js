@@ -454,7 +454,7 @@ const Reports = (props) => {
                                       name: a.Name,
                                       value: a.ID,
                                     };
-                                  }).sort((a, b) => a.Name.localeCompare(b.Name))),
+                                  }).sort((a, b) => a.name.localeCompare(b.name))),
                                 ]
                               : []
                           }
@@ -562,7 +562,7 @@ const Reports = (props) => {
                                       name: a.Name,
                                       value: a.ID,
                                     };
-                                  }).sort((a, b) => a.Name.localeCompare(b.Name))),
+                                  }).sort((a, b) => a.name.localeCompare(b.name))),
                                 ]
                               : []
                           }

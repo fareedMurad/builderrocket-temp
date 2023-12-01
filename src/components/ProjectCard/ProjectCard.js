@@ -6,16 +6,25 @@ import "./ProjectCard.scss";
 import toast from "react-hot-toast";
 import Toaster from "react-hot-toast";
 import { Spinner } from "react-bootstrap";
-import ProjectPlaceholder from '../../assets/images/project_placeholder-image.png';
+import ProjectPlaceholder from "../../assets/images/project_placeholder-image.png";
 
 const ProjectCard = (props) => {
-  const { project, history, isCustomer, handlePinChanged, pinLoader } = props;
+  const {
+    project,
+    history,
+    isCustomer,
+    handlePinChanged,
+    pinLoader,
+    setGoToProjectLoader,
+  } = props;
 
   const dispatch = useDispatch();
 
   const goToProject = () => {
+    setGoToProjectLoader(true);
     dispatch(getProjectByProjectID(project?.ID))
       .then((response) => {
+        setGoToProjectLoader(false);
         if (isCustomer)
           history.push(`/customer/project/${response?.ID}/projectInformation`);
         else
@@ -23,6 +32,7 @@ const ProjectCard = (props) => {
       })
       .catch((response) => {
         alert("Error! Can't load the project");
+        setGoToProjectLoader(false);
       });
   };
 
@@ -31,7 +41,9 @@ const ProjectCard = (props) => {
       className="project-card"
       onClick={goToProject}
       style={{
-        backgroundImage: `url("${project?.ThumbnailURL || ProjectPlaceholder}")`,
+        backgroundImage: `url("${
+          project?.ThumbnailURL || ProjectPlaceholder
+        }")`,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

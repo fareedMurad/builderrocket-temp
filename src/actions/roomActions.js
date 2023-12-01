@@ -63,7 +63,7 @@ export const getBuilderRoomTypes = () => (dispatch) => {
     url: URL,
   })
     .then((response) => {
-      if (response?.status === 200) {  
+      if (response?.status === 200) {
         dispatch({ type: GET_BUILDER_ROOM_TYPES, payload: response.data });
         return response.data;
       }
@@ -94,7 +94,6 @@ export const getBuilderRoomGroups = () => (dispatch) => {
       console.log("Getting Rooms", error);
     });
 };
-
 
 export const getBuilderRoomGroupDetails = (ID) => (dispatch) => {
   const URL = `/builder/adddefaultroomgroupdetail/${ID}`;
@@ -138,7 +137,7 @@ export const createRoomGroup = (name) => (dispatch) => {
   const URL = `/builder/adddefaultroomgroup?SourceName=${name}`;
   return api({
     method: "POST",
-    url: URL
+    url: URL,
   })
     .then((response) => {
       if (response?.status === 200) {
@@ -157,7 +156,7 @@ export const renameRoomType = (params) => (dispatch) => {
   return api({
     method: "POST",
     url: URL,
-    data:params
+    data: params,
   })
     .then((response) => {
       if (response?.status === 200) {
@@ -176,7 +175,7 @@ export const renameRoom = (params) => (dispatch) => {
   return api({
     method: "POST",
     url: URL,
-    data:params
+    data: params,
   })
     .then((response) => {
       if (response?.status === 200) {
@@ -194,7 +193,7 @@ export const renameRoomGroup = (ID, SourceName) => (dispatch) => {
   const URL = `/builder/adddefaultroomgroup?ID=${ID}&SourceName=${SourceName}`;
   return api({
     method: "PUT",
-    url: URL
+    url: URL,
   })
     .then((response) => {
       if (response?.status === 200) {
@@ -208,12 +207,11 @@ export const renameRoomGroup = (ID, SourceName) => (dispatch) => {
     });
 };
 
-
 export const assignGroupToRoom = (RoomID, DefaultRoomGroupID) => (dispatch) => {
   const URL = `/builder/assigndefaultgrouptoroom/${RoomID}/${DefaultRoomGroupID}`;
   return api({
     method: "PUT",
-    url: URL
+    url: URL,
   })
     .then((response) => {
       if (response?.status === 200) {
@@ -263,7 +261,6 @@ export const deleteRoom = (id) => (dispatch) => {
     });
 };
 
-
 export const deleteRoomGroup = (id) => (dispatch) => {
   const URL = `/builder/adddefaultroomgroup/${id}`;
   return api({
@@ -282,77 +279,81 @@ export const deleteRoomGroup = (id) => (dispatch) => {
     });
 };
 
-export const deleteRoomGroupCategory = (id) => (dispatch) => {
-  const URL = `/builder/adddefaultroomproduct/${id}`;
-  return api({
-    method: "DELETE",
-    url: URL,
-  })
-    .then((response) => {
-      if (response?.status === 200) {
-        // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
-
-        return response.data;
-      }
+export const deleteRoomGroupCategory =
+  (GroupID, TemplateID, ProductID) => (dispatch) => {
+    const URL = `/builder/adddefaultroomproduct/${GroupID}/${TemplateID}/${ProductID}`;
+    return api({
+      method: "DELETE",
+      url: URL,
     })
-    .catch((error) => {
-      if (error.response?.status === 401) dispatch({ type: LOGOUT });
-    });
-};
+      .then((response) => {
+        if (response?.status === 200) {
+          // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
 
-export const createRoomGroupCategory = (TemplateID, DefaultGroupId) => (dispatch) => {
-  const URL = `/builder/adddefaultroomproductbydefaultgroupId/${TemplateID}/${DefaultGroupId}`;
-  return api({
-    method: "POST",
-    url: URL
-  })
-    .then((response) => {
-      if (response?.status === 200) {
-        // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };
 
-        return response.data;
-      }
+export const createRoomGroupCategory =
+  (TemplateID, DefaultGroupId) => (dispatch) => {
+    const URL = `/builder/adddefaultroomproductbydefaultgroupId/${TemplateID}/${DefaultGroupId}`;
+    return api({
+      method: "POST",
+      url: URL,
     })
-    .catch((error) => {
-      if (error.response?.status === 401) dispatch({ type: LOGOUT });
-    });
-};
+      .then((response) => {
+        if (response?.status === 200) {
+          // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
 
-export const createRoomGroupCategoryProduct = (GroupID, TemplateID, ProductID) => (dispatch) => {
-  const URL = `/builder/adddefaultroomproductbyproductid/${GroupID}/${TemplateID}/${ProductID}`;
-  return api({
-    method: "POST",
-    url: URL,
-  })
-    .then((response) => {
-      if (response?.status === 200) {
-        // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };
 
-        return response.data;
-      }
+export const createRoomGroupCategoryProduct =
+  (GroupID, TemplateID, ProductID) => (dispatch) => {
+    const URL = `/builder/adddefaultroomproductbyproductid/${GroupID}/${TemplateID}/${ProductID}`;
+    return api({
+      method: "POST",
+      url: URL,
     })
-    .catch((error) => {
-      if (error.response?.status === 401) dispatch({ type: LOGOUT });
-    });
-};
+      .then((response) => {
+        if (response?.status === 200) {
+          // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
 
-export const getRoomGroupCategoryProduct = (GroupID, CategoryID) => (dispatch) => {
-  const URL = `/builder/defaultroomproduct/${GroupID}/${CategoryID}`;
-  return api({
-    method: "GET",
-    url: URL,
-  })
-    .then((response) => {
-      if (response?.status === 200) {
-        // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };
 
-        return response.data;
-      }
+export const getRoomGroupCategoryProduct =
+  (GroupID, CategoryID) => (dispatch) => {
+    const URL = `/builder/defaultroomproduct/${GroupID}/${CategoryID}`;
+    return api({
+      method: "GET",
+      url: URL,
     })
-    .catch((error) => {
-      if (error.response?.status === 401) dispatch({ type: LOGOUT });
-    });
-};
+      .then((response) => {
+        if (response?.status === 200) {
+          // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
+
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };
 
 export const createRoom = (params) => (dispatch) => {
   const URL = "/builder/createroom";
@@ -400,7 +401,10 @@ export const setSelectedBuilderCategory = (category) => (dispatch) => {
 export const setSelectedGroupCategoryProducts = (category) => (dispatch) => {
   return new Promise((resolve, reject) => {
     try {
-      dispatch({ type: GET_BUILDER_SELECTED_ROOM_CATEGORY_PRODUCTS, payload: category });
+      dispatch({
+        type: GET_BUILDER_SELECTED_ROOM_CATEGORY_PRODUCTS,
+        payload: category,
+      });
 
       resolve(category);
     } catch (error) {
@@ -420,7 +424,6 @@ export const setSelectedBuilderRoomType = (roomType) => (dispatch) => {
     }
   });
 };
-
 
 export const setSelectedBuilderRoomGroup = (roomGroup) => (dispatch) => {
   return new Promise((resolve, reject) => {

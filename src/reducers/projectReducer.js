@@ -106,7 +106,7 @@ const projectReducer = (state = intialState, action) => {
                 project: action.payload,
                 originalProject: action.payload,
             }
-        }
+        } 
         case RESET_PROJECT: {
             return {
                 ...state, 

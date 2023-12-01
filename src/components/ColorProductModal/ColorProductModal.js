@@ -67,7 +67,7 @@ const ColorProductModal = (props) => {
     const handleUpdateType = (type) => {
         setPaintInfo({...paintInfo, Type: type})
     }
-    const handleUpdateBrand = (brand) => {
+    const handleUpdateBrand = (brand) => {  
         setPaintInfo({...paintInfo, Brand: brand})
     }
     const handleUpdateSheen = (sheen) => {

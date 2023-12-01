@@ -106,10 +106,7 @@ const RoomGroupDetails = () => {
   }, []);
 
   const handleFetchRoomGroups = () => {
-    setIsLoading(true);
-    dispatch(getBuilderRoomGroups()).then((data) => {
-      setIsLoading(false);
-    });
+    dispatch(getBuilderRoomGroups());
   };
 
   // useEffect(() => {
@@ -215,6 +212,8 @@ const RoomGroupDetails = () => {
       setSelectedProductID(ID);
       dispatch(
         deleteRoomGroupCategory(
+          selectedRoomType?.value,
+          selectedCategoryID?.value,
           isProductAdded(ID)?.pID
             ? isProductAdded(ID)?.pID
             : isProductAdded(ID)?.ID
@@ -291,7 +290,11 @@ const RoomGroupDetails = () => {
 
   const getFilteredCategories = () => {
     if (isGroupCategoriesLoading) return [];
-    return selectedGroupCategories || [];
+    return (
+      selectedGroupCategories.sort((a, b) =>
+        a.CategoryLabel?.localeCompare(b.CategoryLabel)
+      ) || []
+    );
   };
 
   const handleSearch = () => {
@@ -354,9 +357,11 @@ const RoomGroupDetails = () => {
                     ) : null}
                   </Form.Label>
                   <Select
-                    options={roomGroups?.map((c) => {
-                      return { ...c, label: c.Name, value: c.ID };
-                    })}
+                    options={roomGroups
+                      ?.map((c) => {
+                        return { ...c, label: c.Name, value: c.ID };
+                      })
+                      .sort((a, b) => a.label?.localeCompare(b.label))}
                     value={selectedRoomType}
                     onChange={onRoomTypeChange}
                     placeholder="Select room type"

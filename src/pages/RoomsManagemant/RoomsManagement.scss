@@ -37,6 +37,23 @@
             padding-top: 0;
             padding-bottom: 0;
         }
+
+        .internal-accordion .accordion-button:not(.collapsed) {
+            background-color: transparent;
+            color: $black;
+            i:hover {
+                color: $activegray !important;
+            }
+        }
+        .internal-accordion .accordion-button.collapsed { 
+            &:hover {
+                background-color: transparent;
+            }
+        }
+        .internal-accordion .accordion-body {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
     }
 
     .room-management-table {

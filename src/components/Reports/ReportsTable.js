@@ -86,9 +86,20 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
       return rooms.map((room) => {
         return {
           ...room,
-          Items: room.Items?.filter((product) =>
-            reportFilter?.find((category) => category.ID === product.CategoryID)
-          ),
+          Items: room.Items?.filter((product) => {
+            let isFound;
+            const mergedList = [];
+
+            reportFilter.forEach((i) => {
+              if (i.Items?.length) mergedList.push(...i.Items);
+            });
+
+            isFound = mergedList?.find(
+              (category) => category.CategoryID === product.CategoryID
+            );
+
+            return isFound;
+          }),
         };
       });
     };

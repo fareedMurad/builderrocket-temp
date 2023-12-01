@@ -61,7 +61,7 @@ const ProjectInformation = withSwal((props) => {
 
   useEffect(() => {
     setProjectInformation(project);
-  }, [project]);
+  }, []);
 
   function handleUpdateStatus(statusId) {
     if (statusId === -1) {
@@ -232,6 +232,13 @@ const ProjectInformation = withSwal((props) => {
     if(project?.ID && originalProject?.CloseDate !== projectInformation?.CloseDate)
     saveChanges(false);
   }, [projectInformation?.CloseDate])
+
+
+
+  useEffect(() => {
+    if(project?.ID && originalProject?.Subdivision !== projectInformation?.Subdivision)
+    saveChanges(false);
+  }, [projectInformation?.Subdivision])
 
   // const customerFullName = () => {
   //   let customerName = "";

@@ -27,6 +27,7 @@ import ProductModal from "../ProductModal";
 import testUtils from "react-dom/test-utils";
 import Utils from "../../utils";
 import CustomLightbox from "../Lightbox";
+import ColorProductModal from "../ColorProductModal";
 
 const ReplaceProduct = () => {
   const dispatch = useDispatch();
@@ -35,7 +36,9 @@ const ReplaceProduct = () => {
   const product = useSelector((state) => state.product.replaceOldProduct);
   const project = useSelector((state) => state.project.project);
   const replaceProduct = useSelector((state) => state.product.replaceProduct);
-  const productDetials = useSelector((state) => state.product.replaceOldProductDetails);
+  const productDetials = useSelector(
+    (state) => state.product.replaceOldProductDetails
+  );
   const products = useSelector((state) => state.product.products);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
 
@@ -55,14 +58,13 @@ const ReplaceProduct = () => {
     CustomFilters: {},
   });
   const [pageCount, setPageCount] = useState(25);
-  const[selectedCategory, setSelectedCategory] = useState();
+  const [selectedCategory, setSelectedCategory] = useState();
 
   const [openReplaceProductModal, setOpenReplaceProductModal] = useState(false);
 
   const productRef = useRef();
   const searchRef = useRef("");
   const productCategoriesRef = useRef();
-
 
   useEffect(() => {
     const list = [];
@@ -81,7 +83,7 @@ const ReplaceProduct = () => {
         });
       });
     });
-    setProductCategories(list);
+    setProductCategories(list.sort((a, b) => a.label?.localeCompare(b.label)));
   }, [listCatgories]);
 
   useEffect(() => {
@@ -103,14 +105,15 @@ const ReplaceProduct = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    setIsLoading(true);
     const updatedSearch = {
       ...searchObject,
       CategoryID: selectedCategory?.value || productRef.current?.CategoryID,
       Filter: searchRef?.current?.value,
     };
     dispatch(searchProducts(updatedSearch.CategoryID, updatedSearch))
-      .then(setIsLoading(false))
-      .catch(setIsLoading(false));
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false));
   }, [dispatch, product, selectedCategory]);
 
   const onProductCategoryChange = (option) => {
@@ -185,7 +188,7 @@ const ReplaceProduct = () => {
   const handleSelectedProductDetails = (productDetail) => {
     dispatch(setProductDetail(productDetail)).then(() => {
       history.push(`/project/${project.ProjectNumber}/product/productDetail`);
-    });    
+    });
   };
 
   const handleSearch = () => {
@@ -204,7 +207,7 @@ const ReplaceProduct = () => {
 
   const includedRooms = (ProductID) => {
     let roomIds = [];
-    project?.ProjectRooms?.map((room) => {
+    project?.BuilderProjectRooms?.map((room) => {
       room?.Items?.map((item) => {
         return item?.ProductID === ProductID
           ? !roomIds.includes(room?.ID) && roomIds.push(room?.ID)
@@ -216,19 +219,21 @@ const ReplaceProduct = () => {
   };
 
   const handleReplaceProduct = (ID) => {
-    dispatch(getReplaceProduct(ID, includedRooms(productDetials.ID))).then(() => {
-      setShowModal(true);
-    });
+    dispatch(getReplaceProduct(ID, includedRooms(productDetials.ID))).then(
+      () => {
+        setShowModal(true);
+      }
+    );
   };
 
   const getFilterProducts = () => {
-    const listProducts = products?.CustomFilters &&
-    Object.keys(products?.CustomFilters)
-      ?.reverse();
-    
+    const listProducts =
+      products?.CustomFilters &&
+      Object.keys(products?.CustomFilters)?.reverse();
+
     const pagedProducts =
       pageCount === "all" ? listProducts : listProducts?.slice(0, pageCount);
- 
+
     return pagedProducts;
   };
 
@@ -251,7 +256,7 @@ const ReplaceProduct = () => {
 
       <div className="filter-section">
         <div className="d-flex flex-wrap">
-          <div className="mr-3"  style={{ width: "300px" }}>
+          <div className="mr-3" style={{ width: "300px" }}>
             <Select
               options={productCategories}
               value={selectedCategory}
@@ -283,22 +288,22 @@ const ReplaceProduct = () => {
           <div></div>
         </div>
         <div className="d-flex qty-items-select justify-content-end">
-        <Form.Control
-                as="select"
-                value={pageCount}
-                onChange={(e) =>
-                  setPageCount(
-                    e.target.value === "all" ? "all" : parseInt(e.target.value)
-                  )
-                }
-              >
-                <option value="all">All</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                <option value={200}>200</option>
-                <option value={300}>300</option>
-              </Form.Control>
+          <Form.Control
+            as="select"
+            value={pageCount}
+            onChange={(e) =>
+              setPageCount(
+                e.target.value === "all" ? "all" : parseInt(e.target.value)
+              )
+            }
+          >
+            <option value="all">All</option>
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+            <option value={200}>200</option>
+            <option value={300}>300</option>
+          </Form.Control>
           <div className="select-text">Items Per Page</div>
         </div>
       </div>
@@ -306,25 +311,25 @@ const ReplaceProduct = () => {
       <div className="add-products-body d-flex">
         <div className="checkbox-filter">
           {getFilterProducts()?.map((filter, index) => (
-                <div key={index} className="mt-3 mb-5">
-                  <div className="bold-text mb-3">{filter}</div>
+            <div key={index} className="mt-3 mb-5">
+              <div className="bold-text mb-3">{filter}</div>
 
-                  {products?.CustomFilters?.[filter]?.map(
-                    (filterChild, childIndex) => (
-                      <Form.Check
-                        key={childIndex}
-                        type="checkbox"
-                        className="mt-2"
-                        label={filterChild?.Name}
-                        value={filterChild?.IsChecked}
-                        onClick={() =>
-                          handleFilters(filter, filterChild, childIndex)
-                        }
-                      />
-                    )
-                  )}
-                </div>
-              ))}
+              {products?.CustomFilters?.[filter]?.map(
+                (filterChild, childIndex) => (
+                  <Form.Check
+                    key={childIndex}
+                    type="checkbox"
+                    className="mt-2"
+                    label={filterChild?.Name}
+                    value={filterChild?.IsChecked}
+                    onClick={() =>
+                      handleFilters(filter, filterChild, childIndex)
+                    }
+                  />
+                )
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="add-product-table">
@@ -392,7 +397,7 @@ const ReplaceProduct = () => {
                       <Button
                         className="add-product-btn"
                         onClick={() => {
-                          handleReplaceProduct(product.ID, );
+                          handleReplaceProduct(product.ID);
                           setShowModal(true);
                         }}
                       >
@@ -420,6 +425,11 @@ const ReplaceProduct = () => {
           handleCloseModal={() => setShowModal(false)}
         />
       )}
+
+      {/* {showModal && <ColorProductModal
+        show={showModal}
+        handleCloseModal={handleClose}
+      />} */}
     </div>
   );
 };

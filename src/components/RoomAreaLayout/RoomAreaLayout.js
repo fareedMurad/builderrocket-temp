@@ -35,7 +35,7 @@ const RoomAreaLayout = () => {
   const [roomTypeOptions, setRoomTypeOptions] = useState([]);
   const [typesFilter, setTypesFilter] = useState([]);
   const [builderRoomTypes, setBuilderRoomTypes] = useState([]);
-  const [showCustomRooms, setShowCustomRooms] = useState(false);
+  const [showCustomRooms, setShowCustomRooms] = useState(true);
 
   // Ref to access changes on unmount
   // const roomsRef = useRef();
@@ -45,13 +45,13 @@ const RoomAreaLayout = () => {
   // const builderRoomsRef = useRef();
   // const deleteBuilderRoomsRef = useRef();
 
-  useEffect(() => {
-    setIsLoadingRoomTypes(true);
+  // useEffect(() => {
+  //   setIsLoadingRoomTypes(true);
 
-    dispatch(getRoomTypes()).then(() => {
-      setIsLoadingRoomTypes(false);
-    });
-  }, [dispatch]);
+  //   dispatch(getRoomTypes()).then(() => {
+  //     setIsLoadingRoomTypes(false);
+  //   });
+  // }, [dispatch]);
 
   useEffect(() => {
     handleFetchRoomTypes();
@@ -338,14 +338,14 @@ const RoomAreaLayout = () => {
             </div>
           </div>
           <div className="d-flex">
-            <div className="d-flex align-items-center pt-2 ml-3">
+            {/* <div className="d-flex align-items-center pt-2 ml-3">
               <Form.Check
                 type="checkbox"
                 checked={showCustomRooms}
                 onChange={() => setShowCustomRooms(!showCustomRooms)}
                 label={`Show Builder Rooms`}
               />
-            </div>
+            </div> */}
             <div>
               <div className="input-label mt-2 ml-3">Room Types</div>
               <div className="layout-select custom-dropdown">
