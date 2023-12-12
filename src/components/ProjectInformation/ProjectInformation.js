@@ -136,7 +136,7 @@ const ProjectInformation = withSwal((props) => {
     setShowCustomerModal(bool);
   };
 
-  const saveChanges = (goToNext=true) => {
+  const saveChanges = (goToNext = true) => {
     if (projectInformation?.StatusID === -1) {
       dispatch(deleteProject(project.ID)).then((result) => {
         if (result.success) {
@@ -156,15 +156,17 @@ const ProjectInformation = withSwal((props) => {
 
     const payload = {
       ...projectInformation,
-      Customers: projectInformation.Customers.filter(c => (c.FirstName || c.LastName || c.Phone || c.Email))
-    }
+      Customers: projectInformation.Customers.filter(
+        (c) => c.FirstName || c.LastName || c.Phone || c.Email
+      ),
+    };
 
     if (project?.ID) {
       // Save Project then navigate to documents tab
       dispatch(saveProject(payload))
         .then(() => {
           setIsLoading(false);
-          if(goToNext) dispatch(setSelectedProjectTab("documents"));
+          if (goToNext) dispatch(setSelectedProjectTab("documents"));
         })
         .catch(() => {
           setIsLoading(false);
@@ -181,18 +183,17 @@ const ProjectInformation = withSwal((props) => {
       dispatch(createProject(newProject))
         .then((res) => {
           setIsLoading(false);
-          window.scrollTo(0, 0);
           console.log(res, "response");
           if (res?.ID) {
             uploadProjectImage(res?.ID);
           }
+
+          if (goToNext) dispatch(setSelectedProjectTab("documents"));
         })
         .catch(() => {
           setIsLoading(false);
-          window.scrollTo(0, 0);
           alert("Something went wrong creating project try again");
         });
-        if(goToNext) dispatch(setSelectedProjectTab("documents"));
     }
   };
 
@@ -227,18 +228,21 @@ const ProjectInformation = withSwal((props) => {
   //   };
   // }, [dispatch]);
 
+  useEffect(() => {
+    if (
+      project?.ID &&
+      originalProject?.CloseDate !== projectInformation?.CloseDate
+    )
+      saveChanges(false);
+  }, [projectInformation?.CloseDate]);
 
   useEffect(() => {
-    if(project?.ID && originalProject?.CloseDate !== projectInformation?.CloseDate)
-    saveChanges(false);
-  }, [projectInformation?.CloseDate])
-
-
-
-  useEffect(() => {
-    if(project?.ID && originalProject?.Subdivision !== projectInformation?.Subdivision)
-    saveChanges(false);
-  }, [projectInformation?.Subdivision])
+    if (
+      project?.ID &&
+      originalProject?.Subdivision !== projectInformation?.Subdivision
+    )
+      saveChanges(false);
+  }, [projectInformation?.Subdivision]);
 
   // const customerFullName = () => {
   //   let customerName = "";
@@ -337,10 +341,8 @@ const ProjectInformation = withSwal((props) => {
       </Modal>
     );
   };
-  if(!projectInformation) {
-return (
-  <Spinner animation="border" variant="primary" />
-)
+  if (!projectInformation) {
+    return <Spinner animation="border" variant="primary" />;
   }
 
   return (
@@ -361,7 +363,7 @@ return (
                     ProjectName: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
             <div className="form-col pb-4">
@@ -386,7 +388,7 @@ return (
                     LotNumber: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
             <div className="form-col pb-4"></div>
@@ -398,7 +400,7 @@ return (
               <div className="row">
                 <div className="col-12 col-sm-4">
                   <Form.Label className="input-label">First Name</Form.Label>
-                  {console.log(projectInformation, 'Info')}
+                  {console.log(projectInformation, "Info")}
                   <Form.Control
                     // readOnly
                     className="input-gray"
@@ -421,7 +423,7 @@ return (
                         }
                       });
                     }}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -448,7 +450,7 @@ return (
                         }
                       });
                     }}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -476,7 +478,7 @@ return (
                         }
                       });
                     }}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
               </div>
@@ -505,7 +507,7 @@ return (
                         }
                       });
                     }}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -532,7 +534,7 @@ return (
                         }
                       });
                     }}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
                 <div className="col-12 col-sm-4">
@@ -561,7 +563,7 @@ return (
                         }
                       });
                     }}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
               </div>
@@ -597,7 +599,7 @@ return (
                       });
                     }}
                     value={projectInformation?.Customers?.[0]?.Email}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
                 <div className="col-12">
@@ -628,7 +630,7 @@ return (
                       });
                     }}
                     value={projectInformation?.Customers?.[1]?.Email}
-                    onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
               </div>
@@ -644,7 +646,7 @@ return (
                     PlanName: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
             <div className="form-col select pb-4">
@@ -713,7 +715,7 @@ return (
                     StreetAddress1: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
             <div className="form-col pb-4">
@@ -727,7 +729,7 @@ return (
                     StreetAddress2: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
             <div className="form-col pb-2">
@@ -741,7 +743,7 @@ return (
                     City: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
             <div className="form-col pb-4">
@@ -755,7 +757,7 @@ return (
                     State: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
             <div className="form-col pb-4">
@@ -769,7 +771,7 @@ return (
                     Zip: event.target.value,
                   })
                 }
-                onBlur={() => project?.ID  ? saveChanges(false) : {}}
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
 

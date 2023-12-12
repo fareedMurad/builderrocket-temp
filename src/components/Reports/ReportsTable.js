@@ -125,6 +125,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
   const renderTableByLayout = () => {
     let table = null;
 
+
     switch (layout?.value) {
       case "list" || "vendor":
         const items = FilterItems({ localFilters, items: report?.Items });

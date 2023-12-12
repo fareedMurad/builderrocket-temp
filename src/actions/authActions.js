@@ -39,17 +39,14 @@ export const signupEmailPassword =
         Zip: zip,
         password: password,
       },
-    })
-      .then((response) => {
-        if (response?.status === 200) {
-          dispatch({ type: SET_USER, payload: response.data });
+    }).then((response) => {
+      if (response?.status === 200) {
+        dispatch({ type: SET_USER, payload: response.data });
 
-          return response?.data;
-        }
-      })
-      .catch((error) => {
-        console.log("Signup", error);
-      });
+        return response?.data;
+      }
+      return response;
+    });
   };
 
 export const loginEmailPassword = (email, password) => (dispatch) => {

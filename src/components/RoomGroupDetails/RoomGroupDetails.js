@@ -124,7 +124,7 @@ const RoomGroupDetails = () => {
       setIsLoading(true);
       const updatedSearch = {
         ...searchObject,
-        CategoryID: selectedCategoryID?.value,
+        // CategoryID: selectedCategoryID?.value,
       };
       fetchaddedProducts(updatedSearch);
     }
@@ -268,6 +268,7 @@ const RoomGroupDetails = () => {
 
   // update individual filter checkbox
   const handleFilters = (filterType, filterChild, filterChildIndex) => {
+    setIsLoading(true);
     let updatedFilterChild = filterChild;
 
     updatedFilterChild.IsChecked = !updatedFilterChild.IsChecked;
@@ -277,14 +278,16 @@ const RoomGroupDetails = () => {
     updatedFilters[filterType][filterChildIndex] = updatedFilterChild;
 
     const search = {
-      CategoryID: selectedCategoryID?.value,
+      // CategoryID: selectedCategoryID?.value,
       ModelName: null,
       Description: null,
       Filter: searchObject.Filter,
       CustomFilters: updatedFilters,
     };
 
-    dispatch(searchProducts(selectedCategoryID?.value, search));
+    dispatch(searchProducts(selectedCategoryID?.value, search)).then(() => {
+      setIsLoading(false);
+    });
     setSearchObject(search);
   };
 
@@ -298,17 +301,22 @@ const RoomGroupDetails = () => {
   };
 
   const handleSearch = () => {
+    setIsLoading(true);
     const updatedSearch = {
       ...searchObject,
       Filter: searchRef.current.value,
     };
 
-    dispatch(searchProducts(selectedCategoryID?.value, updatedSearch));
+    dispatch(searchProducts(selectedCategoryID?.value, updatedSearch)).then(
+      () => {
+        setIsLoading(false);
+      }
+    );
     setSearchObject(updatedSearch);
   };
 
   return (
-    <div className="add-product-container">
+    <div className="add-product-container position-relative">
       <div className="d-flex">
         <div>
           <Button
@@ -321,139 +329,141 @@ const RoomGroupDetails = () => {
         </div>
         <div className="page-title">{selectedCategoryID?.label}</div>
       </div>
-      <div className="d-flex justify-content-between pr-3">
-        <div className="filter-section">
-          <div className="d-flex flex-wrap align-items-center">
-            <div>
-              <Form
-                className="d-flex  flex-wrap align-items-center h-auto"
-                style={{ gap: "20px" }}
-              >
-                <Form.Group>
-                  <Form.Label className="input-label">
-                    Search Products
-                  </Form.Label>
-                  <div className="d-flex" style={{ gap: "10px" }}>
-                    <Form.Control
-                      placeholder="Search Products"
-                      ref={searchRef}
-                      style={{ height: "36px" }}
-                    ></Form.Control>
-                    <Button
-                      onClick={handleSearch}
-                      className="primary-gray-btn search-btn"
-                    >
-                      Search
-                    </Button>
-                  </div>
-                </Form.Group>
-                <Form.Group style={{ width: "250px", zIndex: 9999 }}>
-                  <Form.Label className="input-label">
-                    Room Type{" "}
-                    {!builderSelectedRoomGroup?.ID ? (
-                      <small className="text-danger">
-                        Please select a room type
-                      </small>
-                    ) : null}
-                  </Form.Label>
-                  <Select
-                    options={roomGroups
-                      ?.map((c) => {
-                        return { ...c, label: c.Name, value: c.ID };
-                      })
-                      .sort((a, b) => a.label?.localeCompare(b.label))}
-                    value={selectedRoomType}
-                    onChange={onRoomTypeChange}
-                    placeholder="Select room type"
-                  />
-                </Form.Group>
-                <Form.Group style={{ width: "250px", zIndex: 9999 }}>
-                  <Form.Label className="input-label">
-                    Category{" "}
-                    {!builderSelectedRoomCategory?.ID ? (
-                      <small className="text-danger">
-                        Please select a category
-                      </small>
-                    ) : null}
-                  </Form.Label>
-                  <Select
-                    options={getFilteredCategories()?.map((c) => {
-                      return {
-                        ...c,
-                        label: c.CategoryLabel,
-                        value: c.CategoryID,
-                      };
-                    })}
-                    value={selectedCategoryID}
-                    onChange={onProductCategoryChange}
-                    placeholder="Select category"
-                    isLoading={isGroupCategoriesLoading}
-                    isDisabled={!selectedRoomType}
-                  />
-                </Form.Group>
-
-                <Form.Check
-                  checked={isOnlyAdded}
-                  onChange={handleChangeSwitchFilter}
-                  type="switch"
-                  id="custom-switch"
-                  label={<small>Only Added Products</small>}
-                />
-                <div className="d-flex qty-items-select justify-content-end">
-                  <Form.Control
-                    as="select"
-                    value={pageCount}
-                    onChange={(e) =>
-                      setPageCount(
-                        e.target.value === "all"
-                          ? "all"
-                          : parseInt(e.target.value)
-                      )
-                    }
-                  >
-                    <option value="all">All</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                    <option value={200}>200</option>
-                    <option value={300}>300</option>
-                  </Form.Control>
-                  <div className="select-text">Items Per Page</div>
-                </div>
-              </Form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {selectedCategoryID?.value && selectedRoomType.value ? (
-        isLoading ? (
+      <div>
+        {isLoading ? (
           <div className="add-products-spinner d-flex justify-content-center">
             <Spinner animation="border" variant="primary" />
           </div>
-        ) : (
+        ) : null}
+        <div className="d-flex justify-content-between pr-3">
+          <div className="filter-section">
+            <div className="d-flex flex-wrap align-items-center">
+              <div>
+                <Form
+                  className="d-flex  flex-wrap align-items-center h-auto"
+                  style={{ gap: "20px" }}
+                >
+                  <Form.Group>
+                    <Form.Label className="input-label">
+                      Search Products
+                    </Form.Label>
+                    <div className="d-flex" style={{ gap: "10px" }}>
+                      <Form.Control
+                        placeholder="Search Products"
+                        ref={searchRef}
+                        style={{ height: "36px" }}
+                      ></Form.Control>
+                      <Button
+                        onClick={handleSearch}
+                        className="primary-gray-btn search-btn"
+                      >
+                        Search
+                      </Button>
+                    </div>
+                  </Form.Group>
+                  <Form.Group style={{ width: "250px", zIndex: 9999 }}>
+                    <Form.Label className="input-label">
+                      Room Type{" "}
+                      {!builderSelectedRoomGroup?.ID ? (
+                        <small className="text-danger">
+                          Please select a room type
+                        </small>
+                      ) : null}
+                    </Form.Label>
+                    <Select
+                      options={roomGroups
+                        ?.map((c) => {
+                          return { ...c, label: c.Name, value: c.ID };
+                        })
+                        .sort((a, b) => a.label?.localeCompare(b.label))}
+                      value={selectedRoomType}
+                      onChange={onRoomTypeChange}
+                      placeholder="Select room type"
+                    />
+                  </Form.Group>
+                  <Form.Group style={{ width: "250px", zIndex: 9999 }}>
+                    <Form.Label className="input-label">
+                      Category{" "}
+                      {!builderSelectedRoomCategory?.ID ? (
+                        <small className="text-danger">
+                          Please select a category
+                        </small>
+                      ) : null}
+                    </Form.Label>
+                    <Select
+                      options={getFilteredCategories()?.map((c) => {
+                        return {
+                          ...c,
+                          label: c.CategoryLabel,
+                          value: c.CategoryID,
+                        };
+                      })}
+                      value={selectedCategoryID}
+                      onChange={onProductCategoryChange}
+                      placeholder="Select category"
+                      isLoading={isGroupCategoriesLoading}
+                      isDisabled={!selectedRoomType}
+                    />
+                  </Form.Group>
+
+                  <Form.Check
+                    className="ml-2"
+                    checked={isOnlyAdded}
+                    onChange={handleChangeSwitchFilter}
+                    type="switch"
+                    id="custom-switch"
+                    label={<small>Only Added Products</small>}
+                  />
+                  <div className="d-flex qty-items-select justify-content-end">
+                    <Form.Control
+                      as="select"
+                      value={pageCount}
+                      onChange={(e) =>
+                        setPageCount(
+                          e.target.value === "all"
+                            ? "all"
+                            : parseInt(e.target.value)
+                        )
+                      }
+                    >
+                      <option value="all">All</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                      <option value={200}>200</option>
+                      <option value={300}>300</option>
+                    </Form.Control>
+                    <div className="select-text">Items Per Page</div>
+                  </div>
+                </Form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {selectedCategoryID?.value && selectedRoomType.value ? (
           <div className="add-products-body d-flex">
             <div className="checkbox-filter">
               {products?.CustomFilters &&
                 Object.keys(products?.CustomFilters)
                   ?.reverse()
                   ?.map((filter, index) => (
-                    <div key={index} className="mt-3 mb-5">
+                    <div key={index} className="mt-3 mb-5 ml-2">
                       <div className="bold-text mb-3">{filter}</div>
 
                       {products?.CustomFilters?.[filter]?.map(
-                        (filterChild, childIndex) => (
-                          <Form.Check
-                            key={childIndex}
-                            type="checkbox"
-                            className="mt-2"
-                            label={filterChild?.Name}
-                            value={filterChild?.IsChecked}
-                            onClick={() =>
-                              handleFilters(filter, filterChild, childIndex)
-                            }
-                          />
-                        )
+                        (filterChild, childIndex) =>
+                          filterChild?.Name ? (
+                            <Form.Check
+                              key={childIndex}
+                              type="checkbox"
+                              className="mt-2"
+                              label={filterChild?.Name}
+                              value={filterChild?.IsChecked}
+                              onClick={() =>
+                                handleFilters(filter, filterChild, childIndex)
+                              }
+                            />
+                          ) : null
                       )}
                     </div>
                   ))}
@@ -554,15 +564,15 @@ const RoomGroupDetails = () => {
               </div>
             )}
           </div>
-        )
-      ) : (
-        <div className="add-products-spinner d-flex justify-content-center">
-          <p>
-            Please select a room type and a category to list down their
-            products!
-          </p>
-        </div>
-      )}
+        ) : (
+          <div className="d-flex justify-content-center">
+            <p>
+              Please select a room type and a category to list down their
+              products!
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -41,11 +41,10 @@ const Login = (props) => {
       );
   };
 
-
   const handleLogout = () => {
     const customerDetails = {
       customerPortal: true,
-    }
+    };
     dispatch(logout(customerDetails)).then(() => {
       setLogoutModalVisible(false);
     });
@@ -58,7 +57,7 @@ const Login = (props) => {
         <br />
         <Form>
           <Form.Group>
-            <Form.Label>Email</Form.Label>  
+            <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
               placeholder="Email"
@@ -75,7 +74,7 @@ const Login = (props) => {
               onChange={(e) => setLogin({ ...login, password: e.target.value })}
             />
           </Form.Group>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between mt-3">
             {isLoading ? (
               <div className="d-flex justify-content-center">
                 <Spinner animation="border" variant="primary" />
