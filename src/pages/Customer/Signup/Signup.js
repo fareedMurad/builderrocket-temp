@@ -27,14 +27,14 @@ const Signup = (props) => {
     if (isSignedIn) {
       setLogoutModalVisible(true);
     }
-    if(customerParams?.id)
-    dispatch(getCustomerInvites(customerParams?.id)).then((response) => {
-      if (response) {
-        setCustomer(response);
-      } else {
-        setError("Please Enter valid email or password!");
-      }
-    });
+    if (customerParams?.id)
+      dispatch(getCustomerInvites(customerParams?.id)).then((response) => {
+        if (response) {
+          setCustomer(response);
+        } else {
+          setError("Please Enter valid email or password!");
+        }
+      });
   }, []);
 
   const handleSingup = (event) => {
@@ -57,14 +57,14 @@ const Signup = (props) => {
         if (response) {
           history.push("/customer/login");
         }
-      })
+      });
   };
 
   const handleLogout = () => {
     const customerDetails = {
       customerPortal: true,
-      inviteID: customerParams?.id
-    }
+      inviteID: customerParams?.id,
+    };
     dispatch(logout(customerDetails)).then(() => {
       setLogoutModalVisible(false);
     });
@@ -75,7 +75,7 @@ const Signup = (props) => {
   }
 
   return (
-    <Container className="pt-5" fluid="md">   
+    <Container className="pt-5" fluid="md">
       <h2>Customer Signup</h2>
       <br />
       <Form onSubmit={handleSingup}>
@@ -248,7 +248,7 @@ const Signup = (props) => {
             </Form.Group>
           </Col>
         </Row>
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between mt-3">
           {isLoading ? (
             <div className="d-flex justify-content-center">
               <Spinner animation="border" variant="primary" />

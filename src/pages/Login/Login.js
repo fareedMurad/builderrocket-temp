@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Form, Spinner } from 'react-bootstrap';
-import { loginEmailPassword } from '../../actions/authActions';
-import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty } from 'lodash'
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Row, Col, Button, Form, Spinner } from "react-bootstrap";
+import { loginEmailPassword } from "../../actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
+import { isEmpty } from "lodash";
+import { Link } from "react-router-dom";
 
 const Login = (props) => {
   const { history } = props;
@@ -12,8 +12,10 @@ const Login = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(token) history.push("/")
-  }, [])
+    setTimeout(() => {
+      if (token) history.push("/");
+    }, 500);
+  }, []);
 
   const [login, setLogin] = useState({});
   const [error, setError] = useState("");
@@ -56,12 +58,10 @@ const Login = (props) => {
               type="password"
               autoComplete="true"
               placeholder="Password"
-              onChange={(e) =>
-                setLogin({ ...login, password: e.target.value })
-              }
+              onChange={(e) => setLogin({ ...login, password: e.target.value })}
             />
           </Form.Group>
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between mt-3">
             {isLoading ? (
               <div className="d-flex justify-content-center">
                 <Spinner animation="border" variant="primary" />
@@ -69,8 +69,11 @@ const Login = (props) => {
             ) : (
               <Button onClick={handleLogin}>Login</Button>
             )}
-            <div className='d-inline justify-self-end'>
-              Create a new account <Link className='d-inline ml-1' to="/signup">Sign Up</Link>
+            <div className="d-inline justify-self-end">
+              Create a new account{" "}
+              <Link className="d-inline ml-1" to="/signup">
+                Sign Up
+              </Link>
             </div>
           </div>
         </Form>
@@ -78,6 +81,6 @@ const Login = (props) => {
       </Col>
     </Row>
   );
-}
+};
 
 export default Login;
