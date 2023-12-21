@@ -169,7 +169,7 @@ export const getProjectByProjectID = (projectID) => (dispatch) => {
 };
 
 export const setSelectedProject = (selectedProject) => (dispatch) => {
-  if(!selectedProject) return;
+  if (!selectedProject) return;
   return new Promise((resolve, reject) => {
     try {
       dispatch({ type: SET_SELECTED_PROJECT, payload: selectedProject });
@@ -390,9 +390,7 @@ export const saveProject = (project) => (dispatch) => {
     });
 };
 
-
 export const updateProjectIsPinned = (ID, isPinned) => (dispatch) => {
-
   const URL = `/Project/IsPinned/${ID}/${isPinned}`;
 
   return api({
@@ -410,7 +408,6 @@ export const updateProjectIsPinned = (ID, isPinned) => (dispatch) => {
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
     });
 };
-
 
 /**
  * Save / Update existing project
@@ -695,7 +692,7 @@ export const getCategorizedReportByProjectID = (projectID) => (dispatch) => {
   return api({
     method: "GET",
     url: URL,
-  })      
+  })
     .then((response) => {
       if (response?.status === 200) {
         dispatch({ type: GET_CATEGORIZED_REPORT, payload: response?.data });
