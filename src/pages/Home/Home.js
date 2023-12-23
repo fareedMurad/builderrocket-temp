@@ -218,12 +218,14 @@ const Home = (props) => {
 
       {goToProjectLoader && (
         <div
-          className="h-100 w-100"
           style={{
             zIndex: 9999999,
             position: "fixed",
             background: "rgba(0,0,0,0.6)",
             top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
           }}
         >
           <div

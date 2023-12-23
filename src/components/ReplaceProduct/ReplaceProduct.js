@@ -75,13 +75,13 @@ const ReplaceProduct = () => {
         value: c.ID,
         label: c.Name?.replaceAll("&nbsp;", ""),
       });
-      c.SubCategories?.forEach((sc) => {
-        list.push({
-          ...sc,
-          value: sc.ID,
-          label: sc.Name?.replaceAll("&nbsp;", ""),
-        });
-      });
+      // c.SubCategories?.forEach((sc) => {
+      //   list.push({
+      //     ...sc,
+      //     value: sc.ID,
+      //     label: sc.Name?.replaceAll("&nbsp;", ""),
+      //   });
+      // });
     });
     setProductCategories(list.sort((a, b) => a.label?.localeCompare(b.label)));
   }, [listCatgories]);
