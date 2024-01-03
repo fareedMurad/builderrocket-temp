@@ -83,6 +83,10 @@ const Products = (props) => {
   const [isRequiresApprovalLoading, setIsRequiresApprovalLoading] = useState({
     loading: false,
   });
+  const [isAllRequiresApprovalLoading, setIsAllRequiresApprovalLoading] =
+    useState({
+      loading: false,
+    });
   const [isQuantityLoading, setIsQuantityLoading] = useState({
     loading: false,
   });
@@ -511,6 +515,37 @@ const Products = (props) => {
     }
   };
 
+  const handleAllRequiresApproval = (templateItem, RequiresApproval, items) => {
+    if (!isAllRequiresApprovalLoading?.loading) {
+      setIsAllRequiresApprovalLoading({ loading: true, ID: templateItem?.ID });
+      async function callback() {
+        setTimeout(() => {
+          setIsAllRequiresApprovalLoading({ loading: false });
+        }, 100);
+      }
+
+      if (showCustomProducts) {
+        handleUpdateMyProductsForProject(
+          "RequiresApproval",
+          RequiresApproval,
+          callback,
+          templateItem
+        );
+      } else if (showBuilderRooms) {
+        dispatch(
+          updateBuilderRoomProduct(
+            project?.ID,
+            items?.map((i) => i.ID),
+            RequiresApproval,
+            "RequiresApproval"
+          )
+        ).then(() => {
+          setIsAllRequiresApprovalLoading({ loading: false });
+        });
+      }
+    }
+  };
+
   const handleQuantity = (templateItem, quantity) => {
     if (!isQuantityLoading?.loading) {
       setIsQuantityLoading({ loading: true, ID: templateItem?.ID });
@@ -878,13 +913,31 @@ const Products = (props) => {
     );
   };
 
-  const renderTable = (items) => {
+  const hasAllRequiesApproval = (items) => {
+    return items?.find((r) => r.RequiredApproval === false)?.length;
+  };
+
+  const renderTable = (items, room) => {
+    const allSelected = !hasAllRequiesApproval(items);
     return (
       <div className="products-table">
         <Table responsive>
           <thead>
             <tr>
-              <th>Needs Approval</th>
+              <th>
+                {itemLoading(room, isAllRequiresApprovalLoading) ? (
+                  <Spinner animation="border" variant="primary" />
+                ) : (
+                  <Form.Check
+                    type="checkbox"
+                    // checked={allSelected}
+                    onChange={(e) =>
+                      handleAllRequiresApproval(room, e.target.checked, items)
+                    }
+                  />
+                )}{" "}
+                Needs Approval
+              </th>
               <th>
                 <div className="d-flex justify-content-center">
                   Product Name
@@ -1574,7 +1627,7 @@ const Products = (props) => {
                         id={"room-" + room.ID}
                         ref={setCollapsibleElement}
                       >
-                        {renderTable(items)}
+                        {renderTable(items, room)}
                       </Card.Body>
                     </Card>
                   )}
