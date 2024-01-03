@@ -163,7 +163,7 @@ export const updateBuilderRoomProduct =
 
     const data = {
       ProjectID: projectId,
-      ProductIDs: productIds,
+      ProductIDs: [productIds],
       PatchModel: [
         {
           op: "replace",

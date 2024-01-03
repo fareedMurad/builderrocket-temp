@@ -49,6 +49,7 @@ import {
 import ColorProductModal from "../ColorProductModal";
 import Utils from "../../utils";
 import SelectRooms from "./SelectRooms";
+import ConfirmRequiresApprovalModal from "../ConfirmRequiresApprovalModal";
 
 const Products = (props) => {
   const dispatch = useDispatch();
@@ -87,6 +88,8 @@ const Products = (props) => {
     useState({
       loading: false,
     });
+  const [allRequiresApprovalModal, setAllRequiresApprovalModal] =
+    useState(false);
   const [isQuantityLoading, setIsQuantityLoading] = useState({
     loading: false,
   });
@@ -235,7 +238,7 @@ const Products = (props) => {
               value: b.ID,
             };
           })
-          .sort((a, b) => a.name?.localeCompare(b.name)),
+          ?.sort((a, b) => a.name?.localeCompare(b.name)),
       ];
       setCategoriesOptions(options.filter((b) => b.name));
       setCategoriesDropdownLoading(false);
@@ -521,6 +524,7 @@ const Products = (props) => {
       async function callback() {
         setTimeout(() => {
           setIsAllRequiresApprovalLoading({ loading: false });
+          setAllRequiresApprovalModal(false);
         }, 100);
       }
 
@@ -541,6 +545,7 @@ const Products = (props) => {
           )
         ).then(() => {
           setIsAllRequiresApprovalLoading({ loading: false });
+          setAllRequiresApprovalModal(false);
         });
       }
     }
@@ -913,12 +918,19 @@ const Products = (props) => {
     );
   };
 
+  const [selectedRoomForApproval, setSelectedRoomForApproval] = useState();
+  const [selectedRoomProductsForApproval, setSelectedRoomProductsForApproval] =
+    useState();
+
   const hasAllRequiesApproval = (items) => {
-    return items?.find((r) => r.RequiredApproval === false)?.length;
+    return (
+      items?.filter((r) => r.RequiresApproval === true)?.length ===
+      items?.length
+    );
   };
 
   const renderTable = (items, room) => {
-    const allSelected = !hasAllRequiesApproval(items);
+    const allSelected = hasAllRequiesApproval(items);
     return (
       <div className="products-table">
         <Table responsive>
@@ -930,10 +942,12 @@ const Products = (props) => {
                 ) : (
                   <Form.Check
                     type="checkbox"
-                    // checked={allSelected}
-                    onChange={(e) =>
-                      handleAllRequiresApproval(room, e.target.checked, items)
-                    }
+                    checked={allSelected}
+                    onChange={(e) => {
+                      setSelectedRoomForApproval(room);
+                      setSelectedRoomProductsForApproval(items);
+                      setAllRequiresApprovalModal(true);
+                    }}
                   />
                 )}{" "}
                 Needs Approval
@@ -962,7 +976,7 @@ const Products = (props) => {
           </thead>
           <tbody>
             {items
-              .sort((a, b) => (a.IsFavorite ? -1 : 1))
+              ?.sort((a, b) => (a.IsFavorite ? -1 : 1))
               ?.map((templateItem, index) => {
                 const tempTemplateItem = templateItems?.[templateItem?.ID];
 
@@ -1666,6 +1680,19 @@ const Products = (props) => {
         show={showColorModal}
         handleCloseModal={handleColorClose}
       /> */}
+      <ConfirmRequiresApprovalModal
+        room={selectedRoomForApproval?.RoomName}
+        show={allRequiresApprovalModal}
+        handleClose={() => setAllRequiresApprovalModal(false)}
+        handleConfirm={() => {
+          handleAllRequiresApproval(
+            selectedRoomForApproval,
+            !hasAllRequiesApproval(selectedRoomProductsForApproval),
+            selectedRoomProductsForApproval
+          );
+        }}
+        isChecked={hasAllRequiesApproval(selectedRoomProductsForApproval)}
+      />
     </div>
   );
 };
