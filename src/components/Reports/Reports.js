@@ -77,15 +77,15 @@ const Reports = (props) => {
   const [listSavedReports, setListSavedReports] = useState([]);
   const [showSaveFilterNameModal, setShowSaveFilterNameModal] = useState(false);
   const [editReportID, setEditReportID] = useState(null);
-  useEffect(() => {
-    if (isEmpty(selectedRoom))
-      dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
-    // if (groupLayout?.length > 0) {
-    //     dispatch(setReportFilter(groupLayout))
-    // } else if (layout) {
-    //     dispatch(setReportFilter(layout))
-    // }
-  }, [dispatch, report, selectedRoom]);
+  // useEffect(() => {
+  //   if (isEmpty(selectedRoom))
+  //     dispatch(setSelectedRoom(report?.ProjectRooms?.[0]));
+  // if (groupLayout?.length > 0) {
+  //     dispatch(setReportFilter(groupLayout))
+  // } else if (layout) {
+  //     dispatch(setReportFilter(layout))
+  // }
+  // }, [dispatch, report, selectedRoom]);
 
   //   useEffect(() => {
   //     if (isEmpty(reportByCategory)) {
@@ -122,7 +122,6 @@ const Reports = (props) => {
     }
   }, [dispatch, layout]);
 
-
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
@@ -149,7 +148,7 @@ const Reports = (props) => {
           return {
             ...a,
             name: a.Name,
-            value: a.ID,
+            value: a.BuilderRoomID,
           };
         })?.filter((a) =>
           selectedSavedFilter
@@ -160,20 +159,20 @@ const Reports = (props) => {
     );
   };
 
-  const handleSelectedRoom = useCallback(
-    (roomID) => {
-      const selectedRoomObj = report?.ProjectRooms?.find(
-        (room) => room.ID === parseInt(roomID)
-      );
+  // const handleSelectedRoom = useCallback(
+  //   (roomID) => {
+  //     const selectedRoomObj = report?.ProjectRooms?.find(
+  //       (room) => room.ID === parseInt(roomID)
+  //     );
 
-      dispatch(setSelectedRoom(selectedRoomObj));
-    },
-    [dispatch, report]
-  );
+  //     dispatch(setSelectedRoom(selectedRoomObj));
+  //   },
+  //   [dispatch, report]
+  // );
 
-  useEffect(() => {
-    if (!isEmpty(selectedRoom)) handleSelectedRoom(selectedRoom?.ID);
-  }, [report, selectedRoom, handleSelectedRoom]);
+  // useEffect(() => {
+  //   if (!isEmpty(selectedRoom)) handleSelectedRoom(selectedRoom?.ID);
+  // }, [report, selectedRoom, handleSelectedRoom]);
 
   useEffect(() => {
     handleFetchSavedReports();
@@ -229,11 +228,13 @@ const Reports = (props) => {
         Name: filtersForm?.Name,
         GroupBy: layout.value,
         CategoryIDs: reportFilter?.map((r) => r.ID),
-        RoomIDs: roomFilter?.map((r) => r.ID),
+        RoomIDs: roomFilter?.map((r) => r.BuilderRoomID)?.filter((r) => r),
         RoughInTrimOut: roughInTrimOut,
         IsBuilderCustomer: localFilters.isCustomer,
         IsShowEmptyCategoriesRooms: showEmptyData,
       };
+
+      console.log(payload, "payload");
       dispatch(saveReportsFilter(payload)).then((res) => {
         handleFetchSavedReports();
       });
@@ -249,7 +250,7 @@ const Reports = (props) => {
       Name,
       GroupBy: findFilter?.GroupBy,
       CategoryIDs: findFilter?.CategoryIDs,
-      RoomIDs: findFilter?.RoomIDs,
+      RoomIDs: findFilter?.RoomIDs?.filter((r) => r),
       RoughInTrimOut: findFilter?.RoughInTrimOut,
       IsBuilderCustomer: findFilter?.IsBuilderCustomer,
       IsShowEmptyCategoriesRooms: findFilter?.IsShowEmptyCategoriesRooms,
@@ -448,13 +449,15 @@ const Reports = (props) => {
                                     name: "Select All",
                                     value: "select_all",
                                   },
-                                  ...(reportByCategory?.Groups?.map((a) => {
+                                  ...reportByCategory?.Groups?.map((a) => {
                                     return {
                                       ...a,
                                       name: a.Name,
                                       value: a.ID,
                                     };
-                                  }).sort((a, b) => a.name.localeCompare(b.name))),
+                                  }).sort((a, b) =>
+                                    a.name.localeCompare(b.name)
+                                  ),
                                 ]
                               : []
                           }
@@ -556,13 +559,15 @@ const Reports = (props) => {
                                     name: "Select All",
                                     value: "select_all",
                                   },
-                                  ...(reportByCategory?.Rooms?.map((a) => {
+                                  ...reportByCategory?.Rooms?.map((a) => {
                                     return {
                                       ...a,
                                       name: a.Name,
-                                      value: a.ID,
+                                      value: a.BuilderRoomID,
                                     };
-                                  }).sort((a, b) => a.name.localeCompare(b.name))),
+                                  }).sort((a, b) =>
+                                    a.name.localeCompare(b.name)
+                                  ),
                                 ]
                               : []
                           }
@@ -594,7 +599,7 @@ const Reports = (props) => {
                                           return {
                                             ...a,
                                             name: a.Name,
-                                            value: a.ID,
+                                            value: a.BuilderRoomID,
                                           };
                                         }),
                                       ].sort((a, b) =>

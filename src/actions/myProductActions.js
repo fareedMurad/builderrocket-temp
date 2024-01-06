@@ -158,16 +158,20 @@ export const updateMyProductsForProject = (params) => (dispatch) => {
 };
 
 export const updateBuilderRoomProduct =
-  (projectId, productId, value, field) => (dispatch) => {
-    const URL = `/builder-product/${projectId}/Product/${productId}`;
+  (projectId, productIds, value, field) => (dispatch) => {
+    const URL = `/builder-product/Product/`;
 
-    const data = [
-      {
-        op: "replace",
-        path: `/${field}`,
-        value: value,
-      },
-    ];
+    const data = {
+      ProjectID: projectId,
+      ProductIDs: [productIds],
+      PatchModel: [
+        {
+          op: "replace",
+          path: `/${field}`,
+          value: value,
+        },
+      ],
+    };
 
     return api({
       method: "PATCH",

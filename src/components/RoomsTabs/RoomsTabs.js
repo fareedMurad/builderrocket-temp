@@ -1,44 +1,45 @@
-import React, { useEffect } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
-import './RoomsTabs.scss';
+import React, { useEffect } from "react";
+import { Tabs, Tab } from "react-bootstrap";
+import "./RoomsTabs.scss";
 
-// components 
-import RoomsTypes from '../RoomsTypes';
-import { useState } from 'react';
-import RoomGroups from '../RoomGroups';
-import { getCategories } from '../../actions/productActions';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
-import RoomGroupDetails from '../RoomGroupDetails';
+// components
+import RoomsTypes from "../RoomsTypes";
+import { useState } from "react";
+import RoomGroups from "../RoomGroups";
+import { getCategories } from "../../actions/productActions";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router-dom";
+import RoomGroupDetails from "../RoomGroupDetails";
 
 const RoomsTabs = (props) => {
-
   const [selectedTab, setSelectedTab] = useState("");
   const history = useHistory();
   const location = useLocation();
-  const builderSelectedRoomGroup = useSelector((state) => state.builderRooms.builderSelectedRoomGroup);
+  const builderSelectedRoomGroup = useSelector(
+    (state) => state.builderRooms.builderSelectedRoomGroup
+  );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let tabs = location.pathname.split('/');
-    let tab = tabs[tabs.length - 1]
+    let tabs = location.pathname.split("/");
+    let tab = tabs[tabs.length - 1];
     setSelectedTab(tab);
-}, [location])
+  }, [location]);
 
   useEffect(() => {
     dispatch(getCategories());
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if(selectedTab) {
-      history.push(`/rooms-management/${selectedTab}`)
+    if (selectedTab) {
+      history.push(`/rooms-management/${selectedTab}`);
     }
-  }, [selectedTab])
+  }, [selectedTab]);
 
   const handleSelectedTab = (tab) => {
-    setSelectedTab(tab)
-  }
+    setSelectedTab(tab);
+  };
 
   return (
     <div className="project-tabs">
@@ -47,21 +48,22 @@ const RoomsTabs = (props) => {
         onSelect={(tab) => handleSelectedTab(tab)}
         transition={false}
       >
-       
         <Tab eventKey="groups" title="Room Types">
           {selectedTab === "groups" && <RoomGroups />}
         </Tab>
         <Tab eventKey="rooms" title="Rooms">
-          {selectedTab === "rooms" && (
-            <RoomsTypes />
-          )}
+          {selectedTab === "rooms" && <RoomsTypes />}
         </Tab>
-        <Tab eventKey="groupDetails" title="Room Type Details" disabled={!builderSelectedRoomGroup?.ID}>
+        <Tab
+          eventKey="groupDetails"
+          title="Room Type Details"
+          disabled={!builderSelectedRoomGroup?.ID}
+        >
           {selectedTab === "groupDetails" && <RoomGroupDetails />}
         </Tab>
       </Tabs>
     </div>
   );
-}
+};
 
 export default RoomsTabs;

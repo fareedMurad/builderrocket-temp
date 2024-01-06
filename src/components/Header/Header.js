@@ -35,7 +35,7 @@ const Header = ({ expanded, setExpanded }) => {
   const [showTabLinks, setShowTabLinks] = useState(false);
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);
 
-  const [isopen, setIsOpen] = useState(false)
+  const [isopen, setIsOpen] = useState(false);
   const isVendorSignedIn = useSelector((state) => state.vendor?.isSignedIn);
 
   useEffect(() => {
@@ -171,8 +171,9 @@ const Header = ({ expanded, setExpanded }) => {
                       children={tabs.map((tab) => (
                         <div
                           key={`tab-${tab.url}`}
-                          className={`header-item ${tab.url === selectedProjectTab ? "active-link" : ""
-                            }`}
+                          className={`header-item ${
+                            tab.url === selectedProjectTab ? "active-link" : ""
+                          }`}
                           onClick={() => handleSelectedTab(tab.url)}
                         >
                           <i
@@ -230,7 +231,10 @@ const Header = ({ expanded, setExpanded }) => {
                   <i className="far fa-cog"></i>
                 </Nav.Link>
                 <Nav.Link className="item">
-                  <i className="far fa-bullhorn" onClick={() => setIsOpen(true)}></i>
+                  <i
+                    className="far fa-bullhorn"
+                    onClick={() => setIsOpen(true)}
+                  ></i>
                 </Nav.Link>
                 {user?.FirstName ? (
                   <Navbar.Text className="item">
@@ -250,23 +254,24 @@ const Header = ({ expanded, setExpanded }) => {
                 <i className="far fa-sign-out-alt"></i>
               </Nav.Link>
             )}
-            {!isSignedIn && !isCustomerSignedIn && !customerPortal && !isVendorSignedIn && (
-              <div className="d-flex gap-2">
-                <Button onClick={() => history.push("/signup")}>Sign Up</Button>
-                <Button onClick={() => history.push("/login")}>Login</Button>
-              </div>
-            )}
-
+            {!isSignedIn &&
+              !isCustomerSignedIn &&
+              !customerPortal &&
+              !isVendorSignedIn && (
+                <div className="d-flex gap-2">
+                  <Button onClick={() => history.push("/signup")}>
+                    Sign Up
+                  </Button>
+                  <Button onClick={() => history.push("/login")}>Login</Button>
+                </div>
+              )}
           </Nav>
         </Navbar.Collapse>
       </Navbar>
 
       {isSignedIn && !isCustomerSignedIn && <NavSubheader />}
       {isopen && (
-        <Megaphone
-          show={isopen}
-          handleClose={() => setIsOpen(false)}
-        />
+        <Megaphone show={isopen} handleClose={() => setIsOpen(false)} />
       )}
     </>
   );

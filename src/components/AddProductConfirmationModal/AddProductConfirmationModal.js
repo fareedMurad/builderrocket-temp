@@ -48,7 +48,6 @@ const AddProductConfirmationModal = ({
 
     array = filtered?.map((roomType, index) => {
       const isFound = roomTypes?.find((r) => r.ID === roomType.ID);
-
       if (isFound) {
         return {
           ...isFound,
