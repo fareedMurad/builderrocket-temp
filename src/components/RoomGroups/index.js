@@ -56,6 +56,8 @@ const RoomGroups = () => {
   const [expandID, setExpandID] = useState();
   const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
     useState(false);
+  const [activeSelectedGroupCategories, setActiveSelectedGroupCategories] =
+    useState([]);
 
   useEffect(() => {
     const list = [];
@@ -99,6 +101,7 @@ const RoomGroups = () => {
     setIsGroupCategoriesLoading(true);
     dispatch(getBuilderRoomGroupDetails(expandID)).then((res) => {
       setSelectedGroupCategories(res.Result);
+      setActiveSelectedGroupCategories(res.Result.map((r) => r.ID));
       setIsGroupCategoriesLoading(false);
     });
   };
@@ -303,7 +306,7 @@ const RoomGroups = () => {
         size="md"
       >
         <Modal.Body>
-          <div className="page-title pl-0">Create Category</div>
+          <div className="page-title pl-0">Add Category</div>
           <Form.Group>
             <Form.Label className="input-label">Select Category</Form.Label>
             <Select
@@ -429,7 +432,10 @@ const RoomGroups = () => {
                         <Spinner animation="border" variant="primary" />
                       </div>
                     ) : (
-                      <Accordion>
+                      <Accordion
+                        defaultActiveKey={activeSelectedGroupCategories}
+                        alwaysOpen
+                      >
                         {selectedGroupCategories
                           .sort((a, b) =>
                             a.Category?.Name?.localeCompare(b.Category?.Name)
@@ -440,7 +446,7 @@ const RoomGroups = () => {
                                 <Accordion.Header>
                                   <div className="d-flex justify-content-between w-100 pr-5">
                                     <div className="d-flex font-weight-bold">
-                                      {templateItem?.Category?.Name}
+                                      {templateItem?.CategoryLabel}
                                       <i
                                         className="far fa-trash fa-sm tab-icon ml-5"
                                         onClick={(e) =>
@@ -503,7 +509,6 @@ const RoomGroups = () => {
                                           >
                                             <div className="d-flex">
                                               {product?.ProductName} -{" "}
-                                              {console.log(product, "Product")}
                                               <i
                                                 className="far fa-trash fa-sm tab-icon ml-5"
                                                 onClick={(e) =>

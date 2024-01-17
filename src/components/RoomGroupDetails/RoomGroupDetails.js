@@ -523,10 +523,10 @@ const RoomGroupDetails = () => {
                               ) : (
                                 <div className="d-flex">
                                   <Button
-                                    className={`action-button add-product-btn mr-2 ${
+                                    className={`action-button mr-2 ${
                                       isProductAdded(product.ID)
                                         ? "btn-success"
-                                        : ""
+                                        : "add-product-btn"
                                     }`}
                                     onClick={() =>
                                       addProduct(product?.ID, product)
