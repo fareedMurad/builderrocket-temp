@@ -39,11 +39,17 @@ const RoomGroups = () => {
   const roomGroups = useSelector(
     (state) => state.builderRooms.builderRoomGroups?.Result
   );
+  const selectedGroupCategories = useSelector(
+    (state) => state.builderRooms.selectedGroupDetails?.selectedGroupCategories
+  );
+  const selectedGroupId = useSelector(
+    (state) => state.builderRooms.selectedGroupDetails?.groupId
+  );
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [newCategory, setNewCategory] = useState({});
   const [dublicateEditAttempted, setdublicateEditAttempted] = useState(false);
   const dispatch = useDispatch();
@@ -52,12 +58,9 @@ const RoomGroups = () => {
     (state) => state.product.productCategories
   );
   const [categories, setCategories] = useState([]);
-  const [selectedGroupCategories, setSelectedGroupCategories] = useState([]);
   const [expandID, setExpandID] = useState();
   const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
     useState(false);
-  const [activeSelectedGroupCategories, setActiveSelectedGroupCategories] =
-    useState([]);
 
   useEffect(() => {
     const list = [];
@@ -86,22 +89,28 @@ const RoomGroups = () => {
   }, [expandID]);
 
   useEffect(() => {
+    if (selectedGroupId) {
+      setExpandID(selectedGroupId);
+      const target = document.querySelector(`#selected_${selectedGroupId}`);
+      setTimeout(() => {
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      }, 1000);
+    }
     handleFetchRoomGroups();
     handleFetchRoomTypes();
   }, []);
 
   const handleFetchRoomGroups = () => {
-    setIsLoading(true);
+    if (!roomTypes?.length) setIsLoading(true);
     dispatch(getBuilderRoomGroups()).then((data) => {
       setIsLoading(false);
     });
   };
 
   const handleGetBuilderRoomGroupDetails = () => {
-    setIsGroupCategoriesLoading(true);
+    if (!selectedGroupCategories?.length || expandID !== selectedGroupId)
+      setIsGroupCategoriesLoading(true);
     dispatch(getBuilderRoomGroupDetails(expandID)).then((res) => {
-      setSelectedGroupCategories(res.Result);
-      setActiveSelectedGroupCategories(res.Result.map((r) => r.ID));
       setIsGroupCategoriesLoading(false);
     });
   };
@@ -401,7 +410,12 @@ const RoomGroups = () => {
                 <Accordion.Header>
                   <div className="d-flex justify-content-between w-100 pr-5">
                     <div className="d-flex align-items-center">
-                      <div className="font-weight-bold mr-5">{item.Name}</div>
+                      <div
+                        className="font-weight-bold mr-5"
+                        id={`selected_${item.ID}`}
+                      >
+                        {item.Name}
+                      </div>
                       <i
                         className="far fa-pen fa-sm tab-icon p-2"
                         onClick={(e) => handleEdit(e, item)}
@@ -433,11 +447,13 @@ const RoomGroups = () => {
                       </div>
                     ) : (
                       <Accordion
-                        defaultActiveKey={activeSelectedGroupCategories}
+                        defaultActiveKey={selectedGroupCategories?.map(
+                          (g) => g.ID
+                        )}
                         alwaysOpen
                       >
                         {selectedGroupCategories
-                          .sort((a, b) =>
+                          ?.sort((a, b) =>
                             a.Category?.Name?.localeCompare(b.Category?.Name)
                           )
                           ?.map((templateItem, index) => {
@@ -470,7 +486,10 @@ const RoomGroups = () => {
                                         onClick={() =>
                                           handleManageProducts(
                                             item,
-                                            templateItem.Category,
+                                            {
+                                              Name: templateItem.CategoryLabel,
+                                              ID: templateItem.CategoryID,
+                                            },
                                             item.products
                                           )
                                         }
