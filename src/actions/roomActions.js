@@ -7,6 +7,7 @@ import {
   CREATE_ROOM_TYPES,
   CREATE_ROOM,
   GET_BUILDER_ROOM_GROUPS,
+  GET_BUILDER_ROOM_GROUP_DETAILS,
   GET_BUILDER_ROOM_TYPES,
   GET_BUILDER_SELECTED_ROOM_TYPE,
   GET_BUILDER_SELECTED_ROOM_GROUP,
@@ -104,7 +105,7 @@ export const getBuilderRoomGroupDetails = (ID) => (dispatch) => {
   })
     .then((response) => {
       if (response?.status === 200) {
-        // dispatch({ type: GET_BUILDER_ROOM_GROUPS, payload: response.data });
+        dispatch(setBuilderRoomGroupDetails(ID, response.data?.Result));
         return response.data;
       }
     })
@@ -113,6 +114,27 @@ export const getBuilderRoomGroupDetails = (ID) => (dispatch) => {
 
       console.log("Getting Rooms", error);
     });
+};
+
+export const setBuilderRoomGroupDetails = (ID, data) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const payload = ID
+        ? {
+            selectedGroupCategories: data,
+            groupId: ID,
+          }
+        : null;
+      dispatch({
+        type: GET_BUILDER_ROOM_GROUP_DETAILS,
+        payload,
+      });
+
+      resolve(payload);
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
 export const createRoomTypes = (roomtypes) => (dispatch) => {
   const URL = "/builder/createroomtype";

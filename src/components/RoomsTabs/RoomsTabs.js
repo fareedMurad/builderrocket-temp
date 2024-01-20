@@ -10,6 +10,7 @@ import { getCategories } from "../../actions/productActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import RoomGroupDetails from "../RoomGroupDetails";
+import { setBuilderRoomGroupDetails } from "../../actions/roomActions";
 
 const RoomsTabs = (props) => {
   const [selectedTab, setSelectedTab] = useState("");
@@ -29,6 +30,10 @@ const RoomsTabs = (props) => {
 
   useEffect(() => {
     dispatch(getCategories());
+
+    return () => {
+      dispatch(setBuilderRoomGroupDetails());
+    };
   }, []);
 
   useEffect(() => {

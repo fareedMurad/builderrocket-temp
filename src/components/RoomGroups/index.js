@@ -39,11 +39,17 @@ const RoomGroups = () => {
   const roomGroups = useSelector(
     (state) => state.builderRooms.builderRoomGroups?.Result
   );
+  const selectedGroupCategories = useSelector(
+    (state) => state.builderRooms.selectedGroupDetails?.selectedGroupCategories
+  );
+  const selectedGroupId = useSelector(
+    (state) => state.builderRooms.selectedGroupDetails?.groupId
+  );
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [newCategory, setNewCategory] = useState({});
   const [dublicateEditAttempted, setdublicateEditAttempted] = useState(false);
   const dispatch = useDispatch();
@@ -52,7 +58,6 @@ const RoomGroups = () => {
     (state) => state.product.productCategories
   );
   const [categories, setCategories] = useState([]);
-  const [selectedGroupCategories, setSelectedGroupCategories] = useState([]);
   const [expandID, setExpandID] = useState();
   const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
     useState(false);
@@ -84,21 +89,28 @@ const RoomGroups = () => {
   }, [expandID]);
 
   useEffect(() => {
+    if (selectedGroupId) {
+      setExpandID(selectedGroupId);
+      const target = document.querySelector(`#selected_${selectedGroupId}`);
+      setTimeout(() => {
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      }, 1000);
+    }
     handleFetchRoomGroups();
     handleFetchRoomTypes();
   }, []);
 
   const handleFetchRoomGroups = () => {
-    setIsLoading(true);
+    if (!roomTypes?.length) setIsLoading(true);
     dispatch(getBuilderRoomGroups()).then((data) => {
       setIsLoading(false);
     });
   };
 
   const handleGetBuilderRoomGroupDetails = () => {
-    setIsGroupCategoriesLoading(true);
+    if (!selectedGroupCategories?.length || expandID !== selectedGroupId)
+      setIsGroupCategoriesLoading(true);
     dispatch(getBuilderRoomGroupDetails(expandID)).then((res) => {
-      setSelectedGroupCategories(res.Result);
       setIsGroupCategoriesLoading(false);
     });
   };
@@ -303,7 +315,7 @@ const RoomGroups = () => {
         size="md"
       >
         <Modal.Body>
-          <div className="page-title pl-0">Create Category</div>
+          <div className="page-title pl-0">Add Category</div>
           <Form.Group>
             <Form.Label className="input-label">Select Category</Form.Label>
             <Select
@@ -398,7 +410,12 @@ const RoomGroups = () => {
                 <Accordion.Header>
                   <div className="d-flex justify-content-between w-100 pr-5">
                     <div className="d-flex align-items-center">
-                      <div className="font-weight-bold mr-5">{item.Name}</div>
+                      <div
+                        className="font-weight-bold mr-5"
+                        id={`selected_${item.ID}`}
+                      >
+                        {item.Name}
+                      </div>
                       <i
                         className="far fa-pen fa-sm tab-icon p-2"
                         onClick={(e) => handleEdit(e, item)}
@@ -429,9 +446,14 @@ const RoomGroups = () => {
                         <Spinner animation="border" variant="primary" />
                       </div>
                     ) : (
-                      <Accordion>
+                      <Accordion
+                        defaultActiveKey={selectedGroupCategories?.map(
+                          (g) => g.ID
+                        )}
+                        alwaysOpen
+                      >
                         {selectedGroupCategories
-                          .sort((a, b) =>
+                          ?.sort((a, b) =>
                             a.Category?.Name?.localeCompare(b.Category?.Name)
                           )
                           ?.map((templateItem, index) => {
@@ -440,7 +462,7 @@ const RoomGroups = () => {
                                 <Accordion.Header>
                                   <div className="d-flex justify-content-between w-100 pr-5">
                                     <div className="d-flex font-weight-bold">
-                                      {templateItem?.Category?.Name}
+                                      {templateItem?.CategoryLabel}
                                       <i
                                         className="far fa-trash fa-sm tab-icon ml-5"
                                         onClick={(e) =>
@@ -464,7 +486,10 @@ const RoomGroups = () => {
                                         onClick={() =>
                                           handleManageProducts(
                                             item,
-                                            templateItem.Category,
+                                            {
+                                              Name: templateItem.CategoryLabel,
+                                              ID: templateItem.CategoryID,
+                                            },
                                             item.products
                                           )
                                         }
@@ -503,7 +528,6 @@ const RoomGroups = () => {
                                           >
                                             <div className="d-flex">
                                               {product?.ProductName} -{" "}
-                                              {console.log(product, "Product")}
                                               <i
                                                 className="far fa-trash fa-sm tab-icon ml-5"
                                                 onClick={(e) =>
