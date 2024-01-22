@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import CustomLightbox from "../Lightbox";
 import Avatar from "../../assets/images/img-placeholder.png";
+let wsRegex = /\s/g;
 
 const RoomGroups = () => {
   const roomTypes = useSelector(
@@ -182,7 +183,13 @@ const RoomGroups = () => {
 
   const handleEditGroup = () => {
     if (groupName) {
-      if (roomGroups?.find((rg) => rg.Name === groupName)) {
+      if (
+        roomGroups?.find(
+          (rg) =>
+            rg.Name.replaceAll(wsRegex, "") ===
+            groupName.replaceAll(wsRegex, "")
+        )
+      ) {
         setdublicateEditAttempted(true);
         return;
       }
@@ -228,11 +235,11 @@ const RoomGroups = () => {
       >
         <Modal.Body>
           <div className="page-title pl-0">
-            Delete {isGroup ? "Room Type" : isProduct ? "Product" : "Category"}
+            Delete {isGroup ? "Template" : isProduct ? "Product" : "Category"}
           </div>
           <div className="d-flex">
             Are you sure you want to delete this{" "}
-            {isGroup ? "Room Type" : isProduct ? "Product" : "Category"}?
+            {isGroup ? "Template" : isProduct ? "Product" : "Category"}?
           </div>
           <div iv className="d-flex justify-content-center pt-5">
             <Button
@@ -259,9 +266,16 @@ const RoomGroups = () => {
   const editAddGroupModal = () => {
     const isAdd = showVisibleModal === "ADD_GROUP";
     const isDublicate = isAdd
-      ? roomGroups?.find((rg) => rg.Name === groupName)
-      : roomGroups?.find((rg) => rg.Name === groupName) &&
-        dublicateEditAttempted;
+      ? roomGroups?.find(
+          (rg) =>
+            rg.Name.replaceAll(wsRegex, "") ===
+            groupName.replaceAll(wsRegex, "")
+        )
+      : roomGroups?.find(
+          (rg) =>
+            rg.Name.replaceAll(wsRegex, "") ===
+            groupName.replaceAll(wsRegex, "")
+        ) && dublicateEditAttempted;
     return (
       <Modal
         show={showVisibleModal === "EDIT_GROUP" || isAdd}
@@ -271,10 +285,10 @@ const RoomGroups = () => {
       >
         <Modal.Body>
           <div className="page-title pl-0">
-            {isAdd ? "Create" : "Edit"} Room Type
+            {isAdd ? "Create" : "Edit"} Template
           </div>
           <Form.Group>
-            <Form.Label className="input-label">Room Type Name*</Form.Label>
+            <Form.Label className="input-label">Template Name*</Form.Label>
             <Form.Control
               type="text"
               className="input-gray"
@@ -356,6 +370,8 @@ const RoomGroups = () => {
 
   const handleAdd = (e) => {
     e.stopPropagation();
+    setGroupName("");
+    setSelectedGroup({});
     setShowVisibleModal("ADD_GROUP");
   };
 
@@ -387,7 +403,7 @@ const RoomGroups = () => {
   const handleManageProducts = async (group, category) => {
     dispatch(setSelectedBuilderCategory(category)).then(() => {
       dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
-        history.push(`/rooms-management/groupDetails`);
+        history.push(`/rooms-management/template-details`);
       });
     });
   };
@@ -395,7 +411,7 @@ const RoomGroups = () => {
   return (
     <div className="room-management-container">
       <Button variant="link" className="link-btn" onClick={(e) => handleAdd(e)}>
-        + Add Room Type
+        + Add Template
       </Button>
       {isLoading ? (
         <div className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center">
@@ -459,7 +475,9 @@ const RoomGroups = () => {
                           ?.map((templateItem, index) => {
                             return (
                               <Accordion.Item eventKey={templateItem.ID}>
-                                <Accordion.Header>
+                                <Accordion.Header
+                                  className={"custom-accordian-button"}
+                                >
                                   <div className="d-flex justify-content-between w-100 pr-5">
                                     <div className="d-flex font-weight-bold">
                                       {templateItem?.CategoryLabel}
@@ -499,51 +517,53 @@ const RoomGroups = () => {
                                     </div>
                                   </div>
                                 </Accordion.Header>
-                                <Accordion.Body>
-                                  <Table>
-                                    <tbody>
-                                      {templateItem.Products?.sort((a, b) =>
-                                        a.ProductName?.localeCompare(
-                                          b.ProductName
-                                        )
-                                      ).map((product, index) => (
-                                        <tr key={index}>
-                                          <td
-                                            style={{
-                                              verticalAlign: "middle",
-                                            }}
-                                          >
-                                            <CustomLightbox
-                                              images={[
-                                                product?.ThumbnailURL
-                                                  ? product?.ThumbnailURL
-                                                  : Avatar,
-                                              ]}
-                                            />
-                                          </td>
-                                          <td
-                                            style={{
-                                              verticalAlign: "middle",
-                                            }}
-                                          >
-                                            <div className="d-flex">
-                                              {product?.ProductName} -{" "}
-                                              <i
-                                                className="far fa-trash fa-sm tab-icon ml-5"
-                                                onClick={(e) =>
-                                                  handleDeleteGroupCategoryProduct(
-                                                    e,
-                                                    product
-                                                  )
-                                                }
-                                              ></i>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </Table>
-                                </Accordion.Body>
+                                {templateItem.Products?.length ? (
+                                  <Accordion.Body>
+                                    <Table>
+                                      <tbody>
+                                        {templateItem.Products?.sort((a, b) =>
+                                          a.ProductName?.localeCompare(
+                                            b.ProductName
+                                          )
+                                        ).map((product, index) => (
+                                          <tr key={index}>
+                                            <td
+                                              style={{
+                                                verticalAlign: "middle",
+                                              }}
+                                            >
+                                              <CustomLightbox
+                                                images={[
+                                                  product?.ThumbnailURL
+                                                    ? product?.ThumbnailURL
+                                                    : Avatar,
+                                                ]}
+                                              />
+                                            </td>
+                                            <td
+                                              style={{
+                                                verticalAlign: "middle",
+                                              }}
+                                            >
+                                              <div className="d-flex">
+                                                {product?.ProductName} -{" "}
+                                                <i
+                                                  className="far fa-trash fa-sm tab-icon ml-5"
+                                                  onClick={(e) =>
+                                                    handleDeleteGroupCategoryProduct(
+                                                      e,
+                                                      product
+                                                    )
+                                                  }
+                                                ></i>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </Table>
+                                  </Accordion.Body>
+                                ) : null}
                               </Accordion.Item>
                             );
                           })}
