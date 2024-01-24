@@ -53,7 +53,7 @@ const ReportHeader = ({ hideTotals }) => {
 
         <div className="middle-section">
           <div className="bold-text">
-            {report?.Customers?.[0]?.FirstName}{" "}
+            {report?.Customers?.[0]?.FirstName}
             {report?.Customers?.[0]?.LastName}
           </div>
           <div className="d-flex">

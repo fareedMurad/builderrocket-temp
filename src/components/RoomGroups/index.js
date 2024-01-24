@@ -26,6 +26,7 @@ import {
   deleteRoomType,
   getBuilderRoomGroupDetails,
   getRoomGroupCategoryProduct,
+  updateDefaultRoomProduct,
 } from "../../actions/roomActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -62,6 +63,10 @@ const RoomGroups = () => {
   const [expandID, setExpandID] = useState();
   const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
     useState(false);
+  const [isDefaultProductLoading, setDefaultProductLoading] =
+    useState({
+      loading: false,
+    });
 
   useEffect(() => {
     const list = [];
@@ -117,7 +122,7 @@ const RoomGroups = () => {
   };
 
   const handleFetchRoomTypes = () => {
-    dispatch(getBuilderRoomTypes()).then((data) => {});
+    dispatch(getBuilderRoomTypes()).then((data) => { });
   };
 
   const handleGroupNameChange = (event) => {
@@ -135,7 +140,6 @@ const RoomGroups = () => {
         alert("Something went wrong, please try again!");
       });
   };
-  //
   const handleDeleteRoomGroup = () => {
     dispatch(deleteRoomGroup(selectedGroup.ID))
       .then((res) => {
@@ -267,15 +271,15 @@ const RoomGroups = () => {
     const isAdd = showVisibleModal === "ADD_GROUP";
     const isDublicate = isAdd
       ? roomGroups?.find(
-          (rg) =>
-            rg.Name.replaceAll(wsRegex, "") ===
-            groupName.replaceAll(wsRegex, "")
-        )
+        (rg) =>
+          rg.Name.replaceAll(wsRegex, "") ===
+          groupName.replaceAll(wsRegex, "")
+      )
       : roomGroups?.find(
-          (rg) =>
-            rg.Name.replaceAll(wsRegex, "") ===
-            groupName.replaceAll(wsRegex, "")
-        ) && dublicateEditAttempted;
+        (rg) =>
+          rg.Name.replaceAll(wsRegex, "") ===
+          groupName.replaceAll(wsRegex, "")
+      ) && dublicateEditAttempted;
     return (
       <Modal
         show={showVisibleModal === "EDIT_GROUP" || isAdd}
@@ -408,6 +412,23 @@ const RoomGroups = () => {
     });
   };
 
+  const itemLoading = (product, field) => {
+    return isDefaultProductLoading?.loading && isDefaultProductLoading?.ID === product?.ID && isDefaultProductLoading.field === field;
+  };
+
+  const handleRequiresApproval = (product, field, value) => {
+    setDefaultProductLoading({ loading: true, ID: product?.ID, field, });
+    dispatch(
+      updateDefaultRoomProduct(
+        product?.ID,
+        value,
+        field
+      )
+    ).then(() => {
+      setDefaultProductLoading({ loading: false });
+    });
+  };
+
   return (
     <div className="room-management-container">
       <Button variant="link" className="link-btn" onClick={(e) => handleAdd(e)}>
@@ -420,7 +441,7 @@ const RoomGroups = () => {
       ) : (
         <Accordion flush activeKey={expandID} onSelect={setExpandID}>
           {roomGroups
-            .sort((a, b) => a.Name?.localeCompare(b.Name))
+            ?.sort((a, b) => a.Name?.localeCompare(b.Name))
             .map((item, index) => (
               <Accordion.Item eventKey={item.ID}>
                 <Accordion.Header>
@@ -448,12 +469,11 @@ const RoomGroups = () => {
                     <span className="px-2">
                       {item.Count} categor
                       {item.Count > 1 ? "ies" : "y"}
-                    </span>{" "}
+                    </span>
                   </div>
                 </Accordion.Header>
                 <Accordion.Body>
                   <div className="internal-accordion">
-                    {" "}
                     {isGroupCategoriesLoading ? (
                       <div
                         className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center"
@@ -546,9 +566,8 @@ const RoomGroups = () => {
                                               }}
                                             >
                                               <div className="d-flex">
-                                                {product?.ProductName} -{" "}
-                                                <i
-                                                  className="far fa-trash fa-sm tab-icon ml-5"
+                                                {product?.ProductName} -  <i
+                                                  className="far fa-trash fa-sm tab-icon ml-2"
                                                   onClick={(e) =>
                                                     handleDeleteGroupCategoryProduct(
                                                       e,
@@ -556,7 +575,79 @@ const RoomGroups = () => {
                                                     )
                                                   }
                                                 ></i>
+
                                               </div>
+                                            </td>
+                                            <td className="defaultproduct-actions">
+                                              <div className="d-flex align-items-center justify-content-end">
+                                                <div>
+                                                  <small className="d-block mb-1">Requires Approval</small>
+                                                  {itemLoading(
+                                                    product,
+                                                    "RequiresApproval"
+                                                  ) ? (
+                                                    <Spinner animation="border" variant="primary" />
+                                                  ) : (
+                                                    <Form.Check
+                                                      type="checkbox"
+                                                      checked={product?.RequiresApproval}
+                                                      onChange={() =>
+                                                        handleRequiresApproval(
+                                                          product,
+                                                          "RequiresApproval",
+                                                          !product?.RequiresApproval
+                                                        )
+                                                      }
+                                                    />
+                                                  )}
+                                                </div>
+                                                <div className="d-flex flex-column ml-3">
+                                                  <small className="d-block mb-1">RoughIn/TrimOut</small>
+                                                  <Form className="d-flex align-items-center" style={{ gap: "10px" }}>
+                                                    <Form.Check
+                                                      type="radio"
+                                                      checked={product.RoughInTrimOutEnum === "RoughIn"}
+                                                      disabled={templateItem?.IsTemplate}
+                                                      onChange={() =>
+                                                        handleRequiresApproval(
+                                                          templateItem,
+                                                          "RoughInTrimOutEnum",
+                                                          "RoughIn"
+                                                        )
+                                                      }
+                                                    />
+                                                    <Form.Check
+                                                      type="radio"
+                                                      checked={product.RoughInTrimOutEnum === "RoughIn"}
+                                                      onChange={() =>
+                                                        handleRequiresApproval(
+                                                          product,
+                                                          "RoughInTrimOutEnum",
+                                                          "TrimOut"
+                                                        )
+                                                      }
+                                                    />
+                                                  </Form>
+                                                </div>
+                                                <div className="qty-input ml-3">
+                                                  <small className="d-block mb-1">Quantity</small>
+                                                  {itemLoading(product, "Quantity") ? (
+                                                    <Spinner animation="border" variant="primary" />
+                                                  ) : (
+                                                    <Form.Control
+                                                      min="0"
+                                                      type="text"
+                                                      id={`quantity-${product?.ID}`}
+                                                      // disabled={!product?.Quantity}
+                                                      defaultValue={product?.Quantity}
+                                                      onBlur={(e) =>
+                                                        handleRequiresApproval(product, "Quantity", e.target.value)
+                                                      }
+                                                    ></Form.Control>
+                                                  )}
+                                                </div>
+                                              </div>
+
                                             </td>
                                           </tr>
                                         ))}

@@ -16,7 +16,6 @@ const RoomsTabs = (props) => {
   const [selectedTab, setSelectedTab] = useState("");
   const history = useHistory();
   const location = useLocation();
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -50,11 +49,11 @@ const RoomsTabs = (props) => {
         onSelect={(tab) => handleSelectedTab(tab)}
         transition={false}
       >
-        <Tab eventKey="templates" title="Templates">
-          {selectedTab === "templates" && <RoomGroups />}
-        </Tab>
         <Tab eventKey="room-types" title="Room Types">
           {selectedTab === "room-types" && <RoomsTypes />}
+        </Tab>
+        <Tab eventKey="templates" title="Templates">
+          {selectedTab === "templates" && <RoomGroups />}
         </Tab>
         <Tab eventKey="template-details" title="Template Details">
           {selectedTab === "template-details" && <RoomGroupDetails />}

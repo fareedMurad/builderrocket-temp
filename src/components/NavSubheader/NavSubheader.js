@@ -30,7 +30,7 @@ const NavSubheader = () => {
             </div>
             <NavDropdown title="Management" id="management-dropdown">
               <NavDropdown.Item
-                onClick={() => history.push("/rooms-management/templates")}
+                onClick={() => history.push("/rooms-management/room-types")}
               >
                 Rooms Management
               </NavDropdown.Item>
@@ -74,7 +74,7 @@ const NavSubheader = () => {
             </div>
             <div
               className="header-item"
-              onClick={() => history.push("/rooms-management/templates")}
+              onClick={() => history.push("/rooms-management/room-types")}
             >
               <i className="far fa-border-none fa-sm tab-icon"></i>
               Rooms Management

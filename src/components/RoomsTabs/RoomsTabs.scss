@@ -50,3 +50,17 @@
 .custom-accordian-button > button {
   box-shadow: none !important;
 }
+
+.qty-input {
+  input {
+    padding: 0 0.35rem;
+    width: 70px;
+    height: 25px;
+    font-size: 14px;
+  }
+}
+
+.defaultproduct-actions .form-check-input {
+  position: inherit !important;
+  margin: 0 !important;
+}

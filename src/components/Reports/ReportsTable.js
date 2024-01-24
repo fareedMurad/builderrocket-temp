@@ -110,12 +110,12 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         <tbody>
           {filteredRooms()?.length
             ? filteredRooms()?.map((item, index) => {
-                return item ? (
-                  <TableRow
-                    {...{ renderTableBody, item, allRooms: null, localFilters }}
-                  />
-                ) : null;
-              })
+              return item ? (
+                <TableRow
+                  {...{ renderTableBody, item, allRooms: null, localFilters }}
+                />
+              ) : null;
+            })
             : null}
         </tbody>
       </>
@@ -235,9 +235,8 @@ export const TableRow = ({
         </th>
         <th className="contractor-type-name justify-content-end h-full bg-dark">
           <i
-            className={`far ${
-              expend ? "fa-chevron-double-up" : "fa-chevron-double-down"
-            }`}
+            className={`far ${expend ? "fa-chevron-double-up" : "fa-chevron-double-down"
+              }`}
           ></i>
         </th>
       </tr>
@@ -249,16 +248,16 @@ export const TableRow = ({
       {renderHeader ? renderHeader(false, groupRow) : groupRow}
       {items?.length > 0
         ? items
-            ?.filter((item) => {
-              let rooms = localFilters.roomFilters?.filter(
-                (r) => r.value !== "select_all"
-              );
-              if (!rooms || !allRooms || rooms.length === allRooms.length) {
-                return true;
-              }
-              return item.Rooms?.find((r) => rooms.find((pr) => pr.ID === r));
-            })
-            .map((item, index) => renderTableBody(item, index, expend))
+          ?.filter((item) => {
+            let rooms = localFilters.roomFilters?.filter(
+              (r) => r.value !== "select_all"
+            );
+            if (!rooms || !allRooms || rooms.length === allRooms.length) {
+              return true;
+            }
+            return item.Rooms?.find((r) => rooms.find((pr) => pr.ID === r));
+          })
+          .map((item, index) => renderTableBody(item, index, expend))
         : null}
     </>
   );

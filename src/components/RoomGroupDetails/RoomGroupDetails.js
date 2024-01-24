@@ -127,6 +127,8 @@ const RoomGroupDetails = () => {
         // CategoryID: selectedCategoryID?.value,
       };
       fetchaddedProducts(updatedSearch);
+    }else {
+      setIsLoading(false)
     }
   }, [selectedCategoryID]);
 

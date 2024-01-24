@@ -121,9 +121,9 @@ export const setBuilderRoomGroupDetails = (ID, data) => (dispatch) => {
     try {
       const payload = ID
         ? {
-            selectedGroupCategories: data,
-            groupId: ID,
-          }
+          selectedGroupCategories: data,
+          groupId: ID,
+        }
         : null;
       dispatch({
         type: GET_BUILDER_ROOM_GROUP_DETAILS,
@@ -458,3 +458,30 @@ export const setSelectedBuilderRoomGroup = (roomGroup) => (dispatch) => {
     }
   });
 };
+
+export const updateDefaultRoomProduct =
+  (ID, value, field) => (dispatch) => {
+    const URL = `/builder/updatedefaultroomproduct/${ID}`;
+
+    const data = [
+      {
+        op: "replace",
+        path: `/${field}`,
+        value: value,
+      },
+    ];
+
+    return api({
+      method: "PATCH",
+      url: URL,
+      data: data,
+    })
+      .then((response) => {
+        if (response?.status === 200) {
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };
