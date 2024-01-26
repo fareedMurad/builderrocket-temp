@@ -121,9 +121,9 @@ export const setBuilderRoomGroupDetails = (ID, data) => (dispatch) => {
     try {
       const payload = ID
         ? {
-          selectedGroupCategories: data,
-          groupId: ID,
-        }
+            selectedGroupCategories: data,
+            groupId: ID,
+          }
         : null;
       dispatch({
         type: GET_BUILDER_ROOM_GROUP_DETAILS,
@@ -460,8 +460,8 @@ export const setSelectedBuilderRoomGroup = (roomGroup) => (dispatch) => {
 };
 
 export const updateDefaultRoomProduct =
-  (ID, value, field) => (dispatch) => {
-    const URL = `/builder/updatedefaultroomproduct/${ID}`;
+  (groupId, categoryId, productID, value, field) => (dispatch) => {
+    const URL = `/builder/updatedefaultroomproduct/${groupId}/${categoryId}/${productID}`;
 
     const data = [
       {

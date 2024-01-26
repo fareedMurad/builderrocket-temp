@@ -60,11 +60,11 @@ const RoomsTypes = () => {
       .then((res) => {
         handleFetchRoomTypes();
         setModalVisible("");
+        setRoomTypeName("");
       })
       .catch(() => {
         alert("Something went wrong, please try again!");
       });
-    setRoomTypeName("");
   };
 
   const handleAddNewRoom = () => {
@@ -126,11 +126,11 @@ const RoomsTypes = () => {
       .then((res) => {
         setModalVisible("");
         handleFetchRoomTypes();
+        setRoomTypeName("");
       })
       .catch(() => {
         alert("Something went wrong, please try again!");
       });
-    setRoomTypeName("");
   };
 
   const handleDeleteRoomType = () => {
@@ -379,77 +379,81 @@ const RoomsTypes = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       ) : (
-        roomTypes?.map((item, index) => (
-          <Accordion
-            title={
-              <div className="d-flex justify-content-between w-100 pr-5">
-                <div className="d-flex align-selecItem-center">
-                  <div className="font-weight-bold mr-5">
-                    {item.Name}{" "}
-                    {item.DefaultRoomGroup ? (
-                      <small>[{item.DefaultRoomGroup?.Name}]</small>
-                    ) : null}
+        roomTypes
+          ?.sort((a, b) => a.Name?.localeCompare(b.Name))
+          ?.map((item, index) => (
+            <Accordion
+              title={
+                <div className="d-flex justify-content-between w-100 pr-5">
+                  <div className="d-flex align-selecItem-center">
+                    <div className="font-weight-bold mr-5">
+                      {item.Name}{" "}
+                      {item.DefaultRoomGroup ? (
+                        <small>[{item.DefaultRoomGroup?.Name}]</small>
+                      ) : null}
+                    </div>
+                    <i
+                      className="far fa-pen fa-sm tab-icon p-2"
+                      onClick={(e) => handleEditRoomTypeModal(e, item)}
+                    ></i>
+                    <i
+                      className="far fa-plus fa-sm tab-icon p-2"
+                      onClick={(e) => handleAddRoom(e, item)}
+                    ></i>
+                    <i
+                      className="far fa-trash fa-sm tab-icon p-2"
+                      onClick={(e) => handleDeleteRoomTypeModal(e)}
+                    ></i>
                   </div>
-                  <i
-                    className="far fa-pen fa-sm tab-icon p-2"
-                    onClick={(e) => handleEditRoomTypeModal(e, item)}
-                  ></i>
-                  <i
-                    className="far fa-plus fa-sm tab-icon p-2"
-                    onClick={(e) => handleAddRoom(e, item)}
-                  ></i>
-                  <i
-                    className="far fa-trash fa-sm tab-icon p-2"
-                    onClick={(e) => handleDeleteRoomTypeModal(e)}
-                  ></i>
+                  <span className="px-2">
+                    {item.Rooms?.length}{" "}
+                    {item.Rooms?.length > 0 ? "room" : "rooms"}
+                  </span>{" "}
                 </div>
-                <span className="px-2">
-                  {item.Rooms?.length}{" "}
-                  {item.Rooms?.length > 0 ? "room" : "rooms"}
-                </span>{" "}
-              </div>
-            }
-            children={
-              <div>
-                {" "}
-                <Table>
-                  <tbody>
-                    {item.Rooms?.length ? (
-                      item.Rooms?.map((room, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{room.Name}</td>
-                            <td>
-                              {room.DefaultRoomGroup?.Name
-                                ? `[ ${room.DefaultRoomGroup?.Name} ]`
-                                : ""}
-                            </td>
-                            <td>
-                              <div className="d-flex">
-                                <i
-                                  className="far fa-pen fa-sm tab-icon px-2"
-                                  onClick={(e) => handleEditRoomModal(e, room)}
-                                ></i>
-                                <i
-                                  className="far fa-trash fa-sm tab-icon px-2"
-                                  onClick={(e) =>
-                                    handleDeleteRoomModal(e, room)
-                                  }
-                                ></i>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    ) : (
-                      <td>No rooms added</td>
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            }
-          />
-        ))
+              }
+              children={
+                <div>
+                  {" "}
+                  <Table>
+                    <tbody>
+                      {item.Rooms?.length ? (
+                        item.Rooms?.map((room, index) => {
+                          return (
+                            <tr key={index}>
+                              <td>{room.Name}</td>
+                              <td>
+                                {room.DefaultRoomGroup?.Name
+                                  ? `[ ${room.DefaultRoomGroup?.Name} ]`
+                                  : ""}
+                              </td>
+                              <td>
+                                <div className="d-flex">
+                                  <i
+                                    className="far fa-pen fa-sm tab-icon px-2"
+                                    onClick={(e) =>
+                                      handleEditRoomModal(e, room)
+                                    }
+                                  ></i>
+                                  <i
+                                    className="far fa-trash fa-sm tab-icon px-2"
+                                    onClick={(e) =>
+                                      handleDeleteRoomModal(e, room)
+                                    }
+                                  ></i>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <td>No rooms added</td>
+                      )}
+                    </tbody>
+                  </Table>
+                </div>
+              }
+            />
+          ))
       )}
       {deleteRoomTypeModal()}
       {editAddRoomTypeModal()}

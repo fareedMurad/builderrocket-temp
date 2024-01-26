@@ -63,10 +63,9 @@ const RoomGroups = () => {
   const [expandID, setExpandID] = useState();
   const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
     useState(false);
-  const [isDefaultProductLoading, setDefaultProductLoading] =
-    useState({
-      loading: false,
-    });
+  const [isDefaultProductLoading, setDefaultProductLoading] = useState({
+    loading: false,
+  });
 
   useEffect(() => {
     const list = [];
@@ -118,11 +117,12 @@ const RoomGroups = () => {
       setIsGroupCategoriesLoading(true);
     dispatch(getBuilderRoomGroupDetails(expandID)).then((res) => {
       setIsGroupCategoriesLoading(false);
+      setDefaultProductLoading({ loading: false });
     });
   };
 
   const handleFetchRoomTypes = () => {
-    dispatch(getBuilderRoomTypes()).then((data) => { });
+    dispatch(getBuilderRoomTypes()).then((data) => {});
   };
 
   const handleGroupNameChange = (event) => {
@@ -271,15 +271,15 @@ const RoomGroups = () => {
     const isAdd = showVisibleModal === "ADD_GROUP";
     const isDublicate = isAdd
       ? roomGroups?.find(
-        (rg) =>
-          rg.Name.replaceAll(wsRegex, "") ===
-          groupName.replaceAll(wsRegex, "")
-      )
+          (rg) =>
+            rg.Name.replaceAll(wsRegex, "") ===
+            groupName.replaceAll(wsRegex, "")
+        )
       : roomGroups?.find(
-        (rg) =>
-          rg.Name.replaceAll(wsRegex, "") ===
-          groupName.replaceAll(wsRegex, "")
-      ) && dublicateEditAttempted;
+          (rg) =>
+            rg.Name.replaceAll(wsRegex, "") ===
+            groupName.replaceAll(wsRegex, "")
+        ) && dublicateEditAttempted;
     return (
       <Modal
         show={showVisibleModal === "EDIT_GROUP" || isAdd}
@@ -413,19 +413,25 @@ const RoomGroups = () => {
   };
 
   const itemLoading = (product, field) => {
-    return isDefaultProductLoading?.loading && isDefaultProductLoading?.ID === product?.ID && isDefaultProductLoading.field === field;
+    return (
+      isDefaultProductLoading?.loading &&
+      isDefaultProductLoading?.ID === product?.ID &&
+      isDefaultProductLoading.field === field
+    );
   };
 
-  const handleRequiresApproval = (product, field, value) => {
-    setDefaultProductLoading({ loading: true, ID: product?.ID, field, });
+  const handleRequiresApproval = (group, category, product, field, value) => {
+    setDefaultProductLoading({ loading: true, ID: product?.ID, field });
     dispatch(
       updateDefaultRoomProduct(
+        group.ID,
+        category.CategoryID,
         product?.ID,
         value,
         field
       )
-    ).then(() => {
-      setDefaultProductLoading({ loading: false });
+    ).then(async () => {
+      await handleGetBuilderRoomGroupDetails();
     });
   };
 
@@ -472,196 +478,263 @@ const RoomGroups = () => {
                     </span>
                   </div>
                 </Accordion.Header>
-                <Accordion.Body>
-                  <div className="internal-accordion">
-                    {isGroupCategoriesLoading ? (
-                      <div
-                        className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center"
-                        style={{ minHeight: "200px" }}
-                      >
-                        <Spinner animation="border" variant="primary" />
-                      </div>
-                    ) : (
-                      <Accordion
-                        defaultActiveKey={selectedGroupCategories?.map(
-                          (g) => g.ID
-                        )}
-                        alwaysOpen
-                      >
-                        {selectedGroupCategories
-                          ?.sort((a, b) =>
-                            a.Category?.Name?.localeCompare(b.Category?.Name)
-                          )
-                          ?.map((templateItem, index) => {
-                            return (
-                              <Accordion.Item eventKey={templateItem.ID}>
-                                <Accordion.Header
-                                  className={"custom-accordian-button"}
-                                >
-                                  <div className="d-flex justify-content-between w-100 pr-5">
-                                    <div className="d-flex font-weight-bold">
-                                      {templateItem?.CategoryLabel}
-                                      <i
-                                        className="far fa-trash fa-sm tab-icon ml-5"
-                                        onClick={(e) =>
-                                          handleDeleteGroupCategory(
-                                            e,
-                                            templateItem
-                                          )
-                                        }
-                                      ></i>
+                {(selectedGroupCategories?.length ||
+                  isGroupCategoriesLoading) &&
+                expandID === item.ID ? (
+                  <Accordion.Body>
+                    <div className="internal-accordion">
+                      {isGroupCategoriesLoading ? (
+                        <div
+                          className="pt-5 pb-5 w-full h-100 d-flex align-items-center justify-content-center"
+                          style={{ minHeight: "200px" }}
+                        >
+                          <Spinner animation="border" variant="primary" />
+                        </div>
+                      ) : (
+                        <Accordion
+                          defaultActiveKey={selectedGroupCategories?.map(
+                            (g) => g.ID
+                          )}
+                          alwaysOpen
+                        >
+                          {selectedGroupCategories
+                            ?.sort((a, b) =>
+                              a.Category?.Name?.localeCompare(b.Category?.Name)
+                            )
+                            ?.map((templateItem, index) => {
+                              return (
+                                <Accordion.Item eventKey={templateItem.ID}>
+                                  <Accordion.Header
+                                    className={"custom-accordian-button"}
+                                  >
+                                    <div className="d-flex justify-content-between w-100 pr-5">
+                                      <div className="d-flex font-weight-bold">
+                                        {templateItem?.CategoryLabel}
+                                        <i
+                                          className="far fa-trash fa-sm tab-icon ml-5"
+                                          onClick={(e) =>
+                                            handleDeleteGroupCategory(
+                                              e,
+                                              templateItem
+                                            )
+                                          }
+                                        ></i>
+                                      </div>
+                                      <div className="d-flex justify-content-end align-items-center">
+                                        <small className="mr-5 text-secondary">
+                                          {templateItem.ProductCounts}{" "}
+                                          {templateItem.ProductCounts > 1
+                                            ? "Products"
+                                            : "Product"}{" "}
+                                          Added
+                                        </small>
+                                        <Button
+                                          size="sm"
+                                          onClick={() =>
+                                            handleManageProducts(
+                                              item,
+                                              {
+                                                Name: templateItem.CategoryLabel,
+                                                ID: templateItem.CategoryID,
+                                              },
+                                              item.products
+                                            )
+                                          }
+                                        >
+                                          Manage Products
+                                        </Button>
+                                      </div>
                                     </div>
-                                    <div className="d-flex justify-content-end align-items-center">
-                                      <small className="mr-5 text-secondary">
-                                        {templateItem.ProductCounts}{" "}
-                                        {templateItem.ProductCounts > 1
-                                          ? "Products"
-                                          : "Product"}{" "}
-                                        Added
-                                      </small>
-                                      <Button
-                                        size="sm"
-                                        onClick={() =>
-                                          handleManageProducts(
-                                            item,
-                                            {
-                                              Name: templateItem.CategoryLabel,
-                                              ID: templateItem.CategoryID,
-                                            },
-                                            item.products
-                                          )
-                                        }
-                                      >
-                                        Manage Products
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </Accordion.Header>
-                                {templateItem.Products?.length ? (
-                                  <Accordion.Body>
-                                    <Table>
-                                      <tbody>
-                                        {templateItem.Products?.sort((a, b) =>
-                                          a.ProductName?.localeCompare(
-                                            b.ProductName
-                                          )
-                                        ).map((product, index) => (
-                                          <tr key={index}>
-                                            <td
-                                              style={{
-                                                verticalAlign: "middle",
-                                              }}
-                                            >
-                                              <CustomLightbox
-                                                images={[
-                                                  product?.ThumbnailURL
-                                                    ? product?.ThumbnailURL
-                                                    : Avatar,
-                                                ]}
-                                              />
-                                            </td>
-                                            <td
-                                              style={{
-                                                verticalAlign: "middle",
-                                              }}
-                                            >
-                                              <div className="d-flex">
-                                                {product?.ProductName} -  <i
-                                                  className="far fa-trash fa-sm tab-icon ml-2"
-                                                  onClick={(e) =>
-                                                    handleDeleteGroupCategoryProduct(
-                                                      e,
-                                                      product
-                                                    )
-                                                  }
-                                                ></i>
-
-                                              </div>
-                                            </td>
-                                            <td className="defaultproduct-actions">
-                                              <div className="d-flex align-items-center justify-content-end">
-                                                <div>
-                                                  <small className="d-block mb-1">Requires Approval</small>
-                                                  {itemLoading(
-                                                    product,
-                                                    "RequiresApproval"
-                                                  ) ? (
-                                                    <Spinner animation="border" variant="primary" />
-                                                  ) : (
-                                                    <Form.Check
-                                                      type="checkbox"
-                                                      checked={product?.RequiresApproval}
-                                                      onChange={() =>
-                                                        handleRequiresApproval(
-                                                          product,
-                                                          "RequiresApproval",
-                                                          !product?.RequiresApproval
-                                                        )
-                                                      }
-                                                    />
-                                                  )}
+                                  </Accordion.Header>
+                                  {templateItem.Products?.length ? (
+                                    <Accordion.Body>
+                                      <Table>
+                                        <tbody>
+                                          {templateItem.Products?.sort((a, b) =>
+                                            a.ProductName?.localeCompare(
+                                              b.ProductName
+                                            )
+                                          ).map((product, index) => (
+                                            <tr key={index}>
+                                              <td
+                                                style={{
+                                                  verticalAlign: "middle",
+                                                }}
+                                              >
+                                                <CustomLightbox
+                                                  images={[
+                                                    product?.ThumbnailURL
+                                                      ? product?.ThumbnailURL
+                                                      : Avatar,
+                                                  ]}
+                                                />
+                                              </td>
+                                              <td
+                                                style={{
+                                                  verticalAlign: "middle",
+                                                }}
+                                              >
+                                                <div className="d-flex">
+                                                  {product?.ProductName}{" "}
+                                                  <i
+                                                    className="far fa-trash fa-sm tab-icon ml-2"
+                                                    onClick={(e) =>
+                                                      handleDeleteGroupCategoryProduct(
+                                                        e,
+                                                        product
+                                                      )
+                                                    }
+                                                  ></i>
                                                 </div>
-                                                <div className="d-flex flex-column ml-3">
-                                                  <small className="d-block mb-1">RoughIn/TrimOut</small>
-                                                  <Form className="d-flex align-items-center" style={{ gap: "10px" }}>
-                                                    <Form.Check
-                                                      type="radio"
-                                                      checked={product.RoughInTrimOutEnum === "RoughIn"}
-                                                      disabled={templateItem?.IsTemplate}
-                                                      onChange={() =>
-                                                        handleRequiresApproval(
-                                                          templateItem,
-                                                          "RoughInTrimOutEnum",
-                                                          "RoughIn"
-                                                        )
-                                                      }
-                                                    />
-                                                    <Form.Check
-                                                      type="radio"
-                                                      checked={product.RoughInTrimOutEnum === "RoughIn"}
-                                                      onChange={() =>
-                                                        handleRequiresApproval(
-                                                          product,
-                                                          "RoughInTrimOutEnum",
-                                                          "TrimOut"
-                                                        )
-                                                      }
-                                                    />
-                                                  </Form>
+                                              </td>
+                                              <td className="defaultproduct-actions">
+                                                <div className="d-flex align-items-center justify-content-end">
+                                                  <div>
+                                                    <small
+                                                      className="d-block mb-1"
+                                                      style={{
+                                                        whiteSpace: "nowrap",
+                                                      }}
+                                                    >
+                                                      Requires Approval
+                                                    </small>
+                                                    {itemLoading(
+                                                      product,
+                                                      "RequiresApproval"
+                                                    ) ? (
+                                                      <Spinner
+                                                        animation="border"
+                                                        variant="primary"
+                                                      />
+                                                    ) : (
+                                                      <Form.Check
+                                                        type="checkbox"
+                                                        checked={
+                                                          product?.RequiresApproval
+                                                        }
+                                                        onChange={() =>
+                                                          handleRequiresApproval(
+                                                            item,
+                                                            templateItem,
+                                                            product,
+                                                            "RequiresApproval",
+                                                            !product?.RequiresApproval
+                                                          )
+                                                        }
+                                                      />
+                                                    )}
+                                                  </div>
+                                                  <div className="d-flex flex-column ml-3">
+                                                    <small
+                                                      className="d-block mb-1"
+                                                      style={{
+                                                        whiteSpace: "nowrap",
+                                                      }}
+                                                    >
+                                                      RoughIn/TrimOut
+                                                    </small>
+                                                    {itemLoading(
+                                                      product,
+                                                      "RoughInTrimOut"
+                                                    ) ? (
+                                                      <Spinner
+                                                        animation="border"
+                                                        variant="primary"
+                                                      />
+                                                    ) : (
+                                                      <Form
+                                                        className="d-flex align-items-center"
+                                                        style={{ gap: "10px" }}
+                                                      >
+                                                        <Form.Check
+                                                          type="radio"
+                                                          checked={
+                                                            product.RoughInTrimOut ===
+                                                            "RoughIn"
+                                                          }
+                                                          disabled={
+                                                            templateItem?.IsTemplate
+                                                          }
+                                                          onChange={() =>
+                                                            handleRequiresApproval(
+                                                              item,
+                                                              templateItem,
+                                                              product,
+                                                              "RoughInTrimOut",
+                                                              "RoughIn"
+                                                            )
+                                                          }
+                                                        />
+                                                        <Form.Check
+                                                          type="radio"
+                                                          checked={
+                                                            product.RoughInTrimOut ===
+                                                            "TrimOut"
+                                                          }
+                                                          onChange={() =>
+                                                            handleRequiresApproval(
+                                                              item,
+                                                              templateItem,
+                                                              product,
+                                                              "RoughInTrimOut",
+                                                              "TrimOut"
+                                                            )
+                                                          }
+                                                        />
+                                                      </Form>
+                                                    )}
+                                                  </div>
+                                                  <div className="qty-input ml-3">
+                                                    <small className="d-block mb-1">
+                                                      Quantity
+                                                    </small>
+                                                    {itemLoading(
+                                                      product,
+                                                      "Quantity"
+                                                    ) ? (
+                                                      <Spinner
+                                                        animation="border"
+                                                        variant="primary"
+                                                      />
+                                                    ) : (
+                                                      <Form.Control
+                                                        min="0"
+                                                        type="text"
+                                                        id={`quantity-${product?.ID}`}
+                                                        // disabled={!product?.Quantity}
+                                                        defaultValue={
+                                                          product?.Quantity
+                                                        }
+                                                        onBlur={(e) =>
+                                                          handleRequiresApproval(
+                                                            item,
+                                                            templateItem,
+                                                            product,
+                                                            "Quantity",
+                                                            Number(
+                                                              e.target.value
+                                                            )
+                                                          )
+                                                        }
+                                                      ></Form.Control>
+                                                    )}
+                                                  </div>
                                                 </div>
-                                                <div className="qty-input ml-3">
-                                                  <small className="d-block mb-1">Quantity</small>
-                                                  {itemLoading(product, "Quantity") ? (
-                                                    <Spinner animation="border" variant="primary" />
-                                                  ) : (
-                                                    <Form.Control
-                                                      min="0"
-                                                      type="text"
-                                                      id={`quantity-${product?.ID}`}
-                                                      // disabled={!product?.Quantity}
-                                                      defaultValue={product?.Quantity}
-                                                      onBlur={(e) =>
-                                                        handleRequiresApproval(product, "Quantity", e.target.value)
-                                                      }
-                                                    ></Form.Control>
-                                                  )}
-                                                </div>
-                                              </div>
-
-                                            </td>
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </Table>
-                                  </Accordion.Body>
-                                ) : null}
-                              </Accordion.Item>
-                            );
-                          })}
-                      </Accordion>
-                    )}
-                  </div>
-                </Accordion.Body>
+                                              </td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </Table>
+                                    </Accordion.Body>
+                                  ) : null}
+                                </Accordion.Item>
+                              );
+                            })}
+                        </Accordion>
+                      )}
+                    </div>
+                  </Accordion.Body>
+                ) : null}
               </Accordion.Item>
             ))}
         </Accordion>
