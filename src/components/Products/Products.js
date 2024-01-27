@@ -496,7 +496,7 @@ const Products = (props) => {
         dispatch(
           updateBuilderRoomProduct(
             project?.ID,
-            templateItem?.ID,
+            [templateItem?.ID],
             RequiresApproval,
             "RequiresApproval"
           )

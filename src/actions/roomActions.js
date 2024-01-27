@@ -458,3 +458,30 @@ export const setSelectedBuilderRoomGroup = (roomGroup) => (dispatch) => {
     }
   });
 };
+
+export const updateDefaultRoomProduct =
+  (groupId, categoryId, productID, value, field) => (dispatch) => {
+    const URL = `/builder/updatedefaultroomproduct/${groupId}/${categoryId}/${productID}`;
+
+    const data = [
+      {
+        op: "replace",
+        path: `/${field}`,
+        value: value,
+      },
+    ];
+
+    return api({
+      method: "PATCH",
+      url: URL,
+      data: data,
+    })
+      .then((response) => {
+        if (response?.status === 200) {
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };

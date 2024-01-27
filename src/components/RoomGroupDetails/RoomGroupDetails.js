@@ -127,6 +127,8 @@ const RoomGroupDetails = () => {
         // CategoryID: selectedCategoryID?.value,
       };
       fetchaddedProducts(updatedSearch);
+    }else {
+      setIsLoading(false)
     }
   }, [selectedCategoryID]);
 
@@ -248,7 +250,7 @@ const RoomGroupDetails = () => {
   };
 
   const handleGoToProducts = () => {
-    history.push(`/rooms-management/groups`);
+    history.push(`/rooms-management/templates`);
   };
 
   const handleChangeSwitchFilter = () => {
@@ -324,7 +326,7 @@ const RoomGroupDetails = () => {
             className="link-btn"
             onClick={handleGoToProducts}
           >
-            Room Types / {builderSelectedRoomGroup?.Name} /
+            Templates / {builderSelectedRoomGroup?.Name} /
           </Button>
         </div>
         <div className="page-title">{selectedCategoryID?.label}</div>
@@ -363,10 +365,10 @@ const RoomGroupDetails = () => {
                   </Form.Group>
                   <Form.Group style={{ width: "250px", zIndex: 9999 }}>
                     <Form.Label className="input-label">
-                      Room Type{" "}
+                      Template{" "}
                       {!builderSelectedRoomGroup?.ID ? (
                         <small className="text-danger">
-                          Please select a room type
+                          Please select a template
                         </small>
                       ) : null}
                     </Form.Label>
@@ -378,7 +380,7 @@ const RoomGroupDetails = () => {
                         .sort((a, b) => a.label?.localeCompare(b.label))}
                       value={selectedRoomType}
                       onChange={onRoomTypeChange}
-                      placeholder="Select room type"
+                      placeholder="Select template"
                     />
                   </Form.Group>
                   <Form.Group style={{ width: "250px", zIndex: 9999 }}>
@@ -567,7 +569,7 @@ const RoomGroupDetails = () => {
         ) : (
           <div className="d-flex justify-content-center">
             <p>
-              Please select a room type and a category to list down their
+              Please select a template and a category to list down their
               products!
             </p>
           </div>

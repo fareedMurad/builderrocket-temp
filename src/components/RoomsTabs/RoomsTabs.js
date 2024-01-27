@@ -16,10 +16,6 @@ const RoomsTabs = (props) => {
   const [selectedTab, setSelectedTab] = useState("");
   const history = useHistory();
   const location = useLocation();
-  const builderSelectedRoomGroup = useSelector(
-    (state) => state.builderRooms.builderSelectedRoomGroup
-  );
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -53,18 +49,14 @@ const RoomsTabs = (props) => {
         onSelect={(tab) => handleSelectedTab(tab)}
         transition={false}
       >
-        <Tab eventKey="groups" title="Room Types">
-          {selectedTab === "groups" && <RoomGroups />}
+        <Tab eventKey="room-types" title="Room Types">
+          {selectedTab === "room-types" && <RoomsTypes />}
         </Tab>
-        <Tab eventKey="rooms" title="Rooms">
-          {selectedTab === "rooms" && <RoomsTypes />}
+        <Tab eventKey="templates" title="Templates">
+          {selectedTab === "templates" && <RoomGroups />}
         </Tab>
-        <Tab
-          eventKey="groupDetails"
-          title="Room Type Details"
-          disabled={!builderSelectedRoomGroup?.ID}
-        >
-          {selectedTab === "groupDetails" && <RoomGroupDetails />}
+        <Tab eventKey="template-details" title="Template Details">
+          {selectedTab === "template-details" && <RoomGroupDetails />}
         </Tab>
       </Tabs>
     </div>
