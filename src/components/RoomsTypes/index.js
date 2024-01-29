@@ -219,7 +219,7 @@ const RoomsTypes = () => {
               <Form.Label className="input-label">Select Template</Form.Label>
               <Select
                 options={roomGroups
-                  .sort((a, b) => a.Name?.localeCompare(b.Name))
+                  ?.sort((a, b) => a.Name?.localeCompare(b.Name))
                   ?.map((c) => {
                     return { ...c, label: c.Name, value: c.ID };
                   })}
@@ -275,7 +275,7 @@ const RoomsTypes = () => {
             <Form.Label className="input-label">Select Template</Form.Label>
             <Select
               options={roomGroups
-                .sort((a, b) => a.Name?.localeCompare(b.Name))
+                ?.sort((a, b) => a.Name?.localeCompare(b.Name))
                 ?.map((c) => {
                   return { ...c, label: c.Name, value: c.ID };
                 })}
