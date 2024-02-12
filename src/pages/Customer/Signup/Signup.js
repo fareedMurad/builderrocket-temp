@@ -212,6 +212,7 @@ const Signup = (props) => {
               <Form.Control
                 type="text"
                 placeholder="Zip Code"
+                autoComplete="zip-code"
                 value={user?.zip}
                 required
                 onChange={(e) => setUser({ ...user, zip: e.target.value })}
@@ -226,8 +227,8 @@ const Signup = (props) => {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
-                autoComplete="true"
                 placeholder="Password"
+                autoComplete="new-password"
                 required
                 onChange={(e) => setUser({ ...user, password: e.target.value })}
               />
