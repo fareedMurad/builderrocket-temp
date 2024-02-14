@@ -133,19 +133,6 @@ const Signup = (props) => {
         <Row className="justify-content-center">
           <Col sm={12} md={6}>
             <Form.Group>
-              <Form.Label>City</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="City"
-                value={user?.city}
-                required
-                onChange={(e) => setUser({ ...user, city: e.target.value })}
-              />
-            </Form.Group>
-          </Col>
-
-          <Col sm={12} md={6}>
-            <Form.Group>
               <Form.Label>Street Address 1</Form.Label>
               <Form.Control
                 type="text"
@@ -155,6 +142,18 @@ const Signup = (props) => {
                 onChange={(e) =>
                   setUser({ ...user, streetAddress1: e.target.value })
                 }
+              />
+            </Form.Group>
+          </Col>
+          <Col sm={12} md={6}>
+            <Form.Group>
+              <Form.Label>City</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="City"
+                value={user?.city}
+                required
+                onChange={(e) => setUser({ ...user, city: e.target.value })}
               />
             </Form.Group>
           </Col>
@@ -193,6 +192,8 @@ const Signup = (props) => {
               <Form.Label>Zip</Form.Label>
               <Form.Control
                 type="text"
+                autoComplete="zip-code"
+                autoFocus={false}
                 placeholder="Zip Code"
                 value={user?.zip}
                 required
@@ -207,6 +208,7 @@ const Signup = (props) => {
             <Form.Group>
               <Form.Label>Password</Form.Label>
               <Form.Control
+                autoComplete="new-password"
                 type="password"
                 placeholder="Password"
                 value={user.password}

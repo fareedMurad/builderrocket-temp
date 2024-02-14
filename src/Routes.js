@@ -31,11 +31,13 @@ const Routes = (props) => {
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);
   const isSignedIn = useSelector((state) => state.auth?.isSignedIn);
   const isVendorSignedIn = useSelector((state) => state.vendor?.isSignedIn);
-  console.log(getpath);
   const path_array = getpath.split("/");
-  console.log(path_array[1]);
   useEffect(() => {
-    if (path_array[1] !== "customer" &&  [1] !== "vendor") {
+    if (
+      path_array[1] !== "customer" &&
+      path_array[1] !== "vendor" &&
+      path_array[1] !== "signup"
+    ) {
       if (!token) history.push("/login");
     } else {
       dispatch({ type: SET_CUSTOMER_PROJECT, payload: path_array[2] });
@@ -82,9 +84,15 @@ const Routes = (props) => {
             <>
               <Route exact path="/project" component={Project} />
               <Route path="/project/:project/:tab" component={Project} />
-              <Route path="/rooms-management/:tab" component={RoomsManagement} />
+              <Route
+                path="/rooms-management/:tab"
+                component={RoomsManagement}
+              />
               <Route path="/utility-management" component={UtilityManagement} />
-              <Route path="/my-products-management" component={MyProductsManagement} />
+              <Route
+                path="/my-products-management"
+                component={MyProductsManagement}
+              />
               <Route path="/subdivision-management" component={Subdivisions} />
               <Route
                 path="/contractor-management"

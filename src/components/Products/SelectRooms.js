@@ -3,11 +3,13 @@ import { Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import "./Products.scss";
 import Multiselect from "multiselect-react-dropdown";
+import queryString from 'query-string';
 import { PRODUCT_SELECTED_ROOM } from "../../actions/types";
 
 const SelectRooms = ({ setProductFilter, productFilter }) => {
   const dispatch = useDispatch();
   const roomCategoryRef = useRef(null);
+  const searchParams = queryString.parse(window?.location?.search);
 
   const project = useSelector((state) => state.project.project);
   const [roomsOptions, setRoomsOptions] = useState([]);
@@ -15,6 +17,7 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
   const [roomsDropdownLoading, setRoomsDropdownLoading] = useState(true);
   const [showSelectedRooms, setShowSelectedRooms] = useState(false);
   const [searchableField, setSearchableField] = useState("");
+  
   const handleSelectedRoom = useCallback(
     (selectedRooms) => {
       const rooms = [...selectedRooms.map((b) => b.ID)];
@@ -41,11 +44,35 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
         };
       }),
     ];
-    handleSelectedRoom(options.filter((p) => p.value !== "select_all"));
+
+    console.log("params",  options
+    .filter((p) => p.value !== "select_all"), options
+    .filter((p) => p.value !== "select_all")
+    ?.filter((r) => r.ID === Number(searchParams.roomId)));
+    if (searchParams?.roomId) {
+      options =  options
+      .map((p) => {
+        if(p.value === "select_all") {
+          return {
+            ...p,
+          selected: false
+          }
+        } else {
+          return p
+        }
+      })
+      handleSelectedRoom(
+        options
+          .filter((p) => p.value !== "select_all")
+          ?.filter((r) => r.ID === Number(searchParams.roomId))
+      );
+    } else handleSelectedRoom(options.filter((p) => p.value !== "select_all"));
     setRoomsOptions(options);
 
     setRoomsDropdownLoading(false);
   }, [project]);
+
+  console.log(productFilter,roomsOptions, "productFilter")
 
   useEffect(() => {
     if (roomCategoryRef?.current) {
@@ -59,7 +86,7 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
   }, [roomCategoryRef?.current]);
 
   return (
-    <div className="d-flex products" style={{flex: 1}}>
+    <div className="d-flex products" style={{ flex: 1 }}>
       <div className="products-container">
         <div className="ml-3">
           {roomsDropdownLoading ? (
