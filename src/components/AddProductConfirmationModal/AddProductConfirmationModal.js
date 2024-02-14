@@ -3,6 +3,7 @@ import { Col, Form, Modal, Button, Row, Spinner } from "react-bootstrap";
 import "./AddProductConfirmationModal.scss";
 import { useSelector } from "react-redux";
 import { Accordion } from "react-bootstrap-accordion";
+import queryString from 'query-string';
 
 const AddProductConfirmationModal = ({
   show,
@@ -19,6 +20,13 @@ const AddProductConfirmationModal = ({
   const room = useSelector((state) => state.room);
   const roomTypes = room?.roomTypes;
   const [selectedRoomIDs, setSelectedRoomIDs] = useState([]);
+  const searchParams = queryString.parse(window?.location?.search);
+
+  useEffect(() => {
+    if(searchParams.roomId) {
+      setSelectedRoomIDs([Number(searchParams.roomId)])
+    }
+  },[])
 
   useEffect(() => {
     setForm({ ...form, roomIDs: selectedRoomIDs });

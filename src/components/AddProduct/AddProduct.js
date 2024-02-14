@@ -461,6 +461,7 @@ const AddProduct = () => {
         isShowRooms
         handleAdd={(values) => addProduct(values)}
         loader={addActionLoading}
+        productFilter={productFilter}
       />
 
       {/*<ColorProductModal

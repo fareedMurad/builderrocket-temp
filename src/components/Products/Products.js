@@ -1207,11 +1207,11 @@ const Products = (props) => {
 
   const handleRefresh = () => {};
 
-  const showProducts = () => {
+  const showProducts = (isSingle, roomId) => {
     dispatch(getCategories(""))
       .then(dispatch(setProduct({})))
       .then(() => {
-        history.push(`/project/${project.ProjectNumber}/product/addProduct`);
+        history.push(`/project/${project.ProjectNumber}/product/addProduct${isSingle?"?roomId="+roomId:""}`);
       })
       .catch(() => {});
   };
@@ -1618,10 +1618,19 @@ const Products = (props) => {
                   render={({ toggle, setCollapsibleElement }) => (
                     <Card className="ml-4 my-3 mr-2 accordion">
                       <Card.Header
-                        className="pointer d-flex justify-content-between"
+                        className="pointer d-flex justify-content-between align-items-center"
                         onClick={toggle}
                       >
-                        {room.RoomName}{" "}
+                        <div className="d-flex align-items-center">
+                          {room.RoomName}{" "}
+                          <Button
+                            variant="link"
+                            className="link-btn"
+                            onClick={() => showProducts(true, room.ID)}
+                          >
+                            + Add Products
+                          </Button>
+                        </div>
                         <div className="d-flex">
                           {room.RoomTypeName ? (
                             <span className="mx-2">
