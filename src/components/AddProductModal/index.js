@@ -1,3 +1,3 @@
-import AddProductModal from './AddProductModal';
+import AddProductModal from "./AddProductModal";
 
 export default AddProductModal;

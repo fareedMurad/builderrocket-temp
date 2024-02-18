@@ -2,14 +2,21 @@ import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
-const ConfirmRequiresApprovalModal = ({ show, room, handleClose,  handleConfirm, isChecked }) => {
+const ConfirmRequiresApprovalModal = ({
+  show,
+  room,
+  handleClose,
+  handleConfirm,
+  isChecked,
+}) => {
   const history = useHistory();
 
   return (
     <Modal size="md" centered show={show} backdrop>
       <Modal.Body>
         <div className="">
-          Are you sure? you want to {isChecked ? "deselect" : "select" } all products for approval in <b>{room}</b>{" "} room?
+          Are you sure? you want to {isChecked ? "deselect" : "select"} all
+          products for approval in <b>{room}</b> room?
         </div>
         <div className="d-flex justify-content-center pt-5">
           <Button

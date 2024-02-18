@@ -42,7 +42,7 @@ const AddProduct = () => {
   const products = useSelector((state) => state.product.products);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const ProductSelectedRoom = useSelector(
-    (state) => state.room.ProductSelectedRoom
+    (state) => state.room.ProductSelectedRoom,
   );
 
   const listCatgories = useSelector((state) => state.product.productCategories);
@@ -151,7 +151,7 @@ const AddProduct = () => {
       setProduct({
         ...product,
         CategoryID: parseInt(option.value),
-      })
+      }),
     );
   };
 
@@ -196,7 +196,7 @@ const AddProduct = () => {
     };
     dispatch(
       // handleAddProductForProject(newProduct)
-      handleAddMyProductToProject(newProduct)
+      handleAddMyProductToProject(newProduct),
     ).then((project) => {
       dispatch(setSelectedProject(project));
       setAddProductModal(false);
@@ -229,7 +229,7 @@ const AddProduct = () => {
         CategoryID: productDetail.CategoryID,
         RoughInTrimOutEnum: "RoughIn",
         IsApproved: false,
-      })
+      }),
     );
     dispatch(setProductDetail(productDetail)).then(() => {
       //setShowColorModal(true);
@@ -338,7 +338,7 @@ const AddProduct = () => {
                             handleFilters(filter, filterChild, childIndex)
                           }
                         />
-                      )
+                      ),
                     )}
                   </div>
                 ))}

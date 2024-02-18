@@ -18,7 +18,7 @@ const CustomerProjectTabs = (props) => {
   const dispatch = useDispatch();
 
   const selectedProjectTab = useSelector(
-    (state) => state.customer?.selectedProjectTab
+    (state) => state.customer?.selectedProjectTab,
   );
   //   const selectedProductTab = useSelector(
   //     (state) => state.product.selectedProductTab

@@ -1,3 +1,3 @@
-import RoomsManagement from './RoomsManagement';
+import RoomsManagement from "./RoomsManagement";
 
 export default RoomsManagement;

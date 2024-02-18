@@ -14,7 +14,7 @@ const VendorProjectTabs = (props) => {
   const history = useHistory();
 
   const selectedProjectTab = useSelector(
-    (state) => state.vendor?.selectedProjectTab
+    (state) => state.vendor?.selectedProjectTab,
   );
 
   useEffect(() => {

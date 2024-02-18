@@ -10,7 +10,6 @@ export const sendBugs = (support) => (dispatch) => {
   })
     .then((response) => {
       if (response?.status === 200) {
-
         return response.data;
       }
     })

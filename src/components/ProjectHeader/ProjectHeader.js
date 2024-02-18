@@ -16,7 +16,7 @@ const ProjectHeader = () => {
 
   const project = useSelector((state) => state.project.project);
   const refreshThumbnail = useSelector(
-    (state) => state.project.refreshThumbnail
+    (state) => state.project.refreshThumbnail,
   );
 
   const [showModal, setShowModal] = useState(false);

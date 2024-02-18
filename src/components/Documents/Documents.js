@@ -50,7 +50,7 @@ const Documents = () => {
       dispatch(getBuilderSubdivision(parseInt(project?.Subdivision))).then(
         (res) => {
           setSubdivisionDocuments(res?.[0] || {});
-        }
+        },
       );
   }, [dispatch]);
 
@@ -71,18 +71,18 @@ const Documents = () => {
         };
         setProgress({ ...progress });
         console.log(progress);
-      })
+      }),
     ).then((response) => {
       progress[documentTypeID] = { progress: 0, loading: false };
       setProgress({ ...progress });
       if (response) {
         let documents = project?.Documents?.filter(
-          (d) => d?.DocumentTypeID !== documentTypeID
+          (d) => d?.DocumentTypeID !== documentTypeID,
         );
         documents = documents.concat(
           response.Documents?.filter(
-            (d) => d?.DocumentTypeID === documentTypeID
-          )
+            (d) => d?.DocumentTypeID === documentTypeID,
+          ),
         );
         project.Documents = documents;
         dispatch(setSelectedProject({ ...project }));
@@ -111,7 +111,7 @@ const Documents = () => {
       .then((response) => {
         if (response) {
           project.Documents = project?.Documents?.filter(
-            (d) => d?.ID !== documentID
+            (d) => d?.ID !== documentID,
           );
           dispatch(setSelectedProject({ ...project }));
         }
@@ -153,12 +153,14 @@ const Documents = () => {
   }, [documentsInfo]);
 
   useEffect(() => {
-    if(
-      documentsInfo?.PolicyExpirationDate !== originalProject?.PolicyExpirationDate ||
-      documentsInfo?.PermitDate !== Utils.formatShortDateUS(originalProject?.PermitDate) ||
+    if (
+      documentsInfo?.PolicyExpirationDate !==
+        originalProject?.PolicyExpirationDate ||
+      documentsInfo?.PermitDate !==
+        Utils.formatShortDateUS(originalProject?.PermitDate) ||
       documentsInfo?.OccupencyDate !== originalProject?.OccupencyDate
-      )
-    saveChanges(false);
+    )
+      saveChanges(false);
   }, [
     documentsInfo?.PolicyExpirationDate,
     documentsInfo?.PermitDate,

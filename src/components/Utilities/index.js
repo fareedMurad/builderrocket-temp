@@ -1,3 +1,3 @@
-import Utilities from './Utilities';
+import Utilities from "./Utilities";
 
 export default Utilities;

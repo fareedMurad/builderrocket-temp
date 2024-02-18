@@ -1,3 +1,3 @@
-import CustomerProjectHeader from './CustomerProjectHeader';
+import CustomerProjectHeader from "./CustomerProjectHeader";
 
 export default CustomerProjectHeader;

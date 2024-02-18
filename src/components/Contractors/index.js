@@ -1,3 +1,3 @@
-import Contractors from './Contractors';
+import Contractors from "./Contractors";
 
 export default Contractors;

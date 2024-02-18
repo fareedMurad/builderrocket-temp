@@ -1,3 +1,3 @@
-import AddContractor from './AddContractor';
+import AddContractor from "./AddContractor";
 
 export default AddContractor;

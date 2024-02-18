@@ -1,3 +1,3 @@
-import ReplaceProduct from './ReplaceProduct';
+import ReplaceProduct from "./ReplaceProduct";
 
 export default ReplaceProduct;

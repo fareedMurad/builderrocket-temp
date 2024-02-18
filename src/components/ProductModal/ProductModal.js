@@ -24,12 +24,12 @@ const ProductModal = (props) => {
   const project = useSelector((state) => state.project.project);
   const replaceProduct = useSelector((state) => state.product.replaceProduct);
   const replaceProductRooms = useSelector(
-    (state) => state.product.replaceProductRooms
+    (state) => state.product.replaceProductRooms,
   );
   // const roomTypes = useSelector((state) => state.room.roomTypes);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const productDetails = useSelector(
-    (state) => state.product.replaceOldProductDetails
+    (state) => state.product.replaceOldProductDetails,
   );
 
   const [roomList, setRoomList] = useState([selectedRoom?.ID]);
@@ -73,7 +73,7 @@ const ProductModal = (props) => {
         OldProductID: productDetails?.ID,
         NewProductID: replaceProduct?.ID,
         ProjectRoomIDs: roomList,
-      })
+      }),
     )
       .then((project) => {
         if (project) dispatch(setSelectedProject(project));
@@ -91,7 +91,7 @@ const ProductModal = (props) => {
         project?.BuilderProjectRooms,
         "RoomTypeID",
         replaceProductRooms,
-        selectedRoom?.ID
+        selectedRoom?.ID,
       ) || []
     );
   };
@@ -159,7 +159,7 @@ const ProductModal = (props) => {
                 onClick={() =>
                   handleCheckBox(
                     null,
-                    isAllRoomsSelected ? "DESELECT_ALL" : "SELECT_ALL"
+                    isAllRoomsSelected ? "DESELECT_ALL" : "SELECT_ALL",
                   )
                 }
               >

@@ -1,3 +1,3 @@
-import CustomerModal from './CustomerModal';
+import CustomerModal from "./CustomerModal";
 
 export default CustomerModal;

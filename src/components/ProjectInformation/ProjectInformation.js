@@ -42,7 +42,7 @@ const ProjectInformation = withSwal((props) => {
   const project = useSelector((state) => state.project.project);
   const originalProject = useSelector((state) => state.project.originalProject);
   const subdivisions = useSelector(
-    (state) => state.subdivision.subdivisions
+    (state) => state.subdivision.subdivisions,
   )?.filter((s) => s.SubdivisionName != null);
 
   const [showModal, setShowModal] = useState(false);
@@ -157,7 +157,7 @@ const ProjectInformation = withSwal((props) => {
     const payload = {
       ...projectInformation,
       Customers: projectInformation.Customers.filter(
-        (c) => c.FirstName || c.LastName || c.Phone || c.Email
+        (c) => c.FirstName || c.LastName || c.Phone || c.Email,
       ),
     };
 
@@ -283,7 +283,7 @@ const ProjectInformation = withSwal((props) => {
         setProjectInformation({
           ...projectInformation,
           Subdivision: subdivisions.find(
-            (d) => d.SubdivisionName === newSubdivisionName
+            (d) => d.SubdivisionName === newSubdivisionName,
           )?.ID,
         });
         cancelModal();
@@ -659,7 +659,7 @@ const ProjectInformation = withSwal((props) => {
                 }
               >
                 {ProjectStatus.filter((item) =>
-                  project?.ID ? true : item.id !== -1
+                  project?.ID ? true : item.id !== -1,
                 ).map((status, index) => (
                   <option key={index} value={status.id}>
                     {status.text}

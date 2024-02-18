@@ -1,5 +1,12 @@
 import api from "../api";
-import { GET_CUSTOMER_DOCUMENTS, LOGOUT, SET_VENDOR, SET_VENDOR_SELECTED_PROJECT_TAB, GET_CUSTOMER_PRODUCTS, SET_VENDOR_PRODUCTS } from "./types";
+import {
+  GET_CUSTOMER_DOCUMENTS,
+  LOGOUT,
+  SET_VENDOR,
+  SET_VENDOR_SELECTED_PROJECT_TAB,
+  GET_CUSTOMER_PRODUCTS,
+  SET_VENDOR_PRODUCTS,
+} from "./types";
 
 export const signupEmailPassword =
   ({
@@ -16,7 +23,7 @@ export const signupEmailPassword =
     zip,
     password,
     ID,
-    setError
+    setError,
   }) =>
   (dispatch) => {
     const URL = "/Account/Vendor";
@@ -39,7 +46,7 @@ export const signupEmailPassword =
         City: city,
         State: state,
         Zip: zip,
-        password: password
+        password: password,
       },
     })
       .then((response) => {
@@ -49,10 +56,9 @@ export const signupEmailPassword =
       })
       .catch((error) => {
         console.log("Signup", error.response.data);
-        setError(error.response.data)
+        setError(error.response.data);
       });
   };
-
 
 export const loginEmailPassword = (email, password) => (dispatch) => {
   const URL = "/Login";
@@ -80,25 +86,24 @@ export const loginEmailPassword = (email, password) => (dispatch) => {
     });
 };
 
+export const getProductsByCategoryAndBrandID =
+  (brandID, categoryID) => (dispatch) => {
+    let URL = `/Vendor/Products/${brandID}/${categoryID}`;
 
-export const getProductsByCategoryAndBrandID = (brandID, categoryID) => dispatch => {
-  let URL = `/Vendor/Products/${brandID}/${categoryID}`;
-
-  return api({
-      method: 'GET',
-      url: URL
-  })
+    return api({
+      method: "GET",
+      url: URL,
+    })
       .then((response) => {
-          if (response.status === 200) {
-              return response.data;
-          }
-          return [];
+        if (response.status === 200) {
+          return response.data;
+        }
+        return [];
       })
       .catch((error) => {
-          if (error?.response?.status === 401)
-              dispatch({ type: LOGOUT });
+        if (error?.response?.status === 401) dispatch({ type: LOGOUT });
       });
-}
+  };
 
 export const getVendorProducts = () => (dispatch) => {
   const URL = "/Vendor/VendorProduct/All";
@@ -109,7 +114,7 @@ export const getVendorProducts = () => (dispatch) => {
   })
     .then((response) => {
       if (response?.status === 200) {
-        dispatch({type: SET_VENDOR_PRODUCTS, payload: response?.data})
+        dispatch({ type: SET_VENDOR_PRODUCTS, payload: response?.data });
         return response?.data;
       }
     })
@@ -117,7 +122,6 @@ export const getVendorProducts = () => (dispatch) => {
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
     });
 };
-
 
 export const getVendorCategories = () => (dispatch) => {
   const URL = "/Vendor/Category";
@@ -153,29 +157,29 @@ export const getVendorBrands = () => (dispatch) => {
     });
 };
 
-export const addVendorProduct = (BrandID, CategoryID, ProductID) => (dispatch) => {
-  const URL = `/Vendor/VendorProduct`;
-  return api({
-    method: "POST",
-    url: URL,
-    data: {
-      BrandID,
-      CategoryID,
-      ProductID
-    }
-  })
-    .then((response) => {
-      if (response?.status === 200) {
-        // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
-
-        return response.data;
-      }
+export const addVendorProduct =
+  (BrandID, CategoryID, ProductID) => (dispatch) => {
+    const URL = `/Vendor/VendorProduct`;
+    return api({
+      method: "POST",
+      url: URL,
+      data: {
+        BrandID,
+        CategoryID,
+        ProductID,
+      },
     })
-    .catch((error) => {
-      if (error.response?.status === 401) dispatch({ type: LOGOUT });
-    });
-};
+      .then((response) => {
+        if (response?.status === 200) {
+          // dispatch({ type: CREATE_ROOM_TYPES, payload: response.data });
 
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };
 
 export const deleteVendorProduct = (id) => (dispatch) => {
   const URL = `/Vendor/VendorProduct/${id}`;
@@ -242,29 +246,29 @@ export const getCustomerProducts = () => (dispatch) => {
 };
 
 /**
- * Sets selected project tab 
- * @param {*} tab  
+ * Sets selected project tab
+ * @param {*} tab
  */
-export const setSelectedProjectTab = (tab) => dispatch => {
+export const setSelectedProjectTab = (tab) => (dispatch) => {
   return new Promise((resolve, reject) => {
-      try {
-          dispatch({ type: SET_VENDOR_SELECTED_PROJECT_TAB, payload: tab });
-          
-          resolve();
-      } catch (error) {
-          reject(error);
-      }
-  });
-}
+    try {
+      dispatch({ type: SET_VENDOR_SELECTED_PROJECT_TAB, payload: tab });
 
-export const setVendorProducts = (products) => dispatch => {
-  return new Promise((resolve, reject) => {
-      try {
-          dispatch({ type: SET_VENDOR_PRODUCTS, payload: products });
-          
-          resolve();
-      } catch (error) {
-          reject(error);
-      }
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
   });
-}
+};
+
+export const setVendorProducts = (products) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    try {
+      dispatch({ type: SET_VENDOR_PRODUCTS, payload: products });
+
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

@@ -6,7 +6,7 @@ const ScrollToTop = ({ children }) => {
   const history = useHistory();
 
   const selectedProjectTab = useSelector(
-    (state) => state.project.selectedProjectTab
+    (state) => state.project.selectedProjectTab,
   );
 
   useEffect(() => {

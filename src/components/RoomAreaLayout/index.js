@@ -1,3 +1,3 @@
-import RoomAreaLayout from './RoomAreaLayout';
+import RoomAreaLayout from "./RoomAreaLayout";
 
 export default RoomAreaLayout;

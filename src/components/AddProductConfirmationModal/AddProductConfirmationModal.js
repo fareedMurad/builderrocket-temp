@@ -43,7 +43,7 @@ const AddProductConfirmationModal = ({
 
     const filtered = mergeDuplicatesAsArray(
       project.BuilderProjectRooms,
-      "RoomTypeID"
+      "RoomTypeID",
     );
 
     array = filtered?.map((roomType, index) => {

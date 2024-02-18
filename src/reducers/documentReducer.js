@@ -1,22 +1,20 @@
-import { 
-    GET_DOCUMENT_TYPES
-} from '../actions/types';
+import { GET_DOCUMENT_TYPES } from "../actions/types";
 
 const intialState = {
-    documentTypes: []
-}
+  documentTypes: [],
+};
 
 const documentReducer = (state = intialState, action) => {
-    switch (action.type) {
-        case GET_DOCUMENT_TYPES: {
-            return {
-                ...state, 
-                documentTypes: action.payload
-            }
-        }
-        default: 
-            return state;
+  switch (action.type) {
+    case GET_DOCUMENT_TYPES: {
+      return {
+        ...state,
+        documentTypes: action.payload,
+      };
     }
+    default:
+      return state;
+  }
 };
 
 export default documentReducer;

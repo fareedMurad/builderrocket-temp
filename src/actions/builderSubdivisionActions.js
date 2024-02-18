@@ -1,106 +1,92 @@
-import api from '../api';
-import {
-    LOGOUT,
-    GET_MY_PRODUCTS_BY_PROJECT,
-    GET_SUBDIVISIONS,
-} from './types';
+import api from "../api";
+import { LOGOUT, GET_MY_PRODUCTS_BY_PROJECT, GET_SUBDIVISIONS } from "./types";
 
-export const getBuilderSubdivisions = () => dispatch => {
-    const URL = '/builder-subdivision/All';
+export const getBuilderSubdivisions = () => (dispatch) => {
+  const URL = "/builder-subdivision/All";
 
-    return api({
-        method: 'GET',
-        url: URL
+  return api({
+    method: "GET",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        dispatch({ type: GET_SUBDIVISIONS, payload: response.data });
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-                dispatch({ type: GET_SUBDIVISIONS, payload: response.data });
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
-}
+export const getBuilderSubdivision = (SubdivisionID) => (dispatch) => {
+  const URL = `/builder-subdivision/${SubdivisionID}`;
 
-export const getBuilderSubdivision = (SubdivisionID) => dispatch => {
-    const URL = `/builder-subdivision/${SubdivisionID}`;
-
-    return api({
-        method: 'GET',
-        url: URL
+  return api({
+    method: "GET",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
-}
+export const editBuilderSubdivsion = (subdivision) => (dispatch) => {
+  const URL = `/builder-subdivision`;
 
-export const editBuilderSubdivsion = (subdivision) => dispatch => {
-    const URL = `/builder-subdivision`;
-
-    return api({
-        method: 'PUT',
-        url: URL,
-        data: subdivision
+  return api({
+    method: "PUT",
+    url: URL,
+    data: subdivision,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
-}
+export const createBuilderSubdivsion = (subdivision) => (dispatch) => {
+  const URL = `/builder-subdivision/${subdivision}`;
 
-export const createBuilderSubdivsion = (subdivision) => dispatch => {
-    const URL = `/builder-subdivision/${subdivision}`;
-
-    return api({
-        method: 'POST',
-        url: URL
+  return api({
+    method: "POST",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
-}
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
+export const deleteBuilderSubdivsion = (ID) => (dispatch) => {
+  const URL = `/builder-subdivision/${ID}`;
 
-export const deleteBuilderSubdivsion = (ID) => dispatch => {
-    const URL = `/builder-subdivision/${ID}`;
-
-    return api({
-        method: 'DELETE',
-        url: URL
+  return api({
+    method: "DELETE",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error?.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
-}
+    .catch((error) => {
+      if (error?.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
 /**
  * Add document to Subdivision
@@ -108,25 +94,23 @@ export const deleteBuilderSubdivsion = (ID) => dispatch => {
  * @param {*} document - document data
  * @param onUploadProgress
  */
-export const addBuilderSubdivsionDocument = (ID, document, onUploadProgress) => dispatch => {
+export const addBuilderSubdivsionDocument =
+  (ID, document, onUploadProgress) => (dispatch) => {
     const URL = `/builder-subdivision/${ID}/document`;
 
     return api({
-        method: 'POST',
-        url: URL,
-        data: document,
-        onUploadProgress: onUploadProgress
+      method: "POST",
+      url: URL,
+      data: document,
+      onUploadProgress: onUploadProgress,
     })
-    .then((response) => {
+      .then((response) => {
         if (response?.status === 200) {
-            return response.data;
+          return response.data;
         }
-
-    })
-    .catch((error) => {
-
-    });
-}
+      })
+      .catch((error) => {});
+  };
 
 // export const setSelectedBuilderSubdivsion = (product) => dispatch => {
 //     return new Promise((resolve, reject) => {
@@ -137,92 +121,84 @@ export const addBuilderSubdivsionDocument = (ID, document, onUploadProgress) => 
 // }
 
 /**
- * 
- * @param {*} SubdivisionID 
- * @param {*} ProjectID 
- * @returns 
+ *
+ * @param {*} SubdivisionID
+ * @param {*} ProjectID
+ * @returns
  */
-export const handleAddBuilderSubdivsionToProject = (SubdivisionID, ProjectID) => dispatch => {
+export const handleAddBuilderSubdivsionToProject =
+  (SubdivisionID, ProjectID) => (dispatch) => {
     const URL = `/builder-subdivision/document/assigntoproject`;
 
     return api({
-        method: 'PUT',
-        url: URL,
-        data: {
-            SubdivisionID,
-            ProjectID
+      method: "PUT",
+      url: URL,
+      data: {
+        SubdivisionID,
+        ProjectID,
+      },
+    })
+      .then((response) => {
+        if (response?.status === 200) {
+          // dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+
+          return response?.data;
         }
+      })
+      .catch((error) => {
+        if (error.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };
+
+export const getBuilderSubdivsionsForProject = (ID) => (dispatch) => {
+  const URL = `/builder-subdivision/projectproduct/${ID}`;
+
+  return api({
+    method: "GET",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        dispatch({ type: GET_MY_PRODUCTS_BY_PROJECT, payload: response.data });
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-                // dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
-                return response?.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        });
-}
+export const updateBuilderSubdivsionsForProject = (params) => (dispatch) => {
+  const URL = `/builder-subdivision/projectproduct`;
 
-
-export const getBuilderSubdivsionsForProject = (ID) => dispatch => {
-    const URL = `/builder-subdivision/projectproduct/${ID}`;
-
-    return api({
-        method: 'GET',
-        url: URL
+  return api({
+    method: "PUT",
+    url: URL,
+    data: params,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-                dispatch({ type: GET_MY_PRODUCTS_BY_PROJECT, payload: response.data });
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
-}
+export const deleteBuilderSubdivsionsForProject = (ID) => (dispatch) => {
+  const URL = `/builder-subdivision/projectproduct/${ID}`;
 
-
-export const updateBuilderSubdivsionsForProject = (params) => dispatch => {
-    const URL = `/builder-subdivision/projectproduct`;
-
-    return api({
-        method: 'PUT',
-        url: URL,
-        data: params
+  return api({
+    method: "DELETE",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        return response.data;
+      }
     })
-        .then((response) => {
-            if (response?.status === 200) {
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
-
-}
-
-export const deleteBuilderSubdivsionsForProject = (ID) => dispatch => {
-    const URL = `/builder-subdivision/projectproduct/${ID}`;
-
-    return api({
-        method: 'DELETE',
-        url: URL
-    })
-        .then((response) => {
-            if (response?.status === 200) {
-                return response.data;
-            }
-        })
-        .catch((error) => {
-            if (error.response?.status === 401)
-                dispatch({ type: LOGOUT });
-        })
-
-}
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};

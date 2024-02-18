@@ -13,7 +13,7 @@ import {
 
 const VendorProducts = () => {
   const dispatch = useDispatch();
-  const products = useSelector(state => state.vendor?.products);
+  const products = useSelector((state) => state.vendor?.products);
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingActions, setActionLoading] = useState(false);

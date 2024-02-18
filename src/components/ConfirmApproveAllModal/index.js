@@ -1,3 +1,3 @@
-import ConfirmLogoutModal from './ConfirmLogoutModal';
+import ConfirmLogoutModal from "./ConfirmLogoutModal";
 
 export default ConfirmLogoutModal;
