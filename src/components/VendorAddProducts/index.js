@@ -1,3 +1,3 @@
-import VendorAddProducts from './VendorAddProducts';
+import VendorAddProducts from "./VendorAddProducts";
 
 export default VendorAddProducts;

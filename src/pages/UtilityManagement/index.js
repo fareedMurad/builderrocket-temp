@@ -1,3 +1,3 @@
-import UtilityManagement from './UtilityManagement';
+import UtilityManagement from "./UtilityManagement";
 
 export default UtilityManagement;

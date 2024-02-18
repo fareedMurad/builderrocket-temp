@@ -78,50 +78,51 @@ const CustomerProducts = (props) => {
 
   const approvalSingle = (ID, ProductID, StatusID, IsCustomProduct) => {
     const object = {
-        ID,
-        ProductID,
-        StatusID
-    }
+      ID,
+      ProductID,
+      StatusID,
+    };
     dispatch(customerApprovalProducts([object], IsCustomProduct)).then(() => {
-        const filter = products.map(p => {
-            if(p.ID ===ID) {
-                return {...p, ApprovalStatusID: StatusID}
-            }else return p
-        })
-        dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: filter })
-    });;
+      const filter = products.map((p) => {
+        if (p.ID === ID) {
+          return { ...p, ApprovalStatusID: StatusID };
+        } else return p;
+      });
+      dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: filter });
+    });
   };
 
   const approvalAll = (StatusID) => {
-    const sendData = products.map(p => {
+    const sendData = products.map((p) => {
       return {
         ID: p.ID,
         ProductID: p.Product?.ID,
         StatusID,
-        IsCustomProduct: p.IsCustomProduct
-      }
+        IsCustomProduct: p.IsCustomProduct,
+      };
     });
-    const customProducts = sendData.filter(p => p.IsCustomProduct).map(p => {
-      const obj = p;
-      delete obj.IsCustomProduct
-      return obj;
-    });
-    const noCustomProducts = sendData.filter(p => !p.IsCustomProduct).map(p => {
-      const obj = p;
-      delete obj.IsCustomProduct
-      return obj;
-    });
-    if(customProducts?.length)
-    dispatch(customerApprovalProducts(customProducts, true));
-    if(noCustomProducts?.length)
-    dispatch(customerApprovalProducts(noCustomProducts, false));
+    const customProducts = sendData
+      .filter((p) => p.IsCustomProduct)
+      .map((p) => {
+        const obj = p;
+        delete obj.IsCustomProduct;
+        return obj;
+      });
+    const noCustomProducts = sendData
+      .filter((p) => !p.IsCustomProduct)
+      .map((p) => {
+        const obj = p;
+        delete obj.IsCustomProduct;
+        return obj;
+      });
+    if (customProducts?.length)
+      dispatch(customerApprovalProducts(customProducts, true));
+    if (noCustomProducts?.length)
+      dispatch(customerApprovalProducts(noCustomProducts, false));
 
-    if(StatusID === 1)
-    setConfirmApproveModal(false);
+    if (StatusID === 1) setConfirmApproveModal(false);
 
-
-    if(StatusID === 2)
-    setConfirmRejectModal(false);
+    if (StatusID === 2) setConfirmRejectModal(false);
   };
 
   return (
@@ -249,36 +250,51 @@ const CustomerProducts = (props) => {
                           templateItem?.ApprovalStatusID === 1
                             ? "bg-success"
                             : templateItem?.ApprovalStatusID === 2
-                            ? "bg-danger"
-                            : "bg-secondary"
+                              ? "bg-danger"
+                              : "bg-secondary"
                         }
                       `}
                       >
                         {templateItem?.ApprovalStatusID === 1
                           ? "Approved"
                           : templateItem?.ApprovalStatusID === 2
-                          ? "Rejected"
-                          : "Pending"}{" "}
+                            ? "Rejected"
+                            : "Pending"}{" "}
                       </small>
                       <br />
                       <small className="d-block mt-1">
-                        {(templateItem?.ApprovalStatusID && (templateItem?.ApprovalStatusID !== 2 ||
-                          templateItem?.ApprovalStatusID !== 1)) &&
-                            moment(Product?.DateApproved).format("MM/DD/Y")}
+                        {templateItem?.ApprovalStatusID &&
+                          (templateItem?.ApprovalStatusID !== 2 ||
+                            templateItem?.ApprovalStatusID !== 1) &&
+                          moment(Product?.DateApproved).format("MM/DD/Y")}
                       </small>
                     </td>
                     <td>
                       <div className="d-flex ">
                         <button
                           className="bg-success text-light mr-1 border-0 rounded py-2"
-                          onClick={() => approvalSingle(templateItem.ID, Product?.ID, templateItem?.IsCustomProduct, 1)}
+                          onClick={() =>
+                            approvalSingle(
+                              templateItem.ID,
+                              Product?.ID,
+                              templateItem?.IsCustomProduct,
+                              1,
+                            )
+                          }
                         >
                           <i className="fas fa-check-double"></i> Approve
                         </button>
 
                         <button
                           className="bg-danger text-light border-0 rounded py-2"
-                            onClick={() => approvalSingle(templateItem.ID, Product?.ID, templateItem?.IsCustomProduct, 2)}
+                          onClick={() =>
+                            approvalSingle(
+                              templateItem.ID,
+                              Product?.ID,
+                              templateItem?.IsCustomProduct,
+                              2,
+                            )
+                          }
                         >
                           <i className="fas fa-times"></i> Reject
                         </button>

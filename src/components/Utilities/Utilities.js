@@ -26,7 +26,7 @@ const Utilities = () => {
   const [showUtilityModal, setShowUtilityModal] = useState(false);
   const [utilitiesInfo, setUtilitiesInfo] = useState(project.Utilities);
   const [locatePermitNumber, setLocatePermitNumber] = useState(
-    project.LocatePermitNumber
+    project.LocatePermitNumber,
   );
 
   // Ref to access changes on unmount
@@ -54,12 +54,12 @@ const Utilities = () => {
     if (id) {
       utilityID = parseInt(id);
 
-      dispatch(saveProjectUtility(project.ID, utilityTypeID, utilityID))
-    //   .then(
-    //     (data) => {
-    //       console.log(data);
-    //     }
-    //   );
+      dispatch(saveProjectUtility(project.ID, utilityTypeID, utilityID));
+      //   .then(
+      //     (data) => {
+      //       console.log(data);
+      //     }
+      //   );
 
       selectedUtility = utilities.find((utility) => utility.ID === utilityID);
 
@@ -95,7 +95,7 @@ const Utilities = () => {
     setShowModal(false);
   };
 
-  const saveChanges = (goToNext=true) => {
+  const saveChanges = (goToNext = true) => {
     setIsLoading(true);
 
     // Save Project then navigate to contractors tab
@@ -104,10 +104,10 @@ const Utilities = () => {
         ...project,
         Utilities: utilitiesInfo,
         LocatePermitNumber: locatePermitNumber,
-      })
+      }),
     ).then(() => {
       setIsLoading(false);
-     if(goToNext) dispatch(setSelectedProjectTab("contractors"));
+      if (goToNext) dispatch(setSelectedProjectTab("contractors"));
     });
   };
 
@@ -173,7 +173,7 @@ const Utilities = () => {
                       <option key={index} value={utility.ID}>
                         {utility.CompanyName}
                       </option>
-                    )
+                    ),
                   )}
                 </Form.Control>
 

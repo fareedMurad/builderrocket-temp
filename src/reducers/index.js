@@ -31,18 +31,18 @@ const appReducer = combineReducers({
   customer: customerReducer,
   vendor: vendorReducer,
   builderRooms: builderRoomsReducer,
-  myProduct: myProductReducer
+  myProduct: myProductReducer,
 });
 
 const rootReducer = (state, action) => {
   if (action.type === LOGOUT) {
     if (action?.payload) {
       state = {
-        customer: action.payload
+        customer: action.payload,
       };
     } else state = undefined;
   }
-  console.log(state)
+  console.log(state);
 
   return appReducer(state, action);
 };

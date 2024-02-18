@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Modal, Form, Col, Button, Row, Spinner, } from "react-bootstrap";
+import { Modal, Form, Col, Button, Row, Spinner } from "react-bootstrap";
 import { uniqueId } from "lodash";
 import "./Megaphone.scss";
 import FileUpload from "../FileUpload";
@@ -18,18 +18,20 @@ const Megaphone = ({ show, handleClose }) => {
     formData.append("Type", form.title);
     formData.append("Message", form.description);
     formData.append("URL", window?.location?.href);
-    selectedFiles?.forEach(item => {
+    selectedFiles?.forEach((item) => {
       formData.append("Attachments[]", item.file);
-    })
- 
-    dispatch(sendBugs(formData)).then(() => {
-      setLoading(false);
-      handleClose()
-    }).catch(() => {
-      setLoading(false)
     });
+
+    dispatch(sendBugs(formData))
+      .then(() => {
+        setLoading(false);
+        handleClose();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
- 
+
   const handleFileChange = (e) => {
     let file = e.target?.files?.[0];
     setSelectedFiles([...selectedFiles, { file, id: uniqueId() }]);
@@ -115,7 +117,11 @@ const Megaphone = ({ show, handleClose }) => {
               onClick={handleMagaphoneCross}
               className="primary-gray-btn next-btn ml-3 px-5"
             >
-              {loading ? <Spinner animation="border" variant="white"  size="sm"/> : "Submit" }
+              {loading ? (
+                <Spinner animation="border" variant="white" size="sm" />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </>
         </div>

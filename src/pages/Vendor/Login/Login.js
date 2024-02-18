@@ -36,15 +36,14 @@ const Login = (props) => {
           } else {
             setError("Please Enter valid email or password!");
           }
-        }
+        },
       );
   };
-
 
   const handleLogout = () => {
     const customerDetails = {
       customerPortal: true,
-    }
+    };
     dispatch(logout(customerDetails)).then(() => {
       setLogoutModalVisible(false);
     });
@@ -57,7 +56,7 @@ const Login = (props) => {
         <br />
         <Form>
           <Form.Group>
-            <Form.Label>Email</Form.Label>  
+            <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
               placeholder="Email"
@@ -84,10 +83,7 @@ const Login = (props) => {
             )}
             <div className="d-inline justify-self-end">
               Create a new account{" "}
-              <Link
-                className="d-inline ml-1"
-                to={`/vendor/singup`}
-              >
+              <Link className="d-inline ml-1" to={`/vendor/singup`}>
                 Sign Up
               </Link>
             </div>

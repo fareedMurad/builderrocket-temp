@@ -15,10 +15,10 @@ const AddContractor = ({ show, handleClose }) => {
   const dispatch = useDispatch();
 
   const selectedContractor = useSelector(
-    (state) => state.contractor.contractor
+    (state) => state.contractor.contractor,
   );
   const contractorTypes = useSelector(
-    (state) => state.contractor.contractorTypes
+    (state) => state.contractor.contractorTypes,
   );
 
   const [contractor, setContractor] = useState({});
@@ -35,7 +35,7 @@ const AddContractor = ({ show, handleClose }) => {
               value: contractorType.ID,
               label: contractorType.Name,
             };
-          }
+          },
         ),
       };
 

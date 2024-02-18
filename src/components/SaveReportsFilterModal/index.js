@@ -1,3 +1,3 @@
-import SaveReportsFilterModal from './SaveReportsFilterModal';
+import SaveReportsFilterModal from "./SaveReportsFilterModal";
 
 export default SaveReportsFilterModal;

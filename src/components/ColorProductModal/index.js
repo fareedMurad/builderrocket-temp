@@ -1,3 +1,3 @@
-import ColorProductModal from './ColorProductModal';
+import ColorProductModal from "./ColorProductModal";
 
 export default ColorProductModal;

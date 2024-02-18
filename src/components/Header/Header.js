@@ -30,7 +30,7 @@ const Header = ({ expanded, setExpanded }) => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
   const customerPortal = useSelector((state) => state.customer.customerPortal);
   const selectedProjectTab = useSelector(
-    (state) => state.project.selectedProjectTab
+    (state) => state.project.selectedProjectTab,
   );
   const [showTabLinks, setShowTabLinks] = useState(false);
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);

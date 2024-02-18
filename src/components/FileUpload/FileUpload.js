@@ -2,7 +2,10 @@ import React, { useRef, useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDocument } from "../../actions/documentActions";
-import { getProjectByProjectID, setSelectedProject } from "../../actions/projectActions";
+import {
+  getProjectByProjectID,
+  setSelectedProject,
+} from "../../actions/projectActions";
 import "./FileUpload.scss";
 
 const FileUpload = (props) => {
@@ -20,7 +23,7 @@ const FileUpload = (props) => {
     progress,
     hideUpload,
     onUpdateDocument,
-    multiple=false,
+    multiple = false,
   } = props;
 
   const dispatch = useDispatch();
@@ -48,9 +51,9 @@ const FileUpload = (props) => {
       UserFileName: newFileName,
     };
     if (onUpdateDocument) {
-     await onUpdateDocument(newFileName);
-     clearInput();
-     setIsLoading(false);
+      await onUpdateDocument(newFileName);
+      clearInput();
+      setIsLoading(false);
     } else {
       dispatch(updateDocument(fileNameObj))
         .then(() => clearInput())
@@ -88,7 +91,7 @@ const FileUpload = (props) => {
         <Form.Label className={`input-label ${short && "label-margin"}`}>
           {label}
         </Form.Label>
-        {!hideUpload && 
+        {!hideUpload &&
           (short ? (
             <div className="upload-btn">
               <Button variant="link" className="link-btn" onClick={browse}>

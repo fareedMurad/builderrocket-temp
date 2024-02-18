@@ -47,18 +47,18 @@ const Home = (props) => {
       const filter = projects?.filter(
         (project) =>
           project?.ProjectName?.toLowerCase().includes(
-            searchTerm?.toLowerCase()
+            searchTerm?.toLowerCase(),
           ) ||
           project?.UserFileName?.toLowerCase().includes(
-            searchTerm?.toLowerCase()
+            searchTerm?.toLowerCase(),
           ) ||
           project?.DocumentTypeName?.toLowerCase().includes(
-            searchTerm?.toLowerCase()
+            searchTerm?.toLowerCase(),
           ) ||
           project?.FileName?.toLowerCase().includes(
-            searchTerm?.toLowerCase()
+            searchTerm?.toLowerCase(),
           ) ||
-          project?.MimeType?.toLowerCase().includes(searchTerm?.toLowerCase())
+          project?.MimeType?.toLowerCase().includes(searchTerm?.toLowerCase()),
       );
 
       setFilteredProjects(filter);

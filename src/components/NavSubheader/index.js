@@ -1,3 +1,3 @@
-import NavSubheader from './NavSubheader';
+import NavSubheader from "./NavSubheader";
 
 export default NavSubheader;

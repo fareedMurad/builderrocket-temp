@@ -2,13 +2,19 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Col, Form, Modal, Button, Spinner, Row } from "react-bootstrap";
 import "./SaveReportsFilterModal.scss";
 
-const SaveReportsFilterModal = ({isAdd,  show, handleClose, defaultValues={}, handleSave }) => {
+const SaveReportsFilterModal = ({
+  isAdd,
+  show,
+  handleClose,
+  defaultValues = {},
+  handleSave,
+}) => {
   const [filters, setFilters] = useState(defaultValues);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setFilters(defaultValues);
-  }, [defaultValues])
+  }, [defaultValues]);
 
   const handleSaveReports = async () => {
     if (!filters.Name) {
@@ -67,7 +73,6 @@ const SaveReportsFilterModal = ({isAdd,  show, handleClose, defaultValues={}, ha
           )}
         </div>
       </Modal.Body>
-      
     </Modal>
   );
 };

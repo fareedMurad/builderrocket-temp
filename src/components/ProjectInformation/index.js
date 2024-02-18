@@ -1,3 +1,3 @@
-import ProjectInformation from './ProjectInformation';
+import ProjectInformation from "./ProjectInformation";
 
 export default ProjectInformation;

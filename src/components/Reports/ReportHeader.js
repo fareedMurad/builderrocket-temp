@@ -10,7 +10,7 @@ const ReportHeader = ({ hideTotals }) => {
 
   const report = useSelector((state) => state.project?.report);
   const refreshThumbnail = useSelector(
-    (state) => state.project.refreshThumbnail
+    (state) => state.project.refreshThumbnail,
   );
 
   const projectStatusMap = {

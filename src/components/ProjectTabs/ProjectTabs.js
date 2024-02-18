@@ -1,70 +1,76 @@
-import React, { useEffect } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router';
-import { getProjectByProjectID, setSelectedProjectTab } from '../../actions/projectActions';
-import { setSelectedProductTab } from '../../actions/productActions';
-import './ProjectTabs.scss';
+import React, { useEffect } from "react";
+import { Tabs, Tab } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router";
+import {
+  getProjectByProjectID,
+  setSelectedProjectTab,
+} from "../../actions/projectActions";
+import { setSelectedProductTab } from "../../actions/productActions";
+import "./ProjectTabs.scss";
 
-// components 
-import Drawings from '../Drawings';
-import Products from '../Products';
-import Documents from '../Documents';
-import Utilities from '../Utilities';
-import AddProduct from '../AddProduct';
-import ReplaceProduct from '../ReplaceProduct'
-import Contractors from '../Contractors';
-import ProductDetail from '../ProductDetail';
-import RoomAreaLayout from '../RoomAreaLayout';
-import ProjectInformation from '../ProjectInformation';
-import Reports from '../Reports';
-import Photos from '../Photos';
-import AddCustomProducts from '../AddCustomProducts/AddCustomProducts';
+// components
+import Drawings from "../Drawings";
+import Products from "../Products";
+import Documents from "../Documents";
+import Utilities from "../Utilities";
+import AddProduct from "../AddProduct";
+import ReplaceProduct from "../ReplaceProduct";
+import Contractors from "../Contractors";
+import ProductDetail from "../ProductDetail";
+import RoomAreaLayout from "../RoomAreaLayout";
+import ProjectInformation from "../ProjectInformation";
+import Reports from "../Reports";
+import Photos from "../Photos";
+import AddCustomProducts from "../AddCustomProducts/AddCustomProducts";
 
 const ProjectTabs = (props) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
 
-  const selectedProjectTab = useSelector(state => state.project.selectedProjectTab);
-  const selectedProductTab = useSelector(state => state.product.selectedProductTab);
-  const project = useSelector(state => state.project.project);
+  const selectedProjectTab = useSelector(
+    (state) => state.project.selectedProjectTab,
+  );
+  const selectedProductTab = useSelector(
+    (state) => state.product.selectedProductTab,
+  );
+  const project = useSelector((state) => state.project.project);
 
   useEffect(() => {
-    let tabs = location.pathname.split('/');
-    let tab = tabs[tabs.length - 1]
+    let tabs = location.pathname.split("/");
+    let tab = tabs[tabs.length - 1];
     if (tabs.length > 4) {
       dispatch(setSelectedProductTab(tab));
-      dispatch(setSelectedProjectTab('products'));
+      dispatch(setSelectedProjectTab("products"));
     } else {
       dispatch(setSelectedProjectTab(tab));
-      if (tab.includes('products')) {
-        dispatch(setSelectedProductTab('products'));
+      if (tab.includes("products")) {
+        dispatch(setSelectedProductTab("products"));
       }
     }
-
-  }, [location])
+  }, [location]);
 
   const handleSelectedTab = (tab) => {
-    history.push(`/project/${project.ProjectNumber}/${tab}`)
-  }
+    history.push(`/project/${project.ProjectNumber}/${tab}`);
+  };
 
   const handleProductsTabs = () => {
     switch (selectedProductTab) {
-      case 'products':
+      case "products":
         return <Products />;
-      case 'addProduct':
+      case "addProduct":
         return <AddProduct />;
-      case 'addCustomProducts':
+      case "addCustomProducts":
         return <AddCustomProducts />;
-      case 'replaceProduct':
+      case "replaceProduct":
         return <ReplaceProduct />;
-      case 'productDetail':
+      case "productDetail":
         return <ProductDetail />;
       default:
         return <Products />;
     }
-  }
+  };
 
   return (
     <div className="project-tabs">
@@ -117,6 +123,6 @@ const ProjectTabs = (props) => {
       )}
     </div>
   );
-}
+};
 
 export default ProjectTabs;

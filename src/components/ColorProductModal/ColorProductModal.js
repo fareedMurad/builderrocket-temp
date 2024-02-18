@@ -84,7 +84,7 @@ const ColorProductModal = (props) => {
         OldProductID: product?.TemplateItemID,
         NewProductID: replaceProduct?.ID,
         ProjectRoomIDs: roomList,
-      })
+      }),
     ).then(() => {
       handleCloseModal();
     });
