@@ -62,12 +62,12 @@ const PhotosTab = () => {
             loading: true,
           };
           setProgress({ ...progress });
-        })
+        }),
       )
         .then(async (response) => {
-          if((uploadFiles?.length - 1) === i) {
+          if (uploadFiles?.length - 1 === i) {
             await dispatch(getProjectByProjectID(project.ID));
-  
+
             progress[DocumentTypeID] = { progress: 0, loading: false };
             setProgress({ ...progress });
             handleClose();
@@ -114,7 +114,7 @@ const PhotosTab = () => {
 
   const getProjectPhotos = () => {
     return project?.Documents?.filter(
-      (p) => p.DocumentTypeID === DocumentTypeID
+      (p) => p.DocumentTypeID === DocumentTypeID,
     );
   };
 
@@ -220,7 +220,13 @@ const PhotosTab = () => {
               />
             </Card.Body>
           </Card>
-         {uploadFiles?.length && <small> {uploadFiles.length} File{uploadFiles?.length > 1 ? "s" : ""} Selected</small>}
+          {uploadFiles?.length && (
+            <small>
+              {" "}
+              {uploadFiles.length} File{uploadFiles?.length > 1 ? "s" : ""}{" "}
+              Selected
+            </small>
+          )}
           <div className="d-flex justify-content-center align-items-center gap-2 p-3">
             <Button variant="secondary" onClick={handleClose}>
               Close

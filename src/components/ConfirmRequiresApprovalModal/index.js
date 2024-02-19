@@ -1,3 +1,3 @@
-import ConfirmRequiresApprovalModal from './ConfirmRequiresApprovalModal';
+import ConfirmRequiresApprovalModal from "./ConfirmRequiresApprovalModal";
 
 export default ConfirmRequiresApprovalModal;

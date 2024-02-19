@@ -1,3 +1,3 @@
-import VendorProjectTabs from './VendorProjectTabs';
+import VendorProjectTabs from "./VendorProjectTabs";
 
 export default VendorProjectTabs;

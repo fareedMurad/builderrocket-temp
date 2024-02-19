@@ -27,7 +27,7 @@ const loadFromLocalStorage = () => {
 const store = createStore(
   rootReducer,
   loadFromLocalStorage(),
-  applyMiddleware(...middleware)
+  applyMiddleware(...middleware),
 );
 
 store.subscribe(() => saveToLocalStorage(store.getState()));

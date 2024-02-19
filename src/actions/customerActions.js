@@ -1,5 +1,11 @@
 import api from "../api";
-import { GET_CUSTOMER_DOCUMENTS, LOGOUT, SET_CUSTOMER, SET_CUSTOMER_SELECTED_PROJECT_TAB, GET_CUSTOMER_PRODUCTS } from "./types";
+import {
+  GET_CUSTOMER_DOCUMENTS,
+  LOGOUT,
+  SET_CUSTOMER,
+  SET_CUSTOMER_SELECTED_PROJECT_TAB,
+  GET_CUSTOMER_PRODUCTS,
+} from "./types";
 
 export const signupEmailPassword =
   ({
@@ -16,7 +22,7 @@ export const signupEmailPassword =
     zip,
     password,
     ID,
-    setError
+    setError,
   }) =>
   (dispatch) => {
     const URL = "/Account/Customer";
@@ -50,33 +56,31 @@ export const signupEmailPassword =
       })
       .catch((error) => {
         console.log("Signup", error.response.data);
-        setError(error.response.data)
+        setError(error.response.data);
       });
   };
 
-
 /**
  * Invite customer to selected project
- * @param {*} ID 
+ * @param {*} ID
  */
-export const inviteCustomerToProject = (ID) => dispatch => {
+export const inviteCustomerToProject = (ID) => (dispatch) => {
   const URL = `/Project/SaveCustomerInvite/${ID}`;
 
   return api({
-      method: 'POST',
-      url: URL,
-      data: {CustomerID:ID}
+    method: "POST",
+    url: URL,
+    data: { CustomerID: ID },
   })
-      .then((response) => {
-          if (response?.status === 200) {
-              return response?.data;
-          }
-      })
-      .catch((error) => {
-          if (error.response?.status === 401)
-              dispatch({ type: LOGOUT });
-      });
-}
+    .then((response) => {
+      if (response?.status === 200) {
+        return response?.data;
+      }
+    })
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
 
 export const loginEmailPassword = (email, password) => (dispatch) => {
   const URL = "/Login";
@@ -171,41 +175,43 @@ export const getCustomerProducts = () => (dispatch) => {
 };
 
 /**
- * Sets selected project tab 
- * @param {*} tab  
+ * Sets selected project tab
+ * @param {*} tab
  */
-export const setSelectedProjectTab = (tab) => dispatch => {
+export const setSelectedProjectTab = (tab) => (dispatch) => {
   return new Promise((resolve, reject) => {
-      try {
-          dispatch({ type: SET_CUSTOMER_SELECTED_PROJECT_TAB, payload: tab });
-          
-          resolve();
-      } catch (error) {
-          reject(error);
-      }
+    try {
+      dispatch({ type: SET_CUSTOMER_SELECTED_PROJECT_TAB, payload: tab });
+
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
   });
-}
+};
 
 /**
  * Customer Approval Product
- * @param {String} ID 
+ * @param {String} ID
  *
  */
-export const customerApprovalProducts = (items, IsCustomProduct) => dispatch => {
-  const URL = IsCustomProduct ? `/customer-portal/Custom/ApproveProjectProducts` : `/customer-portal/ApproveProjectProducts`;
-  return api({
-      method: 'POST',
+export const customerApprovalProducts =
+  (items, IsCustomProduct) => (dispatch) => {
+    const URL = IsCustomProduct
+      ? `/customer-portal/Custom/ApproveProjectProducts`
+      : `/customer-portal/ApproveProjectProducts`;
+    return api({
+      method: "POST",
       url: URL,
-      data: {"Items":items}
-  })
-  .then((response) => {
-      if (response.status === 200) {
+      data: { Items: items },
+    })
+      .then((response) => {
+        if (response.status === 200) {
           // dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: response.data });
           return response.data;
-      }
-  })
-  .catch((error) => {
-      if (error.response?.status === 401) 
-          dispatch({ type: LOGOUT }); 
-  });
-}
+        }
+      })
+      .catch((error) => {
+        if (error.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };

@@ -1,3 +1,3 @@
-import ContractorManagement from './ContractorManagement';
+import ContractorManagement from "./ContractorManagement";
 
 export default ContractorManagement;

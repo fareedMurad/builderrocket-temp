@@ -1,3 +1,3 @@
-import ClearChangesModal from './ClearChangesModal';
+import ClearChangesModal from "./ClearChangesModal";
 
 export default ClearChangesModal;

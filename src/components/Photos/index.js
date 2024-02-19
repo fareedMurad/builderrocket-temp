@@ -1,3 +1,3 @@
 import Photos from "./PhotosTab";
 
-export default Photos
+export default Photos;

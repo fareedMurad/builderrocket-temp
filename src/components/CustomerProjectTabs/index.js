@@ -1,3 +1,3 @@
-import CustomerProjectTabs from './CustomerProjectTabs';
+import CustomerProjectTabs from "./CustomerProjectTabs";
 
 export default CustomerProjectTabs;

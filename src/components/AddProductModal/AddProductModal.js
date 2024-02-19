@@ -18,7 +18,7 @@ const AddProductModal = ({
   productCategories,
   handleAddProduct,
   defaultValues,
-  isEdit
+  isEdit,
 }) => {
   const [newProduct, setProduct] = useState({
     ProductName: "",
@@ -79,8 +79,8 @@ const AddProductModal = ({
         Length: defaultValues?.Length || "",
         FullImageFile: defaultValues?.FullImageFile || "",
         ThumbnailImageFile: defaultValues?.ThumbnailImageFile || "",
-      })
-  }, [defaultValues])
+      });
+  }, [defaultValues]);
 
   const saveChanges = () => {
     handleAddProduct({
@@ -101,7 +101,6 @@ const AddProductModal = ({
     });
   };
 
-
   const cancelChanges = () => {
     handleClose();
   };
@@ -109,7 +108,9 @@ const AddProductModal = ({
   return (
     <Modal centered size="lg" show={show} className="customer-modal">
       <Modal.Body>
-        <div className="page-title">{isEdit ? "Edit" : "Add"} Custom Product</div>
+        <div className="page-title">
+          {isEdit ? "Edit" : "Add"} Custom Product
+        </div>
         <Row>
           <Col md={6}>
             <Form.Group>
@@ -504,7 +505,9 @@ const AddProductModal = ({
               buttonText="Upload Image"
               fileURL={newProduct?.FullImageFile}
               onFileChange={(event) => onFileChange(event, "FullImageFile")}
-              placeholder={defaultValues?.ImageName || newProduct?.["FullImageFile"]?.name}
+              placeholder={
+                defaultValues?.ImageName || newProduct?.["FullImageFile"]?.name
+              }
             />
           </Col>
           <Col md={4}>
@@ -516,7 +519,10 @@ const AddProductModal = ({
               onFileChange={(event) =>
                 onFileChange(event, "ThumbnailImageFile")
               }
-              placeholder={defaultValues?.ThumbnailName || newProduct?.["ThumbnailImageFile"]?.name}
+              placeholder={
+                defaultValues?.ThumbnailName ||
+                newProduct?.["ThumbnailImageFile"]?.name
+              }
             />
           </Col>
           <Col md={4}>

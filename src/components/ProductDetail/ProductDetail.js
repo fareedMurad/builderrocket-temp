@@ -23,7 +23,7 @@ const ProductDetail = () => {
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const productDetail = useSelector((state) => state.product.productDetail);
   const ProductSelectedRoom = useSelector(
-    (state) => state.room.ProductSelectedRoom
+    (state) => state.room.ProductSelectedRoom,
   );
   const [isLoading, setIsLoading] = useState(true);
   const [addProductModal, setAddProductModal] = useState(false);

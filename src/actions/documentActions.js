@@ -1,28 +1,26 @@
-import api from '../api';
-import { GET_DOCUMENT_TYPES } from './types';
+import api from "../api";
+import { GET_DOCUMENT_TYPES } from "./types";
 
 /**
  * Get document types
- * 
+ *
  */
-export const getDocumentTypes = () => dispatch => {    
-    const URL = '/DocumentType';
+export const getDocumentTypes = () => (dispatch) => {
+  const URL = "/DocumentType";
 
-    return api({
-        method: 'GET',
-        url: URL
-    })
+  return api({
+    method: "GET",
+    url: URL,
+  })
     .then((response) => {
-        if (response?.status === 200) {
-            dispatch({ type: GET_DOCUMENT_TYPES, payload: response.data });
+      if (response?.status === 200) {
+        dispatch({ type: GET_DOCUMENT_TYPES, payload: response.data });
 
-            return response.data;
-        }
+        return response.data;
+      }
     })
-    .catch((error) => {
-
-    });
-}
+    .catch((error) => {});
+};
 
 /**
  * Add document to project
@@ -30,57 +28,53 @@ export const getDocumentTypes = () => dispatch => {
  * @param {*} document - document data
  * @param onUploadProgress
  */
-export const addDocument = (projectID, document, onUploadProgress) => dispatch => {
+export const addDocument =
+  (projectID, document, onUploadProgress) => (dispatch) => {
     const URL = `/Project/${projectID}/document`;
 
     return api({
-        method: 'POST',
-        url: URL,
-        data: document,
-        onUploadProgress: onUploadProgress
+      method: "POST",
+      url: URL,
+      data: document,
+      onUploadProgress: onUploadProgress,
     })
-    .then((response) => {
+      .then((response) => {
         if (response?.status === 200) {
-            return response.data;
+          return response.data;
         }
-
-    })
-    .catch((error) => {
-
-    });
-}
+      })
+      .catch((error) => {});
+  };
 
 /**
  * Delete document by document ID
- * @param {*} documentID 
- * 
+ * @param {*} documentID
+ *
  */
-export const deleteDocument = (documentID) => dispatch => {    
-    const URL = `/Document/${documentID}`;
+export const deleteDocument = (documentID) => (dispatch) => {
+  const URL = `/Document/${documentID}`;
 
-    return api({
-        method: 'DELETE',
-        url: URL
-    })
+  return api({
+    method: "DELETE",
+    url: URL,
+  })
     .then((response) => {
-        if (response?.status === 200) {
-            return response.data;
-        } 
+      if (response?.status === 200) {
+        return response.data;
+      }
 
-        return;
+      return;
     })
-    .catch((error) => {
-
-    });
-}
+    .catch((error) => {});
+};
 
 // /**
-//  * 
-//  * @param {*} documentID - ID of selected document  
+//  *
+//  * @param {*} documentID - ID of selected document
 //  * @param {*} documentNameObj - Object of document name { userFileName: 'NEW NAME' }
-//  *  
+//  *
 //  */
-// export const renameDocument = (documentID, documentNameObj) => dispatch => {    
+// export const renameDocument = (documentID, documentNameObj) => dispatch => {
 //     const URL = `/Document/${documentID}`;
 
 //     return api({
@@ -101,27 +95,24 @@ export const deleteDocument = (documentID) => dispatch => {
 // }
 
 /**
- * 
+ *
  * @param {*} documentNameObj - Object of document
- *  
+ *
  */
-export const updateDocument = (documentNameObj) => dispatch => {    
-    const URL = `/Document`;
+export const updateDocument = (documentNameObj) => (dispatch) => {
+  const URL = `/Document`;
 
-    return api({
-        method: 'PUT',
-        url: URL,
-        data: documentNameObj
-    })
+  return api({
+    method: "PUT",
+    url: URL,
+    data: documentNameObj,
+  })
     .then((response) => {
-        if (response?.status === 200) {
-            return response.data;
-        }
+      if (response?.status === 200) {
+        return response.data;
+      }
 
-        return;
+      return;
     })
-    .catch((error) => {
-
-    });
-}
-
+    .catch((error) => {});
+};

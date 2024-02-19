@@ -1,3 +1,3 @@
-import RoomGroupDetails from './RoomGroupDetails';
+import RoomGroupDetails from "./RoomGroupDetails";
 
 export default RoomGroupDetails;

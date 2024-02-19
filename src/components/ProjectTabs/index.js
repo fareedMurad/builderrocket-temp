@@ -1,3 +1,3 @@
-import ProjectTabs from './ProjectTabs';
+import ProjectTabs from "./ProjectTabs";
 
 export default ProjectTabs;

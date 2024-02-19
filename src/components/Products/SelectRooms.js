@@ -25,7 +25,7 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
       setProductFilter({ ...productFilter, rooms: rooms, pageNumber: 1 });
       dispatch({ type: PRODUCT_SELECTED_ROOM, payload: rooms });
     },
-    [dispatch, productFilter]
+    [dispatch, productFilter],
   );
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
         "blur",
         () => {
           setSearchableField({ ...searchableField, room: "" });
-        }
+        },
       );
     }
   }, [roomCategoryRef?.current]);
@@ -148,30 +148,30 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
                     !productFilter?.rooms
                       ? []
                       : project.BuilderProjectRooms?.length ===
-                        productFilter?.rooms?.length
-                      ? roomsOptions
-                      : roomsOptions.filter(
-                          (b) => productFilter?.rooms.indexOf(b.ID) > -1
-                        )
+                          productFilter?.rooms?.length
+                        ? roomsOptions
+                        : roomsOptions.filter(
+                            (b) => productFilter?.rooms.indexOf(b.ID) > -1,
+                          )
                   }
                   displayValue="name" // Property name to display in the dropdown options
                   onSelect={(arr, current) => {
                     if (current.value === "select_all") {
                       handleSelectedRoom(
-                        roomsOptions.filter((p) => p.value !== "select_all")
+                        roomsOptions.filter((p) => p.value !== "select_all"),
                       );
                       setRoomsOptions(
                         roomsOptions.map((r) =>
                           r.value === "select_all"
                             ? { ...r, selected: !r.selected }
-                            : r
-                        )
+                            : r,
+                        ),
                       );
                     } else {
                       handleSelectedRoom(
                         arr.sort((a, b) =>
-                          a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                        )
+                          a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
+                        ),
                       );
                     }
                   }}
@@ -179,7 +179,7 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
                     let rooms = arr
                       .filter((p) => p.value !== "select_all")
                       .sort((a, b) =>
-                        a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                        a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
                       );
                     if (target.value === "select_all") {
                       rooms = [];
@@ -187,8 +187,8 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
                         roomsOptions.map((r) =>
                           r.value === "select_all"
                             ? { ...r, selected: false }
-                            : r
-                        )
+                            : r,
+                        ),
                       );
                     }
                     handleSelectedRoom(rooms);

@@ -1,29 +1,26 @@
-import {
-    GET_SUBDIVISIONS,
-    ADD_SUBDIVISION
-} from '../actions/types';
+import { GET_SUBDIVISIONS, ADD_SUBDIVISION } from "../actions/types";
 
 const intialState = {
-    subdivisions: []
-}
+  subdivisions: [],
+};
 
 const subdivisionReducer = (state = intialState, action) => {
-    switch (action.type) {
-        case GET_SUBDIVISIONS: {
-            return {
-                ...state, 
-                subdivisions: action.payload
-            }
-        }
-        case ADD_SUBDIVISION: {
-            return {
-                ...state,
-                subdivisions: action.payload
-            }
-        }
-        default: 
-            return state;
+  switch (action.type) {
+    case GET_SUBDIVISIONS: {
+      return {
+        ...state,
+        subdivisions: action.payload,
+      };
     }
+    case ADD_SUBDIVISION: {
+      return {
+        ...state,
+        subdivisions: action.payload,
+      };
+    }
+    default:
+      return state;
+  }
 };
 
 export default subdivisionReducer;

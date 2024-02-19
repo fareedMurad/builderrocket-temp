@@ -17,10 +17,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 const RoomsTypes = () => {
   const roomTypes = useSelector(
-    (state) => state.builderRooms.builderRoomTypes?.RoomTypes
+    (state) => state.builderRooms.builderRoomTypes?.RoomTypes,
   );
   const roomGroups = useSelector(
-    (state) => state.builderRooms.builderRoomGroups?.Result
+    (state) => state.builderRooms.builderRoomGroups?.Result,
   );
   const [modalVisible, setModalVisible] = useState("");
   const [roomTypeName, setRoomTypeName] = useState("");
@@ -315,7 +315,7 @@ const RoomsTypes = () => {
             value: item?.DefaultRoomGroup?.ID,
             label: item?.DefaultRoomGroup?.Name,
           }
-        : {}
+        : {},
     );
 
     setModalVisible("EDIT_ROOM_TYPE");

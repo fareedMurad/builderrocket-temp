@@ -33,7 +33,7 @@ const Login = (props) => {
           } else {
             setError("Please Enter valid email or password!");
           }
-        }
+        },
       );
   };
 

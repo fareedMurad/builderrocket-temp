@@ -48,13 +48,13 @@ const Signup = (props) => {
         if (response) {
           history.push("/vendor/login");
         }
-      })
+      });
   };
 
   const handleLogout = () => {
     const customerDetails = {
       customerPortal: true,
-    }
+    };
     dispatch(logout(customerDetails)).then(() => {
       setLogoutModalVisible(false);
     });

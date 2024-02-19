@@ -13,7 +13,7 @@ const Customer = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setSelectedProjectTab('documents'));
+    dispatch(setSelectedProjectTab("documents"));
   }, []);
 
   return (

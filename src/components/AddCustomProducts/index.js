@@ -1,3 +1,3 @@
-import AddProduct from './AddCustomProducts';
+import AddProduct from "./AddCustomProducts";
 
 export default AddProduct;

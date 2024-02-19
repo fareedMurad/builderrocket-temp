@@ -1,3 +1,3 @@
-import VendorProducts from './VendorProducts';
+import VendorProducts from "./VendorProducts";
 
 export default VendorProducts;

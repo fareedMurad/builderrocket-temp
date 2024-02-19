@@ -76,8 +76,8 @@ const Subdivisions = () => {
               loading: true,
             };
             setProgress({ ...progress });
-          }
-        )
+          },
+        ),
       )
         .then((response) => {
           progress[1] = { progress: 0, loading: false };
@@ -133,20 +133,21 @@ const Subdivisions = () => {
   };
 
   const onUpdateDocument = (fileName) => {
-    dispatch(updateDocument({
+    dispatch(
+      updateDocument({
         ID: selectedDocument?.ID,
         DocumentTypeID: selectedDocument?.DocumentTypeID,
         FileName: selectedDocument?.FileName,
-        UserFileName: fileName
-    }))
-    .then(() => {
-     handleFetchSubdivisions();
-    })
-    .catch(() => {
-      alert("Something went wrong updating document name");
-    });
-  }
-
+        UserFileName: fileName,
+      }),
+    )
+      .then(() => {
+        handleFetchSubdivisions();
+      })
+      .catch(() => {
+        alert("Something went wrong updating document name");
+      });
+  };
 
   const deleteSubdivisionModal = () => {
     const isSubdivision = modalVisible === "DELETE_SUBDIVISION";
@@ -389,14 +390,12 @@ const Subdivisions = () => {
                                   short
                                   files={[room]}
                                   selectedInput={selectedDocumentID || room}
-                                  setSelectedInput={id => {
-                                    setSelectedDocument(room)
-                                    setSelectedDocumentID(id)
+                                  setSelectedInput={(id) => {
+                                    setSelectedDocument(room);
+                                    setSelectedDocumentID(id);
                                   }}
                                   handleDocumentDelete={() =>
-                                    handleDeleteSubdivisionDocumentModal(
-                                      room
-                                    )
+                                    handleDeleteSubdivisionDocumentModal(room)
                                   }
                                   hideUpload
                                   onUpdateDocument={onUpdateDocument}

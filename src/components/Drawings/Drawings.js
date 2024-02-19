@@ -31,7 +31,7 @@ const Drawings = () => {
   useEffect(() => {
     if (selectedDrawing)
       setNewDrawingName(
-        returnDrawings()?.find((d) => d.ID === selectedDrawing)?.UserFileName
+        returnDrawings()?.find((d) => d.ID === selectedDrawing)?.UserFileName,
       );
   }, [selectedDrawing]);
 
@@ -73,12 +73,12 @@ const Drawings = () => {
         .then((response) => {
           if (response) {
             let documents = project?.Documents?.filter(
-              (d) => d?.DocumentTypeID !== documentTypeID
+              (d) => d?.DocumentTypeID !== documentTypeID,
             );
             documents = documents.concat(
               response.Documents?.filter(
-                (d) => d?.DocumentTypeID === documentTypeID
-              )
+                (d) => d?.DocumentTypeID === documentTypeID,
+              ),
             );
             project.Documents = documents;
             dispatch(setSelectedProject({ ...project }));
@@ -138,7 +138,7 @@ const Drawings = () => {
     await dispatch(deleteDocument(drawingID))
       .then(async () => {
         project.Documents = project?.Documents?.filter(
-          (d) => d?.ID !== drawingID
+          (d) => d?.ID !== drawingID,
         );
         dispatch(setSelectedProject({ ...project }));
         setIsLoading(false);

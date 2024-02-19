@@ -13,7 +13,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
   const report = useSelector((state) => state.project.report);
   const reportByRoom = useSelector((state) => state.project.reportByRoom);
   const reportByCategory = useSelector(
-    (state) => state.project.reportByCategory
+    (state) => state.project.reportByCategory,
   );
   const reportsByVendor = useSelector((state) => state.project.reportsByVendor);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
@@ -28,7 +28,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
   const renderHeader = (
     printOnly = false,
     subHeader = null,
-    isEmpty = false
+    isEmpty = false,
   ) => {
     return (
       <thead className={printOnly ? "to-print-only" : ""}>
@@ -79,8 +79,8 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
   const renderGroup = (data, item) => {
     const filteredRooms = () => {
-      const rooms = data.Groups.filter((g) =>
-        localFilters?.roomFilters?.find((r) => r.ID === g.ID)
+      const rooms = data?.Groups?.filter((g) =>
+        localFilters?.roomFilters?.find((r) => r.ID === g.ID),
       );
 
       return rooms.map((room) => {
@@ -95,7 +95,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             });
 
             isFound = mergedList?.find(
-              (category) => category.CategoryID === product.CategoryID
+              (category) => category.CategoryID === product.CategoryID,
             );
 
             return isFound;
@@ -110,12 +110,12 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         <tbody>
           {filteredRooms()?.length
             ? filteredRooms()?.map((item, index) => {
-              return item ? (
-                <TableRow
-                  {...{ renderTableBody, item, allRooms: null, localFilters }}
-                />
-              ) : null;
-            })
+                return item ? (
+                  <TableRow
+                    {...{ renderTableBody, item, allRooms: null, localFilters }}
+                  />
+                ) : null;
+              })
             : null}
         </tbody>
       </>
@@ -124,7 +124,6 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
 
   const renderTableByLayout = () => {
     let table = null;
-
 
     switch (layout?.value) {
       case "list" || "vendor":
@@ -145,7 +144,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             {reportFilter
               ?.filter((item) => {
                 let rooms = localFilters.roomFilters?.filter(
-                  (r) => r.value !== "select_all"
+                  (r) => r.value !== "select_all",
                 );
                 if (rooms.length === reportByCategory.Rooms.length) {
                   return true;
@@ -154,7 +153,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                 return (
                   items?.length > 0 &&
                   items?.find((i) =>
-                    i.Rooms?.find((r) => rooms.find((pr) => pr.ID === r))
+                    i.Rooms?.find((r) => rooms.find((pr) => pr.ID === r)),
                   )
                 );
               })
@@ -235,8 +234,9 @@ export const TableRow = ({
         </th>
         <th className="contractor-type-name justify-content-end h-full bg-dark">
           <i
-            className={`far ${expend ? "fa-chevron-double-up" : "fa-chevron-double-down"
-              }`}
+            className={`far ${
+              expend ? "fa-chevron-double-up" : "fa-chevron-double-down"
+            }`}
           ></i>
         </th>
       </tr>
@@ -248,16 +248,16 @@ export const TableRow = ({
       {renderHeader ? renderHeader(false, groupRow) : groupRow}
       {items?.length > 0
         ? items
-          ?.filter((item) => {
-            let rooms = localFilters.roomFilters?.filter(
-              (r) => r.value !== "select_all"
-            );
-            if (!rooms || !allRooms || rooms.length === allRooms.length) {
-              return true;
-            }
-            return item.Rooms?.find((r) => rooms.find((pr) => pr.ID === r));
-          })
-          .map((item, index) => renderTableBody(item, index, expend))
+            ?.filter((item) => {
+              let rooms = localFilters.roomFilters?.filter(
+                (r) => r.value !== "select_all",
+              );
+              if (!rooms || !allRooms || rooms.length === allRooms.length) {
+                return true;
+              }
+              return item.Rooms?.find((r) => rooms.find((pr) => pr.ID === r));
+            })
+            .map((item, index) => renderTableBody(item, index, expend))
         : null}
     </>
   );
