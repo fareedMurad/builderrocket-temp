@@ -125,7 +125,10 @@ export const searchProducts = (categoryID, searchObject) => (dispatch) => {
   })
     .then((response) => {
       if (response.status === 200) {
-        dispatch({ type: SEARCH_PRODUCTS, payload: response.data });
+        dispatch({
+          type: SEARCH_PRODUCTS,
+          payload: response.data,
+        });
 
         return response.data;
       }

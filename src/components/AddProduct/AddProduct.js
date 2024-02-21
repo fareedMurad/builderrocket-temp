@@ -42,7 +42,7 @@ const AddProduct = () => {
   const products = useSelector((state) => state.product.products);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const ProductSelectedRoom = useSelector(
-    (state) => state.room.ProductSelectedRoom,
+    (state) => state.room.ProductSelectedRoom
   );
 
   const listCatgories = useSelector((state) => state.product.productCategories);
@@ -151,7 +151,7 @@ const AddProduct = () => {
       setProduct({
         ...product,
         CategoryID: parseInt(option.value),
-      }),
+      })
     );
   };
 
@@ -196,7 +196,7 @@ const AddProduct = () => {
     };
     dispatch(
       // handleAddProductForProject(newProduct)
-      handleAddMyProductToProject(newProduct),
+      handleAddMyProductToProject(newProduct)
     ).then((project) => {
       dispatch(setSelectedProject(project));
       setAddProductModal(false);
@@ -229,7 +229,7 @@ const AddProduct = () => {
         CategoryID: productDetail.CategoryID,
         RoughInTrimOutEnum: "RoughIn",
         IsApproved: false,
-      }),
+      })
     );
     dispatch(setProductDetail(productDetail)).then(() => {
       //setShowColorModal(true);
@@ -243,7 +243,12 @@ const AddProduct = () => {
       Filter: searchRef.current.value,
     };
 
-    dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch));
+    setIsLoading(true);
+    dispatch(
+      searchProducts(productRef.current?.CategoryID, updatedSearch)
+    ).then(() => {
+      setIsLoading(false);
+    });
     setSearchObject(updatedSearch);
   };
 
@@ -316,138 +321,120 @@ const AddProduct = () => {
         </div>
       </div>
 
-      {productRef.current?.CategoryID ? (
-        <div className="add-products-body d-flex">
-          <div className="checkbox-filter">
-            {products?.CustomFilters &&
-              Object.keys(products?.CustomFilters)
-                ?.reverse()
-                ?.map((filter, index) => (
-                  <div key={index} className="mt-3 mb-5">
-                    <div className="bold-text mb-3">{filter}</div>
+      <div className="add-products-body d-flex">
+        <div className="checkbox-filter">
+          {products?.CustomFilters &&
+            Object.keys(products?.CustomFilters)
+              ?.reverse()
+              ?.map((filter, index) => (
+                <div key={index} className="mt-3 mb-5">
+                  <div className="bold-text mb-3">{filter}</div>
 
-                    {products?.CustomFilters?.[filter]?.map(
-                      (filterChild, childIndex) => (
-                        <Form.Check
-                          key={childIndex}
-                          type="checkbox"
-                          className="mt-2"
-                          label={filterChild?.Name}
-                          value={filterChild?.IsChecked}
-                          onClick={() =>
-                            handleFilters(filter, filterChild, childIndex)
-                          }
-                        />
-                      ),
-                    )}
-                  </div>
-                ))}
-          </div>
+                  {products?.CustomFilters?.[filter]?.map(
+                    (filterChild, childIndex) => (
+                      <Form.Check
+                        key={childIndex}
+                        type="checkbox"
+                        className="mt-2"
+                        label={filterChild?.Name}
+                        value={filterChild?.IsChecked}
+                        onClick={() =>
+                          handleFilters(filter, filterChild, childIndex)
+                        }
+                      />
+                    )
+                  )}
+                </div>
+              ))}
+        </div>
 
-          <div className="add-product-table">
-            {isLoading ? (
-              <div className="add-products-spinner d-flex justify-content-center">
-                <Spinner animation="border" variant="primary" />
-              </div>
-            ) : (
-              <Table hover responsive>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Product Name</th>
-                    <th>Model Number</th>
-                    <th>Color/Finish</th>
-                    <th>Distributor</th>
-                    <th>Price</th>
-                    <th></th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products?.Products?.slice(0, 25)?.map((product, index) => (
-                    <tr key={index}>
-                      <td>
-                        <CustomLightbox
-                          images={[
-                            product?.ThumbnailName
-                              ? product?.ThumbnailURL
-                              : Avatar,
-                          ]}
-                        />
-                      </td>
-                      <td>
-                        <div className="add-btn-product-details">
-                          <Button
-                            variant="link"
-                            className="link-btn item-button"
-                            onClick={() =>
-                              handleSelectedProductDetails(product)
-                            }
-                          >
-                            {product?.ProductName}
-                          </Button>
+        <div className="add-product-table">
+          {isLoading ? (
+            <div className="add-products-spinner d-flex justify-content-center">
+              <Spinner animation="border" variant="primary" />
+            </div>
+          ) : (
+            <Table hover responsive>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Product Name</th>
+                  <th>Model Number</th>
+                  <th>Color/Finish</th>
+                  <th>Distributor</th>
+                  <th>Price</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {products?.Products?.slice(0, 25)?.map((product, index) => (
+                  <tr key={index}>
+                    <td>
+                      <CustomLightbox
+                        images={[
+                          product?.ThumbnailName
+                            ? product?.ThumbnailURL
+                            : Avatar,
+                        ]}
+                      />
+                    </td>
+                    <td>
+                      <div className="add-btn-product-details">
+                        <Button
+                          variant="link"
+                          className="link-btn item-button"
+                          onClick={() => handleSelectedProductDetails(product)}
+                        >
+                          {product?.ProductName}
+                        </Button>
 
-                          <div className="d-flex mt-2">
-                            <div className="model-number">
-                              Model: {product?.ModelNumber}
-                            </div>
-                            <div>Part:</div>
+                        <div className="d-flex mt-2">
+                          <div className="model-number">
+                            Model: {product?.ModelNumber}
                           </div>
+                          <div>Part:</div>
                         </div>
-                      </td>
-                      <td>{product?.ModelNumber}</td>
-                      <td>{product?.ColorFinish}</td>
-                      <td>
-                        <div className="distributor-select">
-                          <Form.Control as="select"></Form.Control>
-                          <div>Available from x vendors</div>
-                        </div>
-                      </td>
-                      <td>${product?.MSRP}</td>
-                      <td>
-                        <i className={`far fa-heart`}></i>
-                      </td>
-                      <td>
-                        {addActionLoading?.ID === product.ID ? (
-                          <Spinner
-                            size="sm"
-                            animation="border"
-                            variant="primary"
-                          />
-                        ) : (
-                          <Button
-                            className="add-product-btn"
-                            onClick={() => {
-                              setSelectedProduct(product);
-                              setAddProductModal(true);
-                            }}
-                          >
-                            Add
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            )}
-          </div>
+                      </div>
+                    </td>
+                    <td>{product?.ModelNumber}</td>
+                    <td>{product?.ColorFinish}</td>
+                    <td>
+                      <div className="distributor-select">
+                        <Form.Control as="select"></Form.Control>
+                        <div>Available from x vendors</div>
+                      </div>
+                    </td>
+                    <td>${product?.MSRP}</td>
+                    <td>
+                      <i className={`far fa-heart`}></i>
+                    </td>
+                    <td>
+                      {addActionLoading?.ID === product.ID ? (
+                        <Spinner
+                          size="sm"
+                          animation="border"
+                          variant="primary"
+                        />
+                      ) : (
+                        <Button
+                          className="add-product-btn"
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setAddProductModal(true);
+                          }}
+                        >
+                          Add
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
         </div>
-      ) : (
-        <div className="text-secondary" style={{ minHeight: "200px" }}>
-          <p>Please select the category</p>
-        </div>
-      )}
-
-      {/* <div className='d-flex justify-content-center p2-5'>
-                <Button
-                    variant='link'
-                    className='cancel'
-                    onClick={handleGoToProducts}
-                >
-                    Cancel
-                </Button>
-            </div> */}
+      </div>
 
       <ProductModal
         show={showModal}
