@@ -32,6 +32,7 @@ import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProdu
 import Select, { components } from "react-select";
 import SelectRooms from "../Products/SelectRooms";
 import { handleAddMyProductToProject } from "../../actions/myProductActions";
+import ProductPagination from "../Pagination/Pagination";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -57,6 +58,9 @@ const AddProduct = () => {
   const [productFilter, setProductFilter] = useState({
     rooms: [],
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   useEffect(() => {
     const list = [];
@@ -312,12 +316,12 @@ const AddProduct = () => {
             </Button>
           </div>
           <div></div>
-          <div className="d-flex qty-items-select justify-content-end">
+          {/* <div className="d-flex qty-items-select justify-content-end">
             <Form.Control as="select">
               <option>25</option>
             </Form.Control>
             <div className="select-text">Items Per Page</div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -368,7 +372,10 @@ const AddProduct = () => {
                 </tr>
               </thead>
               <tbody>
-                {products?.Products?.slice(0, 25)?.map((product, index) => (
+                {products?.Products?.slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )?.map((product, index) => (
                   <tr key={index}>
                     <td>
                       <CustomLightbox
@@ -433,6 +440,14 @@ const AddProduct = () => {
               </tbody>
             </Table>
           )}
+          <div className="d-flex justify-content-center">
+            <ProductPagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              totalItems={products?.Products?.length}
+            />
+          </div>
         </div>
       </div>
 
