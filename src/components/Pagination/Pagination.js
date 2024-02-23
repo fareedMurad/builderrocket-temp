@@ -5,11 +5,13 @@ function ProductPagination({
   setCurrentPage,
   itemsPerPage,
   totalItems,
+  handlePaginate,
 }) {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePrev = () => {
     if (currentPage > 1) {
+      handlePaginate(currentPage - 1)
       setCurrentPage(currentPage - 1);
     }
   };
@@ -17,6 +19,7 @@ function ProductPagination({
   const handleNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
+      handlePaginate(currentPage + 1)
     }
   };
   return (

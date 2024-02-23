@@ -33,6 +33,7 @@ import Select, { components } from "react-select";
 import SelectRooms from "../Products/SelectRooms";
 import { handleAddMyProductToProject } from "../../actions/myProductActions";
 import ProductPagination from "../Pagination/Pagination";
+import axios from "axios";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const AddProduct = () => {
   const product = useSelector((state) => state.product.product);
   const project = useSelector((state) => state.project.project);
   const products = useSelector((state) => state.product.products);
+  // console.log("single products",products. )
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const ProductSelectedRoom = useSelector(
     (state) => state.room.ProductSelectedRoom
@@ -60,7 +62,7 @@ const AddProduct = () => {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(6);
 
   useEffect(() => {
     const list = [];
@@ -71,13 +73,6 @@ const AddProduct = () => {
         value: c.ID,
         label: c.Name?.replaceAll("&nbsp;", ""),
       });
-      // c.SubCategories?.forEach((sc) => {
-      //   list.push({
-      //     ...sc,
-      //     value: sc.ID,
-      //     label: sc.Name?.replaceAll("&nbsp;", ""),
-      //   });
-      // });
     });
     setProductCategories(list.sort((a, b) => a.label?.localeCompare(b.label)));
   }, [listCatgories]);
@@ -255,6 +250,21 @@ const AddProduct = () => {
     });
     setSearchObject(updatedSearch);
   };
+
+  const handlePaginate = (page, size) => {
+    const updatedSearch = {
+      ...searchObject,
+      PageNumber: page,
+      PageSize: size
+
+    };
+    setIsLoading(true);
+    dispatch(
+      searchProducts(productRef.current?.CategoryID, updatedSearch)
+    ).then(() => {
+      setIsLoading(false);
+    });
+  }
 
   const handleGoToProducts = () => {
     history.push(`/project/${project.ProjectNumber}/products`);
@@ -444,6 +454,7 @@ const AddProduct = () => {
             <ProductPagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
+              handlePaginate={handlePaginate}
               itemsPerPage={itemsPerPage}
               totalItems={products?.Products?.length}
             />
