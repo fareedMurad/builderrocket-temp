@@ -119,6 +119,10 @@ const Contractors = () => {
       saveProjectContractor(project.ID, contractorTypeID, contractorID)
     ).then((data) => {
       console.log(data);
+
+      // dispatch(getProductDetails(projectRef.current?.ID))
+      //     .then(() => setIsLoading(false))
+      //     .catch(() => setIsLoading(false));
     });
 
     let newContractorsMap;

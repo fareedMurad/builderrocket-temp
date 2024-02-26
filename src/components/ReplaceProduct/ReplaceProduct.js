@@ -38,7 +38,7 @@ const ReplaceProduct = () => {
   const project = useSelector((state) => state.project.project);
   const replaceProduct = useSelector((state) => state.product.replaceProduct);
   const productDetials = useSelector(
-    (state) => state.product.replaceOldProductDetails
+    (state) => state.product.replaceOldProductDetails,
   );
   const products = useSelector((state) => state.product.products);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
@@ -126,7 +126,7 @@ const ReplaceProduct = () => {
       setProduct({
         ...product,
         CategoryID: parseInt(option.value),
-      })
+      }),
     );
   };
 
@@ -228,7 +228,7 @@ const ReplaceProduct = () => {
     dispatch(getReplaceProduct(ID, includedRooms(productDetials.ID))).then(
       () => {
         setShowModal(true);
-      }
+      },
     );
   };
 
@@ -313,7 +313,7 @@ const ReplaceProduct = () => {
             value={pageCount}
             onChange={(e) =>
               setPageCount(
-                e.target.value === "all" ? "all" : parseInt(e.target.value)
+                e.target.value === "all" ? "all" : parseInt(e.target.value),
               )
             }
           >
@@ -346,7 +346,7 @@ const ReplaceProduct = () => {
                       handleFilters(filter, filterChild, childIndex)
                     }
                   />
-                )
+                ),
               )}
             </div>
           ))}
