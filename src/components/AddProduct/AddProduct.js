@@ -32,6 +32,8 @@ import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProdu
 import Select, { components } from "react-select";
 import SelectRooms from "../Products/SelectRooms";
 import { handleAddMyProductToProject } from "../../actions/myProductActions";
+import ProductPagination from "../Pagination/Pagination";
+import axios from "axios";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -40,9 +42,10 @@ const AddProduct = () => {
   const product = useSelector((state) => state.product.product);
   const project = useSelector((state) => state.project.project);
   const products = useSelector((state) => state.product.products);
+  // console.log("single products",products. )
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const ProductSelectedRoom = useSelector(
-    (state) => state.room.ProductSelectedRoom,
+    (state) => state.room.ProductSelectedRoom
   );
 
   const listCatgories = useSelector((state) => state.product.productCategories);
@@ -58,6 +61,9 @@ const AddProduct = () => {
     rooms: [],
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6);
+
   useEffect(() => {
     const list = [];
 
@@ -67,13 +73,6 @@ const AddProduct = () => {
         value: c.ID,
         label: c.Name?.replaceAll("&nbsp;", ""),
       });
-      // c.SubCategories?.forEach((sc) => {
-      //   list.push({
-      //     ...sc,
-      //     value: sc.ID,
-      //     label: sc.Name?.replaceAll("&nbsp;", ""),
-      //   });
-      // });
     });
     setProductCategories(list.sort((a, b) => a.label?.localeCompare(b.label)));
   }, [listCatgories]);
@@ -151,7 +150,7 @@ const AddProduct = () => {
       setProduct({
         ...product,
         CategoryID: parseInt(option.value),
-      }),
+      })
     );
   };
 
@@ -196,7 +195,7 @@ const AddProduct = () => {
     };
     dispatch(
       // handleAddProductForProject(newProduct)
-      handleAddMyProductToProject(newProduct),
+      handleAddMyProductToProject(newProduct)
     ).then((project) => {
       dispatch(setSelectedProject(project));
       setAddProductModal(false);
@@ -229,7 +228,7 @@ const AddProduct = () => {
         CategoryID: productDetail.CategoryID,
         RoughInTrimOutEnum: "RoughIn",
         IsApproved: false,
-      }),
+      })
     );
     dispatch(setProductDetail(productDetail)).then(() => {
       //setShowColorModal(true);
@@ -243,8 +242,27 @@ const AddProduct = () => {
       Filter: searchRef.current.value,
     };
 
-    dispatch(searchProducts(productRef.current?.CategoryID, updatedSearch));
+    setIsLoading(true);
+    dispatch(
+      searchProducts(productRef.current?.CategoryID, updatedSearch)
+    ).then(() => {
+      setIsLoading(false);
+    });
     setSearchObject(updatedSearch);
+  };
+
+  const handlePaginate = (page, size) => {
+    const updatedSearch = {
+      ...searchObject,
+      PageNumber: page,
+      PageSize: 50,
+    };
+    setIsLoading(true);
+    dispatch(
+      searchProducts(productRef.current?.CategoryID, updatedSearch)
+    ).then(() => {
+      setIsLoading(false);
+    });
   };
 
   const handleGoToProducts = () => {
@@ -307,44 +325,44 @@ const AddProduct = () => {
             </Button>
           </div>
           <div></div>
-          <div className="d-flex qty-items-select justify-content-end">
+          {/* <div className="d-flex qty-items-select justify-content-end">
             <Form.Control as="select">
               <option>25</option>
             </Form.Control>
             <div className="select-text">Items Per Page</div>
-          </div>
+          </div> */}
         </div>
       </div>
 
-      {productRef.current?.CategoryID ? (
-        <div className="add-products-body d-flex">
-          <div className="checkbox-filter">
-            {products?.CustomFilters &&
-              Object.keys(products?.CustomFilters)
-                ?.reverse()
-                ?.map((filter, index) => (
-                  <div key={index} className="mt-3 mb-5">
-                    <div className="bold-text mb-3">{filter}</div>
+      <div className="add-products-body d-flex">
+        <div className="checkbox-filter">
+          {products?.CustomFilters &&
+            Object.keys(products?.CustomFilters)
+              ?.reverse()
+              ?.map((filter, index) => (
+                <div key={index} className="mt-3 mb-5">
+                  <div className="bold-text mb-3">{filter}</div>
 
-                    {products?.CustomFilters?.[filter]?.map(
-                      (filterChild, childIndex) => (
-                        <Form.Check
-                          key={childIndex}
-                          type="checkbox"
-                          className="mt-2"
-                          label={filterChild?.Name}
-                          value={filterChild?.IsChecked}
-                          onClick={() =>
-                            handleFilters(filter, filterChild, childIndex)
-                          }
-                        />
-                      ),
-                    )}
-                  </div>
-                ))}
-          </div>
+                  {products?.CustomFilters?.[filter]?.map(
+                    (filterChild, childIndex) => (
+                      <Form.Check
+                        key={childIndex}
+                        type="checkbox"
+                        className="mt-2"
+                        label={filterChild?.Name}
+                        value={filterChild?.IsChecked}
+                        onClick={() =>
+                          handleFilters(filter, filterChild, childIndex)
+                        }
+                      />
+                    )
+                  )}
+                </div>
+              ))}
+        </div>
 
-          <div className="add-product-table">
+        <div className="add-product-table">
+          <div style={{ minHeight: "500px" }}>
             {isLoading ? (
               <div className="add-products-spinner d-flex justify-content-center">
                 <Spinner animation="border" variant="primary" />
@@ -364,7 +382,7 @@ const AddProduct = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products?.Products?.slice(0, 25)?.map((product, index) => (
+                  {products?.Products?.map((product, index) => (
                     <tr key={index}>
                       <td>
                         <CustomLightbox
@@ -432,22 +450,17 @@ const AddProduct = () => {
               </Table>
             )}
           </div>
-        </div>
-      ) : (
-        <div className="text-secondary" style={{ minHeight: "200px" }}>
-          <p>Please select the category</p>
-        </div>
-      )}
 
-      {/* <div className='d-flex justify-content-center p2-5'>
-                <Button
-                    variant='link'
-                    className='cancel'
-                    onClick={handleGoToProducts}
-                >
-                    Cancel
-                </Button>
-            </div> */}
+          <div className="d-flex justify-content-center mt-5">
+            <ProductPagination
+              handlePaginate={handlePaginate}
+              pageIndex={products?.PageNumber}
+              pageCount={products?.ProductsCount}
+              pageSize={products?.pageSize}
+            />
+          </div>
+        </div>
+      </div>
 
       <ProductModal
         show={showModal}

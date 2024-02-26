@@ -21,6 +21,7 @@ import {
   getBuilderRoomGroupDetails,
   getRoomGroupCategoryProduct,
 } from "../../actions/roomActions";
+import ProductPagination from "../Pagination/Pagination";
 
 const RoomGroupDetails = () => {
   const dispatch = useDispatch();
@@ -317,6 +318,20 @@ const RoomGroupDetails = () => {
     setSearchObject(updatedSearch);
   };
 
+  const handlePaginate = (page, size) => {
+    const updatedSearch = {
+      ...searchObject,
+      PageNumber: page,
+      PageSize: 50,
+    };
+    setIsLoading(true);
+    dispatch(searchProducts(selectedCategoryID?.value, updatedSearch)).then(
+      () => {
+        setIsLoading(false);
+      }
+    );
+  };
+
   return (
     <div className="add-product-container position-relative">
       <div className="d-flex">
@@ -471,7 +486,7 @@ const RoomGroupDetails = () => {
                   ))}
             </div>
             {selectedCategoryID ? (
-              <div className="add-products-body d-flex">
+              <div className="add-products-body d-flex" style={{ flex: 1 }}>
                 <div className="add-product-table w-100 px-3">
                   <Table hover responsive>
                     <thead>
@@ -558,6 +573,14 @@ const RoomGroupDetails = () => {
                       )}
                     </tbody>
                   </Table>
+                  <div className="d-flex justify-content-center mt-5">
+                    <ProductPagination
+                      handlePaginate={handlePaginate}
+                      pageIndex={products?.PageNumber}
+                      pageCount={products?.ProductsCount}
+                      pageSize={products?.pageSize}
+                    />
+                  </div>
                 </div>
               </div>
             ) : (

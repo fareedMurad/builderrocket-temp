@@ -28,6 +28,7 @@ import testUtils from "react-dom/test-utils";
 import Utils from "../../utils";
 import CustomLightbox from "../Lightbox";
 import ColorProductModal from "../ColorProductModal";
+import ProductPagination from "../Pagination/Pagination";
 
 const ReplaceProduct = () => {
   const dispatch = useDispatch();
@@ -108,7 +109,7 @@ const ReplaceProduct = () => {
     setIsLoading(true);
     const updatedSearch = {
       ...searchObject,
-      CategoryID: selectedCategory?.value || productRef.current?.CategoryID,
+      CategoryID: selectedCategory?.value,
       Filter: searchRef?.current?.value,
     };
     dispatch(searchProducts(updatedSearch.CategoryID, updatedSearch))
@@ -197,7 +198,12 @@ const ReplaceProduct = () => {
       Filter: searchRef.current.value,
     };
 
-    dispatch(searchProducts(selectedCategory?.value, updatedSearch));
+    setIsLoading(true);
+    dispatch(searchProducts(selectedCategory?.value, updatedSearch)).then(
+      () => {
+        setIsLoading(false);
+      }
+    );
     setSearchObject(updatedSearch);
   };
 
@@ -235,6 +241,20 @@ const ReplaceProduct = () => {
       pageCount === "all" ? listProducts : listProducts?.slice(0, pageCount);
 
     return pagedProducts;
+  };
+
+  const handlePaginate = (page, size) => {
+    const updatedSearch = {
+      ...searchObject,
+      PageNumber: page,
+      PageSize: 50,
+    };
+    setIsLoading(true);
+    dispatch(
+      searchProducts(productRef.current?.CategoryID, updatedSearch)
+    ).then(() => {
+      setIsLoading(false);
+    });
   };
 
   return (
@@ -409,13 +429,15 @@ const ReplaceProduct = () => {
               </tbody>
             </Table>
           )}
+          <div className="d-flex justify-content-center mt-5">
+            <ProductPagination
+              handlePaginate={handlePaginate}
+              pageIndex={products?.PageNumber}
+              pageCount={products?.ProductsCount}
+              pageSize={products?.pageSize}
+            />
+          </div>
         </div>
-      </div>
-
-      <div className="d-flex justify-content-center p2-5">
-        <Button variant="link" className="cancel" onClick={handleGoToProducts}>
-          Cancel
-        </Button>
       </div>
 
       {showModal && (

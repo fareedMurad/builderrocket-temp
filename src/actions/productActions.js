@@ -114,18 +114,21 @@ export const getProducts = (filterObject) => (dispatch) => {
 export const searchProducts = (categoryID, searchObject) => (dispatch) => {
   let URL = "/product/Search";
 
-  if (categoryID) {
-    URL = `${URL}/${categoryID}`;
-  }
+  // if (categoryID) {
+  //   URL = `${URL}/${categoryID}`;
+  // }
 
   return api({
     method: "POST",
     url: URL,
-    data: searchObject,
+    data: { PageSize: 50, ...searchObject },
   })
     .then((response) => {
       if (response.status === 200) {
-        dispatch({ type: SEARCH_PRODUCTS, payload: response.data });
+        dispatch({
+          type: SEARCH_PRODUCTS,
+          payload: response.data,
+        });
 
         return response.data;
       }

@@ -27,7 +27,7 @@ const Contractors = () => {
   const project = useSelector((state) => state.project.project);
   const contractors = useSelector((state) => state.contractor.contractors);
   const contractorTypes = useSelector(
-    (state) => state.contractor.contractorTypes,
+    (state) => state.contractor.contractorTypes
   );
   // const documentTypes = useSelector(state => state.document.documentTypes)
 
@@ -49,7 +49,7 @@ const Contractors = () => {
     // filter contractors that fit contractor type ID
     return contractors
       ?.filter((contractor) =>
-        contractor.ContractorTypes.find((type) => type.ID === id),
+        contractor.ContractorTypes.find((type) => type.ID === id)
       )
       .sort(function (x, y) {
         return y.IsFavorite - x.IsFavorite;
@@ -116,7 +116,7 @@ const Contractors = () => {
     if (!contractorTypeID) return;
 
     dispatch(
-      saveProjectContractor(project.ID, contractorTypeID, contractorID),
+      saveProjectContractor(project.ID, contractorTypeID, contractorID)
     ).then((data) => {
       console.log(data);
 
@@ -130,7 +130,7 @@ const Contractors = () => {
 
     if (contractorID) {
       selectedContractor = contractors.find(
-        (contractor) => contractor.ID === contractorID,
+        (contractor) => contractor.ID === contractorID
       );
 
       // update the selected contractor TYPE with selected contractor
@@ -172,7 +172,7 @@ const Contractors = () => {
       () => {
         setIsLoading(false);
         dispatch(setSelectedProjectTab("drawings"));
-      },
+      }
     );
   };
 
@@ -234,7 +234,7 @@ const Contractors = () => {
                         {contractor.FirstName && ` - ${contractor.FirstName}`}
                         {contractor.LastName && ` ${contractor.LastName}`}
                       </option>
-                    ),
+                    )
                   )}
                 </Form.Control>
 
@@ -244,7 +244,9 @@ const Contractors = () => {
                       <div className="pr-3">
                         <i className="fas fa-phone mr-2"></i>
                         <a
-                          href={`tel:+1${contractorsInfo?.[contractorType?.ID]?.PhoneNumber}`}
+                          href={`tel:+1${
+                            contractorsInfo?.[contractorType?.ID]?.PhoneNumber
+                          }`}
                         >
                           {contractorsInfo?.[contractorType?.ID]?.PhoneNumber}
                         </a>
@@ -254,7 +256,9 @@ const Contractors = () => {
                       <div>
                         <i className="fas fa-envelope mr-2"></i>
                         <a
-                          href={`mailto:${contractorsInfo?.[contractorType?.ID]?.EmailAddress}`}
+                          href={`mailto:${
+                            contractorsInfo?.[contractorType?.ID]?.EmailAddress
+                          }`}
                         >
                           {contractorsInfo?.[contractorType?.ID]?.EmailAddress}
                         </a>
