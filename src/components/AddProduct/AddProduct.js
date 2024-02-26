@@ -255,8 +255,7 @@ const AddProduct = () => {
     const updatedSearch = {
       ...searchObject,
       PageNumber: page,
-      PageSize: size
-
+      PageSize: 50,
     };
     setIsLoading(true);
     dispatch(
@@ -264,7 +263,7 @@ const AddProduct = () => {
     ).then(() => {
       setIsLoading(false);
     });
-  }
+  };
 
   const handleGoToProducts = () => {
     history.push(`/project/${project.ProjectNumber}/products`);
@@ -363,100 +362,101 @@ const AddProduct = () => {
         </div>
 
         <div className="add-product-table">
-          {isLoading ? (
-            <div className="add-products-spinner d-flex justify-content-center">
-              <Spinner animation="border" variant="primary" />
-            </div>
-          ) : (
-            <Table hover responsive>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Product Name</th>
-                  <th>Model Number</th>
-                  <th>Color/Finish</th>
-                  <th>Distributor</th>
-                  <th>Price</th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {products?.Products?.slice(
-                  (currentPage - 1) * itemsPerPage,
-                  currentPage * itemsPerPage
-                )?.map((product, index) => (
-                  <tr key={index}>
-                    <td>
-                      <CustomLightbox
-                        images={[
-                          product?.ThumbnailName
-                            ? product?.ThumbnailURL
-                            : Avatar,
-                        ]}
-                      />
-                    </td>
-                    <td>
-                      <div className="add-btn-product-details">
-                        <Button
-                          variant="link"
-                          className="link-btn item-button"
-                          onClick={() => handleSelectedProductDetails(product)}
-                        >
-                          {product?.ProductName}
-                        </Button>
-
-                        <div className="d-flex mt-2">
-                          <div className="model-number">
-                            Model: {product?.ModelNumber}
-                          </div>
-                          <div>Part:</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{product?.ModelNumber}</td>
-                    <td>{product?.ColorFinish}</td>
-                    <td>
-                      <div className="distributor-select">
-                        <Form.Control as="select"></Form.Control>
-                        <div>Available from x vendors</div>
-                      </div>
-                    </td>
-                    <td>${product?.MSRP}</td>
-                    <td>
-                      <i className={`far fa-heart`}></i>
-                    </td>
-                    <td>
-                      {addActionLoading?.ID === product.ID ? (
-                        <Spinner
-                          size="sm"
-                          animation="border"
-                          variant="primary"
-                        />
-                      ) : (
-                        <Button
-                          className="add-product-btn"
-                          onClick={() => {
-                            setSelectedProduct(product);
-                            setAddProductModal(true);
-                          }}
-                        >
-                          Add
-                        </Button>
-                      )}
-                    </td>
+          <div style={{ minHeight: "500px" }}>
+            {isLoading ? (
+              <div className="add-products-spinner d-flex justify-content-center">
+                <Spinner animation="border" variant="primary" />
+              </div>
+            ) : (
+              <Table hover responsive>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Product Name</th>
+                    <th>Model Number</th>
+                    <th>Color/Finish</th>
+                    <th>Distributor</th>
+                    <th>Price</th>
+                    <th></th>
+                    <th></th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-          <div className="d-flex justify-content-center">
+                </thead>
+                <tbody>
+                  {products?.Products?.map((product, index) => (
+                    <tr key={index}>
+                      <td>
+                        <CustomLightbox
+                          images={[
+                            product?.ThumbnailName
+                              ? product?.ThumbnailURL
+                              : Avatar,
+                          ]}
+                        />
+                      </td>
+                      <td>
+                        <div className="add-btn-product-details">
+                          <Button
+                            variant="link"
+                            className="link-btn item-button"
+                            onClick={() =>
+                              handleSelectedProductDetails(product)
+                            }
+                          >
+                            {product?.ProductName}
+                          </Button>
+
+                          <div className="d-flex mt-2">
+                            <div className="model-number">
+                              Model: {product?.ModelNumber}
+                            </div>
+                            <div>Part:</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{product?.ModelNumber}</td>
+                      <td>{product?.ColorFinish}</td>
+                      <td>
+                        <div className="distributor-select">
+                          <Form.Control as="select"></Form.Control>
+                          <div>Available from x vendors</div>
+                        </div>
+                      </td>
+                      <td>${product?.MSRP}</td>
+                      <td>
+                        <i className={`far fa-heart`}></i>
+                      </td>
+                      <td>
+                        {addActionLoading?.ID === product.ID ? (
+                          <Spinner
+                            size="sm"
+                            animation="border"
+                            variant="primary"
+                          />
+                        ) : (
+                          <Button
+                            className="add-product-btn"
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setAddProductModal(true);
+                            }}
+                          >
+                            Add
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </div>
+
+          <div className="d-flex justify-content-center mt-5">
             <ProductPagination
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
               handlePaginate={handlePaginate}
-              itemsPerPage={itemsPerPage}
-              totalItems={products?.Products?.length}
+              pageIndex={products?.PageNumber}
+              pageCount={products?.ProductsCount}
+              pageSize={products?.pageSize}
             />
           </div>
         </div>
