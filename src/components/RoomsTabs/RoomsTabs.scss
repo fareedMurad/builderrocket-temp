@@ -66,3 +66,13 @@
   position: inherit !important;
   margin: 0 !important;
 }
+.add-category-dropdown__group-heading {
+  display: none !important;
+}
+.add-category-dropdown__group {
+  padding: 0 15px !important;
+  .add-category-dropdown__option::before {
+    content: "-";
+    margin-right: 5px;
+  }
+}

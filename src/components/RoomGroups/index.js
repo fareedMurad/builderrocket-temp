@@ -36,16 +36,16 @@ let wsRegex = /\s/g;
 
 const RoomGroups = () => {
   const roomTypes = useSelector(
-    (state) => state.builderRooms.builderRoomTypes?.RoomTypes,
+    (state) => state.builderRooms.builderRoomTypes?.RoomTypes
   );
   const roomGroups = useSelector(
-    (state) => state.builderRooms.builderRoomGroups?.Result,
+    (state) => state.builderRooms.builderRoomGroups?.Result
   );
   const selectedGroupCategories = useSelector(
-    (state) => state.builderRooms.selectedGroupDetails?.selectedGroupCategories,
+    (state) => state.builderRooms.selectedGroupDetails?.selectedGroupCategories
   );
   const selectedGroupId = useSelector(
-    (state) => state.builderRooms.selectedGroupDetails?.groupId,
+    (state) => state.builderRooms.selectedGroupDetails?.groupId
   );
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
@@ -57,7 +57,7 @@ const RoomGroups = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const listCategories = useSelector(
-    (state) => state.product.productCategories,
+    (state) => state.product.productCategories
   );
   const [categories, setCategories] = useState([]);
   const [expandID, setExpandID] = useState();
@@ -68,7 +68,7 @@ const RoomGroups = () => {
   });
 
   useEffect(() => {
-    const list = [];
+    let list = [];
 
     listCategories.forEach((c) => {
       list.push({
@@ -76,15 +76,18 @@ const RoomGroups = () => {
         value: c.ID,
         label: c.Name?.replaceAll("&nbsp;", ""),
       });
-      c.SubCategories?.forEach((sc) => {
+      if (c.SubCategories?.length) {
         list.push({
-          ...sc,
-          value: sc.ID,
-          label: sc.Name?.replaceAll("&nbsp;", ""),
+          ...c,
+          options: c.SubCategories?.map((sc) => ({
+            ...sc,
+            value: sc.ID,
+            label: sc.Name?.replaceAll("&nbsp;", ""),
+          })),
         });
-      });
+      }
     });
-    setCategories(list.sort((a, b) => a.label?.localeCompare(b.label)));
+    setCategories(list);
   }, [listCategories]);
 
   useEffect(() => {
@@ -144,7 +147,7 @@ const RoomGroups = () => {
     dispatch(deleteRoomGroup(selectedGroup.ID))
       .then((res) => {
         const findRoomType = roomTypes.find(
-          (rt) => rt.Name === selectedGroup?.Name,
+          (rt) => rt.Name === selectedGroup?.Name
         );
         if (findRoomType) {
           dispatch(deleteRoomType(findRoomType.ID));
@@ -191,7 +194,7 @@ const RoomGroups = () => {
         roomGroups?.find(
           (rg) =>
             rg.Name.replaceAll(wsRegex, "") ===
-            groupName.replaceAll(wsRegex, ""),
+            groupName.replaceAll(wsRegex, "")
         )
       ) {
         setdublicateEditAttempted(true);
@@ -200,7 +203,7 @@ const RoomGroups = () => {
       dispatch(renameRoomGroup(selectedGroup?.ID, groupName))
         .then(() => {
           const findRoomType = roomTypes.find(
-            (rt) => rt.Name === selectedGroup?.Name,
+            (rt) => rt.Name === selectedGroup?.Name
           );
           if (findRoomType) {
             const params = {
@@ -273,12 +276,12 @@ const RoomGroups = () => {
       ? roomGroups?.find(
           (rg) =>
             rg.Name.replaceAll(wsRegex, "") ===
-            groupName.replaceAll(wsRegex, ""),
+            groupName.replaceAll(wsRegex, "")
         )
       : roomGroups?.find(
           (rg) =>
             rg.Name.replaceAll(wsRegex, "") ===
-            groupName.replaceAll(wsRegex, ""),
+            groupName.replaceAll(wsRegex, "")
         ) && dublicateEditAttempted;
     return (
       <Modal
@@ -337,12 +340,11 @@ const RoomGroups = () => {
           <Form.Group>
             <Form.Label className="input-label">Select Category</Form.Label>
             <Select
-              options={categories?.map((c) => {
-                return { ...c, label: c.Name, value: c.ID };
-              })}
+              options={categories}
               className="input-gray"
               value={newCategory}
               onChange={(option) => setNewCategory(option)}
+              classNamePrefix="add-category-dropdown"
             />
           </Form.Group>
           <div className="d-flex justify-content-center pt-5">
@@ -428,8 +430,8 @@ const RoomGroups = () => {
         category.CategoryID,
         product?.ID,
         value,
-        field,
-      ),
+        field
+      )
     ).then(async () => {
       await handleGetBuilderRoomGroupDetails();
     });
@@ -493,13 +495,13 @@ const RoomGroups = () => {
                       ) : (
                         <Accordion
                           defaultActiveKey={selectedGroupCategories?.map(
-                            (g) => g.ID,
+                            (g) => g.ID
                           )}
                           alwaysOpen
                         >
                           {selectedGroupCategories
                             ?.sort((a, b) =>
-                              a.Category?.Name?.localeCompare(b.Category?.Name),
+                              a.Category?.Name?.localeCompare(b.Category?.Name)
                             )
                             ?.map((templateItem, index) => {
                               return (
@@ -515,7 +517,7 @@ const RoomGroups = () => {
                                           onClick={(e) =>
                                             handleDeleteGroupCategory(
                                               e,
-                                              templateItem,
+                                              templateItem
                                             )
                                           }
                                         ></i>
@@ -537,7 +539,7 @@ const RoomGroups = () => {
                                                 Name: templateItem.CategoryLabel,
                                                 ID: templateItem.CategoryID,
                                               },
-                                              item.products,
+                                              item.products
                                             )
                                           }
                                         >
@@ -552,8 +554,8 @@ const RoomGroups = () => {
                                         <tbody>
                                           {templateItem.Products?.sort((a, b) =>
                                             a.ProductName?.localeCompare(
-                                              b.ProductName,
-                                            ),
+                                              b.ProductName
+                                            )
                                           ).map((product, index) => (
                                             <tr key={index}>
                                               <td
@@ -581,7 +583,7 @@ const RoomGroups = () => {
                                                     onClick={(e) =>
                                                       handleDeleteGroupCategoryProduct(
                                                         e,
-                                                        product,
+                                                        product
                                                       )
                                                     }
                                                   ></i>
@@ -600,7 +602,7 @@ const RoomGroups = () => {
                                                     </small>
                                                     {itemLoading(
                                                       product,
-                                                      "RequiresApproval",
+                                                      "RequiresApproval"
                                                     ) ? (
                                                       <Spinner
                                                         animation="border"
@@ -618,7 +620,7 @@ const RoomGroups = () => {
                                                             templateItem,
                                                             product,
                                                             "RequiresApproval",
-                                                            !product?.RequiresApproval,
+                                                            !product?.RequiresApproval
                                                           )
                                                         }
                                                       />
@@ -635,7 +637,7 @@ const RoomGroups = () => {
                                                     </small>
                                                     {itemLoading(
                                                       product,
-                                                      "RoughInTrimOut",
+                                                      "RoughInTrimOut"
                                                     ) ? (
                                                       <Spinner
                                                         animation="border"
@@ -661,7 +663,7 @@ const RoomGroups = () => {
                                                               templateItem,
                                                               product,
                                                               "RoughInTrimOut",
-                                                              "RoughIn",
+                                                              "RoughIn"
                                                             )
                                                           }
                                                         />
@@ -677,7 +679,7 @@ const RoomGroups = () => {
                                                               templateItem,
                                                               product,
                                                               "RoughInTrimOut",
-                                                              "TrimOut",
+                                                              "TrimOut"
                                                             )
                                                           }
                                                         />
@@ -690,7 +692,7 @@ const RoomGroups = () => {
                                                     </small>
                                                     {itemLoading(
                                                       product,
-                                                      "Quantity",
+                                                      "Quantity"
                                                     ) ? (
                                                       <Spinner
                                                         animation="border"
@@ -712,8 +714,8 @@ const RoomGroups = () => {
                                                             product,
                                                             "Quantity",
                                                             Number(
-                                                              e.target.value,
-                                                            ),
+                                                              e.target.value
+                                                            )
                                                           )
                                                         }
                                                       ></Form.Control>
