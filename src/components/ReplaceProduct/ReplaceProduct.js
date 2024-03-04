@@ -93,6 +93,15 @@ const ReplaceProduct = () => {
   }, [product, productCategories]);
 
   useEffect(() => {
+    if (productRef?.current && productCategories?.length)
+      setSelectedCategory(
+        productCategories.find(
+          (item) => item.value === productRef?.current.CategoryID
+        )
+      );
+  }, [productRef.current, productCategories]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
 
     return () => {
@@ -109,7 +118,7 @@ const ReplaceProduct = () => {
     setIsLoading(true);
     const updatedSearch = {
       ...searchObject,
-      CategoryID: selectedCategory?.value || productRef?.current.CategoryID,
+      CategoryID: selectedCategory?.value,
       Filter: searchRef?.current?.value,
     };
     dispatch(searchProducts(updatedSearch.CategoryID, updatedSearch))
