@@ -570,7 +570,7 @@ const Products = (props) => {
         dispatch(
           updateBuilderRoomProduct(
             project?.ID,
-            templateItem?.ID,
+            [templateItem?.ID],
             quantity,
             "Quantity"
           )
@@ -604,7 +604,7 @@ const Products = (props) => {
       dispatch(
         updateBuilderRoomProduct(
           project?.ID,
-          incomingItem?.ID,
+          [incomingItem?.ID],
           value,
           "RoughInTrimOutEnum"
         )
@@ -663,7 +663,7 @@ const Products = (props) => {
       dispatch(
         updateBuilderRoomProduct(
           project?.ID,
-          item?.ID,
+          [item?.ID],
           !item.IsFavorite,
           "IsFavorite"
         )
@@ -820,7 +820,7 @@ const Products = (props) => {
       dispatch(
         updateBuilderRoomProduct(
           project?.ID,
-          selectedProductItem?.ID,
+          [selectedProductItem?.ID],
           notes,
           "Notes"
         )

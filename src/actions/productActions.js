@@ -121,7 +121,11 @@ export const searchProducts = (categoryID, searchObject) => (dispatch) => {
   return api({
     method: "POST",
     url: URL,
-    data: { PageSize: 50, ...searchObject },
+    data: {
+      PageSize: 50,
+      ...searchObject,
+      CategoryID: searchObject?.CategoryID ? searchObject?.CategoryID : 0,
+    },
   })
     .then((response) => {
       if (response.status === 200) {
