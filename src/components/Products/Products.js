@@ -1722,11 +1722,11 @@ export const FilterItems = ({
   items,
   SubCategoriesOptions,
 }) => {
-  const selectedCategories = categories?.filter(
-    (c) =>
-      productFilter.categories.length > 0 &&
-      productFilter.categories.indexOf(c.ID) > -1
-  );
+  // const selectedCategories = categories?.filter(
+  //   (c) =>
+  //     productFilter.categories.length > 0 &&
+  //     productFilter.categories.indexOf(c.ID) > -1
+  // );
 
   const selectedBrands = brands
     ?.filter(
@@ -1742,24 +1742,24 @@ export const FilterItems = ({
       productFilter.subcategories.indexOf(c.ID) > -1
   ).map((b) => b.ID);
 
-  const allCategories = selectedCategories
-    // ?.filter((c) => {
-    //   return (
-    //     c.Path &&
-    //     selectedCategories.filter((s) => {
-    //       return s.Path && c.Path.startsWith(s.Path);
-    //     }).length > 0
-    //   );
-    // })
-    .map((c) => c.ID);
+  const allCategories =
+    productFilter?.categories ??
+    []
+      // ?.filter((c) => {
+      //   return (
+      //     c.Path &&
+      //     selectedCategories.filter((s) => {
+      //       return s.Path && c.Path.startsWith(s.Path);
+      //     }).length > 0
+      //   );
+      // })
+      .map((c) => c.ID);
   return items?.filter((i) => {
     return (
       (productFilter.brands.length === 0 ||
         selectedBrands.indexOf(i.BrandID) > -1) &&
       (productFilter.categories.length === 0 ||
         allCategories.indexOf(i.CategoryID) > -1 ||
-        selectedSubCategoriesOptions.indexOf(i.CategoryID) > -1) &&
-      (productFilter.subcategories.length === 0 ||
         selectedSubCategoriesOptions.indexOf(i.CategoryID) > -1)
     );
   });

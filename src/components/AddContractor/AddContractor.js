@@ -15,10 +15,10 @@ const AddContractor = ({ show, handleClose }) => {
   const dispatch = useDispatch();
 
   const selectedContractor = useSelector(
-    (state) => state.contractor.contractor,
+    (state) => state.contractor.contractor
   );
   const contractorTypes = useSelector(
-    (state) => state.contractor.contractorTypes,
+    (state) => state.contractor.contractorTypes
   );
 
   const [contractor, setContractor] = useState({});
@@ -35,7 +35,7 @@ const AddContractor = ({ show, handleClose }) => {
               value: contractorType.ID,
               label: contractorType.Name,
             };
-          },
+          }
         ),
       };
 
@@ -160,19 +160,6 @@ const AddContractor = ({ show, handleClose }) => {
                   setContractor({ ...contractor, Address1: e.target.value })
                 }
                 defaultValue={contractor?.Address1}
-              />
-            </Form.Group>
-          </Col>
-          <Col md={12} lg={6}>
-            <Form.Group>
-              <Form.Label className="input-label">Address 2</Form.Label>
-              <Form.Control
-                type="text"
-                className="input-gray"
-                onChange={(e) =>
-                  setContractor({ ...contractor, Address2: e.target.value })
-                }
-                defaultValue={contractor?.Address2}
               />
             </Form.Group>
           </Col>

@@ -42,7 +42,9 @@ const productReducer = (state = intialState, action) => {
     case GET_CATEGORIES: {
       return {
         ...state,
-        productCategories: action.payload,
+        productCategories: (action.payload || [])?.sort((a, b) =>
+          a.Name?.localeCompare(b.Name)
+        ),
       };
     }
     case SEARCH_PRODUCTS: {

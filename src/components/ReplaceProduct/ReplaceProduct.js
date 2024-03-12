@@ -76,15 +76,18 @@ const ReplaceProduct = () => {
         value: c.ID,
         label: c.Name?.replaceAll("&nbsp;", ""),
       });
-      // c.SubCategories?.forEach((sc) => {
-      //   list.push({
-      //     ...sc,
-      //     value: sc.ID,
-      //     label: sc.Name?.replaceAll("&nbsp;", ""),
-      //   });
-      // });
+      if (c.SubCategories?.length) {
+        list.push({
+          ...c,
+          options: c.SubCategories?.map((sc) => ({
+            ...sc,
+            value: sc.ID,
+            label: sc.Name?.replaceAll("&nbsp;", ""),
+          })),
+        });
+      }
     });
-    setProductCategories(list.sort((a, b) => a.label?.localeCompare(b.label)));
+    setProductCategories(list);
   }, [listCatgories]);
 
   useEffect(() => {
@@ -93,12 +96,17 @@ const ReplaceProduct = () => {
   }, [product, productCategories]);
 
   useEffect(() => {
-    if (productRef?.current && productCategories?.length)
-      setSelectedCategory(
-        productCategories.find(
-          (item) => item.value === productRef?.current.CategoryID
-        )
+    if (productRef?.current && productCategories?.length) {
+      const temp = productCategories.find(
+        (item) => item.value === productRef?.current.CategoryID
       );
+      if (temp)
+        setSelectedCategory({
+          ...temp,
+          value: temp.ID,
+          label: temp.Name,
+        });
+    }
   }, [productRef.current, productCategories]);
 
   useEffect(() => {
@@ -291,6 +299,7 @@ const ReplaceProduct = () => {
               value={selectedCategory}
               onChange={onProductCategoryChange}
               placeholder="Select Category"
+              classNamePrefix="add-category-dropdown"
               isSearchable
             />
           </div>
