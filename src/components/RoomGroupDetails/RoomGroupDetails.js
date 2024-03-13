@@ -31,24 +31,24 @@ const RoomGroupDetails = () => {
 
   const products = useSelector((state) => state.product.products);
   const builderSelectedRoomGroup = useSelector(
-    (state) => state.builderRooms.builderSelectedRoomGroup,
+    (state) => state.builderRooms.builderSelectedRoomGroup
   );
   const builderSelectedRoomCategory = useSelector(
-    (state) => state.builderRooms.builderSelectedRoomCategory,
+    (state) => state.builderRooms.builderSelectedRoomCategory
   );
   // const productCategories = useSelector(
   //   (state) => state.product.productCategories
   // );
 
   const builderSelectedRoomCategoryProducts = useSelector(
-    (state) => state.builderRooms.builderSelectedRoomCategoryProducts,
+    (state) => state.builderRooms.builderSelectedRoomCategoryProducts
   );
   const roomGroups = useSelector(
-    (state) => state.builderRooms.builderRoomGroups?.Result,
+    (state) => state.builderRooms.builderRoomGroups?.Result
   );
 
   const roomTypes = useSelector(
-    (state) => state.builderRooms.builderRoomTypes?.RoomTypes,
+    (state) => state.builderRooms.builderRoomTypes?.RoomTypes
   );
 
   const [selectedCategoryID, setSelectedCategoryID] = useState(null);
@@ -89,7 +89,7 @@ const RoomGroupDetails = () => {
         (res) => {
           setSelectedGroupCategories(res.Result);
           setIsGroupCategoriesLoading(false);
-        },
+        }
       );
     }
   }, [builderSelectedRoomCategory, builderSelectedRoomGroup]);
@@ -125,7 +125,7 @@ const RoomGroupDetails = () => {
       setIsLoading(true);
       const updatedSearch = {
         ...searchObject,
-        // CategoryID: selectedCategoryID?.value,
+        CategoryID: selectedCategoryID?.value,
       };
       fetchaddedProducts(updatedSearch);
     } else {
@@ -137,20 +137,20 @@ const RoomGroupDetails = () => {
     dispatch(
       getRoomGroupCategoryProduct(
         builderSelectedRoomGroup.ID,
-        selectedCategoryID.value,
-      ),
+        selectedCategoryID.value
+      )
     ).then((res) => {
       dispatch(setSelectedGroupCategoryProducts(res?.Result || [])).then(() =>
         dispatch(searchProducts(selectedCategoryID?.value, searchObject))
           .then(() => setIsLoading(false))
-          .catch(() => setIsLoading(false)),
+          .catch(() => setIsLoading(false))
       );
     });
   };
 
   const isProductAdded = (ID) => {
     return builderSelectedRoomCategoryProducts?.find(
-      (p) => p.Product?.ID === ID,
+      (p) => p.Product?.ID === ID
     );
   };
 
@@ -190,8 +190,8 @@ const RoomGroupDetails = () => {
         createRoomGroupCategoryProduct(
           builderSelectedRoomGroup?.ID,
           selectedCategoryID?.value,
-          productID,
-        ),
+          productID
+        )
       ).then((pID) => {
         dispatch(
           setSelectedGroupCategoryProducts([
@@ -202,7 +202,7 @@ const RoomGroupDetails = () => {
               pID: pID,
               Product: product,
             },
-          ]),
+          ])
         );
         setActionLoading(false);
       });
@@ -219,17 +219,17 @@ const RoomGroupDetails = () => {
           selectedCategoryID?.value,
           isProductAdded(ID)?.pID
             ? isProductAdded(ID)?.pID
-            : isProductAdded(ID)?.ID,
-        ),
+            : isProductAdded(ID)?.ID
+        )
       )
         .then((res) => {
           if (res) {
             dispatch(
               setSelectedGroupCategoryProducts(
                 builderSelectedRoomCategoryProducts.filter(
-                  (p) => p.Product?.ID !== ID,
-                ),
-              ),
+                  (p) => p.Product?.ID !== ID
+                )
+              )
             );
           }
           setActionLoading(false);
@@ -263,7 +263,7 @@ const RoomGroupDetails = () => {
       pageCount === "all" ? products : products?.slice(0, pageCount);
     if (isOnlyAdded) {
       return pagedProducts?.filter((p) =>
-        isProductAdded(p.ID) ? true : false,
+        isProductAdded(p.ID) ? true : false
       );
     }
     return pagedProducts;
@@ -298,7 +298,7 @@ const RoomGroupDetails = () => {
     if (isGroupCategoriesLoading) return [];
     return (
       selectedGroupCategories.sort((a, b) =>
-        a.CategoryLabel?.localeCompare(b.CategoryLabel),
+        a.CategoryLabel?.localeCompare(b.CategoryLabel)
       ) || []
     );
   };
@@ -313,7 +313,7 @@ const RoomGroupDetails = () => {
     dispatch(searchProducts(selectedCategoryID?.value, updatedSearch)).then(
       () => {
         setIsLoading(false);
-      },
+      }
     );
     setSearchObject(updatedSearch);
   };
@@ -439,7 +439,7 @@ const RoomGroupDetails = () => {
                         setPageCount(
                           e.target.value === "all"
                             ? "all"
-                            : parseInt(e.target.value),
+                            : parseInt(e.target.value)
                         )
                       }
                     >
@@ -480,7 +480,7 @@ const RoomGroupDetails = () => {
                                 handleFilters(filter, filterChild, childIndex)
                               }
                             />
-                          ) : null,
+                          ) : null
                       )}
                     </div>
                   ))}
@@ -558,7 +558,7 @@ const RoomGroupDetails = () => {
                                     className="action-button btn-danger"
                                     onClick={() =>
                                       handleDeleteRoomGroupCategoryProduct(
-                                        product?.ID,
+                                        product?.ID
                                       )
                                     }
                                     disabled={!isProductAdded(product.ID)}
@@ -569,7 +569,7 @@ const RoomGroupDetails = () => {
                               )}
                             </td>
                           </tr>
-                        ),
+                        )
                       )}
                     </tbody>
                   </Table>
