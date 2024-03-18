@@ -325,7 +325,7 @@ const ReplaceProduct = () => {
           </div>
           <div></div>
         </div>
-        <div className="d-flex qty-items-select justify-content-end">
+        {/* <div className="d-flex qty-items-select justify-content-end">
           <Form.Control
             as="select"
             value={pageCount}
@@ -343,7 +343,7 @@ const ReplaceProduct = () => {
             <option value={300}>300</option>
           </Form.Control>
           <div className="select-text">Items Per Page</div>
-        </div>
+        </div> */}
       </div>
 
       <div className="add-products-body d-flex">

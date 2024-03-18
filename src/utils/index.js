@@ -34,7 +34,7 @@ const formatDate = (dateString) => {
 const textEllipsis = (
   str,
   maxLength,
-  { side = "end", ellipsis = "..." } = {},
+  { side = "end", ellipsis = "..." } = {}
 ) => {
   if (!str) return "";
   if (str.length > maxLength) {
@@ -60,12 +60,17 @@ const getProductImages = (product) => {
   return images;
 };
 
+const itemLoading = (templateItem, loadingObj) => {
+  return loadingObj?.loading && loadingObj?.ID === templateItem?.ID;
+};
+
 const Utils = {
   formatShortDateUS,
   formatDateDashes,
   textEllipsis,
   formatDate,
   getProductImages,
+  itemLoading,
 };
 
 export default Utils;

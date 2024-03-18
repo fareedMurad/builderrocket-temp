@@ -349,9 +349,7 @@ export const RoughInTrimOutEnum =
         }
       })
       .catch((error) => {
-        if (error?.response?.status === 401)
-          // dispatch({ type: LOGOUT });
-          console.log(error);
+        if (error?.response?.status === 401) console.log(error);
       });
   };
 
@@ -379,9 +377,7 @@ export const setIsFavorite = (projectId, productId, value) => (dispatch) => {
       }
     })
     .catch((error) => {
-      if (error?.response?.status === 401)
-        // dispatch({ type: LOGOUT });
-        console.log(error);
+      if (error?.response?.status === 401) console.log(error);
     });
 };
 

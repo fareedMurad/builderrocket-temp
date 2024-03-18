@@ -207,3 +207,27 @@ export const deleteMyProductsForProject = (ID) => (dispatch) => {
       console.log("Getting MyProducts", error);
     });
 };
+
+export const updateUserGlobalProduct =
+  (productId, value, field) => (dispatch) => {
+    const URL = `/builder-product/Setting/`;
+
+    const data = {
+      ProductID: productId,
+      [field]: value,
+    };
+
+    return api({
+      method: "PUT",
+      url: URL,
+      data: data,
+    })
+      .then((response) => {
+        if (response?.status === 200) {
+          return response.data;
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.status === 401) dispatch({ type: LOGOUT });
+      });
+  };

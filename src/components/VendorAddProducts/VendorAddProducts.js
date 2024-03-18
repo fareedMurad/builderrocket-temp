@@ -49,9 +49,9 @@ const VendorAddProducts = () => {
         getProductsByCategoryAndBrandID(
           selectedBrandID?.value,
           // 7,
-          selectedCategoryID?.value,
+          selectedCategoryID?.value
           // 931
-        ),
+        )
       )
         .then((res) => {
           setProducts(res);
@@ -70,7 +70,7 @@ const VendorAddProducts = () => {
 
     setError(false);
     const getCategory = categories?.find(
-      (c) => c.ID === parseInt(productCategoryID),
+      (c) => c.ID === parseInt(productCategoryID)
     );
     setSelectedCategoryID({
       value: getCategory.ID,
@@ -99,8 +99,8 @@ const VendorAddProducts = () => {
         addVendorProduct(
           selectedBrandID?.value,
           selectedCategoryID?.value,
-          ProductID,
-        ),
+          ProductID
+        )
       ).then((pID) => {
         dispatch(
           setVendorProducts([
@@ -110,7 +110,7 @@ const VendorAddProducts = () => {
               ProductID,
               ID: pID,
             },
-          ]),
+          ])
         );
         setActionLoading(false);
       });
@@ -139,7 +139,7 @@ const VendorAddProducts = () => {
       pageCount === "all" ? products : products?.slice(0, pageCount);
     if (isOnlyAdded) {
       return pagedProducts?.filter((p) =>
-        isProductAdded(p.ID) ? true : false,
+        isProductAdded(p.ID) ? true : false
       );
     }
     return pagedProducts;
@@ -206,7 +206,7 @@ const VendorAddProducts = () => {
                 <small className="text-danger">Please select a category</small>
               ) : null}
             </div>
-            <div className="d-flex qty-items-select justify-content-end">
+            {/* <div className="d-flex qty-items-select justify-content-end">
               <Form.Control
                 as="select"
                 value={pageCount}
@@ -224,7 +224,7 @@ const VendorAddProducts = () => {
                 <option value={300}>300</option>
               </Form.Control>
               <div className="select-text">Items Per Page</div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -287,7 +287,11 @@ const VendorAddProducts = () => {
                           ) : (
                             <div className="d-flex">
                               <Button
-                                className={`action-button add-product-btn mr-2 ${isProductAdded(product.ID) ? "btn-success" : ""}`}
+                                className={`action-button add-product-btn mr-2 ${
+                                  isProductAdded(product.ID)
+                                    ? "btn-success"
+                                    : ""
+                                }`}
                                 onClick={() => addProduct(product?.ID, product)}
                                 disabled={isProductAdded(product.ID)}
                               >

@@ -31,9 +31,13 @@ import Multiselect from "multiselect-react-dropdown";
 import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProductConfirmationModal";
 import Select, { components } from "react-select";
 import SelectRooms from "../Products/SelectRooms";
-import { handleAddMyProductToProject } from "../../actions/myProductActions";
+import {
+  handleAddMyProductToProject,
+  updateUserGlobalProduct,
+} from "../../actions/myProductActions";
 import ProductPagination from "../Pagination/Pagination";
 import axios from "axios";
+import Utils from "../../utils";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -175,7 +179,9 @@ const AddProduct = () => {
         ...product,
         CategoryID: parseInt(option.value),
       })
-    );
+    ).then(() => {
+      setSearchObject({ ...searchObject, PageNumber: 0 });
+    });
   };
 
   // update individual filter checkbox
@@ -263,6 +269,7 @@ const AddProduct = () => {
   const handleSearch = () => {
     const updatedSearch = {
       ...searchObject,
+      PageNumber: 0,
       Filter: searchRef.current.value,
     };
 
@@ -286,11 +293,27 @@ const AddProduct = () => {
       searchProducts(productRef.current?.CategoryID, updatedSearch)
     ).then(() => {
       setIsLoading(false);
+      setSearchObject(updatedSearch);
     });
   };
 
   const handleGoToProducts = () => {
     history.push(`/project/${project.ProjectNumber}/products`);
+  };
+
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState({
+    loading: false,
+  });
+
+  const handleIsFavorite = (item) => {
+    setIsFavoriteLoading({ loading: true, ID: item?.ID });
+    dispatch(
+      updateUserGlobalProduct(item?.ID, !item.SearchIsFavorite, "IsFavorite")
+    ).then(() => {
+      dispatch(searchProducts(null, searchObject)).then(() => {
+        setIsFavoriteLoading({ loading: false });
+      });
+    });
   };
 
   return (
@@ -448,7 +471,22 @@ const AddProduct = () => {
                       </td>
                       <td>${product?.MSRP}</td>
                       <td>
-                        <i className={`far fa-heart`}></i>
+                        {Utils.itemLoading(product, isFavoriteLoading) ? (
+                          <Spinner
+                            animation="border"
+                            variant="primary"
+                            size="sm"
+                          />
+                        ) : (
+                          <i
+                            className={`far ${
+                              product.SearchIsFavorite
+                                ? "text-danger fas fa-heart"
+                                : "fa-heart"
+                            } mr-0`}
+                            onClick={() => handleIsFavorite(product)}
+                          ></i>
+                        )}
                       </td>
                       <td>
                         {addActionLoading?.ID === product.ID ? (

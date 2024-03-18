@@ -431,7 +431,7 @@ const RoomGroupDetails = () => {
                     id="custom-switch"
                     label={<small>Only Added Products</small>}
                   />
-                  <div className="d-flex qty-items-select justify-content-end">
+                  {/* <div className="d-flex qty-items-select justify-content-end">
                     <Form.Control
                       as="select"
                       value={pageCount}
@@ -451,7 +451,7 @@ const RoomGroupDetails = () => {
                       <option value={300}>300</option>
                     </Form.Control>
                     <div className="select-text">Items Per Page</div>
-                  </div>
+                  </div> */}
                 </Form>
               </div>
             </div>

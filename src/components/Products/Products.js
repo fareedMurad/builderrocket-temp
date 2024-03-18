@@ -725,9 +725,6 @@ const Products = (props) => {
       </Modal>
     );
   };
-  const itemLoading = (templateItem, loadingObj) => {
-    return loadingObj?.loading && loadingObj?.ID === templateItem?.ID;
-  };
 
   const renderApproval = (templateItem) => {
     let status = {};
@@ -931,13 +928,14 @@ const Products = (props) => {
 
   const renderTable = (items, room) => {
     const allSelected = hasAllRequiesApproval(items);
+    if (!items?.length) return <></>;
     return (
       <div className="products-table">
         <Table responsive>
           <thead>
             <tr>
               <th>
-                {itemLoading(room, isAllRequiresApprovalLoading) ? (
+                {Utils.itemLoading(room, isAllRequiresApprovalLoading) ? (
                   <Spinner animation="border" variant="primary" />
                 ) : (
                   <Form.Check
@@ -999,7 +997,7 @@ const Products = (props) => {
                     <td className="approval-checkbox">
                       <div className="d-flex justify-content-center">
                         <Form>
-                          {itemLoading(
+                          {Utils.itemLoading(
                             templateItem,
                             isRequiresApprovalLoading
                           ) ? (
@@ -1103,7 +1101,10 @@ const Products = (props) => {
                     <td>
                       {!templateItem?.IsTemplate && (
                         <div className="qty-input">
-                          {itemLoading(templateItem, isQuantityLoading) ? (
+                          {Utils.itemLoading(
+                            templateItem,
+                            isQuantityLoading
+                          ) ? (
                             <Spinner animation="border" variant="primary" />
                           ) : (
                             <Form.Control
@@ -1175,7 +1176,10 @@ const Products = (props) => {
                           >
                             Replace
                           </Button>
-                          {itemLoading(templateItem, isFavoriteLoading) ? (
+                          {Utils.itemLoading(
+                            templateItem,
+                            isFavoriteLoading
+                          ) ? (
                             <Spinner
                               animation="border"
                               variant="primary"
