@@ -71,7 +71,9 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         <td>{item?.VendorName}</td>
         <td>{item?.UnitOfMeasure}</td>
         <td>{item?.Quantity}</td>
-        <td>{item?.Price}</td>
+        <td>
+          {item?.Price || item?.MSRP ? `$${item?.Price || item?.MSRP}` : ""}
+        </td>
         <td>{item?.LineTotal}</td>
       </tr>
     );
