@@ -2,7 +2,7 @@ import { useState } from "react";
 import Pagination from "react-bootstrap/Pagination";
 
 function ProductPagination({ handlePaginate, pageIndex, pageCount, pageSize }) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageIndex ?? 1);
   const totalPages = Math.ceil(pageCount / 50);
 
   const handlePrev = () => {
