@@ -66,3 +66,16 @@
     margin-right: 5px;
   }
 }
+
+.c-tree-wrapper .modal-dialog {
+  min-width: 90vw !important;
+}
+
+.tree-modal-close-icon {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 20px;
+  color: rgb(240, 76, 76);
+  cursor: pointer;
+}

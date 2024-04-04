@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import CustomLightbox from "../Lightbox";
 import Avatar from "../../assets/images/img-placeholder.png";
+import AddProductsByCategory from "../AddProductsByCategory";
 let wsRegex = /\s/g;
 
 const RoomGroups = () => {
@@ -47,48 +48,22 @@ const RoomGroups = () => {
   const selectedGroupId = useSelector(
     (state) => state.builderRooms.selectedGroupDetails?.groupId
   );
+  const [defaultSelectProductLocation, setDefaultSelectProductLocation] =
+    useState(false);
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [newCategory, setNewCategory] = useState({});
   const [dublicateEditAttempted, setdublicateEditAttempted] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
-  const listCategories = useSelector(
-    (state) => state.product.productCategories
-  );
-  const [categories, setCategories] = useState([]);
   const [expandID, setExpandID] = useState();
   const [isGroupCategoriesLoading, setIsGroupCategoriesLoading] =
     useState(false);
   const [isDefaultProductLoading, setDefaultProductLoading] = useState({
     loading: false,
   });
-
-  useEffect(() => {
-    let list = [];
-
-    listCategories.forEach((c) => {
-      list.push({
-        ...c,
-        value: c.ID,
-        label: c.Name?.replaceAll("&nbsp;", ""),
-      });
-      if (c.SubCategories?.length) {
-        list.push({
-          ...c,
-          options: c.SubCategories?.map((sc) => ({
-            ...sc,
-            value: sc.ID,
-            label: sc.Name?.replaceAll("&nbsp;", ""),
-          })),
-        });
-      }
-    });
-    setCategories(list);
-  }, [listCategories]);
 
   useEffect(() => {
     if (expandID) {
@@ -102,6 +77,11 @@ const RoomGroups = () => {
       const target = document.querySelector(`#selected_${selectedGroupId}`);
       setTimeout(() => {
         if (target) target.scrollIntoView({ behavior: "smooth" });
+        dispatch(setSelectedBuilderCategory({})).then(() => {
+          dispatch(setSelectedBuilderRoomGroup({})).then(() => {
+            setDefaultSelectProductLocation(false);
+          });
+        });
       }, 1000);
     }
     handleFetchRoomGroups();
@@ -174,20 +154,6 @@ const RoomGroups = () => {
         setSelectedGroup({});
       });
   };
-
-  const handleAddGroupCategory = () => {
-    dispatch(createRoomGroupCategory(newCategory?.value, selectedGroup?.ID))
-      .then((res) => {
-        handleFetchRoomGroups();
-        handleGetBuilderRoomGroupDetails();
-        setShowVisibleModal("");
-        setNewCategory({});
-      })
-      .catch(() => {
-        alert("Something went wrong, please try again!");
-      });
-  };
-
   const handleEditGroup = () => {
     if (groupName) {
       if (
@@ -331,37 +297,27 @@ const RoomGroups = () => {
     return (
       <Modal
         show={showVisibleModal === "ADD_GROUP_CATEGORY"}
-        onHide={() => setShowVisibleModal("")}
+        onHide={() => {
+          setShowVisibleModal("");
+          handleGetBuilderRoomGroupDetails();
+        }}
         centered
-        size="md"
+        size="xl"
+        className="c-tree-wrapper"
       >
         <Modal.Body>
-          <div className="page-title pl-0">Add Category</div>
-          <Form.Group>
-            <Form.Label className="input-label">Select Category</Form.Label>
-            <Select
-              options={categories}
-              className="input-gray"
-              value={newCategory}
-              onChange={(option) => setNewCategory(option)}
-              classNamePrefix="add-category-dropdown"
-            />
-          </Form.Group>
-          <div className="d-flex justify-content-center pt-5">
-            <Button
-              onClick={() => setShowVisibleModal("")}
-              variant="link"
-              className="cancel"
-            >
-              Cancel
-            </Button>
-            <button
-              className="primary-gray-btn next-btn ml-3"
-              onClick={handleAddGroupCategory}
-            >
-              Add
-            </button>
-          </div>
+          <span>
+            You are currently in <b>{selectedGroup?.Name}</b>
+          </span>
+          <hr />
+          <i
+            className="tree-modal-close-icon fa fa-times"
+            onClick={() => {
+              setShowVisibleModal("");
+              handleGetBuilderRoomGroupDetails();
+            }}
+          />
+          <AddProductsByCategory current={selectedGroup} />
         </Modal.Body>
       </Modal>
     );
@@ -382,7 +338,8 @@ const RoomGroups = () => {
   };
 
   const handleAddCategory = (e, item) => {
-    e.stopPropagation();
+    setDefaultSelectProductLocation(false);
+    e?.stopPropagation();
     setSelectedGroup(item);
     setExpandID(item.ID);
     setShowVisibleModal("ADD_GROUP_CATEGORY");
@@ -409,7 +366,9 @@ const RoomGroups = () => {
   const handleManageProducts = async (group, category) => {
     dispatch(setSelectedBuilderCategory(category)).then(() => {
       dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
-        history.push(`/rooms-management/template-details`);
+        // history.push(`/rooms-management/template-details`);
+        handleAddCategory(null, group);
+        setDefaultSelectProductLocation(true);
       });
     });
   };

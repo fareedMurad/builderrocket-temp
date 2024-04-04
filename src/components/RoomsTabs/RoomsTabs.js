@@ -55,9 +55,9 @@ const RoomsTabs = (props) => {
         <Tab eventKey="templates" title="Templates">
           {selectedTab === "templates" && <RoomGroups />}
         </Tab>
-        <Tab eventKey="template-details" title="Template Details">
+        {/* <Tab eventKey="template-details" title="Template Details">
           {selectedTab === "template-details" && <RoomGroupDetails />}
-        </Tab>
+        </Tab> */}
       </Tabs>
     </div>
   );

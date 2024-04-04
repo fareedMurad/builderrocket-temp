@@ -66,7 +66,7 @@ const RoomAreaLayout = () => {
   const isRoomInProject = (id) => {
     if (showCustomRooms) {
       return (project?.BuilderProjectRooms || [])?.find(
-        (room) => room?.RoomID === id,
+        (room) => room?.RoomID === id
       );
     } else
       return (project?.ProjectRooms || [])?.find((room) => room?.RoomID === id);
@@ -77,7 +77,7 @@ const RoomAreaLayout = () => {
       const types = [...selectedTypes.map((b) => b.ID)];
       setTypesFilter(types);
     },
-    [dispatch, setTypesFilter],
+    [dispatch, setTypesFilter]
   );
 
   useEffect(() => {
@@ -220,7 +220,7 @@ const RoomAreaLayout = () => {
       };
 
       await dispatch(
-        deleteBuilderRoomsFromProject(project?.ID, deleteBuilderRoomsObj),
+        deleteBuilderRoomsFromProject(project?.ID, deleteBuilderRoomsObj)
       )
         .then(() => {
           setDeleteBuilerRoomList([]);
@@ -324,7 +324,9 @@ const RoomAreaLayout = () => {
   }, [roomTypes, builderRoomTypes, showCustomRooms]);
 
   const getRoomTypesConditionally = () =>
-    (showCustomRooms ? builderRoomTypes : roomTypes) || [];
+    (showCustomRooms ? builderRoomTypes : roomTypes).sort((a, b) =>
+      a.Name?.localeCompare(b.Name)
+    ) || [];
 
   return (
     <div className="d-flex room-area-layout">
@@ -354,7 +356,7 @@ const RoomAreaLayout = () => {
                     <span className="custom-placeholder">
                       {
                         getRoomTypesConditionally()?.filter(
-                          (p) => typesFilter.indexOf(p.ID) > -1,
+                          (p) => typesFilter.indexOf(p.ID) > -1
                         )?.length
                       }{" "}
                       of {getRoomTypesConditionally()?.length} selected
@@ -371,29 +373,29 @@ const RoomAreaLayout = () => {
                     !typesFilter
                       ? []
                       : getRoomTypesConditionally()?.length ===
-                          typesFilter?.length
-                        ? roomTypeOptions
-                        : roomTypeOptions.filter(
-                            (b) => typesFilter.indexOf(b.ID) > -1,
-                          )
+                        typesFilter?.length
+                      ? roomTypeOptions
+                      : roomTypeOptions.filter(
+                          (b) => typesFilter.indexOf(b.ID) > -1
+                        )
                   }
                   onSelect={(arr, current) => {
                     if (current.value === "select_all") {
                       handleSelectedRoomTypeChange(
-                        roomTypeOptions.filter((p) => p.value !== "select_all"),
+                        roomTypeOptions.filter((p) => p.value !== "select_all")
                       );
                     } else
                       handleSelectedRoomTypeChange(
                         arr.sort((a, b) =>
-                          a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
-                        ),
+                          a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                        )
                       );
                   }}
                   onRemove={(arr, target) => {
                     let types = arr
                       .filter((p) => p.value !== "select_all")
                       .sort((a, b) =>
-                        a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
+                        a.name < b.name ? -1 : a.name > b.name ? 1 : 0
                       );
                     if (target.value === "select_all") {
                       types = [];
