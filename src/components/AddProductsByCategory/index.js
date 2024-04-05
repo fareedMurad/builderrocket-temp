@@ -294,6 +294,7 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
     ];
   }
 
+  console.log(getParentIDs(), "getParentIDs");
   const data = flattenTree({ name: "Root", children: categories });
   return (
     <div className="d-flex w-100" style={{ minHeight: "90vh" }}>
