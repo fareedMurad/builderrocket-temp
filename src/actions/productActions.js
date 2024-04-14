@@ -125,6 +125,11 @@ export const searchProducts = (categoryID, searchObject) => (dispatch) => {
       PageSize: 50,
       ...searchObject,
       CategoryID: searchObject?.CategoryID ? searchObject?.CategoryID : 0,
+      CustomFilters:
+        searchObject?.CustomFilters?.Colors ||
+        searchObject?.CustomFilters?.Brands
+          ? searchObject?.CustomFilters
+          : {},
     },
   })
     .then((response) => {

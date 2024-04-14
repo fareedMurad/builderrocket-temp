@@ -77,11 +77,11 @@ const RoomGroups = () => {
       const target = document.querySelector(`#selected_${selectedGroupId}`);
       setTimeout(() => {
         if (target) target.scrollIntoView({ behavior: "smooth" });
-        dispatch(setSelectedBuilderCategory({})).then(() => {
-          dispatch(setSelectedBuilderRoomGroup({})).then(() => {
-            setDefaultSelectProductLocation(false);
-          });
-        });
+        // dispatch(setSelectedBuilderCategory({})).then(() => {
+        //   dispatch(setSelectedBuilderRoomGroup({})).then(() => {
+        //     setDefaultSelectProductLocation(false);
+        //   });
+        // });
       }, 1000);
     }
     handleFetchRoomGroups();
@@ -300,6 +300,11 @@ const RoomGroups = () => {
         onHide={() => {
           setShowVisibleModal("");
           handleGetBuilderRoomGroupDetails();
+          dispatch(setSelectedBuilderCategory({})).then(() => {
+            dispatch(setSelectedBuilderRoomGroup({})).then(() => {
+              setDefaultSelectProductLocation(false);
+            });
+          });
         }}
         centered
         size="xl"
@@ -315,6 +320,11 @@ const RoomGroups = () => {
             onClick={() => {
               setShowVisibleModal("");
               handleGetBuilderRoomGroupDetails();
+              dispatch(setSelectedBuilderCategory({})).then(() => {
+                dispatch(setSelectedBuilderRoomGroup({})).then(() => {
+                  setDefaultSelectProductLocation(false);
+                });
+              });
             }}
           />
           <AddProductsByCategory current={selectedGroup} />
@@ -338,6 +348,7 @@ const RoomGroups = () => {
   };
 
   const handleAddCategory = (e, item) => {
+    dispatch(setSelectedBuilderRoomGroup(item));
     setDefaultSelectProductLocation(false);
     e?.stopPropagation();
     setSelectedGroup(item);
