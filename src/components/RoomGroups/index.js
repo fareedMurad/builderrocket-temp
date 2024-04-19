@@ -327,7 +327,7 @@ const RoomGroups = () => {
               });
             }}
           />
-          <AddProductsByCategory current={selectedGroup} />
+          <AddProductsByCategory current={selectedGroup} isTemplate={true} />
         </Modal.Body>
       </Modal>
     );
@@ -445,8 +445,8 @@ const RoomGroups = () => {
                       ></i>
                     </div>
                     <span className="px-2">
-                      {item.Count} categor
-                      {item.Count > 1 ? "ies" : "y"}
+                      {item.Count} product
+                      {item.Count > 1 ? "s" : ""}
                     </span>
                   </div>
                 </Accordion.Header>

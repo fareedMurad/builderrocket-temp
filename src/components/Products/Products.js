@@ -410,8 +410,9 @@ const Products = (props) => {
                     `/project/${project.ProjectNumber}/product/replaceProduct`
                   );
                 } else {
-                  history.push(
-                    `/project/${project.ProjectNumber}/product/productDetail`
+                  window.open(
+                    `/project/${project.ProjectNumber}/product/productDetail`,
+                    "_blank"
                   );
                 }
                 //   history.push(
@@ -1211,15 +1212,14 @@ const Products = (props) => {
 
   const handleRefresh = () => {};
 
-  const showProducts = (isSingle, roomId) => {
-    dispatch(getCategories(""))
-      .then(dispatch(setProduct({})))
+  const showProducts = (isSingle, room) => {
+    dispatch(setSelectedRoom(room))
       .then(() => {
-        history.push(
-          `/project/${project.ProjectNumber}/product/addProduct${
-            isSingle ? "?roomId=" + roomId : ""
-          }`
-        );
+        dispatch(getCategories(""))
+          .then(() => dispatch(setProduct({})))
+          .then(() => {
+            dispatch(setSelectedRoom(room));
+          });
       })
       .catch(() => {});
   };
@@ -1237,7 +1237,7 @@ const Products = (props) => {
             <div className="page-title">Products</div>
           </div>
           <div>
-            <Button
+            {/* <Button
               variant="link"
               className="link-btn"
               onClick={handleShowCustomProducts}
@@ -1246,7 +1246,7 @@ const Products = (props) => {
             </Button>
             <Button variant="link" className="link-btn" onClick={showProducts}>
               + Add Products
-            </Button>
+            </Button> */}
             <Button variant="link" className="link-btn">
               <i className="fas fa-download"></i>
               Download Report
@@ -1631,17 +1631,32 @@ const Products = (props) => {
                       >
                         <div className="d-flex align-items-center">
                           {room.RoomName}{" "}
-                          <Button
-                            variant="link"
-                            className="link-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              showProducts(true, room.ID);
-                            }}
-                          >
-                            + Add Products
-                          </Button>
+                          <div className="ml-3 d-flex align-items-center justify-content-center">
+                            <Button
+                              size="sm"
+                              className="replace-btn"
+                              variant="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                showProducts(true, room);
+                              }}
+                            >
+                              + Add Products
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="replace-btn ml-3"
+                              variant="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                handleShowCustomProducts();
+                              }}
+                            >
+                              + Add My Products
+                            </Button>
+                          </div>
                         </div>
                         <div className="d-flex">
                           {room.RoomTypeName ? (

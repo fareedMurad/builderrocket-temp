@@ -8,17 +8,24 @@ import {
   getRoomGroupCategoryProduct,
   setSelectedGroupCategoryProducts,
 } from "../../actions/roomActions";
-import { searchProducts } from "../../actions/productActions";
+import {
+  searchProducts,
+  setProduct,
+  setProductDetail,
+} from "../../actions/productActions";
 import { Badge, Button, Form, Spinner } from "react-bootstrap";
 import CustomLightbox from "../Lightbox";
 import Avatar from "../../assets/images/img-placeholder.png";
 import ProductPagination from "../Pagination/Pagination";
+import Utils, { searchNestedCategoriesArray } from "../../utils";
+import { updateUserGlobalProduct } from "../../actions/myProductActions";
 
-const AddProductsByCategory = ({ isTemplate, current }) => {
+const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
   const listCategories = useSelector(
     (state) => state.product.productCategories
   );
   const dispatch = useDispatch();
+  const project = useSelector((state) => state.project.project);
   const builderSelectedRoomCategoryProducts = useSelector(
     (state) => state.builderRooms.builderSelectedRoomCategoryProducts
   );
@@ -43,15 +50,28 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingActions, setActionLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [categorySearchTerm, setCategorySearchTerm] = useState("");
   const [isExtraFiltersOpen, setisExtraFiltersOpen] = useState(false);
   const [extraFiltersCount, setExtraFiltersCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [defaultExpandedIds, setDefaultExpandedIds] = useState([606, 666, 460]);
+  const [filteredCategoies, setFilteredCategoies] = useState([]);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState({
+    loading: false,
+  });
+  const [favoritedProducts, setIsFavoritedProducts] = useState([]);
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoaded(true);
     }, 100);
   }, []);
+
+  useEffect(() => {
+    setDefaultExpandedIds(
+      getParentIDs(categories, builderSelectedRoomCategory?.ID)
+    );
+  }, [categories, builderSelectedRoomCategory]);
 
   useEffect(() => {
     if (builderSelectedRoomCategory.ID) {
@@ -87,7 +107,7 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
   }, [selectedCategory]);
 
   const fetchaddedProducts = async (searchObject) => {
-    if (!isTemplate) {
+    if (isTemplate) {
       dispatch(
         getRoomGroupCategoryProduct(
           builderSelectedRoomGroup.ID,
@@ -108,13 +128,15 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
   };
 
   const isProductAdded = (ID) => {
-    return builderSelectedRoomCategoryProducts?.find(
-      (p) => p.Product?.ID === ID
-    );
+    if (isTemplate) {
+      return builderSelectedRoomCategoryProducts?.find(
+        (p) => p.Product?.ID === ID
+      );
+    }
   };
 
   const addProduct = (productID, product) => {
-    if (selectedCategory?.id) {
+    if (isTemplate && selectedCategory?.id) {
       setSelectedProductID(productID);
       setActionLoading(true);
       dispatch(
@@ -137,11 +159,13 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
         );
         setActionLoading(false);
       });
+    } else {
+      handleAdd?.(product);
     }
   };
 
   const handleDeleteRoomGroupCategoryProduct = (ID) => {
-    if (isProductAdded(ID)?.ID) {
+    if (isProductAdded(ID)?.ID && isTemplate) {
       setActionLoading(true);
       setSelectedProductID(ID);
       dispatch(
@@ -184,6 +208,32 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
       setIsLoading(false);
     });
     setSearchObject(updatedSearch);
+  };
+
+  const handleSearchCategory = (value) => {
+    setCategorySearchTerm(value);
+
+    if (value.length > 2) {
+      const { allBelongings, parents } = searchNestedCategoriesArray(
+        categories,
+        categorySearchTerm
+      );
+      if (allBelongings?.length) {
+        setIsLoaded(false);
+        setTimeout(() => {
+          setDefaultExpandedIds(allBelongings.map((d) => d.ID));
+          setFilteredCategoies(parents);
+          setIsLoaded(true);
+        }, 50);
+      }
+    } else {
+      setIsLoaded(false);
+      setTimeout(() => {
+        setDefaultExpandedIds([]);
+        setFilteredCategoies([]);
+        setIsLoaded(true);
+      }, 50);
+    }
   };
 
   const handlePaginate = (page, size) => {
@@ -261,7 +311,7 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
     }
   }, [products]);
 
-  function getParentIDs() {
+  function getParentIDs(list, searchForId) {
     if (!builderSelectedRoomCategory?.ID) return [];
     // Helper function to recursively search for the target ID
     function findParentIDs(arr, id, parentIDs) {
@@ -283,23 +333,95 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
           }
         }
       }
-      // If the target ID is not found, return null
-      return null;
+      // If the target ID is not found, return
+      return [];
     }
 
     // Start the search from the top-level categories
-    return [
-      ...(findParentIDs(categories, builderSelectedRoomCategory?.ID, []) ?? []),
-      builderSelectedRoomCategory?.ID,
-    ];
+    return [...(findParentIDs(list, searchForId, []) ?? []), searchForId];
   }
 
-  console.log(getParentIDs(), "getParentIDs");
-  const data = flattenTree({ name: "Root", children: categories });
+  const handleIsFavorite = (item) => {
+    setIsFavoriteLoading({ loading: true, ID: item?.ID });
+    dispatch(
+      updateUserGlobalProduct(item?.ID, !item.SearchIsFavorite, "IsFavorite")
+    ).then(() => {
+      if (favoritedProducts.includes(item.ID)) {
+        setIsFavoritedProducts((prevs) => prevs.filter((p) => p !== item.ID));
+      } else {
+        setIsFavoritedProducts((prevs) => [...prevs, item.ID]);
+      }
+
+      setIsFavoriteLoading({ loading: false, ID: "" });
+    });
+  };
+
+  const handleSelectedProductDetails = (productDetail) => {
+    dispatch(
+      setProduct({
+        ID: productDetail?.ID,
+        Quantity: 1,
+        TemplateItemID: productDetail.ID,
+        CategoryID: productDetail.CategoryID,
+        RoughInTrimOutEnum: "RoughIn",
+        IsApproved: false,
+      })
+    );
+    dispatch(setProductDetail(productDetail)).then(() => {
+      window.open(
+        `/project/${project.ProjectNumber}/product/productDetail`,
+        "_blank"
+      );
+    });
+  };
+
+  const data = flattenTree({
+    name: "Root",
+    children: categorySearchTerm?.length > 2 ? filteredCategoies : categories,
+  });
   return (
     <div className="d-flex w-100" style={{ minHeight: "90vh" }}>
       <div className="w-100">
-        <h4>Categories</h4>
+        <div className="d-flex justify-content-between">
+          <h4>Categories</h4>
+          <Form.Group className="mr-4">
+            <div className="d-flex position-relative" style={{ gap: "10px" }}>
+              <Form.Control
+                placeholder="Find Categories"
+                value={categorySearchTerm}
+                onChange={(e) => handleSearchCategory(e.target.value)}
+                style={{ height: "36px" }}
+                className="w-fit pr-2"
+              ></Form.Control>
+              {categorySearchTerm ? (
+                <div
+                  className="d-flex align-items-center justify-content-center bg-danger rounded-circle position-absolute"
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    cursor: "pointer",
+                    right: "8px",
+                    top: "8px",
+                  }}
+                  onClick={() => {
+                    setIsLoaded(false);
+                    setCategorySearchTerm("");
+                    setTimeout(() => {
+                      setDefaultExpandedIds([]);
+                      setFilteredCategoies([]);
+                      setIsLoaded(true);
+                    }, 50);
+                  }}
+                >
+                  <i
+                    className="fa fa-times text-white"
+                    style={{ fontSize: "12px" }}
+                  />
+                </div>
+              ) : null}
+            </div>
+          </Form.Group>
+        </div>
         <div className="folder-tree-wrapper">
           {isLoaded ? (
             <TreeView
@@ -307,8 +429,8 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
               aria-label="directory tree"
               togglableSelect={false}
               clickAction="EXCLUSIVE_SELECT"
-              defaultExpandedIds={getParentIDs()}
-              defaultSelectedIds={getParentIDs()}
+              defaultExpandedIds={defaultExpandedIds}
+              defaultSelectedIds={defaultExpandedIds}
               multiSelect
               nodeRenderer={({
                 element,
@@ -323,16 +445,35 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
                   style={{ paddingLeft: 20 * (level - 1) }}
                   className={`tree-item ${isSelected ? "text-primary" : ""}`}
                 >
-                  <div onClick={() => setSelectedCategory(element)}>
+                  <div
+                    onClick={() => setSelectedCategory(element)}
+                    className="d-flex align-items-center"
+                  >
                     {isBranch || element.children ? (
-                      <i
-                        className={`${
-                          isExpanded || isSelected
-                            ? "fa fa-folder-open"
-                            : "fa fa-folder"
-                        }`}
-                        style={isSelected ? { color: "#007bff" } : {}}
-                      />
+                      <div className="d-inline-flex align-items-center">
+                        {element.children.length ? (
+                          <i
+                            className={`text-secondary ${
+                              isExpanded || isSelected
+                                ? "fa fa-chevron-down"
+                                : "fa fa-chevron-right"
+                            }`}
+                            style={{ fontSize: "12px" }}
+                          />
+                        ) : (
+                          <span
+                            style={{ marginLeft: "7.5px", height: "12px" }}
+                          />
+                        )}
+                        <i
+                          className={`ml-1 ${
+                            isExpanded || isSelected
+                              ? "fa fa-folder-open"
+                              : "fa fa-folder"
+                          }`}
+                          style={isSelected ? { color: "#007bff" } : {}}
+                        />
+                      </div>
                     ) : (
                       <i
                         className={"fa fa-file"}
@@ -347,6 +488,7 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
           ) : null}
         </div>
       </div>
+      {selectedCategory?.id ? <div className="verticle-line" /> : null}
       {selectedCategory?.id ? (
         <div className="w-100">
           <h4>Products</h4>
@@ -443,7 +585,7 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
                 {products?.Products?.map((product, index) => (
                   <div
                     key={index}
-                    className="d-flex mt-4 products-item-wrapper"
+                    className="d-flex mt-4 products-item-wrapper position-relative"
                   >
                     <div>
                       <CustomLightbox
@@ -457,7 +599,12 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
                     </div>
                     <div>
                       <div className="add-btn-product-details">
-                        <b className="d-block">{product?.ProductName}</b>
+                        <a
+                          href="#"
+                          onClick={() => handleSelectedProductDetails(product)}
+                        >
+                          <b className="d-block">{product?.ProductName}</b>
+                        </a>
 
                         <div>
                           <div className="model-number">
@@ -475,6 +622,30 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
                     </div>
                     <div>{product.ShortDescription}</div>
                     <div>
+                      <div
+                        className="position-absolute"
+                        style={{ top: "6px", right: "22px", cursor: "pointer" }}
+                      >
+                        {Utils.itemLoading(product, isFavoriteLoading) ? (
+                          <Spinner
+                            animation="border"
+                            variant="primary"
+                            size="sm"
+                          />
+                        ) : (
+                          <i
+                            className={`position-absolute far ${
+                              product.SearchIsFavorite ||
+                              favoritedProducts.includes(product.ID)
+                                ? "text-danger fas fa-heart"
+                                : "fa-heart"
+                            } mr-0`}
+                            onClick={() => handleIsFavorite(product)}
+                            style={{ fontSize: "16px" }}
+                          ></i>
+                        )}
+                      </div>
+
                       {loadingActions && product.ID === selectedProductID ? (
                         <Spinner
                           size="sm"
@@ -494,15 +665,19 @@ const AddProductsByCategory = ({ isTemplate, current }) => {
                           >
                             {isProductAdded(product.ID) ? "Added" : "Add"}
                           </Button>
-                          <Button
-                            className="action-button btn-danger"
-                            onClick={() =>
-                              handleDeleteRoomGroupCategoryProduct(product?.ID)
-                            }
-                            disabled={!isProductAdded(product.ID)}
-                          >
-                            Remove
-                          </Button>
+                          {isTemplate ? (
+                            <Button
+                              className="action-button btn-danger"
+                              onClick={() =>
+                                handleDeleteRoomGroupCategoryProduct(
+                                  product?.ID
+                                )
+                              }
+                              disabled={!isProductAdded(product.ID)}
+                            >
+                              Remove
+                            </Button>
+                          ) : null}
                         </div>
                       )}
                     </div>

@@ -205,7 +205,10 @@ const ReplaceProduct = () => {
 
   const handleSelectedProductDetails = (productDetail) => {
     dispatch(setProductDetail(productDetail)).then(() => {
-      history.push(`/project/${project.ProjectNumber}/product/productDetail`);
+      window.open(
+        `/project/${project.ProjectNumber}/product/productDetail`,
+        "_blank"
+      );
     });
   };
 

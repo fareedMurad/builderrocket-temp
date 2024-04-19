@@ -3,7 +3,7 @@ import { Col, Form, Modal, Button, Row, Spinner } from "react-bootstrap";
 import "./AddProductConfirmationModal.scss";
 import { useSelector } from "react-redux";
 import { Accordion } from "react-bootstrap-accordion";
-import queryString from 'query-string';
+import queryString from "query-string";
 
 const AddProductConfirmationModal = ({
   show,
@@ -17,16 +17,16 @@ const AddProductConfirmationModal = ({
     RoughInTrimOutEnum: "RoughIn",
   });
   const project = useSelector((state) => state.project.project);
+  const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const room = useSelector((state) => state.room);
   const roomTypes = room?.roomTypes;
   const [selectedRoomIDs, setSelectedRoomIDs] = useState([]);
-  const searchParams = queryString.parse(window?.location?.search);
 
   useEffect(() => {
-    if(searchParams.roomId) {
-      setSelectedRoomIDs([Number(searchParams.roomId)])
+    if (selectedRoom) {
+      setSelectedRoomIDs([Number(selectedRoom.ID)]);
     }
-  },[])
+  }, [selectedRoom]);
 
   useEffect(() => {
     setForm({ ...form, roomIDs: selectedRoomIDs });
@@ -51,7 +51,7 @@ const AddProductConfirmationModal = ({
 
     const filtered = mergeDuplicatesAsArray(
       project.BuilderProjectRooms,
-      "RoomTypeID",
+      "RoomTypeID"
     );
 
     array = filtered?.map((roomType, index) => {
