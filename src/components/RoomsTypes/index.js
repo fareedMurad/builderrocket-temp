@@ -9,18 +9,20 @@ import {
   createRoomTypes,
   deleteRoom,
   deleteRoomType,
+  getBuilderRoomGroupDetails,
   getBuilderRoomGroups,
   getBuilderRoomTypes,
   renameRoom,
   renameRoomType,
 } from "../../actions/roomActions";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 const RoomsTypes = () => {
   const roomTypes = useSelector(
-    (state) => state.builderRooms.builderRoomTypes?.RoomTypes,
+    (state) => state.builderRooms.builderRoomTypes?.RoomTypes
   );
   const roomGroups = useSelector(
-    (state) => state.builderRooms.builderRoomGroups?.Result,
+    (state) => state.builderRooms.builderRoomGroups?.Result
   );
   const [modalVisible, setModalVisible] = useState("");
   const [roomTypeName, setRoomTypeName] = useState("");
@@ -30,6 +32,7 @@ const RoomsTypes = () => {
   const [newRoom, setNewRoom] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
+  const history = useHistory();
   useEffect(() => {
     handleFetchRoomTypes();
     handleFetchRoomGroups();
@@ -153,6 +156,14 @@ const RoomsTypes = () => {
       .catch(() => {
         alert("Something went wrong, please try again!");
       });
+  };
+
+  const handleGetBuilderRoomGroupDetails = (selectedGroupId) => {
+    if (selectedGroupId) {
+      dispatch(getBuilderRoomGroupDetails(selectedGroupId)).then((res) => {
+        history.push(`/rooms-management/templates`);
+      });
+    }
   };
 
   const deleteRoomTypeModal = () => {
@@ -315,7 +326,7 @@ const RoomsTypes = () => {
             value: item?.DefaultRoomGroup?.ID,
             label: item?.DefaultRoomGroup?.Name,
           }
-        : {},
+        : {}
     );
 
     setModalVisible("EDIT_ROOM_TYPE");
@@ -420,7 +431,22 @@ const RoomsTypes = () => {
                         item.Rooms?.map((room, index) => {
                           return (
                             <tr key={index}>
-                              <td>{room.Name}</td>
+                              <td>
+                                {room.BuilderDefaultRoomGroupID ? (
+                                  <a
+                                    href="#"
+                                    onClick={() =>
+                                      handleGetBuilderRoomGroupDetails(
+                                        room.BuilderDefaultRoomGroupID
+                                      )
+                                    }
+                                  >
+                                    {room.Name}
+                                  </a>
+                                ) : (
+                                  room.Name
+                                )}
+                              </td>
                               <td>
                                 {room.DefaultRoomGroup?.Name
                                   ? `[ ${room.DefaultRoomGroup?.Name} ]`

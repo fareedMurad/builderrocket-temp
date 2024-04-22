@@ -144,3 +144,16 @@
   color: white;
   margin-top: 10px;
 }
+
+.verticle-line {
+  min-height: 100vh;
+  width: 4px;
+  background-color: #edeaea;
+  margin: 0 10px;
+  position: sticky;
+  top: 0;
+}
+
+.tree-node-group.tree-node-group--expanded {
+  padding-left: 20px;
+}

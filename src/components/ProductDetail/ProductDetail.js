@@ -23,7 +23,7 @@ const ProductDetail = () => {
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const productDetail = useSelector((state) => state.product.productDetail);
   const ProductSelectedRoom = useSelector(
-    (state) => state.room.ProductSelectedRoom,
+    (state) => state.room.ProductSelectedRoom
   );
   const [isLoading, setIsLoading] = useState(true);
   const [addProductModal, setAddProductModal] = useState(false);
@@ -71,7 +71,7 @@ const ProductDetail = () => {
 
   return (
     <div className="product-detail">
-      <div className="d-flex title">
+      {/* <div className="d-flex title">
         <div>
           <Button
             variant="link"
@@ -93,13 +93,14 @@ const ProductDetail = () => {
         <div>
           <Button
             variant="link"
-            className="link-btn"
+            className="link-btn bg-transparent"
             // onClick={() => handleShow(false)}
+            disabled
           >
-            Products
+            Product Details
           </Button>
         </div>
-      </div>
+      </div> */}
 
       {isLoading ? (
         <div className="spinner d-flex justify-content-center">

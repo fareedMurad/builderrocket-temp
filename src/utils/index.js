@@ -64,6 +64,32 @@ const itemLoading = (templateItem, loadingObj) => {
   return loadingObj?.loading && loadingObj?.ID === templateItem?.ID;
 };
 
+// to return the matching categories in chlilds array and most top-level their parent categories in the parents array
+export function searchNestedCategoriesArray(array, searchTerm) {
+  const parents = [];
+  const allBelongings = [];
+
+  function searchHelper(arr, parent, ancestors = []) {
+    for (const item of arr) {
+      const currentParents = [...ancestors, item]; // Store current item and its ancestors
+      if (item.Name?.toLowerCase()?.includes(searchTerm.toLowerCase())) {
+        if (!parents?.some((s) => s.ID === parent?.ID || s.ID === item?.ID))
+          parents.push(parent || item); // If parent exists, push it to the result, otherwise push the item itself
+
+        if (!allBelongings.some((s) => s.ID === item?.ID))
+          allBelongings.push(...currentParents);
+      }
+      if (item.SubCategories && item.SubCategories.length > 0) {
+        searchHelper(item.SubCategories, parent || item, currentParents); // Keep track of the root parent
+      }
+    }
+  }
+
+  searchHelper(array);
+
+  return { parents, allBelongings };
+}
+
 const Utils = {
   formatShortDateUS,
   formatDateDashes,
@@ -71,6 +97,7 @@ const Utils = {
   formatDate,
   getProductImages,
   itemLoading,
+  searchNestedCategoriesArray,
 };
 
 export default Utils;
