@@ -125,8 +125,9 @@ const AddProduct = () => {
           <div className="d-flex align">
             <Button
               variant="link"
-              className="bg-transparent pr-0 mt-0 pt-0"
+              className="bg-transparent pr-0 mt-0 pt-0 outline-none"
               onClick={handleGoToProducts}
+              style={{ outline: "none" }}
             >
               Products /
             </Button>

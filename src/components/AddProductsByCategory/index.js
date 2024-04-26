@@ -20,7 +20,12 @@ import ProductPagination from "../Pagination/Pagination";
 import Utils, { searchNestedCategoriesArray } from "../../utils";
 import { updateUserGlobalProduct } from "../../actions/myProductActions";
 
-const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
+const AddProductsByCategory = ({
+  isTemplate,
+  isReplace,
+  current,
+  handleAdd,
+}) => {
   const listCategories = useSelector(
     (state) => state.product.productCategories
   );
@@ -201,10 +206,10 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
     const updatedSearch = {
       ...searchObject,
       Filter: searchTerm,
-      CategoryID: selectedCategory?.id,
+      CategoryID: "",
     };
 
-    dispatch(searchProducts(selectedCategory?.id, updatedSearch)).then(() => {
+    dispatch(searchProducts("", updatedSearch)).then(() => {
       setIsLoading(false);
     });
     setSearchObject(updatedSearch);
@@ -490,7 +495,7 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
       </div>
       {selectedCategory?.id ? <div className="verticle-line" /> : null}
       {selectedCategory?.id ? (
-        <div className="w-100">
+        <div className="w-100" style={{ minWidth: "60%" }}>
           <h4>Products</h4>
           <div className="d-flex align-items-center" style={{ gap: "10px" }}>
             <div
@@ -617,6 +622,7 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
                           {product?.ColorFinish ? (
                             <div>Color: {product?.ColorFinish}</div>
                           ) : null}
+                          <div>Category: {product.CategoryName}</div>
                         </div>
                       </div>
                     </div>
@@ -663,7 +669,11 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
                             onClick={() => addProduct(product?.ID, product)}
                             disabled={isProductAdded(product.ID)}
                           >
-                            {isProductAdded(product.ID) ? "Added" : "Add"}
+                            {isReplace
+                              ? "Replace"
+                              : isProductAdded(product.ID)
+                              ? "Added"
+                              : "Add"}
                           </Button>
                           {isTemplate ? (
                             <Button
