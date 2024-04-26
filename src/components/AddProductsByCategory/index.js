@@ -335,9 +335,9 @@ const AddProductsByCategory = ({
       updateUserGlobalProduct(item?.ID, !item.SearchIsFavorite, "IsFavorite")
     ).then(() => {
       if (favoritedProducts.includes(item.ID)) {
-        setIsFavoritedProducts((prevs) => prevs.filter((p) => p !== item.ID));
+        setIsFavoritedProducts(favoritedProducts.filter((p) => p !== item.ID));
       } else {
-        setIsFavoritedProducts((prevs) => [...prevs, item.ID]);
+        setIsFavoritedProducts([...favoritedProducts, item.ID]);
       }
 
       setIsFavoriteLoading({ loading: false, ID: "" });
@@ -613,7 +613,7 @@ const AddProductsByCategory = ({
                     <div>
                       <div
                         className="position-absolute"
-                        style={{ top: "6px", right: "22px", cursor: "pointer" }}
+                        style={{ top: "6px", right: "8px", cursor: "pointer" }}
                       >
                         {Utils.itemLoading(product, isFavoriteLoading) ? (
                           <Spinner
@@ -623,7 +623,7 @@ const AddProductsByCategory = ({
                           />
                         ) : (
                           <i
-                            className={`position-absolute far ${
+                            className={`far ${
                               product.SearchIsFavorite ||
                               favoritedProducts.includes(product.ID)
                                 ? "text-danger fas fa-heart"
