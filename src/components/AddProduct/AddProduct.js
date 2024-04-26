@@ -13,7 +13,6 @@ import "./AddProduct.scss";
 import { useHistory } from "react-router";
 
 import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProductConfirmationModal";
-import SelectRooms from "../Products/SelectRooms";
 import { handleAddMyProductToProject } from "../../actions/myProductActions";
 import AddProductsByCategory from "../AddProductsByCategory";
 import {

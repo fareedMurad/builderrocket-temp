@@ -321,32 +321,12 @@ const AddProductsByCategory = ({
 
   function getParentIDs(list, searchForId) {
     if (!builderSelectedRoomCategory?.ID) return [];
-    // Helper function to recursively search for the target ID
-    function findParentIDs(arr, id, parentIDs) {
-      for (let item of arr) {
-        if (item.ID === id) {
-          // If the target ID is found, return its parent IDs
-          return parentIDs;
-        }
-        if (item?.SubCategories?.length > 0) {
-          // If the item has SubCategories, recursively search them
-          let result = findParentIDs(
-            item.SubCategories,
-            id,
-            parentIDs.concat(item.ID)
-          );
-          if (result) {
-            // If the target ID is found in the SubCategories, return its parent IDs
-            return result;
-          }
-        }
-      }
-      // If the target ID is not found, return
-      return [];
-    }
-
-    // Start the search from the top-level categories
-    return [...(findParentIDs(list, searchForId, []) ?? []), searchForId];
+    const { allBelongings } = searchNestedCategoriesArray(
+      list,
+      builderSelectedRoomCategory?.ID,
+      "ID"
+    );
+    return [...(allBelongings ?? []).map((c) => c.ID), searchForId];
   }
 
   const handleIsFavorite = (item) => {
