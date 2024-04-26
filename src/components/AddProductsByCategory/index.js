@@ -25,6 +25,7 @@ const AddProductsByCategory = ({
   isReplace,
   current,
   handleAdd,
+  existingProducts,
 }) => {
   const listCategories = useSelector(
     (state) => state.product.productCategories
@@ -137,6 +138,8 @@ const AddProductsByCategory = ({
       return builderSelectedRoomCategoryProducts?.find(
         (p) => p.Product?.ID === ID
       );
+    } else if (existingProducts?.length) {
+      return existingProducts.find((p) => p.ProductID === ID);
     }
   };
 
