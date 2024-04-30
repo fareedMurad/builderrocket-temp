@@ -20,7 +20,13 @@ import ProductPagination from "../Pagination/Pagination";
 import Utils, { searchNestedCategoriesArray } from "../../utils";
 import { updateUserGlobalProduct } from "../../actions/myProductActions";
 
-const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
+const AddProductsByCategory = ({
+  isTemplate,
+  isReplace,
+  current,
+  handleAdd,
+  existingProducts,
+}) => {
   const listCategories = useSelector(
     (state) => state.product.productCategories
   );
@@ -132,6 +138,8 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
       return builderSelectedRoomCategoryProducts?.find(
         (p) => p.Product?.ID === ID
       );
+    } else if (existingProducts?.length) {
+      return existingProducts.find((p) => p.ProductID === ID);
     }
   };
 
@@ -201,10 +209,10 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
     const updatedSearch = {
       ...searchObject,
       Filter: searchTerm,
-      CategoryID: selectedCategory?.id,
+      CategoryID: "",
     };
 
-    dispatch(searchProducts(selectedCategory?.id, updatedSearch)).then(() => {
+    dispatch(searchProducts("", updatedSearch)).then(() => {
       setIsLoading(false);
     });
     setSearchObject(updatedSearch);
@@ -313,32 +321,12 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
 
   function getParentIDs(list, searchForId) {
     if (!builderSelectedRoomCategory?.ID) return [];
-    // Helper function to recursively search for the target ID
-    function findParentIDs(arr, id, parentIDs) {
-      for (let item of arr) {
-        if (item.ID === id) {
-          // If the target ID is found, return its parent IDs
-          return parentIDs;
-        }
-        if (item?.SubCategories?.length > 0) {
-          // If the item has SubCategories, recursively search them
-          let result = findParentIDs(
-            item.SubCategories,
-            id,
-            parentIDs.concat(item.ID)
-          );
-          if (result) {
-            // If the target ID is found in the SubCategories, return its parent IDs
-            return result;
-          }
-        }
-      }
-      // If the target ID is not found, return
-      return [];
-    }
-
-    // Start the search from the top-level categories
-    return [...(findParentIDs(list, searchForId, []) ?? []), searchForId];
+    const { allBelongings } = searchNestedCategoriesArray(
+      list,
+      builderSelectedRoomCategory?.ID,
+      "ID"
+    );
+    return [...(allBelongings ?? []).map((c) => c.ID), searchForId];
   }
 
   const handleIsFavorite = (item) => {
@@ -347,9 +335,9 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
       updateUserGlobalProduct(item?.ID, !item.SearchIsFavorite, "IsFavorite")
     ).then(() => {
       if (favoritedProducts.includes(item.ID)) {
-        setIsFavoritedProducts((prevs) => prevs.filter((p) => p !== item.ID));
+        setIsFavoritedProducts(favoritedProducts.filter((p) => p !== item.ID));
       } else {
-        setIsFavoritedProducts((prevs) => [...prevs, item.ID]);
+        setIsFavoritedProducts([...favoritedProducts, item.ID]);
       }
 
       setIsFavoriteLoading({ loading: false, ID: "" });
@@ -490,7 +478,7 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
       </div>
       {selectedCategory?.id ? <div className="verticle-line" /> : null}
       {selectedCategory?.id ? (
-        <div className="w-100">
+        <div className="w-100" style={{ minWidth: "60%" }}>
           <h4>Products</h4>
           <div className="d-flex align-items-center" style={{ gap: "10px" }}>
             <div
@@ -617,6 +605,7 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
                           {product?.ColorFinish ? (
                             <div>Color: {product?.ColorFinish}</div>
                           ) : null}
+                          <div>Category: {product.CategoryName}</div>
                         </div>
                       </div>
                     </div>
@@ -624,7 +613,7 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
                     <div>
                       <div
                         className="position-absolute"
-                        style={{ top: "6px", right: "22px", cursor: "pointer" }}
+                        style={{ top: "6px", right: "8px", cursor: "pointer" }}
                       >
                         {Utils.itemLoading(product, isFavoriteLoading) ? (
                           <Spinner
@@ -634,7 +623,7 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
                           />
                         ) : (
                           <i
-                            className={`position-absolute far ${
+                            className={`far ${
                               product.SearchIsFavorite ||
                               favoritedProducts.includes(product.ID)
                                 ? "text-danger fas fa-heart"
@@ -663,7 +652,11 @@ const AddProductsByCategory = ({ isTemplate, current, handleAdd }) => {
                             onClick={() => addProduct(product?.ID, product)}
                             disabled={isProductAdded(product.ID)}
                           >
-                            {isProductAdded(product.ID) ? "Added" : "Add"}
+                            {isReplace
+                              ? "Replace"
+                              : isProductAdded(product.ID)
+                              ? "Added"
+                              : "Add"}
                           </Button>
                           {isTemplate ? (
                             <Button

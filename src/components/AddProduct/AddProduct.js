@@ -13,7 +13,6 @@ import "./AddProduct.scss";
 import { useHistory } from "react-router";
 
 import AddProductConfirmationModal from "../AddProductConfirmationModal/AddProductConfirmationModal";
-import SelectRooms from "../Products/SelectRooms";
 import { handleAddMyProductToProject } from "../../actions/myProductActions";
 import AddProductsByCategory from "../AddProductsByCategory";
 import {
@@ -118,6 +117,13 @@ const AddProduct = () => {
     dispatch(setSelectedRoom(option));
   };
 
+  const getExistingProducts = () => {
+    const room = project.BuilderProjectRooms?.find(
+      (r) => r.ID === selectedRoom.ID
+    );
+    return room.Items;
+  };
+
   return (
     <div className="add-product-container pl-2 pr-2">
       <div className="d-flex pr-3">
@@ -125,8 +131,9 @@ const AddProduct = () => {
           <div className="d-flex align">
             <Button
               variant="link"
-              className="bg-transparent pr-0 mt-0 pt-0"
+              className="bg-transparent pr-0 mt-0 pt-0 outline-none"
               onClick={handleGoToProducts}
+              style={{ outline: "none" }}
             >
               Products /
             </Button>
@@ -154,6 +161,7 @@ const AddProduct = () => {
         </div>
       ) : (
         <AddProductsByCategory
+          existingProducts={getExistingProducts()}
           handleAdd={(product) => {
             setAddProductModal(true);
             setSelectedProduct(product);

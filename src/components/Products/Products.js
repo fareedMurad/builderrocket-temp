@@ -31,7 +31,10 @@ import {
   updateQuantity,
   updateRequiresApproval,
 } from "../../actions/projectActions";
-import { setSelectedRoom } from "../../actions/roomActions";
+import {
+  setSelectedBuilderCategory,
+  setSelectedRoom,
+} from "../../actions/roomActions";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty, isUndefined } from "lodash";
 import "./Products.scss";
@@ -393,6 +396,7 @@ const Products = (props) => {
       };
 
       dispatch(setSelectedRoom(templateItem.room));
+      dispatch(setSelectedBuilderCategory({ ID: templateItem?.CategoryID }));
       dispatch(setReplaceOldProduct(product));
       dispatch(setProduct(product))
         .then(dispatch(getCategories(product?.CategoryID)))
@@ -1210,15 +1214,17 @@ const Products = (props) => {
     );
   };
 
-  const handleRefresh = () => {};
-
   const showProducts = (isSingle, room) => {
     dispatch(setSelectedRoom(room))
       .then(() => {
         dispatch(getCategories(""))
           .then(() => dispatch(setProduct({})))
           .then(() => {
-            dispatch(setSelectedRoom(room));
+            dispatch(setSelectedRoom(room)).then(() => {
+              history.push(
+                `/project/${project.ProjectNumber}/product/addProduct`
+              );
+            });
           });
       })
       .catch(() => {});
@@ -1228,7 +1234,6 @@ const Products = (props) => {
     history.push(`/project/${project.ProjectNumber}/product/addCustomProducts`);
   };
 
-  const onRemove = (selectedList, removedItem) => {};
   return (
     <div className="d-flex products">
       <div className="products-container">
