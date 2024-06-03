@@ -95,32 +95,46 @@ const Reports = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (layout?.value === "list") {
-      dispatch(getReportByProjectID(project?.ID))
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    } else if (layout?.value === "category" || layout?.value === "room") {
-      dispatch(getCategorizedReportByProjectID(project?.ID))
-        .then((response) => {
-          handleSetChildFilters(response);
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-      dispatch(getRoomReportByProjectID(project?.ID))
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    } else if (layout?.value === "vendor") {
-      dispatch(getVendorReportByProjectID(project?.ID))
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    }
-  }, [dispatch, layout]);
+    // if (layout?.value === "list") {
+    dispatch(getReportByProjectID(project?.ID))
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+    // } else if (layout?.value === "category" || layout?.value === "room") {
+    dispatch(getCategorizedReportByProjectID(project?.ID))
+      .then((response) => {
+        dispatch(getRoomReportByProjectID(project?.ID))
+          .then(() => {
+            handleSetChildFilters(response);
+            setIsLoading(false);
+          })
+          .catch(() => setIsLoading(false));
+      })
+      .catch(() => setIsLoading(false));
+    // } else if (layout?.value === "vendor") {
+    dispatch(getVendorReportByProjectID(project?.ID))
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+    // }
+    window.addEventListener("beforeprint", function (event) {
+      setHideReportsHeader(false);
+    });
+    window.addEventListener("afterprint", function (event) {
+      setHideReportsHeader(true);
+    });
+    return () => {
+      window.removeEventListener("beforeprint", function (event) {
+        setHideReportsHeader(false);
+      });
+      window.removeEventListener("afterprint", function (event) {
+        setHideReportsHeader(true);
+      });
+    };
+  }, []);
+  // }, [dispatch, layout]);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -229,7 +243,7 @@ const Reports = (props) => {
       const payload = {
         Name: filtersForm?.Name,
         GroupBy: layout.value,
-        CategoryIDs: reportFilter?.map((r) => r.ID),
+        CategoryIDs: reportFilter?.map((r) => r.ID)?.filter((r) => r),
         RoomIDs: roomFilter?.map((r) => r.BuilderRoomID)?.filter((r) => r),
         RoughInTrimOut: roughInTrimOut,
         IsBuilderCustomer: localFilters.isCustomer,
@@ -299,12 +313,12 @@ const Reports = (props) => {
 
   useEffect(() => {
     if (selectedSavedFilter) {
-      if (layout?.value === selectedSavedFilter.GroupBy) {
-        handleSetChildFilters(reportByCategory);
-      }
       setLayout(
         LayoutOptions.find((lo) => selectedSavedFilter.GroupBy === lo.value)
       );
+      // if (layout?.value === selectedSavedFilter.GroupBy) {
+      handleSetChildFilters(reportByCategory);
+      // }
 
       dispatch(setCustomerFilter(selectedSavedFilter.IsBuilderCustomer));
       dispatch(setRoughInTrimOutFilter(selectedSavedFilter.RoughInTrimOut));
