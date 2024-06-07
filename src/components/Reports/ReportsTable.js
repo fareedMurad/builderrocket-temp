@@ -85,7 +85,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         localFilters?.roomFilters?.find((r) => r.ID === g.ID)
       );
 
-      return rooms.map((room) => {
+      return rooms?.map((room) => {
         return {
           ...room,
           Items: room.Items?.filter((product) => {
@@ -111,13 +111,20 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         {renderHeader()}
         <tbody>
           {filteredRooms()?.length
-            ? filteredRooms()?.map((item, index) => {
-                return item ? (
-                  <TableRow
-                    {...{ renderTableBody, item, allRooms: null, localFilters }}
-                  />
-                ) : null;
-              })
+            ? filteredRooms()
+                ?.sort((a, b) => a.Name?.localeCompare(b.Name))
+                ?.map((item, index) => {
+                  return item ? (
+                    <TableRow
+                      {...{
+                        renderTableBody,
+                        item,
+                        allRooms: null,
+                        localFilters,
+                      }}
+                    />
+                  ) : null;
+                })
             : null}
         </tbody>
       </>

@@ -121,8 +121,10 @@ const Products = (props) => {
     (state) => state.myProduct.myProductsByProject
   );
   const handleSelectedRoom = useCallback(
-    (selectedRooms) => {
-      const rooms = [...selectedRooms.map((b) => b.ID)];
+    (selectedRooms, defaultSelectedIds) => {
+      const rooms = defaultSelectedIds?.length
+        ? defaultSelectedIds
+        : [...selectedRooms.map((b) => b.ID)];
 
       setProductFilter({ ...productFilter, rooms: rooms, pageNumber: 1 });
       dispatch({ type: PRODUCT_SELECTED_ROOM, payload: rooms });
@@ -293,7 +295,10 @@ const Products = (props) => {
         };
       }),
     ];
-    handleSelectedRoom(options.filter((p) => p.value !== "select_all"));
+    handleSelectedRoom(
+      options.filter((p) => p.value !== "select_all"),
+      productFilter?.rooms
+    );
     setRoomsOptions(options);
 
     setRoomsDropdownLoading(false);

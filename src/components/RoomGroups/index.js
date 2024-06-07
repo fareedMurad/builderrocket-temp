@@ -48,12 +48,11 @@ const RoomGroups = () => {
   const selectedGroupId = useSelector(
     (state) => state.builderRooms.selectedGroupDetails?.groupId
   );
-  const [defaultSelectProductLocation, setDefaultSelectProductLocation] =
-    useState(false);
   const [showVisibleModal, setShowVisibleModal] = useState("");
   const [groupName, setGroupName] = useState("");
   const [selectedGroup, setSelectedGroup] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedProduct, setSelectedProduct] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [dublicateEditAttempted, setdublicateEditAttempted] = useState(false);
   const dispatch = useDispatch();
@@ -68,6 +67,10 @@ const RoomGroups = () => {
   useEffect(() => {
     if (expandID) {
       handleGetBuilderRoomGroupDetails();
+      const target = document.querySelector(`#selected_${expandID}`);
+      setTimeout(() => {
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
   }, [expandID]);
 
@@ -79,7 +82,7 @@ const RoomGroups = () => {
         if (target) target.scrollIntoView({ behavior: "smooth" });
         // dispatch(setSelectedBuilderCategory({})).then(() => {
         //   dispatch(setSelectedBuilderRoomGroup({})).then(() => {
-        //     setDefaultSelectProductLocation(false);
+        //
         //   });
         // });
       }, 1000);
@@ -99,7 +102,9 @@ const RoomGroups = () => {
     if (!selectedGroupCategories?.length || expandID !== selectedGroupId)
       setIsGroupCategoriesLoading(true);
     dispatch(getBuilderRoomGroupDetails(expandID)).then((res) => {
-      setIsGroupCategoriesLoading(false);
+      setTimeout(() => {
+        setIsGroupCategoriesLoading(false);
+      }, 200);
       setDefaultProductLoading({ loading: false });
     });
   };
@@ -143,15 +148,34 @@ const RoomGroups = () => {
   };
 
   const handleDeleteRoomGroupCategory = () => {
-    dispatch(deleteRoomGroupCategory(selectedCategory?.ID))
+    console.log(
+      selectedCategory,
+      selectedGroup,
+      selectedProduct,
+      "selectedCategory"
+    );
+    dispatch(
+      deleteRoomGroupCategory(
+        expandID,
+        selectedCategory?.CategoryID,
+        selectedProduct?.ID
+      )
+    )
       .then((res) => {
-        setShowVisibleModal("");
-        handleGetBuilderRoomGroupDetails();
-        setSelectedGroup({});
+        if (selectedCategory.ProductCounts === 1)
+          dispatch(
+            createRoomGroupCategory(selectedCategory?.CategoryID, expandID)
+          ).then(() => {
+            setShowVisibleModal("");
+            handleGetBuilderRoomGroupDetails();
+          });
+        else {
+          setShowVisibleModal("");
+          handleGetBuilderRoomGroupDetails();
+        }
       })
       .catch(() => {
         alert("Something went wrong, please try again!");
-        setSelectedGroup({});
       });
   };
   const handleEditGroup = () => {
@@ -301,9 +325,7 @@ const RoomGroups = () => {
           setShowVisibleModal("");
           handleGetBuilderRoomGroupDetails();
           dispatch(setSelectedBuilderCategory({})).then(() => {
-            dispatch(setSelectedBuilderRoomGroup({})).then(() => {
-              setDefaultSelectProductLocation(false);
-            });
+            dispatch(setSelectedBuilderRoomGroup({})).then(() => {});
           });
         }}
         centered
@@ -321,9 +343,7 @@ const RoomGroups = () => {
               setShowVisibleModal("");
               handleGetBuilderRoomGroupDetails();
               dispatch(setSelectedBuilderCategory({})).then(() => {
-                dispatch(setSelectedBuilderRoomGroup({})).then(() => {
-                  setDefaultSelectProductLocation(false);
-                });
+                dispatch(setSelectedBuilderRoomGroup({})).then(() => {});
               });
             }}
           />
@@ -349,7 +369,6 @@ const RoomGroups = () => {
 
   const handleAddCategory = (e, item) => {
     dispatch(setSelectedBuilderRoomGroup(item));
-    setDefaultSelectProductLocation(false);
     e?.stopPropagation();
     setSelectedGroup(item);
     setExpandID(item.ID);
@@ -368,8 +387,9 @@ const RoomGroups = () => {
     setShowVisibleModal("DELETE_GROUP_CATEGORY");
   };
 
-  const handleDeleteGroupCategoryProduct = (e, item) => {
+  const handleDeleteGroupCategoryProduct = (e, product, item) => {
     e.stopPropagation();
+    setSelectedProduct(product);
     setSelectedCategory(item);
     setShowVisibleModal("DELETE_GROUP_CATEGORY_PRODUCT");
   };
@@ -379,7 +399,6 @@ const RoomGroups = () => {
       dispatch(setSelectedBuilderRoomGroup(group)).then(() => {
         // history.push(`/rooms-management/template-details`);
         handleAddCategory(null, group);
-        setDefaultSelectProductLocation(true);
       });
     });
   };
@@ -471,7 +490,7 @@ const RoomGroups = () => {
                         >
                           {selectedGroupCategories
                             ?.sort((a, b) =>
-                              a.Category?.Name?.localeCompare(b.Category?.Name)
+                              a.CategoryLabel?.localeCompare(b.CategoryLabel)
                             )
                             ?.map((templateItem, index) => {
                               return (
@@ -553,11 +572,19 @@ const RoomGroups = () => {
                                                     onClick={(e) =>
                                                       handleDeleteGroupCategoryProduct(
                                                         e,
-                                                        product
+                                                        product,
+                                                        templateItem
                                                       )
                                                     }
                                                   ></i>
                                                 </div>
+                                                <span
+                                                  style={{ fontSize: "12px" }}
+                                                  className="text-secondary"
+                                                >
+                                                  {product.ProductDescription ||
+                                                    product.ShortDescription}
+                                                </span>
                                               </td>
                                               <td className="defaultproduct-actions">
                                                 <div className="d-flex align-items-center justify-content-end">

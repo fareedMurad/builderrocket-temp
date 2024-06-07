@@ -19,8 +19,10 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
   const [searchableField, setSearchableField] = useState("");
 
   const handleSelectedRoom = useCallback(
-    (selectedRooms) => {
-      const rooms = [...selectedRooms.map((b) => b.ID)];
+    (selectedRooms, defaultSelectedIds) => {
+      const rooms = defaultSelectedIds?.length
+        ? defaultSelectedIds
+        : [...selectedRooms.map((b) => b.ID)];
 
       setProductFilter({ ...productFilter, rooms: rooms, pageNumber: 1 });
       dispatch({ type: PRODUCT_SELECTED_ROOM, payload: rooms });
@@ -44,14 +46,6 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
         };
       }),
     ];
-
-    console.log(
-      "params",
-      options.filter((p) => p.value !== "select_all"),
-      options
-        .filter((p) => p.value !== "select_all")
-        ?.filter((r) => r.ID === Number(searchParams.roomId))
-    );
     if (searchParams?.roomId) {
       options = options.map((p) => {
         if (p.value === "select_all") {
@@ -68,13 +62,15 @@ const SelectRooms = ({ setProductFilter, productFilter }) => {
           .filter((p) => p.value !== "select_all")
           ?.filter((r) => r.ID === Number(searchParams.roomId))
       );
-    } else handleSelectedRoom(options.filter((p) => p.value !== "select_all"));
+    } else
+      handleSelectedRoom(
+        options.filter((p) => p.value !== "select_all"),
+        productFilter?.rooms
+      );
     setRoomsOptions(options);
 
     setRoomsDropdownLoading(false);
   }, [project]);
-
-  console.log(productFilter, roomsOptions, "productFilter");
 
   useEffect(() => {
     if (roomCategoryRef?.current) {
