@@ -76,7 +76,7 @@ const CustomerProducts = (props) => {
   //     }
   //   };
 
-  const approvalSingle = (ID, ProductID, StatusID, IsCustomProduct) => {
+  const approvalSingle = (ID, ProductID, IsCustomProduct, StatusID) => {
     const object = {
       ID,
       ProductID,
@@ -92,13 +92,14 @@ const CustomerProducts = (props) => {
     });
   };
 
-  const approvalAll = (StatusID) => {
+  const approvalAll = (StatusID, always) => {
     const sendData = products.map((p) => {
       return {
         ID: p.ID,
         ProductID: p.Product?.ID,
         StatusID,
         IsCustomProduct: p.IsCustomProduct,
+        StatusForAll: always ? StatusID : 0,
       };
     });
     const customProducts = sendData
@@ -109,7 +110,7 @@ const CustomerProducts = (props) => {
         return obj;
       });
     const noCustomProducts = sendData
-      .filter((p) => !p.IsCustomProduct)
+      .filter((p) => p.IsCustomProduct === false)
       .map((p) => {
         const obj = p;
         delete obj.IsCustomProduct;
@@ -250,16 +251,16 @@ const CustomerProducts = (props) => {
                           templateItem?.ApprovalStatusID === 1
                             ? "bg-success"
                             : templateItem?.ApprovalStatusID === 2
-                              ? "bg-danger"
-                              : "bg-secondary"
+                            ? "bg-danger"
+                            : "bg-secondary"
                         }
                       `}
                       >
                         {templateItem?.ApprovalStatusID === 1
                           ? "Approved"
                           : templateItem?.ApprovalStatusID === 2
-                            ? "Rejected"
-                            : "Pending"}{" "}
+                          ? "Rejected"
+                          : "Pending"}{" "}
                       </small>
                       <br />
                       <small className="d-block mt-1">
@@ -278,11 +279,11 @@ const CustomerProducts = (props) => {
                               templateItem.ID,
                               Product?.ID,
                               templateItem?.IsCustomProduct,
-                              1,
+                              1
                             )
                           }
                         >
-                          <i className="fas fa-check-double"></i> Approve
+                          <i className="fas fa-check-double"></i> Approve --
                         </button>
 
                         <button
@@ -292,11 +293,11 @@ const CustomerProducts = (props) => {
                               templateItem.ID,
                               Product?.ID,
                               templateItem?.IsCustomProduct,
-                              2,
+                              2
                             )
                           }
                         >
-                          <i className="fas fa-times"></i> Reject
+                          <i className="fas fa-times"></i> Reject --
                         </button>
                       </div>
                     </td>
@@ -309,17 +310,24 @@ const CustomerProducts = (props) => {
       </div>
 
       <ConfirmApproveAllModal
-        text="Are you sure you want to approve all pending products?"
+        text="Are you sure you want to approve all products?"
+        subtext="Approve Always: will approve upcoming same products as Approved, Approve Once: will approve the products in the current list."
         show={confirmApproveModal}
         handleClose={() => setConfirmApproveModal(false)}
-        handleConfirm={() => approvalAll(1)}
+        handleConfirm={(always) => approvalAll(1, always)}
+        alwaysButtonText={"Approve Always"}
+        confirmButtonText={"Approve Once"}
       />
 
       <ConfirmApproveAllModal
-        text="Are you sure you want to reject all pending products?"
+        text="Are you sure you want to reject all products?"
+        subtext="Reject Always: will reject upcoming same products as Rejected, Reject Once: will reject the products in the current list."
         show={confirmRejectModal}
         handleClose={() => setConfirmRejectModal(false)}
-        handleConfirm={() => approvalAll(2)}
+        handleConfirm={(always) => approvalAll(2, always)}
+        alwaysButtonText={"Reject Always"}
+        confirmButtonText={"Reject Once"}
+        isRejectModal
       />
     </div>
   );
