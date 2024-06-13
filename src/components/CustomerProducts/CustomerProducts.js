@@ -23,7 +23,12 @@ const CustomerProducts = (props) => {
   const [templateItems, setTemplateItems] = useState({});
   const [confirmApproveModal, setConfirmApproveModal] = useState(false);
   const [confirmRejectModal, setConfirmRejectModal] = useState(false);
-
+  const [confirmApproveModalSingle, setconfirmApproveModalSingle] =
+    useState(false);
+  const [confirmRejectModalSingle, setconfirmRejectModalSingle] =
+    useState(false);
+  const [selectedProduct, setSelectedProduct] = useState();
+  const [showSpinner, setShowSpinner] = useState(false);
   useEffect(() => {
     // if (isEmpty(selectedRoom))
     //   dispatch(setSelectedRoom(project?.ProjectRooms?.[0]));
@@ -76,23 +81,29 @@ const CustomerProducts = (props) => {
   //     }
   //   };
 
-  const approvalSingle = (ID, ProductID, IsCustomProduct, StatusID) => {
+  const approvalSingle = (ID, ProductID, IsCustomProduct, StatusID, always) => {
     const object = {
       ID,
       ProductID,
       StatusID,
+      StatusForAll: always ? StatusID : 0,
     };
     dispatch(customerApprovalProducts([object], IsCustomProduct)).then(() => {
       const filter = products.map((p) => {
-        if (p.ID === ID) {
+        if (always && p.ProductID === ProductID) {
+          return { ...p, ApprovalStatusID: StatusID };
+        } else if (p.ID === ID) {
           return { ...p, ApprovalStatusID: StatusID };
         } else return p;
       });
       dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: filter });
     });
+    setconfirmApproveModalSingle(false);
+    setconfirmRejectModalSingle(false);
   };
 
   const approvalAll = (StatusID, always) => {
+    setShowSpinner(true);
     const sendData = products.map((p) => {
       return {
         ID: p.ID,
@@ -116,14 +127,23 @@ const CustomerProducts = (props) => {
         delete obj.IsCustomProduct;
         return obj;
       });
+    const updated = products.map((p) => {
+      return { ...p, ApprovalStatusID: StatusID };
+    });
     if (customProducts?.length)
-      dispatch(customerApprovalProducts(customProducts, true));
+      dispatch(customerApprovalProducts(customProducts, true)).then(() => {
+        dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: updated });
+        setShowSpinner(false);
+        if (StatusID === 1) setConfirmApproveModal(false);
+        if (StatusID === 2) setConfirmRejectModal(false);
+      });
     if (noCustomProducts?.length)
-      dispatch(customerApprovalProducts(noCustomProducts, false));
-
-    if (StatusID === 1) setConfirmApproveModal(false);
-
-    if (StatusID === 2) setConfirmRejectModal(false);
+      dispatch(customerApprovalProducts(noCustomProducts, false)).then(() => {
+        dispatch({ type: GET_CUSTOMER_PRODUCTS, payload: updated });
+        setShowSpinner(false);
+        if (StatusID === 1) setConfirmApproveModal(false);
+        if (StatusID === 2) setConfirmRejectModal(false);
+      });
   };
 
   return (
@@ -274,30 +294,23 @@ const CustomerProducts = (props) => {
                       <div className="d-flex ">
                         <button
                           className="bg-success text-light mr-1 border-0 rounded py-2"
-                          onClick={() =>
-                            approvalSingle(
-                              templateItem.ID,
-                              Product?.ID,
-                              templateItem?.IsCustomProduct,
-                              1
-                            )
-                          }
+                          onClick={() => {
+                            setSelectedProduct(templateItem);
+                            setconfirmApproveModalSingle(true);
+                          }}
                         >
-                          <i className="fas fa-check-double"></i> Approve --
+                          {/* ID, ProductID, IsCustomProduct, StatusID */}
+                          <i className="fas fa-check-double"></i> Approve
                         </button>
 
                         <button
                           className="bg-danger text-light border-0 rounded py-2"
-                          onClick={() =>
-                            approvalSingle(
-                              templateItem.ID,
-                              Product?.ID,
-                              templateItem?.IsCustomProduct,
-                              2
-                            )
-                          }
+                          onClick={() => {
+                            setSelectedProduct(templateItem);
+                            setconfirmRejectModalSingle(true);
+                          }}
                         >
-                          <i className="fas fa-times"></i> Reject --
+                          <i className="fas fa-times"></i> Reject
                         </button>
                       </div>
                     </td>
@@ -311,20 +324,57 @@ const CustomerProducts = (props) => {
 
       <ConfirmApproveAllModal
         text="Are you sure you want to approve all products?"
-        subtext="Approve Always: will approve upcoming same products as Approved, Approve Once: will approve the products in the current list."
+        subtext="Approve Always: will approve the current list as well as upcoming same products as Approved, Approve Once: will approve the products in the current list only"
         show={confirmApproveModal}
         handleClose={() => setConfirmApproveModal(false)}
         handleConfirm={(always) => approvalAll(1, always)}
         alwaysButtonText={"Approve Always"}
         confirmButtonText={"Approve Once"}
+        showSpinner={showSpinner}
       />
 
       <ConfirmApproveAllModal
         text="Are you sure you want to reject all products?"
-        subtext="Reject Always: will reject upcoming same products as Rejected, Reject Once: will reject the products in the current list."
+        subtext="Reject Always: will reject the current list as well as upcoming same products as Rejected, Reject Once: will reject the products in the current list."
         show={confirmRejectModal}
         handleClose={() => setConfirmRejectModal(false)}
         handleConfirm={(always) => approvalAll(2, always)}
+        alwaysButtonText={"Reject Always"}
+        confirmButtonText={"Reject Once"}
+        showSpinner={showSpinner}
+        isRejectModal
+      />
+      <ConfirmApproveAllModal
+        text="Select Option"
+        subtext="approve Always: will approve this product as well as it will be approve all over in the project, approve Once: will approve the current product only."
+        show={confirmApproveModalSingle}
+        handleClose={() => setconfirmApproveModalSingle(false)}
+        handleConfirm={(always) =>
+          approvalSingle(
+            selectedProduct?.ID,
+            selectedProduct?.Product?.ID,
+            selectedProduct?.IsCustomProduct,
+            1,
+            always
+          )
+        }
+        alwaysButtonText={"Approve Always"}
+        confirmButtonText={"Approve Once"}
+      />
+      <ConfirmApproveAllModal
+        text="Select Option"
+        subtext="Reject Always: will reject this product as well as it will be reject all over in the project, Reject Once: will reject the current product only."
+        show={confirmRejectModalSingle}
+        handleClose={() => setconfirmRejectModalSingle(false)}
+        handleConfirm={(always) =>
+          approvalSingle(
+            selectedProduct?.ID,
+            selectedProduct?.Product?.ID,
+            selectedProduct?.IsCustomProduct,
+            2,
+            always
+          )
+        }
         alwaysButtonText={"Reject Always"}
         confirmButtonText={"Reject Once"}
         isRejectModal

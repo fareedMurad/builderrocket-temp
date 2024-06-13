@@ -1,121 +1,118 @@
-@import '../../assets/styles/variables';
+@import "../../assets/styles/variables";
 
 .products {
+  .products-container {
+    width: 100%;
+    padding-right: 1rem;
+    padding-bottom: 2rem;
+    background-color: white;
 
-    .products-container {
-        width: 100%;
-        padding-right: 1rem;
-        padding-bottom: 2rem;
-        background-color: white;
-
-        i {
-            margin-right: .5rem;
-        }
-
-        .subtext { 
-            margin-top: .5rem;
-        }
-
-        .middle-section {
-
-            padding-left: 2rem;
-
-            select {
-                height: 25px;
-                width: 175px;
-                font-size: 14px;
-                margin-top: 1rem;
-                padding: 0 .25rem;
-
-            }
-            
-            .total {
-                font-size: 14px;
-                line-height: 19px;
-                margin-left: .15rem;
-                letter-spacing: -0.32px;
-            }
-        }
-
-        .products-table {
-            margin: 1.5rem .5rem;
-
-            .table-title {
-                font-size: 14px;
-                font-weight: bold;
-                line-height: 19px;
-                padding-left: .5rem;
-                letter-spacing: -0.32px;
-            }
-    
-            thead {
-                border: hidden;
-            }
-    
-            th {
-                font-size: 12px;
-                font-weight: 600;
-                line-height: 17px;
-                letter-spacing: -0.27px;
-            }
-    
-            td {
-                border: hidden;
-                font-size: 12px;
-                line-height: 17px;
-                letter-spacing: -0.27px;
-            }
-
-            tr {
-                height: 65px;
-            }
-    
-            i {
-                cursor: pointer;
-            }
-
-            .distributor-select { 
-                select {
-                    padding: 0;
-                    height: 25px;
-                    width: 160px;
-                    font-size: 14px;
-                }
-            } 
-
-            .approval-checkbox {
-                width: 5%;
-            }
-
-            .qty-input { 
-                input {
-                    padding: 0 .35rem;
-                    width: 60px;
-                    height: 25px;
-                    font-size: 14px;
-                }
-            }
-
-            .add-btn-templateItem {
-                .btn {
-                    margin-top: 0;
-                    padding: 0;
-                    text-align: left;
-                }
-            }
-
-            .plus-circle {
-                color: $tabblue;
-                margin-top: .25rem;
-            }
-
-            .radios {
-                width: 7%;
-            }
-        }
-        .approvicon{
-            font-size: 1.5em;
-        }
+    i {
+      margin-right: 0.5rem;
     }
 
+    .subtext {
+      margin-top: 0.5rem;
+    }
+
+    .middle-section {
+      padding-left: 2rem;
+
+      select {
+        height: 25px;
+        width: 175px;
+        font-size: 14px;
+        margin-top: 1rem;
+        padding: 0 0.25rem;
+      }
+
+      .total {
+        font-size: 14px;
+        line-height: 19px;
+        margin-left: 0.15rem;
+        letter-spacing: -0.32px;
+      }
+    }
+
+    .products-table {
+      margin: 1.5rem 0.5rem;
+      overflow-x: auto;
+
+      .table-title {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 19px;
+        padding-left: 0.5rem;
+        letter-spacing: -0.32px;
+      }
+
+      thead {
+        border: hidden;
+      }
+
+      th {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 17px;
+        letter-spacing: -0.27px;
+      }
+
+      td {
+        border: hidden;
+        font-size: 12px;
+        line-height: 17px;
+        letter-spacing: -0.27px;
+      }
+
+      tr {
+        height: 65px;
+      }
+
+      i {
+        cursor: pointer;
+      }
+
+      .distributor-select {
+        select {
+          padding: 0;
+          height: 25px;
+          width: 160px;
+          font-size: 14px;
+        }
+      }
+
+      .approval-checkbox {
+        width: 5%;
+      }
+
+      .qty-input {
+        input {
+          padding: 0 0.35rem;
+          width: 60px;
+          height: 25px;
+          font-size: 14px;
+        }
+      }
+
+      .add-btn-templateItem {
+        .btn {
+          margin-top: 0;
+          padding: 0;
+          text-align: left;
+        }
+      }
+
+      .plus-circle {
+        color: $tabblue;
+        margin-top: 0.25rem;
+      }
+
+      .radios {
+        width: 7%;
+      }
+    }
+    .approvicon {
+      font-size: 1.5em;
+    }
+  }
 }
