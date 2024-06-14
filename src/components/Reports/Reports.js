@@ -5,7 +5,7 @@ import {
   getRoomReportByProjectID,
   getVendorReportByProjectID,
 } from "../../actions/projectActions";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner, Input } from "react-bootstrap";
 import { setSelectedRoom } from "../../actions/roomActions";
 import {
   setRoomFilter,
@@ -29,6 +29,7 @@ import { CustomPrinter } from "../../components/PDF";
 import "./Reports.scss";
 import SaveReportsFilterModal from "../SaveReportsFilterModal/SaveReportsFilterModal";
 import { getCategories } from "../../actions/productActions";
+import ReactSwitch from "react-switch";
 
 const LayoutOptions = [
   { value: "list", label: "List" },
@@ -336,16 +337,23 @@ const Reports = (props) => {
           <>
             <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
               <div className=" d-flex align-items-center mx-3  mt-3">
-                <Form>
-                  <Form.Check
-                    value={true}
+                <div className="d-flex align-items-center">
+                  <span>Builder</span>
+                  <ReactSwitch
                     checked={localFilters.isCustomer}
                     onChange={onChangeIsCustomer}
-                    type="switch"
-                    id="custom-switch"
-                    label="Builder/Customer"
+                    checkedIcon={false}
+                    uncheckedIcon={false}
+                    offColor={"#007bff"}
+                    onColor={"#007bff"}
+                    height={20}
+                    width={35}
+                    boxShadow='0 0 1px 2px #3bf'
+                    className="mx-2"
                   />
-                </Form>
+                  <span>Customer</span>
+                </div>
+                  
                 <div className="ml-3">
                   {["category", "room"].indexOf(layout?.value) > -1 ? (
                     <div className={"d-inline-block"}>
