@@ -18,6 +18,8 @@ import "./Contractors.scss";
 import ClearChangesModal from "../ClearChangesModal";
 import MarketingBlock from "../MarketingBlock";
 import AddContractor from "../AddContractor";
+import StarRatings from "react-star-ratings";
+import ReactSelect, { components } from "react-select";
 // import { addDocument, deleteDocument } from '../../actions/documentActions';
 // import FileUpload from '../FileUpload';
 
@@ -112,7 +114,8 @@ const Contractors = () => {
   //         .catch(() => { });
   // }
 
-  const handleContractor = (contractorID, contractorTypeID) => {
+  const handleContractor = (option, contractorTypeID) => {
+    const contractorID = option.value;
     if (!contractorTypeID) return;
 
     dispatch(
@@ -129,9 +132,7 @@ const Contractors = () => {
     let selectedContractor;
 
     if (contractorID) {
-      selectedContractor = contractors.find(
-        (contractor) => contractor.ID === contractorID
-      );
+      selectedContractor = option;
 
       // update the selected contractor TYPE with selected contractor
       newContractorsMap = {
@@ -141,6 +142,7 @@ const Contractors = () => {
           ContractorTypeID: contractorTypeID,
           CompanyName: selectedContractor?.CompanyName,
           PhoneNumber: selectedContractor?.PhoneNumber,
+          MobileNumber: selectedContractor?.MobileNumber,
           EmailAddress: selectedContractor?.EmailAddress,
         },
       };
@@ -192,6 +194,37 @@ const Contractors = () => {
   //     }
   // }, [dispatch]);
 
+  const CustomOption = ({ children, ...props }) => {
+    return (
+      <components.Option {...props}>
+        <div className="d-flex align-items-center justify-content-between">
+          {children}
+          <div className="star-ratings">
+            <StarRatings
+              rating={props?.data?.Rating ? props?.data?.Rating : 0}
+              starRatedColor="#ffd700"
+              starSpacing="0"
+              numberOfStars={5}
+              starDimension="12px"
+              name="rating"
+              starEmptyColor="#aaa"
+            />
+          </div>
+        </div>
+      </components.Option>
+    );
+  };
+
+  const getContractorName = (contractor) => `${contractor.CompanyName || ""} 
+  ${
+    (((contractor.FirstName || contractor.LastName) &&
+      "-" + contractor.FirstName) ||
+      "") +
+    " " +
+    (contractor.LastName || "")
+  }
+ `;
+
   return (
     <div className="d-flex contractors">
       <div className="contractors-container">
@@ -216,27 +249,32 @@ const Contractors = () => {
                 <Form.Label className="input-label">
                   {contractorType.Name && contractorType.Name}
                 </Form.Label>
-
-                <Form.Control
-                  as="select"
+                <ReactSelect
                   value={
-                    contractorsInfo?.[contractorType?.ID]?.ContractorID ?? ""
+                    contractorsInfo?.[contractorType?.ID]?.ContractorID
+                      ? {
+                          ...contractorsInfo?.[contractorType?.ID],
+                          value:
+                            contractorsInfo?.[contractorType?.ID]
+                              ?.ContractorID ?? "",
+                          label: getContractorName(
+                            contractorsInfo?.[contractorType?.ID]
+                          ),
+                        }
+                      : ""
                   }
-                  onChange={(event) =>
-                    handleContractor(event.target.value, contractorType.ID)
+                  onChange={(option) =>
+                    handleContractor(option, contractorType.ID)
                   }
-                >
-                  <option value="">SELECT</option>
-                  {filterContractorsByType(contractorType.ID)?.map(
-                    (contractor, index) => (
-                      <option key={index} value={contractor.ID}>
-                        {contractor.CompanyName}
-                        {contractor.FirstName && ` - ${contractor.FirstName}`}
-                        {contractor.LastName && ` ${contractor.LastName}`}
-                      </option>
-                    )
+                  options={filterContractorsByType(contractorType.ID)?.map(
+                    (contractor) => ({
+                      value: contractor.ID,
+                      label: getContractorName(contractor),
+                      ...contractor,
+                    })
                   )}
-                </Form.Control>
+                  components={{ Option: CustomOption }}
+                />
 
                 {contractorsInfo?.[contractorType?.ID]?.ContractorID && (
                   <div className="pt-1 pl-1">
@@ -249,6 +287,18 @@ const Contractors = () => {
                           }`}
                         >
                           {contractorsInfo?.[contractorType?.ID]?.PhoneNumber}
+                        </a>
+                      </div>
+                    )}
+                    {contractorsInfo?.[contractorType?.ID]?.MobileNumber && (
+                      <div className="pr-3">
+                        <i className="fas fa-mobile mr-2"></i>
+                        <a
+                          href={`tel:+1${
+                            contractorsInfo?.[contractorType?.ID]?.MobileNumber
+                          }`}
+                        >
+                          {contractorsInfo?.[contractorType?.ID]?.MobileNumber}
                         </a>
                       </div>
                     )}

@@ -2,7 +2,15 @@ import React, { useEffect, useState } from "react";
 import "./Subdivisions.scss";
 import "react-bootstrap-accordion/dist/index.css";
 import { Accordion } from "react-bootstrap-accordion";
-import { Table, Modal, Button, Form, Spinner } from "react-bootstrap";
+import {
+  Table,
+  Modal,
+  Button,
+  Form,
+  Spinner,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -71,22 +79,23 @@ const Subdivisions = () => {
           selectedSubdivision.ID,
           formData,
           (event) => {
-            progress[1] = {
+            progress[18] = {
               progress: Math.round((100 * event.loaded) / event.total),
               loading: true,
             };
             setProgress({ ...progress });
-          },
-        ),
+          }
+        )
       )
         .then((response) => {
-          progress[1] = { progress: 0, loading: false };
+          progress[18] = { progress: 0, loading: false };
           setProgress({ ...progress });
           handleFetchSubdivisions();
           hanldeHideAddDocumentsModal();
+          setNewDocument();
         })
         .catch(() => {
-          progress[1] = { progress: 0, loading: false };
+          progress[18] = { progress: 0, loading: false };
           setProgress({ ...progress });
           alert("Something is wrong, please try!");
         });
@@ -139,7 +148,7 @@ const Subdivisions = () => {
         DocumentTypeID: selectedDocument?.DocumentTypeID,
         FileName: selectedDocument?.FileName,
         UserFileName: fileName,
-      }),
+      })
     )
       .then(() => {
         handleFetchSubdivisions();
@@ -247,7 +256,6 @@ const Subdivisions = () => {
     setModalVisible("");
     setNewDocument({});
   };
-
   const addDocumentModal = () => {
     return (
       <Modal
@@ -278,6 +286,7 @@ const Subdivisions = () => {
             <button
               className="primary-gray-btn next-btn ml-3"
               onClick={handleAddNewDocumentSubdivision}
+              disabled={progress[18]?.progress !== 0 || !newDocument}
             >
               Add
             </button>
@@ -358,18 +367,49 @@ const Subdivisions = () => {
                     <div className="font-weight-bold mr-5">
                       {item.SubdivisionName}
                     </div>
-                    <i
-                      className="far fa-pen fa-sm tab-icon p-2"
-                      onClick={(e) => handleEditSubdivisionModal(e, item)}
-                    ></i>
-                    <i
-                      className="far fa-plus fa-sm tab-icon p-2"
-                      onClick={(e) => handleAddSubdivisionDocument(e, item)}
-                    ></i>
-                    <i
-                      className="far fa-trash fa-sm tab-icon p-2"
-                      onClick={(e) => handleDeleteSubdivisionModal(e, item)}
-                    ></i>
+                    <OverlayTrigger
+                      placement="auto"
+                      overlay={
+                        <Tooltip id="button-tooltip">
+                          Edit this Subdivision
+                        </Tooltip>
+                      }
+                      delay={{ show: 250, hide: 400 }}
+                    >
+                      <i
+                        className="far fa-pen fa-sm tab-icon p-2"
+                        onClick={(e) => handleEditSubdivisionModal(e, item)}
+                      ></i>
+                    </OverlayTrigger>
+                    <OverlayTrigger
+                      placement="auto"
+                      overlay={
+                        <Tooltip id="button-tooltip">
+                          Add document to this Subdivision
+                        </Tooltip>
+                      }
+                      delay={{ show: 250, hide: 400 }}
+                    >
+                      <i
+                        className="far fa-plus fa-sm tab-icon p-2"
+                        onClick={(e) => handleAddSubdivisionDocument(e, item)}
+                      ></i>
+                    </OverlayTrigger>
+
+                    <OverlayTrigger
+                      placement="auto"
+                      overlay={
+                        <Tooltip id="button-tooltip">
+                          Delete this Subdivision
+                        </Tooltip>
+                      }
+                      delay={{ show: 250, hide: 400 }}
+                    >
+                      <i
+                        className="far fa-trash fa-sm tab-icon p-2"
+                        onClick={(e) => handleDeleteSubdivisionModal(e, item)}
+                      ></i>
+                    </OverlayTrigger>
                   </div>
                   <span className="px-2">
                     {item.Documents?.length} documents

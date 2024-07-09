@@ -9,7 +9,7 @@ import store from "./store";
 import "./assets/styles/index.scss";
 
 const history = createBrowserHistory();
-
+console.log(history, "history");
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
@@ -18,7 +18,7 @@ ReactDOM.render(
       </Router>
     </Provider>
   </React.StrictMode>,
-  document.getElementById("root"),
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

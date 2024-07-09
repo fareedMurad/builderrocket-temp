@@ -9,8 +9,10 @@ import {
   deleteProject,
   getProjectByProjectID,
   saveProject,
+  setSelectedProject,
   setSelectedProjectTab,
   uploadProjectThumbnail,
+  deleteProjectImage,
 } from "../../actions/projectActions";
 import { useDispatch, useSelector } from "react-redux";
 import "react-datepicker/dist/react-datepicker.css";
@@ -42,7 +44,7 @@ const ProjectInformation = withSwal((props) => {
   const project = useSelector((state) => state.project.project);
   const originalProject = useSelector((state) => state.project.originalProject);
   const subdivisions = useSelector(
-    (state) => state.subdivision.subdivisions,
+    (state) => state.subdivision.subdivisions
   )?.filter((s) => s.SubdivisionName != null);
 
   const [showModal, setShowModal] = useState(false);
@@ -100,10 +102,14 @@ const ProjectInformation = withSwal((props) => {
     }
   }
 
-  const onFileChange = (event) => {
+  const onFileChange = (type_id, event) => {
     let file = event.target?.files?.[0];
+
+    progress[type_id] = { progress: 0, loading: false };
+    setProgress({ ...progress });
     setProjectInformation({ ...projectInformation, ThumbnailName: file?.name });
     setProjectImage(file);
+    console.log(project, "PPP");
     if (!project?.ID) return;
 
     setIsLoading(true);
@@ -113,8 +119,19 @@ const ProjectInformation = withSwal((props) => {
     formData.append("File", event.target?.files?.[0]);
 
     // Save new thumbnail - update component state with updated data
-    dispatch(uploadProjectThumbnail(project?.ID, formData))
+    dispatch(
+      uploadProjectThumbnail(project?.ID, formData, (event) => {
+        progress[type_id] = {
+          progress: Math.round((100 * event.loaded) / event.total),
+          loading: true,
+        };
+        setProgress({ ...progress });
+        console.log(progress);
+      })
+    )
       .then(async (updatedProject) => {
+        progress[type_id] = { progress: 0, loading: false };
+        setProgress({ ...progress });
         await dispatch(getProjectByProjectID(project.ID));
 
         setIsLoading(false);
@@ -156,9 +173,17 @@ const ProjectInformation = withSwal((props) => {
 
     const payload = {
       ...projectInformation,
-      Customers: projectInformation.Customers.filter(
-        (c) => c.FirstName || c.LastName || c.Phone || c.Email,
-      ),
+      Customers: projectInformation.Customers.filter((c) =>
+        c.FirstName || c.LastName || c.Phone || c.Email ? true : false
+      ).map((c, i) => {
+        if (project?.Customers?.[0] && i == 0) {
+          return { ...project?.Customers?.[0], ...c };
+        } else if (project?.Customers?.[1] && i == 1) {
+          return { ...project?.Customers?.[1], ...c };
+        } else {
+          return c;
+        }
+      }),
     };
 
     if (project?.ID) {
@@ -283,7 +308,7 @@ const ProjectInformation = withSwal((props) => {
         setProjectInformation({
           ...projectInformation,
           Subdivision: subdivisions.find(
-            (d) => d.SubdivisionName === newSubdivisionName,
+            (d) => d.SubdivisionName === newSubdivisionName
           )?.ID,
         });
         cancelModal();
@@ -345,6 +370,40 @@ const ProjectInformation = withSwal((props) => {
     return <Spinner animation="border" variant="primary" />;
   }
 
+  const handleProjectImageDelete = () => {
+    setIsLoading(true);
+    dispatch(deleteProjectImage(project.ID))
+      .then((response) => {
+        if (response) {
+          dispatch(
+            setSelectedProject({
+              ...project,
+              ThumbnailName: null,
+              ThumbnailURL: null,
+            })
+          );
+          setProjectInformation({
+            ...projectInformation,
+            ThumbnailName: null,
+            ThumbnailURL: null,
+          });
+          setSelectedInput();
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const [selectedInput, setSelectedInput] = useState();
+  const [progress, setProgress] = useState({});
+
+  let fileProgress = (id) => {
+    if (!progress) return {};
+    return { ...progress[id] };
+  };
+
   return (
     <div className="d-flex project-information">
       <div className="information-form-container">
@@ -371,9 +430,23 @@ const ProjectInformation = withSwal((props) => {
                 short
                 label="Project Image"
                 buttonText="Upload Image"
-                fileURL={projectInformation?.ThumbnailURL}
-                onFileChange={(event) => onFileChange(event)}
-                placeholder={projectInformation?.ThumbnailName}
+                progress={fileProgress("Project_Image")}
+                files={
+                  project.ThumbnailURL
+                    ? [
+                        {
+                          UserFileName: projectInformation?.ThumbnailName,
+                          URL: projectInformation.ThumbnailURL,
+                          ID: "Project_Image",
+                        },
+                      ]
+                    : []
+                }
+                selectedInput={selectedInput}
+                setSelectedInput={setSelectedInput}
+                handleDocumentDelete={handleProjectImageDelete}
+                onFileChange={(event) => onFileChange("Project_Image", event)}
+                hideEdit
               />
             </div>
             <div className="form-col pb-4">
@@ -391,7 +464,25 @@ const ProjectInformation = withSwal((props) => {
                 onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
-            <div className="form-col pb-4"></div>
+            <div className="form-col select pb-4">
+              <Form.Label className="input-label">Project Status</Form.Label>
+              <Form.Control
+                as="select"
+                value={projectInformation?.StatusID}
+                onChange={(event) =>
+                  handleUpdateStatus(parseInt(event.target.value))
+                }
+              >
+                {ProjectStatus.filter((item) =>
+                  project?.ID ? true : item.id !== -1
+                ).map((status, index) => (
+                  <option key={index} value={status.id}>
+                    {status.text}
+                  </option>
+                ))}
+              </Form.Control>
+            </div>
+            {/* <div className="form-col pb-4"></div> */}
             <div className="form-col pb-4">
               <Form.Label className="input-label">Customer Info</Form.Label>
               <div>
@@ -404,7 +495,7 @@ const ProjectInformation = withSwal((props) => {
                   <Form.Control
                     // readOnly
                     className="input-gray"
-                    value={projectInformation?.Customers?.[0]?.FirstName}
+                    value={projectInformation?.Customers?.[0]?.FirstName ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
@@ -430,7 +521,7 @@ const ProjectInformation = withSwal((props) => {
                   <Form.Label className="input-label">Last Name</Form.Label>
                   <Form.Control
                     className="input-gray"
-                    value={projectInformation?.Customers?.[0]?.LastName}
+                    value={projectInformation?.Customers?.[0]?.LastName ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
@@ -457,7 +548,7 @@ const ProjectInformation = withSwal((props) => {
                   <Form.Label className="input-label">Mobile</Form.Label>
                   <Form.Control
                     className="input-gray"
-                    value={projectInformation?.Customers?.[0]?.Phone}
+                    value={projectInformation?.Customers?.[0]?.Phone ?? ""}
                     onChange={(e) => {
                       console.log(e.target.value);
                       setProjectInformation((prev) => {
@@ -488,7 +579,7 @@ const ProjectInformation = withSwal((props) => {
                   <Form.Label className="input-label">First Name</Form.Label>
                   <Form.Control
                     className="input-gray"
-                    value={projectInformation?.Customers?.[1]?.FirstName}
+                    value={projectInformation?.Customers?.[1]?.FirstName ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
@@ -514,7 +605,7 @@ const ProjectInformation = withSwal((props) => {
                   <Form.Label className="input-label">Last Name</Form.Label>
                   <Form.Control
                     className="input-gray"
-                    value={projectInformation?.Customers?.[1]?.LastName}
+                    value={projectInformation?.Customers?.[1]?.LastName ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
@@ -543,7 +634,7 @@ const ProjectInformation = withSwal((props) => {
                     inputMode="tel"
                     type="text"
                     className="input-gray"
-                    value={projectInformation?.Customers?.[1]?.Phone}
+                    value={projectInformation?.Customers?.[1]?.Phone ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
@@ -598,7 +689,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
-                    value={projectInformation?.Customers?.[0]?.Email}
+                    value={projectInformation?.Customers?.[0]?.Email ?? ""}
                     onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
@@ -629,7 +720,7 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
-                    value={projectInformation?.Customers?.[1]?.Email}
+                    value={projectInformation?.Customers?.[1]?.Email ?? ""}
                     onBlur={() => (project?.ID ? saveChanges(false) : {})}
                   />
                 </div>
@@ -649,24 +740,7 @@ const ProjectInformation = withSwal((props) => {
                 onBlur={() => (project?.ID ? saveChanges(false) : {})}
               />
             </div>
-            <div className="form-col select pb-4">
-              <Form.Label className="input-label">Project Status</Form.Label>
-              <Form.Control
-                as="select"
-                value={projectInformation?.StatusID}
-                onChange={(event) =>
-                  handleUpdateStatus(parseInt(event.target.value))
-                }
-              >
-                {ProjectStatus.filter((item) =>
-                  project?.ID ? true : item.id !== -1,
-                ).map((status, index) => (
-                  <option key={index} value={status.id}>
-                    {status.text}
-                  </option>
-                ))}
-              </Form.Control>
-            </div>
+
             {saveNewSubdivisionModal()}
             <div className="form-col pb-3 select">
               <Form.Label className="input-label">Subdivision</Form.Label>
@@ -702,7 +776,7 @@ const ProjectInformation = withSwal((props) => {
               </Form.Control>
             </div>
 
-            <div className="form-col pb-5"></div>
+            {/* <div className="form-col pb-5"></div> */}
 
             <div className="form-col pb-2">
               <Form.Label className="input-label">Street Address 1</Form.Label>
@@ -775,8 +849,6 @@ const ProjectInformation = withSwal((props) => {
               />
             </div>
 
-            <div className="form-col pb-5"></div>
-
             <div className="form-col">
               <Form.Label className="input-label">Closing Date</Form.Label>
               <DatePicker
@@ -794,8 +866,22 @@ const ProjectInformation = withSwal((props) => {
                 }
               />
             </div>
-
-            <div className="form-col pb-5"></div>
+            <div className="form-col pb-4">
+              <Form.Label className="input-label">Notes</Form.Label>
+              <Form.Control
+                as={"textarea"}
+                className="input-gray"
+                value={projectInformation?.Notes}
+                onChange={(event) =>
+                  setProjectInformation({
+                    ...projectInformation,
+                    Notes: event.target.value,
+                  })
+                }
+                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+              />
+            </div>
+            <div className="form-col" />
           </div>
         </Form>
 

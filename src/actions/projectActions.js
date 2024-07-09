@@ -528,7 +528,7 @@ export const copyProject = (projectID, projectName) => (dispatch) => {
  * @returns
  */
 export const uploadProjectThumbnail =
-  (projectID, thumbnail) => async (dispatch) => {
+  (projectID, thumbnail, onUploadProgress) => async (dispatch) => {
     if (!projectID) return;
 
     const URL = `/Project/${projectID}/thumbnail`;
@@ -540,6 +540,7 @@ export const uploadProjectThumbnail =
         method: "POST",
         url: URL,
         data: thumbnail,
+        onUploadProgress: onUploadProgress,
       });
       if (response.status === 200) {
         dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
@@ -807,6 +808,32 @@ export const deleteProject = (projectID) => (dispatch) => {
     .then((response) => {
       if (response?.status === 200) {
         return response?.data;
+      }
+    })
+    .catch((error) => {
+      if (error.response?.status === 401) dispatch({ type: LOGOUT });
+    });
+};
+
+/**
+ * Delete project Image by project ID
+ * @param {String} projectID
+ *
+ */
+export const deleteProjectImage = (projectID) => (dispatch) => {
+  const URL = `/Project/${projectID}/thumbnail`;
+
+  dispatch({ type: SET_REFRESH_THUMBNAIL, payload: true });
+  return api({
+    method: "DELETE",
+    url: URL,
+  })
+    .then((response) => {
+      if (response?.status === 200) {
+        dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
+        return response?.data;
+      } else {
+        dispatch({ type: SET_REFRESH_THUMBNAIL, payload: false });
       }
     })
     .catch((error) => {

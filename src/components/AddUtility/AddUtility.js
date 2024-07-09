@@ -44,6 +44,7 @@ const AddUtility = ({ show, handleClose }) => {
     setIsLoading(true);
 
     dispatch(createUtility(utility)).then(() => {
+      dispatch(getUtilityTypes());
       dispatch(getUtilities());
       setIsLoading(false);
       handleClose();

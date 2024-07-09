@@ -1,146 +1,149 @@
-@import 'variables';
-@import '~bootstrap/scss/bootstrap';
+@import "variables";
+@import "~bootstrap/scss/bootstrap";
 
 @media (min-width: 1200px) {
-    .container {
-        max-width: 1440px;
-        padding-left: 0;
-        padding-right: 0;
-    }
+  .container {
+    max-width: 1440px;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 @include media-breakpoint-down(lg) {
-    .container {
-        padding-left: 0;
-        padding-right: 0;
-    }
+  .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 .input-gray {
-    height: 28px;
-    border-radius: 2px;
-    background-color: $lightgray;
-    border-color: $lightgray;
+  height: 28px;
+  border-radius: 2px;
+  background-color: $lightgray;
+  border-color: $lightgray;
 }
 
 .input-label {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: -0.27px;
-    line-height: 14px;
-    margin-bottom: -.2em;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.27px;
+  line-height: 14px;
+  margin-bottom: -0.2em;
 }
 
 .custom-file-input {
-    background-color: $lightgray;
-    color: $lightgray;
+  background-color: $lightgray;
+  color: $lightgray;
 }
 
 .primary-gray-btn {
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 3px;
-    letter-spacing: -0.15px;
-    line-height: 17px;
-    padding: .2rem 1rem;
-    background-color: $btngray;
-    border: none;
-    color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 3px;
+  letter-spacing: -0.15px;
+  line-height: 17px;
+  padding: 0.2rem 1rem;
+  background-color: $btngray;
+  border: none;
+  color: white;
 }
 
-button { 
-    &:disabled {
-        cursor: not-allowed;
-        background-color: #aaa;
-        &:hover {
-            background-color: #aaa !important;
-        }
+button {
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #aaa;
+    &:hover {
+      background-color: #aaa !important;
     }
+  }
 }
 
 .search-container {
-    height: 30px;
-    border: none;
+  height: 30px;
+  border: none;
 }
 
 .next-btn {
-    font-size: 14px;
-    letter-spacing: -0.17px;
-    line-height: 19px;
-    font-weight: normal;
-    text-align: center;
-    padding-bottom: .3rem;
-    padding-top: -.2rem;
-    
-    &:hover{
-        background-color: $btngray;
-    }
+  font-size: 14px;
+  letter-spacing: -0.17px;
+  line-height: 19px;
+  font-weight: normal;
+  text-align: center;
+  padding-bottom: 0.3rem;
+  padding-top: -0.2rem;
+
+  &:hover {
+    background-color: $btngray;
+  }
 }
 
 .cancel {
-    font-size: 14px;
-    letter-spacing: -0.32px;
-    line-height: 16px;
-    padding-top: .3rem;
-    color: $cancelblue;
+  font-size: 14px;
+  letter-spacing: -0.32px;
+  line-height: 16px;
+  padding-top: 0.3rem;
+  color: $cancelblue;
 
-    &:focus {
-        box-shadow: none;
-        outline: none;
-    }
+  &:focus {
+    box-shadow: none;
+    outline: none;
+  }
 }
 
 .page-title {
-    padding-top: 1rem;
-    padding-bottom: 1.3rem;
-    padding-left: 2rem;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.41px;
-    line-height: 24px;
+  padding-top: 1rem;
+  padding-bottom: 1.3rem;
+  padding-left: 2rem;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.41px;
+  line-height: 24px;
 }
 
 .subtext {
-    padding-bottom: 1.3rem;
-    padding-left: 2rem;
-    font-size: 12px;
-    letter-spacing: -0.27px;
-    line-height: 17px;
+  padding-bottom: 1.3rem;
+  padding-left: 2rem;
+  font-size: 12px;
+  letter-spacing: -0.27px;
+  line-height: 17px;
 }
 
 .link-btn {
-    margin-top: .85rem;
-    margin-left: .2em;
-    font-size: 12px;
-    letter-spacing: -0.27px;
-    line-height: 17px;
-    color: $tabblue;
-    
-    &:focus {
-        box-shadow: none;
-        outline: none;
-    }
+  margin-top: 0.85rem;
+  margin-left: 0.2em;
+  font-size: 12px;
+  letter-spacing: -0.27px;
+  line-height: 17px;
+  color: $tabblue;
+
+  &:focus {
+    box-shadow: none;
+    outline: none;
+  }
 }
 
 .add-btn {
-    .btn {
-        box-shadow: none;
-        outline: none;
-    }
+  .btn {
+    box-shadow: none;
+    outline: none;
+  }
 }
 
 .select {
-    .form-control {
-        background-color: $lightgray;
-        border-radius: 2px;
-        padding: 0 0.75rem;
-        height: 28px;
-        border: none;
-    }
+  .form-control {
+    background-color: $lightgray;
+    border-radius: 2px;
+    padding: 0 0.75rem;
+    height: 28px;
+    border: none;
+  }
 }
 
 .date-picker {
-    width: 100%;
-    border: none;
-    padding: 0 .75rem;
+  width: 100%;
+  border: none;
+  padding: 0 0.75rem;
+}
+.react-datepicker-wrapper {
+  width: 100%;
 }

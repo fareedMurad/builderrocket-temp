@@ -13,7 +13,7 @@ import {
   setProduct,
   setProductDetail,
 } from "../../actions/productActions";
-import { Badge, Button, Form, Spinner } from "react-bootstrap";
+import { Badge, Button, Form, Modal, Spinner } from "react-bootstrap";
 import CustomLightbox from "../Lightbox";
 import Avatar from "../../assets/images/img-placeholder.png";
 import ProductPagination from "../Pagination/Pagination";
@@ -66,6 +66,7 @@ const AddProductsByCategory = ({
     loading: false,
   });
   const [favoritedProducts, setIsFavoritedProducts] = useState([]);
+  const [showPriceVarientModal, setShowPriceVarientModal] = useState([]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -606,10 +607,27 @@ const AddProductsByCategory = ({
                             <div>Color: {product?.ColorFinish}</div>
                           ) : null}
                           <div>Category: {product.CategoryName}</div>
+                          {product?.Manufacturer?.LogoUrl && (
+                            <div
+                              className="d-flex align-items-center"
+                              style={{ gap: "10px", objectFit: "contain" }}
+                            >
+                              Manufacturer:{" "}
+                              <CustomLightbox
+                                singleImageProps={{
+                                  width: "50px",
+                                  height: "auto",
+                                }}
+                                images={[product?.Manufacturer?.LogoUrl]}
+                              />
+                              {product?.Manufacturer?.ManufacturerName}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
                     <div>{product.ShortDescription}</div>
+
                     <div>
                       <div
                         className="position-absolute"
@@ -617,7 +635,8 @@ const AddProductsByCategory = ({
                       >
                         {Utils.itemLoading(product, isFavoriteLoading) ? (
                           <Spinner
-                            animation="border"
+                            an
+                            mation="border"
                             variant="primary"
                             size="sm"
                           />
@@ -671,6 +690,14 @@ const AddProductsByCategory = ({
                               Remove
                             </Button>
                           ) : null}
+                          {/* <Button
+                            className={`action-button ml-2 add-product-btn add-product-btn-2`}
+                            onClick={() => {
+                              setShowPriceVarientModal(true);
+                            }}
+                          >
+                            Add with Variant
+                          </Button> */}
                         </div>
                       )}
                     </div>
@@ -689,6 +716,65 @@ const AddProductsByCategory = ({
           </div>
         </div>
       ) : null}
+
+      {/* TODO */}
+      {/* <Modal size="md" centered show={showPriceVarientModal} backdrop>
+        <Modal.Body>
+          <div className="my-2">
+            Please enter the Varient name and Variant price:
+            <p>
+              <b className="text-primary">Note: </b> the product will be added
+              as dublicate product of the original product, the added variants
+              will be shown everywhere for in the project and for customer.
+            </p>
+          </div>
+          <Form>
+            <Form.Group>
+              <Form.Label className="input-label">Variant Name</Form.Label>
+              <Form.Control
+                type="text"
+                className="input-gray"
+                // value={newProduct?.ProductName}
+                // onChange={(event) =>
+                //   setProduct({
+                //     ...newProduct,
+                //     ProductName: event.target.value,
+                //   })
+                // }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="input-label">Variant Price</Form.Label>
+              <Form.Control
+                type="text"
+                className="input-gray"
+                // value={newProduct?.ProductName}
+                // onChange={(event) =>
+                //   setProduct({
+                //     ...newProduct,
+                //     ProductName: event.target.value,
+                //   })
+                // }
+              />
+            </Form.Group>
+          </Form>
+          <div className="d-flex justify-content-center pt-5">
+            <Button
+              variant="link"
+              className="cancel"
+              // onClick={() => handleClose()}
+            >
+              Cancel
+            </Button>
+            <Button
+              // onClick={() => handleConfirm()}
+              className="primary-gray-btn next-btn ml-3"
+            >
+              Add with Varient
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal> */}
     </div>
   );
 };

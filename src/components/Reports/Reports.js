@@ -348,12 +348,12 @@ const Reports = (props) => {
                     onColor={"#007bff"}
                     height={20}
                     width={35}
-                    boxShadow='0 0 1px 2px #3bf'
+                    boxShadow="0 0 1px 2px #3bf"
                     className="mx-2"
                   />
                   <span>Customer</span>
                 </div>
-                  
+
                 <div className="ml-3">
                   {["category", "room"].indexOf(layout?.value) > -1 ? (
                     <div className={"d-inline-block"}>
