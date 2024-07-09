@@ -26,7 +26,7 @@ const Utilities = () => {
   const [showUtilityModal, setShowUtilityModal] = useState(false);
   const [utilitiesInfo, setUtilitiesInfo] = useState(project.Utilities);
   const [locatePermitNumber, setLocatePermitNumber] = useState(
-    project.LocatePermitNumber,
+    project.LocatePermitNumber
   );
 
   // Ref to access changes on unmount
@@ -104,7 +104,7 @@ const Utilities = () => {
         ...project,
         Utilities: utilitiesInfo,
         LocatePermitNumber: locatePermitNumber,
-      }),
+      })
     ).then(() => {
       setIsLoading(false);
       if (goToNext) dispatch(setSelectedProjectTab("contractors"));
@@ -173,7 +173,7 @@ const Utilities = () => {
                       <option key={index} value={utility.ID}>
                         {utility.CompanyName}
                       </option>
-                    ),
+                    )
                   )}
                 </Form.Control>
 

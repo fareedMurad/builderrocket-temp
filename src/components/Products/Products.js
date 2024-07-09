@@ -972,6 +972,7 @@ const Products = (props) => {
               ) : null}
               <th>Description</th>
               <th>Category</th>
+              <th>Manufacture</th>
               <th>UOM</th>
               <th className="radios">Rough In / Trim Out</th>
               <th>Distributor</th>
@@ -1070,6 +1071,23 @@ const Products = (props) => {
                     ) : null}
                     <td>{templateItem?.ShortDescription}</td>
                     <td>{templateItem?.CategoryName}</td>
+                    <td>
+                      <div
+                        className="d-flex align-items-center"
+                        style={{ gap: "10px", objectFit: "contain" }}
+                      >
+                        {templateItem?.Manufacturer?.LogoUrl && (
+                          <CustomLightbox
+                            singleImageProps={{
+                              width: "50px",
+                              height: "auto",
+                            }}
+                            images={[templateItem?.Manufacturer?.LogoUrl]}
+                          />
+                        )}
+                        {templateItem?.Manufacturer?.ManufacturerName}
+                      </div>
+                    </td>
                     <td>{templateItem?.UnitOfMeasure}</td>
                     <td>
                       {!templateItem?.IsTemplate && (
@@ -1160,7 +1178,17 @@ const Products = (props) => {
                             <i className="far fa-sticky-note d-flex justify-content-center"></i>
                           </OverlayTrigger>
                         ) : (
-                          <i className="far fa-sticky-note d-flex justify-content-center mr-0"></i>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="button-tooltip">
+                                Click to Add Note
+                              </Tooltip>
+                            }
+                            delay={{ show: 250, hide: 400 }}
+                          >
+                            <i className="far fa-sticky-note d-flex justify-content-center mr-0"></i>
+                          </OverlayTrigger>
                         )}
                       </td>
                     ) : (
@@ -1196,17 +1224,41 @@ const Products = (props) => {
                               size="sm"
                             />
                           ) : (
-                            <i
-                              className={`far ${
-                                isFav ? "text-danger fas fa-heart" : "fa-heart"
-                              } mr-0`}
-                              onClick={() => handleIsFavorite(templateItem)}
-                            ></i>
+                            <OverlayTrigger
+                              placement="top"
+                              overlay={
+                                <Tooltip id="button-tooltip">
+                                  {isFav
+                                    ? "Click to  Unlike"
+                                    : "Click to Click"}
+                                </Tooltip>
+                              }
+                              delay={{ show: 250, hide: 400 }}
+                            >
+                              <i
+                                className={`far ${
+                                  isFav
+                                    ? "text-danger fas fa-heart"
+                                    : "fa-heart"
+                                } mr-0`}
+                                onClick={() => handleIsFavorite(templateItem)}
+                              ></i>
+                            </OverlayTrigger>
                           )}
-                          <i
-                            className="far fa-trash-alt mr-0"
-                            onClick={() => handleOpenModal(templateItem)}
-                          ></i>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="button-tooltip">
+                                Delete product
+                              </Tooltip>
+                            }
+                            delay={{ show: 250, hide: 400 }}
+                          >
+                            <i
+                              className="far fa-trash-alt mr-0"
+                              onClick={() => handleOpenModal(templateItem)}
+                            ></i>
+                          </OverlayTrigger>
                         </div>
                       )}
                     </td>

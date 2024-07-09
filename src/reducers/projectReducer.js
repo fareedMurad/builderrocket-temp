@@ -47,6 +47,7 @@ const intialState = {
     UserID: "",
     Zip: "",
     Rooms: [],
+    Customers: [],
   },
   projects: [],
   selectedProjectTab: "projectInformation",

@@ -28,7 +28,7 @@ const ContractorManagement = () => {
 
   const contractors = useSelector((state) => state.contractor.contractors);
   const contractorTypes = useSelector(
-    (state) => state.contractor.contractorTypes,
+    (state) => state.contractor.contractorTypes
   );
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,34 +63,30 @@ const ContractorManagement = () => {
   ]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const filter = contractors
-        ?.filter((contractor) => {
-          return Param.some((newItem) => {
-            if (contractor[newItem]) {
-              return (
-                contractor[newItem]
-                  .toString()
-                  .toLowerCase()
-                  .indexOf(searchTerm.toLowerCase()) > -1
-              );
-            }
-          });
-        })
-        .filter((t) => {
-          if (contractor.value) {
-            return t.ContractorTypes.find(
-              (type) =>
-                type.ID === contractor.value && type.Name === contractor.label,
+    const filter = contractors
+      ?.filter((contractor) => {
+        return Param.some((newItem) => {
+          if (contractor[newItem]) {
+            return (
+              contractor[newItem]
+                .toString()
+                .toLowerCase()
+                .indexOf(searchTerm.toLowerCase()) > -1
             );
-          } else {
-            return t;
           }
         });
-      setFilteredContractors(filter);
-    }, 1000);
-
-    return () => clearTimeout(timer);
+      })
+      .filter((t) => {
+        if (contractor.value) {
+          return t.ContractorTypes.find(
+            (type) =>
+              type.ID === contractor.value && type.Name === contractor.label
+          );
+        } else {
+          return t;
+        }
+      });
+    setFilteredContractors(filter);
   }, [searchTerm, contractors, contractor]);
 
   const handleDeleteContractor = () => {
@@ -166,7 +162,7 @@ const ContractorManagement = () => {
       dispatch(updateIsFavorite(contractor, !contractor?.IsFavorite)).then(
         () => {
           setIsFavoriteLoading(false);
-        },
+        }
       );
     }
   };
@@ -174,7 +170,7 @@ const ContractorManagement = () => {
   const handleContractors = (contractorTypeID) => {
     const contractorsByType = filteredContractors.filter((contractor) => {
       return contractor.ContractorTypes.find(
-        (type) => type.ID === contractorTypeID,
+        (type) => type.ID === contractorTypeID
       );
     });
 
@@ -184,7 +180,7 @@ const ContractorManagement = () => {
           return {
             ...type,
             ContractorTypes: type.ContractorTypes.filter(
-              (typ) => typ.ID === contractor.value,
+              (typ) => typ.ID === contractor.value
             ),
           };
         });
@@ -214,7 +210,11 @@ const ContractorManagement = () => {
           </div>
 
           <div className="d-flex">
-            <Form inline className="search-bar">
+            <Form
+              inline
+              className="search-bar d-flex align-items-center flex-wrap"
+              style={{ gap: "10px" }}
+            >
               <Form.Group className="contractor-type">
                 <Select
                   // isMulti
@@ -226,9 +226,11 @@ const ContractorManagement = () => {
                   onm
                   value={contractor.ContractorTypes}
                   onChange={(options) => setContractor(options ? options : {})}
+                  style={{ flex: 1 }}
                 />
               </Form.Group>
               <FormControl
+                style={{ flex: 1, height: "36px" }}
                 placeholder="Search Keywords"
                 type="text"
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -289,6 +291,7 @@ const ContractorTable = ({
           <th></th>
           <th></th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -306,6 +309,7 @@ const ContractorTable = ({
                   <th>Contact Name</th>
                   <th>City/State</th>
                   <th>Phone</th>
+                  <th>Mobile Number</th>
                   <th>Email</th>
                   <th>Rating</th>
                   <th>Notes</th>
@@ -325,12 +329,17 @@ const ContractorTable = ({
                         </a>
                       </td>
                       <td>
+                        <a href={`tel:+1${contractor?.MobileNumber}`}>
+                          {contractor?.MobileNumber}
+                        </a>
+                      </td>
+                      <td>
                         <a href={`mailto:${contractor?.EmailAddress}`}>
                           {contractor?.EmailAddress}
                         </a>
                       </td>
                       <td>
-                        <div className="star-ratings">
+                        <div className="star-ratings" style={{ width: "80px" }}>
                           <StarRatings
                             rating={contractor?.Rating ? contractor?.Rating : 0}
                             starRatedColor="#ffd700"
@@ -370,7 +379,11 @@ const ContractorTable = ({
                         ) : (
                           <div className="d-flex justify-content-between">
                             <i
-                              className={`${contractor.IsFavorite ? "fas fa-heart" : "far fa-heart"}`}
+                              className={`${
+                                contractor.IsFavorite
+                                  ? "fas fa-heart"
+                                  : "far fa-heart"
+                              }`}
                               onClick={() => handleFavorite(contractor)}
                             ></i>
                             <i

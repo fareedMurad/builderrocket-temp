@@ -1,34 +1,37 @@
-@import '../../assets/styles/variables';
+@import "../../assets/styles/variables";
 
 .contractors {
-    @include media-breakpoint-down(md) {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .contractors-container {
-        width: 981px;
-        background-color: white;
-        padding-bottom: 2rem;
-        margin-bottom: 2rem;
+  @include media-breakpoint-down(md) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-        @include media-breakpoint-up(lg) {
-            margin-right: 3rem;
-        }
-    }
+  .contractors-container {
+    width: 981px;
+    background-color: white;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
 
-    .contractors-form {
-        justify-content: space-evenly;
-        padding: 0 1.5rem;
-
-        .contractor {
-            padding: 0 1.5rem;
-            margin-bottom: .5rem;
-            width: 50%;
-    
-            @include media-breakpoint-down(lg) {
-                width: 100%
-            }
-        }
+    @include media-breakpoint-up(lg) {
+      margin-right: 3rem;
     }
+  }
+
+  .contractors-form {
+    justify-content: space-evenly;
+    padding: 0 1.5rem;
+
+    .contractor {
+      padding: 0 1.5rem;
+      margin-bottom: 0.5rem;
+      width: 50%;
+
+      @include media-breakpoint-down(lg) {
+        width: 100%;
+      }
+    }
+  }
+}
+.rating-stars {
+  width: 66px;
 }
