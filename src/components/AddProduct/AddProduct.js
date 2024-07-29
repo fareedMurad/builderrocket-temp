@@ -89,7 +89,7 @@ const AddProduct = () => {
       Notes: "",
     };
     dispatch(
-      // handleAddProductForProject(newProduct)
+      // ßProductForProject(newProduct)
       handleAddMyProductToProject(newProduct)
     ).then((project) => {
       dispatch(setSelectedProject(project));

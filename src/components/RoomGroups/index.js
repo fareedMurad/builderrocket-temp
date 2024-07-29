@@ -148,12 +148,6 @@ const RoomGroups = () => {
   };
 
   const handleDeleteRoomGroupCategory = () => {
-    console.log(
-      selectedCategory,
-      selectedGroup,
-      selectedProduct,
-      "selectedCategory"
-    );
     dispatch(
       deleteRoomGroupCategory(
         expandID,

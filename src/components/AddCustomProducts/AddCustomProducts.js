@@ -24,7 +24,7 @@ const AddCustomProducts = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const ProductSelectedRoom = useSelector(
-    (state) => state.room.ProductSelectedRoom,
+    (state) => state.room.ProductSelectedRoom
   );
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,7 +36,7 @@ const AddCustomProducts = () => {
 
   const addProduct = (values) => {
     const product = selectedProduct;
-    console.log(product, ProductSelectedRoom);
+
     if (!product.ID || !values.roomIDs?.length) return;
 
     setAddActionLoading(product);

@@ -30,7 +30,7 @@ const Home = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [goToProjectLoader, setGoToProjectLoader] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(
-    ProjectStatus.filter((item) => item.id === 1),
+    ProjectStatus.filter((item) => item.id === 1)
   );
   const [projectsStatus, setProjectsStatus] = useState("Active");
   const [filteredProjects, setFilteredProjects] = useState(projects);
@@ -46,8 +46,6 @@ const Home = (props) => {
           setIsLoading(false);
         })
         .catch(() => setIsLoading(false));
-
-      dispatch(getUserProfile());
     }
   }, [dispatch, isSignedIn]);
 
@@ -58,44 +56,44 @@ const Home = (props) => {
       const filter = projects?.filter(
         (project) =>
           project?.ProjectName?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           project?.ProjectNumber?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           project?.Subdivision?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           project?.LotNumber?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           project?.StreetAddress1?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           project?.StreetAddress2?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           project?.State?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
           project?.City?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
           project?.Zip?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
           project?.PlanName?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           project?.Customers?.find((customer) =>
             customer?.Email?.toLocaleLowerCase().includes(
-              searchTerm?.toLowerCase(),
-            ),
+              searchTerm?.toLowerCase()
+            )
           ) ||
           project?.Customers?.find((customer) =>
             customer?.Phone?.toLocaleLowerCase().includes(
-              searchTerm?.toLowerCase(),
-            ),
+              searchTerm?.toLowerCase()
+            )
           ) ||
           project?.Customers?.find((customer) =>
             customer?.CustomerName?.toLowerCase().includes(
-              searchTerm?.toLowerCase(),
-            ),
-          ),
+              searchTerm?.toLowerCase()
+            )
+          )
       );
 
       setFilteredProjects(filter);
@@ -113,11 +111,11 @@ const Home = (props) => {
             projects.map((p) => {
               if (p.ID === project.ID) return { ...p, IsPinned: !p.IsPinned };
               else return p;
-            }),
-          ),
+            })
+          )
         );
         setPinLoader((prev) => prev.filter((p) => p !== project.ID));
-      },
+      }
     );
   };
 

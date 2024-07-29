@@ -77,14 +77,13 @@ const ColorProductModal = (props) => {
   };
 
   const addToRooms = () => {
-    console.log(roomList);
     if (roomList.length === 0) return;
     dispatch(
       replaceProductService(project?.ID, {
         OldProductID: product?.TemplateItemID,
         NewProductID: replaceProduct?.ID,
         ProjectRoomIDs: roomList,
-      }),
+      })
     ).then(() => {
       handleCloseModal();
     });

@@ -71,7 +71,8 @@ export const loginEmailPassword = (email, password) => (dispatch) => {
       }
     })
     .catch((error) => {
-      console.log("Login", error);
+      console.log(JSON.stringify(error));
+      return error;
     });
 };
 
@@ -82,7 +83,6 @@ export const logout = (data) => (dispatch) => {
 
       resolve();
     } catch (error) {
-      console.log("Logging User Out", error);
       reject(error);
     }
   });

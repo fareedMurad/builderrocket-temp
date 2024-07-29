@@ -13,7 +13,15 @@ import {
   setProduct,
   setProductDetail,
 } from "../../actions/productActions";
-import { Badge, Button, Form, Modal, Spinner } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Form,
+  Modal,
+  OverlayTrigger,
+  Spinner,
+  Tooltip,
+} from "react-bootstrap";
 import CustomLightbox from "../Lightbox";
 import Avatar from "../../assets/images/img-placeholder.png";
 import ProductPagination from "../Pagination/Pagination";
@@ -481,30 +489,38 @@ const AddProductsByCategory = ({
       {selectedCategory?.id ? (
         <div className="w-100" style={{ minWidth: "60%" }}>
           <h4>Products</h4>
-          <div className="d-flex align-items-center" style={{ gap: "10px" }}>
-            <div
-              className="d-flex"
-              onClick={() => setisExtraFiltersOpen(!isExtraFiltersOpen)}
-              style={{ minWidth: "30px" }}
+          <div className="d-flex align-items-center" style={{ gap: "15px" }}>
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="button-tooltip">
+                  {isExtraFiltersOpen
+                    ? "Hide filters"
+                    : "Show filters e.g: colors, brands, etc"}
+                </Tooltip>
+              }
+              delay={{ show: 250, hide: 400 }}
             >
-              <i
-                className={`pointer pt-4 fa ${
-                  isExtraFiltersOpen
-                    ? "fa-caret-right text-primary"
-                    : " fa-caret-down text-secondary"
-                }`}
-              />
-              <i
-                className={`pointer pt-4 fa fa-filter ${
-                  isExtraFiltersOpen ? "text-primary" : "text-secondary"
-                }`}
-              />
-              {extraFiltersCount ? (
-                <Badge pill bg="primary" className="custom-badge-styles">
-                  {extraFiltersCount}
-                </Badge>
-              ) : null}
-            </div>
+              <div
+                className="d-flex align-items-end pointer"
+                onClick={() => setisExtraFiltersOpen(!isExtraFiltersOpen)}
+                style={{ minWidth: "30px" }}
+              >
+                <small className="text-primary pr-1">Filters</small>
+                <i
+                  className={`pointer pt-4 text-primary fa ${
+                    isExtraFiltersOpen ? "fa-caret-right" : " fa-caret-down"
+                  }`}
+                />
+                <i className={`pointer pt-4 fa fa-filter text-primary`} />
+                {extraFiltersCount ? (
+                  <Badge pill bg="primary" className="custom-badge-styles">
+                    {extraFiltersCount}
+                  </Badge>
+                ) : null}
+              </div>
+            </OverlayTrigger>
+
             <Form.Group className="w-100">
               <Form.Label className="input-label">Search Products</Form.Label>
               <div className="d-flex" style={{ gap: "10px" }}>

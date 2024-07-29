@@ -6,6 +6,7 @@ import { SET_CUSTOMER_PROJECT } from "./actions/types";
 import ScrollToTop from "./components/ScrollToTop";
 import RoomsManagement from "./pages/RoomsManagemant";
 import Subdivisions from "./pages/Subdivisions/Subdivisions";
+import MyProfile from "./pages/MyProfile/MyProfile";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -83,6 +84,7 @@ const Routes = (props) => {
           {isSignedIn && !isCustomerSignedIn && (
             <>
               <Route exact path="/project" component={Project} />
+              <Route path="/my-profile" component={MyProfile} />
               <Route path="/project/:project/:tab" component={Project} />
               <Route
                 path="/rooms-management/:tab"

@@ -55,7 +55,6 @@ const Subdivisions = () => {
     if (subdivisionName) {
       dispatch(createBuilderSubdivsion(subdivisionName))
         .then((res) => {
-          console.log(res, "res");
           handleFetchSubdivisions();
           setModalVisible("");
         })

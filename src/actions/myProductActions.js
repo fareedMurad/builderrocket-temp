@@ -24,8 +24,6 @@ export const getMyProducts = () => (dispatch) => {
     })
     .catch((error) => {
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting MyProducts", error);
     });
 };
 
@@ -44,8 +42,6 @@ export const editMyProduct = (product) => (dispatch) => {
     })
     .catch((error) => {
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting MyProducts", error);
     });
 };
 
@@ -132,8 +128,6 @@ export const getMyProductsForProject = (ID) => (dispatch) => {
     })
     .catch((error) => {
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting MyProducts", error);
     });
 };
 
@@ -152,8 +146,6 @@ export const updateMyProductsForProject = (params) => (dispatch) => {
     })
     .catch((error) => {
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting MyProducts", error);
     });
 };
 
@@ -203,8 +195,6 @@ export const deleteMyProductsForProject = (ID) => (dispatch) => {
     })
     .catch((error) => {
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting MyProducts", error);
     });
 };
 

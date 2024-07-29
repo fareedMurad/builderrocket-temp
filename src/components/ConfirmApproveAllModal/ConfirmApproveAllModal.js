@@ -16,7 +16,7 @@ const ConfirmApproveAllModal = ({
   isRejectModal,
 }) => {
   const history = useHistory();
-  console.log("showSpinner", showSpinner);
+
   return (
     <Modal
       size="md"

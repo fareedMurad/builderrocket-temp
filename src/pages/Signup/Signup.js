@@ -55,7 +55,6 @@ const Signup = (props) => {
         });
   };
 
-  console.log(user, "Hey");
   return (
     <Container className="pt-5" fluid="md">
       <h2>Signup</h2>
