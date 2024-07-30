@@ -13,7 +13,7 @@ const Footer = () => {
     <Navbar className="footer justify-content-center">
       <Nav>
         <Link className="footer-item" to="/">
-          Copyright 2023: Builder Rocket LLC All Rights Reserved
+          Copyright 2024: Builder Rocket LLC All Rights
         </Link>
         <Link className="footer-item" to="/">
           Social Media
