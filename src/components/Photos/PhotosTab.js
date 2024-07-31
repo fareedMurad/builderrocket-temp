@@ -9,6 +9,7 @@ import {
   Popover,
   Spinner,
 } from "react-bootstrap";
+import ProgressBar from "react-bootstrap/ProgressBar";
 import { getProjectByProjectID } from "../../actions/projectActions";
 import { useDispatch, useSelector } from "react-redux";
 import FileUpload from "../FileUpload";
@@ -19,9 +20,11 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 const DocumentTypeID = 19;
 const PhotosTab = () => {
   const ref = useRef(null);
+
   const dispatch = useDispatch();
   const project = useSelector((state) => state.project.project);
 
+  const inputFile = useRef();
   const componentRef = useRef(null);
   const [show, setShow] = useState(false);
   const [uploadFiles, setUploadFiles] = useState({});
@@ -29,9 +32,19 @@ const PhotosTab = () => {
   const [loading, setLoading] = useState(false);
   const [target, setTarget] = useState(null);
   const [id, setId] = useState("");
-  const [progress, setProgress] = useState({});
+  const [progress, setProgress] = useState({
+    0: { progress: 100, loading: true },
+    1: { progress: -1, loading: true },
+  });
 
-  const handleShow = () => setShow(true);
+  useEffect(() => {
+    if (uploadFiles?.length) {
+      setShow(true);
+      handleSubmit();
+    } else {
+      setShow(false);
+    }
+  }, [uploadFiles?.length]);
 
   useEffect(() => {
     const getData = async () => {
@@ -50,6 +63,10 @@ const PhotosTab = () => {
   const handleSubmit = () => {
     for (let i = 0; i < uploadFiles?.length; i++) {
       const File = uploadFiles[i];
+      console.log(uploadFiles, "uploadFiles");
+
+      progress[i] = { progress: 0, loading: true };
+      setProgress({ ...progress });
       const formData = new FormData();
       formData.append("File", File);
 
@@ -57,24 +74,24 @@ const PhotosTab = () => {
 
       dispatch(
         addDocument(project.ID, formData, (event) => {
-          progress[DocumentTypeID] = {
+          progress[i] = {
             progress: Math.round((100 * event.loaded) / event.total),
             loading: true,
           };
           setProgress({ ...progress });
-        }),
+        })
       )
         .then(async (response) => {
           if (uploadFiles?.length - 1 === i) {
-            await dispatch(getProjectByProjectID(project.ID));
-
-            progress[DocumentTypeID] = { progress: 0, loading: false };
-            setProgress({ ...progress });
-            handleClose();
+            await dispatch(getProjectByProjectID(project.ID)).then((res) => {
+              handleClose();
+            });
           }
+          setProgress({ ...progress });
+          progress[i] = { progress: 100, loading: false };
         })
         .catch(() => {
-          progress[DocumentTypeID] = { progress: 0, loading: false };
+          progress[i] = { progress: -1, loading: false };
           setProgress({ ...progress });
           alert("Something is wrong, please try!");
         });
@@ -87,9 +104,7 @@ const PhotosTab = () => {
     setId(id);
   };
 
-  const onFileChange = (documentTypeID, event) => {
-    progress[documentTypeID] = { progress: 0, loading: true };
-    setProgress({ ...progress });
+  const onFileChange = (event) => {
     setUploadFiles(event.target?.files);
   };
 
@@ -108,16 +123,44 @@ const PhotosTab = () => {
   };
 
   let fileProgress = (id) => {
-    if (!progress) return {};
-    return { ...progress[id] };
+    let p = progress[id];
+
+    if (!p) return <></>;
+
+    return (
+      <div className="mt-1">
+        <ProgressBar
+          striped
+          variant={
+            p?.progress === 100
+              ? "success"
+              : p?.progress === -1
+              ? "danger"
+              : "info"
+          }
+          now={p?.progress}
+          label={
+            p?.progress === 100
+              ? "Completed"
+              : p?.progress === -1
+              ? "Failed"
+              : p?.progress + "%"
+          }
+        />
+      </div>
+    );
   };
 
   const getProjectPhotos = () => {
     return project?.Documents?.filter(
-      (p) => p.DocumentTypeID === DocumentTypeID,
+      (p) => p.DocumentTypeID === DocumentTypeID
     );
   };
 
+  const browse = () => {
+    // clicks file upload input through button
+    inputFile.current.click();
+  };
   return (
     <div className="d-flex products">
       <div className="reports-container" ref={componentRef}>
@@ -126,9 +169,17 @@ const PhotosTab = () => {
             <div className="page-title">Photos</div>
           </div>
           <div>
-            <Button variant="link" className="link-btn" onClick={handleShow}>
+            <Button variant="link" className="link-btn" onClick={browse}>
               + Add Photos
             </Button>
+            <input
+              hidden
+              multiple
+              type="file"
+              id="actual-btn"
+              ref={inputFile}
+              onChange={onFileChange}
+            />
           </div>
         </div>
         <div className="photos-grid">
@@ -205,40 +256,38 @@ const PhotosTab = () => {
           </div>
         </Popover>
       </Overlay>
-      <Modal show={show} onHide={handleClose} centered>
+      <Modal show={show} centered>
         <Modal.Body>
           <Card>
             <Card.Body>
-              <Form.Label>Select Photo</Form.Label>
-              <FileUpload
-                short
-                placeholder={uploadFiles?.name}
-                buttonText={"Upload Photo"}
-                progress={fileProgress(DocumentTypeID)}
-                onFileChange={(event) => onFileChange(DocumentTypeID, event)}
-                multiple
-              />
+              <Form.Label>
+                Uploading{" "}
+                {uploadFiles?.length && (
+                  <small>
+                    {" "}
+                    {uploadFiles.length} File
+                    {uploadFiles?.length > 1 ? "s" : ""}
+                  </small>
+                )}
+                {console.log(uploadFiles, progress, "uploadFiles")}
+              </Form.Label>
+
+              {Array.from(uploadFiles)?.map((file, i) => (
+                <div className="my-2">
+                  <img
+                    height="50"
+                    width="50"
+                    alt="my product"
+                    className="mr-2"
+                    style={{ objectFit: "contain" }}
+                    src={URL.createObjectURL(file)}
+                  />
+                  <small className="ml-2">{file.name}</small>
+                  {fileProgress(i)}
+                </div>
+              ))}
             </Card.Body>
           </Card>
-          {uploadFiles?.length && (
-            <small>
-              {" "}
-              {uploadFiles.length} File{uploadFiles?.length > 1 ? "s" : ""}{" "}
-              Selected
-            </small>
-          )}
-          <div className="d-flex justify-content-center align-items-center gap-2 p-3">
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleSubmit}
-              disabled={!uploadFiles}
-            >
-              Save
-            </Button>
-          </div>
         </Modal.Body>
       </Modal>
     </div>

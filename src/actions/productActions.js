@@ -353,9 +353,7 @@ export const RoughInTrimOutEnum =
           return response.data;
         }
       })
-      .catch((error) => {
-        if (error?.response?.status === 401) console.log(error);
-      });
+      .catch((error) => {});
   };
 
 export const setIsFavorite = (projectId, productId, value) => (dispatch) => {
@@ -381,9 +379,7 @@ export const setIsFavorite = (projectId, productId, value) => (dispatch) => {
         return response.data;
       }
     })
-    .catch((error) => {
-      if (error?.response?.status === 401) console.log(error);
-    });
+    .catch((error) => {});
 };
 
 export const setFilter = (filter) => (dispatch) => {

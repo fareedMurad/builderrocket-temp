@@ -173,7 +173,7 @@ export const setSelectedProject = (selectedProject) => (dispatch) => {
   return new Promise((resolve, reject) => {
     try {
       dispatch({ type: SET_SELECTED_PROJECT, payload: selectedProject });
-      console.log(selectedProject);
+
       resolve(selectedProject);
     } catch (error) {
       reject(error);
@@ -599,8 +599,6 @@ export const createProject = (newProject) => (dispatch) => {
       }
     })
     .catch((error) => {
-      console.log("ERROR", error);
-
       if (error.response?.status === 401) dispatch({ type: LOGOUT });
     });
 };
@@ -782,7 +780,6 @@ export const updateProjectProdcutNotes =
     })
       .then((response) => {
         if (response?.status === 200) {
-          console.log(response);
           dispatch({ type: SET_SELECTED_PROJECT, payload: response.data });
 
           return response?.data;

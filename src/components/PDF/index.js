@@ -11,7 +11,6 @@ export const CustomPrinter = React.forwardRef((props, ref) => {
 
   const handleBeforePrint = React.useCallback(() => {
     props.handleBeforePrint?.();
-    console.log("`onBeforePrint` called");
   }, []);
 
   const handleOnBeforeGetContent = React.useCallback(() => {

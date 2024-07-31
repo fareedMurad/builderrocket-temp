@@ -54,6 +54,7 @@ const ProjectInformation = withSwal((props) => {
   const [projectInformation, setProjectInformation] = useState(project);
   const [projectImage, setProjectImage] = useState(null);
   const [newSubdivisionName, setNewSubdivisionName] = useState("");
+  const [createProjectLoader, setCreateProjectLoader] = useState(false);
 
   // Ref to access changes on unmount
   const valueRef = useRef();
@@ -109,7 +110,7 @@ const ProjectInformation = withSwal((props) => {
     setProgress({ ...progress });
     setProjectInformation({ ...projectInformation, ThumbnailName: file?.name });
     setProjectImage(file);
-    console.log(project, "PPP");
+
     if (!project?.ID) return;
 
     setIsLoading(true);
@@ -126,7 +127,6 @@ const ProjectInformation = withSwal((props) => {
           loading: true,
         };
         setProgress({ ...progress });
-        console.log(progress);
       })
     )
       .then(async (updatedProject) => {
@@ -198,6 +198,8 @@ const ProjectInformation = withSwal((props) => {
           alert("Something went wrong saving project try again");
         });
     } else {
+      delete payload.ThumbnailName;
+      delete payload.ThumbnailURL;
       const newProject = {
         ...payload,
         DateCreated: new Date(),
@@ -205,15 +207,19 @@ const ProjectInformation = withSwal((props) => {
         StatusID: payload?.StatusID || 1,
       };
 
+      setCreateProjectLoader(true);
+
       dispatch(createProject(newProject))
         .then((res) => {
           setIsLoading(false);
-          console.log(res, "response");
           if (res?.ID) {
             uploadProjectImage(res?.ID);
           }
 
+          setCreateProjectLoader(false);
+
           if (goToNext) dispatch(setSelectedProjectTab("documents"));
+          else dispatch(setSelectedProjectTab("projectInformation"));
         })
         .catch(() => {
           setIsLoading(false);
@@ -406,7 +412,7 @@ const ProjectInformation = withSwal((props) => {
 
   return (
     <div className="d-flex project-information">
-      <div className="information-form-container">
+      <div className="information-form-container  position-relative">
         <div className="page-title">Project Information</div>
 
         <Form>
@@ -422,7 +428,7 @@ const ProjectInformation = withSwal((props) => {
                     ProjectName: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() => saveChanges(false)}
               />
             </div>
             <div className="form-col pb-4">
@@ -491,7 +497,7 @@ const ProjectInformation = withSwal((props) => {
               <div className="row">
                 <div className="col-12 col-sm-4">
                   <Form.Label className="input-label">First Name</Form.Label>
-                  {console.log(projectInformation, "Info")}
+
                   <Form.Control
                     // readOnly
                     className="input-gray"
@@ -550,7 +556,6 @@ const ProjectInformation = withSwal((props) => {
                     className="input-gray"
                     value={projectInformation?.Customers?.[0]?.Phone ?? ""}
                     onChange={(e) => {
-                      console.log(e.target.value);
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
                         if (NewState.Customers?.[0]) {
@@ -948,6 +953,32 @@ const ProjectInformation = withSwal((props) => {
             </>
           )}
         </div>
+        {createProjectLoader && (
+          <div
+            style={{
+              zIndex: 9999999,
+              position: "fixed",
+              background: "rgba(0,0,0,0.3)",
+              top: 0,
+              left: 0,
+              width: "100vw",
+              height: "100vh",
+            }}
+          >
+            <div
+              className="h-100 w-100 spinner d-flex flex-column align-items-center text-primary justify-content-center "
+              style={{
+                zIndex: 9999999,
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            >
+              <Spinner animation="border" variant="primary" className="mb-3" />
+              Creating your project...
+            </div>
+          </div>
+        )}
       </div>
 
       <MarketingBlock />

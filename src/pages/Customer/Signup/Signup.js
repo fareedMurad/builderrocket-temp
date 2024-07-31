@@ -50,7 +50,6 @@ const Signup = (props) => {
     const params = { ...user, ID: customer?.CustomerID, setError };
     delete params.confirmPassword;
 
-    console.log(params, "Hey");
     if (!isEmpty(user))
       dispatch(signupEmailPassword(params)).then((response) => {
         setIsLoading(false);

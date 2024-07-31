@@ -70,7 +70,6 @@ const Documents = () => {
           loading: true,
         };
         setProgress({ ...progress });
-        console.log(progress);
       })
     ).then((response) => {
       progress[documentTypeID] = { progress: 0, loading: false };
@@ -135,7 +134,6 @@ const Documents = () => {
       OccupencyDate: Utils.formatDate(documentsInfo.OccupencyDate),
     };
 
-    console.log(documentsInfoFinal, "documentsData");
     // Save Project then navigate to utilities tab
     dispatch(saveProject(documentsInfoFinal))
       .then(() => {

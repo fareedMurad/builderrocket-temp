@@ -165,11 +165,12 @@ const Reports = (props) => {
             name: a.Name,
             value: a.BuilderRoomID,
           };
-        })?.filter((a) =>
-          selectedSavedFilter
-            ? selectedSavedFilter.RoomIDs?.find((b) => b === a.value)
-            : a.value
-        )
+        })
+        //   ?.filter((a) =>
+        //     selectedSavedFilter
+        //       ? selectedSavedFilter.RoomIDs?.find((b) => b === a.value)
+        //       : a.value
+        //   )
       ) || []
     );
   };
@@ -251,7 +252,6 @@ const Reports = (props) => {
         IsShowEmptyCategoriesRooms: showEmptyData,
       };
 
-      console.log(payload, "payload");
       dispatch(saveReportsFilter(payload)).then((res) => {
         handleFetchSavedReports();
       });

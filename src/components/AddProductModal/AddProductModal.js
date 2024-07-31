@@ -65,7 +65,7 @@ const AddProductModal = ({
         ProductNumber: defaultValues?.ProductNumber || "",
         PartNumber: defaultValues?.PartNumber || "",
         UnitOfSale: defaultValues?.UnitOfSale || "",
-        IsActive: defaultValues?.IsActive || false,
+        IsActive: defaultValues?.IsActive || true,
         Width: defaultValues?.Width || "",
         Height: defaultValues?.Height || "",
         Depth: defaultValues?.Depth || "",
@@ -528,12 +528,12 @@ const AddProductModal = ({
           <Col md={4}>
             <Form.Group>
               <Form.Label className="input-label">Is Active</Form.Label>
-              <div className="d-flex">
+              <div className="d-flex ml-4" style={{ gap: "15px" }}>
                 <Form.Check
                   type="radio"
                   label="Yes"
                   className="mr-3"
-                  checked={newProduct.IsActive}
+                  checked={newProduct.IsActive === true}
                   onChange={() =>
                     setProduct({
                       ...newProduct,
@@ -544,7 +544,7 @@ const AddProductModal = ({
                 <Form.Check
                   type="radio"
                   label="No"
-                  checked={!newProduct.IsActive}
+                  checked={newProduct.IsActive === false}
                   onChange={() =>
                     setProduct({
                       ...newProduct,

@@ -41,18 +41,18 @@ const UtilityManagement = () => {
       const filter = utilities?.filter(
         (utility) =>
           utility?.CompanyName?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           utility?.UtilityType?.Name?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           utility?.PhoneNumber?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
+            searchTerm?.toLowerCase()
           ) ||
           utility?.Region?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
           utility?.EmailAddress?.toLowerCase().includes(
-            searchTerm?.toLowerCase(),
-          ),
+            searchTerm?.toLowerCase()
+          )
       );
 
       setFilteredUtilities(filter);
@@ -134,8 +134,8 @@ const UtilityManagement = () => {
   return (
     <div className="d-flex utility-management">
       <div className="utility-management-container">
-        <div className="d-flex">
-          <div className="page-title">Utility Management</div>
+        <div className="d-flex align-items-center mb-4">
+          <div className="page-title pb-0">Utility Management</div>
           <div className="ml-2">
             <Button
               variant="link"
@@ -188,7 +188,9 @@ const UtilityManagement = () => {
                     ) : (
                       <div className="d-flex justify-content-between">
                         <i
-                          className={`${utility.IsFavorite ? "fas fa-heart" : "far fa-heart"}`}
+                          className={`${
+                            utility.IsFavorite ? "fas fa-heart" : "far fa-heart"
+                          }`}
                           onClick={() => handleFavorite(utility)}
                         ></i>
                         <i

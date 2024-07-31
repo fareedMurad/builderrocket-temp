@@ -31,8 +31,6 @@ export const getRooms = () => (dispatch) => {
     })
     .catch((error) => {
       if (error?.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting Rooms", error);
     });
 };
 
@@ -52,8 +50,6 @@ export const getRoomTypes = () => (dispatch) => {
     })
     .catch((error) => {
       if (error?.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting Rooms", error);
     });
 };
 export const getBuilderRoomTypes = () => (dispatch) => {
@@ -71,8 +67,6 @@ export const getBuilderRoomTypes = () => (dispatch) => {
     })
     .catch((error) => {
       if (error?.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting Rooms", error);
     });
 };
 
@@ -91,8 +85,6 @@ export const getBuilderRoomGroups = () => (dispatch) => {
     })
     .catch((error) => {
       if (error?.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting Rooms", error);
     });
 };
 
@@ -111,8 +103,6 @@ export const getBuilderRoomGroupDetails = (ID) => (dispatch) => {
     })
     .catch((error) => {
       if (error?.response?.status === 401) dispatch({ type: LOGOUT });
-
-      console.log("Getting Rooms", error);
     });
 };
 

@@ -9,14 +9,29 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Toaster from "react-hot-toast";
 import ScrollToTop from "react-scroll-to-top";
+import { getUserProfile } from "./actions/userActions";
+import { useDispatch } from "react-redux";
+
+import { useHistory } from "react-router";
+import { logout } from "./actions/authActions";
 
 function App() {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [expandedNav, setExpandedNav] = useState(false);
 
   useEffect(() => {
     const resizeEvent = window.addEventListener("resize", () => {
       if (window.innerWidth >= 860) {
         setExpandedNav(false);
+      }
+    });
+
+    dispatch(getUserProfile()).then((response) => {
+      if (!response) {
+        dispatch(logout()).then(() => {
+          history.push("/login");
+        });
       }
     });
 

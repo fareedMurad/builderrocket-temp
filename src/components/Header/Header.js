@@ -71,7 +71,7 @@ const Header = ({ expanded, setExpanded }) => {
                     )}
                 </Nav.Link> */}
         <Navbar.Text className="item user-name">{title}</Navbar.Text>
-        <Nav.Link className="item">
+        <Nav.Link className="item" onClick={() => history.push("/my-profile")}>
           <i className="far fa-cog"></i>
           <span>Settings</span>
         </Nav.Link>
@@ -243,7 +243,12 @@ const Header = ({ expanded, setExpanded }) => {
                     <i className="far fa-user-circle"></i>
                   )}
                 </Nav.Link>
-                <Nav.Link className="item">
+                <Nav.Link
+                  className="item"
+                  onClick={() => {
+                    history.push("/my-profile");
+                  }}
+                >
                   <i className="far fa-cog"></i>
                 </Nav.Link>
                 <Nav.Link className="item">
