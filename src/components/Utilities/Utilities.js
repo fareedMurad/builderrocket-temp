@@ -13,6 +13,8 @@ import "./Utilities.scss";
 import ClearChangesModal from "../ClearChangesModal";
 import MarketingBlock from "../MarketingBlock";
 import AddUtility from "../AddUtility";
+import FieldLoader from "../ProjectFieldLoader";
+import InputField from "../ProjectInput/TextInput";
 
 const Utilities = () => {
   const dispatch = useDispatch();
@@ -28,6 +30,7 @@ const Utilities = () => {
   const [locatePermitNumber, setLocatePermitNumber] = useState(
     project.LocatePermitNumber
   );
+  const [fieldsLoader, setFieldsLoader] = useState({});
 
   // Ref to access changes on unmount
   const projectRef = useRef();
@@ -44,7 +47,7 @@ const Utilities = () => {
     return utilities?.filter((utility) => utility.UtilityTypeID === id);
   };
 
-  const handleUtility = (id, utilityTypeID) => {
+  const handleUtility = async (id, utilityTypeID) => {
     if (!utilityTypeID) return;
 
     let utilityID;
@@ -53,13 +56,23 @@ const Utilities = () => {
 
     if (id) {
       utilityID = parseInt(id);
+      setFieldsLoader({
+        ...fieldsLoader,
+        [utilityTypeID]: {
+          loading: true,
+        },
+      });
 
-      dispatch(saveProjectUtility(project.ID, utilityTypeID, utilityID));
-      //   .then(
-      //     (data) => {
-      //       console.log(data);
-      //     }
-      //   );
+      await dispatch(
+        saveProjectUtility(project.ID, utilityTypeID, utilityID)
+      ).then((data) => {
+        setFieldsLoader({
+          ...fieldsLoader,
+          [utilityTypeID]: {
+            loading: false,
+          },
+        });
+      });
 
       selectedUtility = utilities.find((utility) => utility.ID === utilityID);
 
@@ -95,9 +108,15 @@ const Utilities = () => {
     setShowModal(false);
   };
 
-  const saveChanges = (goToNext = true) => {
+  const saveChanges = (goToNext = true, field) => {
     setIsLoading(true);
 
+    setFieldsLoader({
+      ...fieldsLoader,
+      [field]: {
+        loading: true,
+      },
+    });
     // Save Project then navigate to contractors tab
     dispatch(
       saveProject({
@@ -106,6 +125,12 @@ const Utilities = () => {
         LocatePermitNumber: locatePermitNumber,
       })
     ).then(() => {
+      setFieldsLoader({
+        ...fieldsLoader,
+        [field]: {
+          loading: false,
+        },
+      });
       setIsLoading(false);
       if (goToNext) dispatch(setSelectedProjectTab("contractors"));
     });
@@ -154,6 +179,9 @@ const Utilities = () => {
               <div key={index} className="select utility">
                 <Form.Label className="input-label">
                   {utilityType.Name && utilityType.Name}
+                  <FieldLoader
+                    loading={fieldsLoader?.[utilityType.ID]?.loading}
+                  />
                 </Form.Label>
 
                 <Form.Control
@@ -208,48 +236,40 @@ const Utilities = () => {
               </div>
             ))}
             <div className="utility">
-              <Form.Label className="input-label">Locate Permit #</Form.Label>
-              <Form.Control
-                type="text"
-                className="input-gray"
+              <InputField
+                label="Locate Permit #"
+                loading={fieldsLoader?.["locatePermitNumber"]?.loading}
                 value={locatePermitNumber}
-                onBlur={() => saveChanges(false)}
                 onChange={(event) => setLocatePermitNumber(event.target.value)}
+                onBlur={() => saveChanges(false, "locatePermitNumber")}
               />
             </div>
           </div>
         </div>
 
         <div className="d-flex justify-content-center pt-5">
-          {isLoading ? (
-            <Spinner animation="border" variant="primary" />
-          ) : (
-            <>
-              <Button
-                variant="link"
-                className="cancel"
-                onClick={() => setShowModal(true)}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="primary-gray-btn next-btn ml-3"
-                onClick={saveChanges}
-              >
-                Next
-              </Button>
-            </>
-          )}
+          <Button
+            className="primary-gray-btn next-btn ml-3"
+            onClick={() => dispatch(setSelectedProjectTab("documents"))}
+          >
+            Prevs
+          </Button>
+          <Button
+            className="primary-gray-btn next-btn ml-3"
+            onClick={() => dispatch(setSelectedProjectTab("contractors"))}
+          >
+            Next
+          </Button>
         </div>
       </div>
 
       <MarketingBlock />
-
+      {/* 
       <ClearChangesModal
         show={showModal}
         setShow={setShowModal}
         clearChanges={clearChanges}
-      />
+      /> */}
 
       {showUtilityModal && (
         <AddUtility

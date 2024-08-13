@@ -35,6 +35,8 @@ import {
   getBuilderSubdivisions,
   createBuilderSubdivsion,
 } from "../../actions/builderSubdivisionActions";
+import InputField from "../ProjectInput/TextInput";
+import FieldLoader from "../ProjectFieldLoader";
 
 const ProjectInformation = withSwal((props) => {
   const { swal } = props;
@@ -55,6 +57,7 @@ const ProjectInformation = withSwal((props) => {
   const [projectImage, setProjectImage] = useState(null);
   const [newSubdivisionName, setNewSubdivisionName] = useState("");
   const [createProjectLoader, setCreateProjectLoader] = useState(false);
+  const [fieldsLoader, setFieldsLoader] = useState({});
 
   // Ref to access changes on unmount
   const valueRef = useRef();
@@ -91,10 +94,19 @@ const ProjectInformation = withSwal((props) => {
 
   function handleConfirmDelete(result) {
     if (result.isConfirmed) {
-      setProjectInformation({
-        ...projectInformation,
-        StatusID: -1,
-      });
+      if (projectInformation?.StatusID === -1) {
+        dispatch(deleteProject(project.ID)).then((result) => {
+          if (result.success) {
+            toast.success("Project deleted successfully");
+            setTimeout(function () {
+              history.push("/");
+            }, 3000);
+          } else {
+            toast.error(result.message);
+          }
+        });
+        return;
+      }
     } else {
       setProjectInformation({
         ...projectInformation,
@@ -153,23 +165,20 @@ const ProjectInformation = withSwal((props) => {
     setShowCustomerModal(bool);
   };
 
-  const saveChanges = (goToNext = true) => {
+  const saveChanges = async (goToNext = true, field) => {
     if (projectInformation?.StatusID === -1) {
-      dispatch(deleteProject(project.ID)).then((result) => {
-        if (result.success) {
-          toast.success("Project deleted successfully");
-          setTimeout(function () {
-            history.push("/");
-          }, 3000);
-        } else {
-          toast.error(result.message);
-        }
-      });
       return;
     }
     if (!projectInformation.ProjectName) return;
 
     setIsLoading(true);
+
+    setFieldsLoader({
+      ...fieldsLoader,
+      [field]: {
+        loading: true,
+      },
+    });
 
     const payload = {
       ...projectInformation,
@@ -188,12 +197,23 @@ const ProjectInformation = withSwal((props) => {
 
     if (project?.ID) {
       // Save Project then navigate to documents tab
-      dispatch(saveProject(payload))
+      await dispatch(saveProject(payload))
         .then(() => {
           setIsLoading(false);
+          setFieldsLoader({
+            [field]: {
+              loading: false,
+            },
+          });
           if (goToNext) dispatch(setSelectedProjectTab("documents"));
         })
         .catch(() => {
+          setFieldsLoader({
+            ...fieldsLoader,
+            [field]: {
+              loading: false,
+            },
+          });
           setIsLoading(false);
           alert("Something went wrong saving project try again");
         });
@@ -264,7 +284,7 @@ const ProjectInformation = withSwal((props) => {
       project?.ID &&
       originalProject?.CloseDate !== projectInformation?.CloseDate
     )
-      saveChanges(false);
+      saveChanges(false, "ClosingDate");
   }, [projectInformation?.CloseDate]);
 
   useEffect(() => {
@@ -272,8 +292,16 @@ const ProjectInformation = withSwal((props) => {
       project?.ID &&
       originalProject?.Subdivision !== projectInformation?.Subdivision
     )
-      saveChanges(false);
+      saveChanges(false, "Subdivision");
   }, [projectInformation?.Subdivision]);
+
+  useEffect(() => {
+    if (
+      project?.ID &&
+      originalProject?.StatusID !== projectInformation?.StatusID
+    )
+      saveChanges(false, "ProjectStatus");
+  }, [projectInformation?.StatusID]);
 
   // const customerFullName = () => {
   //   let customerName = "";
@@ -410,6 +438,8 @@ const ProjectInformation = withSwal((props) => {
     return { ...progress[id] };
   };
 
+  console.log(fieldsLoader, "fieldsLoader");
+
   return (
     <div className="d-flex project-information">
       <div className="information-form-container  position-relative">
@@ -417,10 +447,10 @@ const ProjectInformation = withSwal((props) => {
 
         <Form>
           <div className="d-flex flex-wrap information-form">
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">Project Name</Form.Label>
-              <Form.Control
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-4">
+              <InputField
+                label="Project Name"
+                loading={fieldsLoader?.["ProjectName"]?.loading}
                 value={projectInformation?.ProjectName}
                 onChange={(event) =>
                   setProjectInformation({
@@ -428,10 +458,10 @@ const ProjectInformation = withSwal((props) => {
                     ProjectName: event.target.value,
                   })
                 }
-                onBlur={() => saveChanges(false)}
+                onBlur={() => saveChanges(false, "ProjectName")}
               />
             </div>
-            <div className="form-col pb-4">
+            <div className="col-12 col-md-6 pb-4">
               <FileUpload
                 short
                 label="Project Image"
@@ -455,11 +485,10 @@ const ProjectInformation = withSwal((props) => {
                 hideEdit
               />
             </div>
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">Lot #</Form.Label>
-              <Form.Control
-                type="email"
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-4">
+              <InputField
+                label="Lot #"
+                loading={fieldsLoader?.["LotNumber"]?.loading}
                 value={projectInformation?.LotNumber}
                 onChange={(event) =>
                   setProjectInformation({
@@ -467,11 +496,18 @@ const ProjectInformation = withSwal((props) => {
                     LotNumber: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() =>
+                  project?.ID ? saveChanges(false, "LotNumber") : {}
+                }
               />
             </div>
-            <div className="form-col select pb-4">
-              <Form.Label className="input-label">Project Status</Form.Label>
+            <div className="col-12 col-md-6 select pb-4">
+              <Form.Label className="input-label">
+                Project Status{" "}
+                <FieldLoader
+                  loading={fieldsLoader?.["ProjectStatus"]?.loading}
+                />
+              </Form.Label>
               <Form.Control
                 as="select"
                 value={projectInformation?.StatusID}
@@ -488,19 +524,17 @@ const ProjectInformation = withSwal((props) => {
                 ))}
               </Form.Control>
             </div>
-            {/* <div className="form-col pb-4"></div> */}
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">Customer Info</Form.Label>
+            {/* <div className="col-12 col-md-6 pb-4"></div> */}
+            <div className="col-12 pb-4">
+              <Form.Label className="input-label">Customer's Info</Form.Label>
               <div>
                 <Form.Label className="input-label">Customer 1</Form.Label>
               </div>
               <div className="row">
-                <div className="col-12 col-sm-4">
-                  <Form.Label className="input-label">First Name</Form.Label>
-
-                  <Form.Control
-                    // readOnly
-                    className="input-gray"
+                <div className="col-12 col-md-2">
+                  <InputField
+                    label="First Name"
+                    loading={fieldsLoader?.["C1FirstName"]?.loading}
                     value={projectInformation?.Customers?.[0]?.FirstName ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
@@ -520,13 +554,15 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C1FirstName") : {}
+                    }
                   />
                 </div>
-                <div className="col-12 col-sm-4">
-                  <Form.Label className="input-label">Last Name</Form.Label>
-                  <Form.Control
-                    className="input-gray"
+                <div className="col-12 col-md-2">
+                  <InputField
+                    label="Last Name"
+                    loading={fieldsLoader?.["C1LastName"]?.loading}
                     value={projectInformation?.Customers?.[0]?.LastName ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
@@ -547,13 +583,15 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C1LastName") : {}
+                    }
                   />
                 </div>
-                <div className="col-12 col-sm-4">
-                  <Form.Label className="input-label">Mobile</Form.Label>
-                  <Form.Control
-                    className="input-gray"
+                <div className="col-12 col-md-2">
+                  <InputField
+                    label="Mobile"
+                    loading={fieldsLoader?.["C1Mobile"]?.loading}
                     value={projectInformation?.Customers?.[0]?.Phone ?? ""}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
@@ -574,107 +612,17 @@ const ProjectInformation = withSwal((props) => {
                         }
                       });
                     }}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C1Mobile") : {}
+                    }
                   />
                 </div>
-              </div>
-              <Form.Label className="input-label">Customer 2</Form.Label>
-              <div className="row">
-                <div className="col-12 col-sm-4">
-                  <Form.Label className="input-label">First Name</Form.Label>
-                  <Form.Control
-                    className="input-gray"
-                    value={projectInformation?.Customers?.[1]?.FirstName ?? ""}
-                    onChange={(e) => {
-                      setProjectInformation((prev) => {
-                        const NewState = { ...prev };
-                        if (NewState.Customers?.[1]) {
-                          NewState.Customers[1].FirstName = e.target.value;
-                          return NewState;
-                        } else {
-                          const newRowData = [
-                            ...NewState.Customers,
-                            (NewState.Customers[1] = {
-                              FirstName: e.target.value,
-                            }),
-                          ];
-                          NewState.Customers = newRowData;
-                          return NewState;
-                        }
-                      });
-                    }}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
-                  />
-                </div>
-                <div className="col-12 col-sm-4">
-                  <Form.Label className="input-label">Last Name</Form.Label>
-                  <Form.Control
-                    className="input-gray"
-                    value={projectInformation?.Customers?.[1]?.LastName ?? ""}
-                    onChange={(e) => {
-                      setProjectInformation((prev) => {
-                        const NewState = { ...prev };
-                        if (NewState.Customers?.[1]) {
-                          NewState.Customers[1].LastName = e.target.value;
-                          return NewState;
-                        } else {
-                          const newRowData = [
-                            ...NewState.Customers,
-                            (NewState.Customers[1] = {
-                              ...NewState.Customers[1],
-                              LastName: e.target.value,
-                            }),
-                          ];
-                          NewState.Customers = newRowData;
-                          return NewState;
-                        }
-                      });
-                    }}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
-                  />
-                </div>
-                <div className="col-12 col-sm-4">
-                  <Form.Label className="input-label">Mobile</Form.Label>
-                  <Form.Control
-                    inputMode="tel"
-                    type="text"
-                    className="input-gray"
-                    value={projectInformation?.Customers?.[1]?.Phone ?? ""}
-                    onChange={(e) => {
-                      setProjectInformation((prev) => {
-                        const NewState = { ...prev };
-                        if (NewState.Customers?.[1]) {
-                          NewState.Customers[1].Phone = e.target.value;
-                          return NewState;
-                        } else {
-                          const newRowData = [
-                            ...NewState.Customers,
-                            (NewState.Customers[1] = {
-                              ...NewState.Customers[1],
-                              Phone: e.target.value,
-                            }),
-                          ];
-                          NewState.Customers = newRowData;
-                          return NewState;
-                        }
-                      });
-                    }}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="form-col pb-4">
-              <Form.Label className="input-label"></Form.Label>
-              <div className="row">
-                <div className="col-12">
-                  <Form.Label className="input-label"></Form.Label>
-                  <div>
-                    <Form.Label className="input-label">Email</Form.Label>
-                  </div>
-                  <Form.Control
+                <div className="col-12 col-md-6">
+                  {/* <Form.Label className="input-label"></Form.Label> */}
+                  <InputField
+                    label="Email"
                     type="email"
-                    className="input-gray"
+                    loading={fieldsLoader?.["C1Email"]?.loading}
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
@@ -695,17 +643,107 @@ const ProjectInformation = withSwal((props) => {
                       });
                     }}
                     value={projectInformation?.Customers?.[0]?.Email ?? ""}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C1Email") : {}
+                    }
                   />
                 </div>
-                <div className="col-12">
-                  <Form.Label className="input-label"></Form.Label>
-                  <div>
-                    <Form.Label className="input-label">Email</Form.Label>
-                  </div>
-                  <Form.Control
+              </div>
+            </div>
+            <div className="col-12 pb-4">
+              <Form.Label className="input-label">Customer 2</Form.Label>
+              <div className="row">
+                <div className="col-12 col-md-2">
+                  <InputField
+                    label="First Name"
+                    loading={fieldsLoader?.["C2FirstName"]?.loading}
+                    value={projectInformation?.Customers?.[1]?.FirstName ?? ""}
+                    onChange={(e) => {
+                      setProjectInformation((prev) => {
+                        const NewState = { ...prev };
+                        if (NewState.Customers?.[1]) {
+                          NewState.Customers[1].FirstName = e.target.value;
+                          return NewState;
+                        } else {
+                          const newRowData = [
+                            ...NewState.Customers,
+                            (NewState.Customers[1] = {
+                              FirstName: e.target.value,
+                            }),
+                          ];
+                          NewState.Customers = newRowData;
+                          return NewState;
+                        }
+                      });
+                    }}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C2FirstName") : {}
+                    }
+                  />
+                </div>
+                <div className="col-12 col-md-2">
+                  <InputField
+                    label="Last Name"
+                    loading={fieldsLoader?.["C2LastName"]?.loading}
+                    value={projectInformation?.Customers?.[1]?.LastName ?? ""}
+                    onChange={(e) => {
+                      setProjectInformation((prev) => {
+                        const NewState = { ...prev };
+                        if (NewState.Customers?.[1]) {
+                          NewState.Customers[1].LastName = e.target.value;
+                          return NewState;
+                        } else {
+                          const newRowData = [
+                            ...NewState.Customers,
+                            (NewState.Customers[1] = {
+                              ...NewState.Customers[1],
+                              LastName: e.target.value,
+                            }),
+                          ];
+                          NewState.Customers = newRowData;
+                          return NewState;
+                        }
+                      });
+                    }}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C2LastName") : {}
+                    }
+                  />
+                </div>
+                <div className="col-12 col-md-2">
+                  <InputField
+                    label="Mobile"
+                    loading={fieldsLoader?.["C2Mobile"]?.loading}
+                    value={projectInformation?.Customers?.[1]?.Phone ?? ""}
+                    onChange={(e) => {
+                      setProjectInformation((prev) => {
+                        const NewState = { ...prev };
+                        if (NewState.Customers?.[1]) {
+                          NewState.Customers[1].Phone = e.target.value;
+                          return NewState;
+                        } else {
+                          const newRowData = [
+                            ...NewState.Customers,
+                            (NewState.Customers[1] = {
+                              ...NewState.Customers[1],
+                              Phone: e.target.value,
+                            }),
+                          ];
+                          NewState.Customers = newRowData;
+                          return NewState;
+                        }
+                      });
+                    }}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C2Mobile") : {}
+                    }
+                  />
+                </div>
+                <div className="col-12 col-md-6">
+                  <InputField
+                    label="Email"
+                    loading={fieldsLoader?.["C2Email"]?.loading}
                     type="email"
-                    className="input-gray"
                     onChange={(e) => {
                       setProjectInformation((prev) => {
                         const NewState = { ...prev };
@@ -726,15 +764,17 @@ const ProjectInformation = withSwal((props) => {
                       });
                     }}
                     value={projectInformation?.Customers?.[1]?.Email ?? ""}
-                    onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                    onBlur={() =>
+                      project?.ID ? saveChanges(false, "C2Email") : {}
+                    }
                   />
                 </div>
               </div>
             </div>
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">Plan Name</Form.Label>
-              <Form.Control
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-4">
+              <InputField
+                label="Plan Name"
+                loading={fieldsLoader?.["PlanName"]?.loading}
                 value={projectInformation?.PlanName}
                 onChange={(event) =>
                   setProjectInformation({
@@ -742,13 +782,18 @@ const ProjectInformation = withSwal((props) => {
                     PlanName: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() =>
+                  project?.ID ? saveChanges(false, "PlanName") : {}
+                }
               />
             </div>
 
             {saveNewSubdivisionModal()}
-            <div className="form-col pb-3 select">
-              <Form.Label className="input-label">Subdivision</Form.Label>
+            <div className="col-12 col-md-6 pb-3 select">
+              <Form.Label className="input-label">
+                Subdivision{" "}
+                <FieldLoader loading={fieldsLoader?.["Subdivision"]?.loading} />
+              </Form.Label>
               <Form.Control
                 as="select"
                 value={projectInformation?.Subdivision}
@@ -781,12 +826,12 @@ const ProjectInformation = withSwal((props) => {
               </Form.Control>
             </div>
 
-            {/* <div className="form-col pb-5"></div> */}
+            {/* <div className="col-12 col-md-6 pb-5"></div> */}
 
-            <div className="form-col pb-2">
-              <Form.Label className="input-label">Street Address 1</Form.Label>
-              <Form.Control
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-2">
+              <InputField
+                label="Street Address 1"
+                loading={fieldsLoader?.["StreetAddress1"]?.loading}
                 value={projectInformation?.StreetAddress1}
                 onChange={(event) =>
                   setProjectInformation({
@@ -794,13 +839,15 @@ const ProjectInformation = withSwal((props) => {
                     StreetAddress1: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() =>
+                  project?.ID ? saveChanges(false, "StreetAddress1") : {}
+                }
               />
             </div>
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">Street Address2</Form.Label>
-              <Form.Control
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-4">
+              <InputField
+                label="Street Address2"
+                loading={fieldsLoader?.["StreetAddress2"]?.loading}
                 value={projectInformation?.StreetAddress2}
                 onChange={(event) =>
                   setProjectInformation({
@@ -808,13 +855,15 @@ const ProjectInformation = withSwal((props) => {
                     StreetAddress2: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() =>
+                  project?.ID ? saveChanges(false, "StreetAddress2") : {}
+                }
               />
             </div>
-            <div className="form-col pb-2">
-              <Form.Label className="input-label">City</Form.Label>
-              <Form.Control
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-2">
+              <InputField
+                label="City"
+                loading={fieldsLoader?.["City"]?.loading}
                 value={projectInformation?.City}
                 onChange={(event) =>
                   setProjectInformation({
@@ -822,13 +871,13 @@ const ProjectInformation = withSwal((props) => {
                     City: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() => (project?.ID ? saveChanges(false, "City") : {})}
               />
             </div>
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">State</Form.Label>
-              <Form.Control
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-4">
+              <InputField
+                label="State"
+                loading={fieldsLoader?.["State"]?.loading}
                 value={projectInformation?.State}
                 onChange={(event) =>
                   setProjectInformation({
@@ -836,13 +885,13 @@ const ProjectInformation = withSwal((props) => {
                     State: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() => (project?.ID ? saveChanges(false, "State") : {})}
               />
             </div>
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">Zip Code</Form.Label>
-              <Form.Control
-                className="input-gray"
+            <div className="col-12 col-md-6 pb-4">
+              <InputField
+                label="Zip Code"
+                loading={fieldsLoader?.["Zip"]?.loading}
                 value={projectInformation?.Zip}
                 onChange={(event) =>
                   setProjectInformation({
@@ -850,12 +899,15 @@ const ProjectInformation = withSwal((props) => {
                     Zip: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() => (project?.ID ? saveChanges(false, "Zip") : {})}
               />
             </div>
 
-            <div className="form-col">
-              <Form.Label className="input-label">Closing Date</Form.Label>
+            <div className="col-12 col-md-6">
+              <Form.Label className="input-label">
+                Closing Date{" "}
+                <FieldLoader loading={fieldsLoader?.["ClosingDate"]?.loading} />
+              </Form.Label>
               <DatePicker
                 className="input-gray date-picker"
                 onChange={(date) =>
@@ -871,11 +923,11 @@ const ProjectInformation = withSwal((props) => {
                 }
               />
             </div>
-            <div className="form-col pb-4">
-              <Form.Label className="input-label">Notes</Form.Label>
-              <Form.Control
+            <div className="col-12 col-md-6 pb-4">
+              <InputField
                 as={"textarea"}
-                className="input-gray"
+                loading={fieldsLoader?.["Notes"]?.loading}
+                label="Notes"
                 value={projectInformation?.Notes}
                 onChange={(event) =>
                   setProjectInformation({
@@ -883,18 +935,18 @@ const ProjectInformation = withSwal((props) => {
                     Notes: event.target.value,
                   })
                 }
-                onBlur={() => (project?.ID ? saveChanges(false) : {})}
+                onBlur={() => (project?.ID ? saveChanges(false, "Notes") : {})}
               />
             </div>
-            <div className="form-col" />
+            <div className="col-12 col-md-6" />
           </div>
         </Form>
 
-        <ClearChangesModal
+        {/* <ClearChangesModal
           show={showModal}
           setShow={setShowModal}
           clearChanges={clearChanges}
-        />
+        /> */}
 
         <CustomerModal
           show={showCustomerModal}
@@ -904,53 +956,29 @@ const ProjectInformation = withSwal((props) => {
         />
 
         <div className="d-flex justify-content-center pt-5">
-          {isLoading ? (
-            <Spinner animation="border" variant="primary" />
-          ) : (
+          {project?.ID ? (
             <>
-              {project?.ID ? (
-                projectInformation?.StatusID === -1 ? (
-                  <>
-                    <Button
-                      variant="link"
-                      className="cancel"
-                      onClick={() => setShowModal(true)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={saveChanges}
-                      className="btn-danger next-btn ml-3"
-                    >
-                      Delete
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="link"
-                      className="cancel"
-                      onClick={() => setShowModal(true)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={saveChanges}
-                      className="primary-gray-btn next-btn ml-3"
-                    >
-                      Next
-                    </Button>
-                  </>
-                )
-              ) : (
-                <Button
-                  onClick={saveChanges}
-                  className="primary-gray-btn next-btn ml-3"
-                >
-                  Save
-                </Button>
-              )}
+              {/* <Button
+                variant="link"
+                className="cancel"
+                onClick={() => setShowModal(true)}
+              >
+                Cancel
+              </Button> */}
+              <Button
+                onClick={() => dispatch(setSelectedProjectTab("documents"))}
+                className="primary-gray-btn next-btn ml-3"
+              >
+                Next
+              </Button>
             </>
+          ) : (
+            <Button
+              onClick={saveChanges}
+              className="primary-gray-btn next-btn ml-3"
+            >
+              Save
+            </Button>
           )}
         </div>
         {createProjectLoader && (
