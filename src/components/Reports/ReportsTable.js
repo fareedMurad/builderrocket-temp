@@ -7,6 +7,7 @@ import ProjectPlaceholder from "../../assets/images/img-placeholder.png";
 import Utils from "../../utils";
 
 import "./Reports.scss";
+import CustomLightbox from "../Lightbox";
 
 const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             <th>ProductName</th>
             <th>Color/Finish</th>
             <th className={"desc-col"}>Description</th>
+            <th>Manufacture</th>
             <th>Vendor</th>
             <th>UOM</th>
             <th style={{ width: "80px" }}>Total Qty</th>
@@ -68,6 +70,24 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         <td>{item?.ProductName}</td>
         <td>{item?.ColorFinish}</td>
         <td>{Utils.textEllipsis(item?.ShortDescription, 150)}</td>
+        <td>
+          {" "}
+          <div
+            className="d-flex align-items-center"
+            style={{ gap: "10px", objectFit: "contain" }}
+          >
+            {item?.Manufacturer?.LogoUrl && (
+              <CustomLightbox
+                singleImageProps={{
+                  width: "50px",
+                  height: "auto",
+                }}
+                images={[item?.Manufacturer?.LogoUrl]}
+              />
+            )}
+            {item?.Manufacturer?.ManufacturerName}
+          </div>
+        </td>
         <td>{item?.VendorName}</td>
         <td>{item?.UnitOfMeasure}</td>
         <td>{item?.Quantity}</td>

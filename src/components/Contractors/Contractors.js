@@ -20,6 +20,7 @@ import MarketingBlock from "../MarketingBlock";
 import AddContractor from "../AddContractor";
 import StarRatings from "react-star-ratings";
 import ReactSelect, { components } from "react-select";
+import FieldLoader from "../ProjectFieldLoader";
 // import { addDocument, deleteDocument } from '../../actions/documentActions';
 // import FileUpload from '../FileUpload';
 
@@ -37,6 +38,7 @@ const Contractors = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showContractorModal, setShowContractorModal] = useState(false);
   const [contractorsInfo, setContractorsInfo] = useState(project.Contractors);
+  const [fieldsLoader, setFieldsLoader] = useState({});
 
   // Ref to access changes on unmount
   const contractorsRef = useRef();
@@ -118,9 +120,22 @@ const Contractors = () => {
     const contractorID = option.value;
     if (!contractorTypeID) return;
 
+    setFieldsLoader({
+      ...fieldsLoader,
+      [contractorTypeID]: {
+        loading: true,
+      },
+    });
+
     dispatch(
       saveProjectContractor(project.ID, contractorTypeID, contractorID)
     ).then((data) => {
+      setFieldsLoader({
+        ...fieldsLoader,
+        [contractorTypeID]: {
+          loading: false,
+        },
+      });
       // dispatch(getProductDetails(projectRef.current?.ID))
       //     .then(() => setIsLoading(false))
       //     .catch(() => setIsLoading(false));
@@ -164,14 +179,25 @@ const Contractors = () => {
     setShowModal(false);
   };
 
-  const saveChanges = () => {
+  const saveChanges = (field) => {
     // Save changes and navigate to Drawings tab
     setIsLoading(true);
+    setFieldsLoader({
+      ...fieldsLoader,
+      [field]: {
+        loading: true,
+      },
+    });
 
     dispatch(saveProject({ ...project, Contractors: contractorsInfo })).then(
       () => {
         setIsLoading(false);
-        dispatch(setSelectedProjectTab("drawings"));
+        setFieldsLoader({
+          ...fieldsLoader,
+          [field]: {
+            loading: false,
+          },
+        });
       }
     );
   };
@@ -245,7 +271,10 @@ const Contractors = () => {
             {contractorTypes?.map((contractorType, index) => (
               <div key={index} className="select contractor">
                 <Form.Label className="input-label">
-                  {contractorType.Name && contractorType.Name}
+                  {contractorType.Name && contractorType.Name}{" "}
+                  <FieldLoader
+                    loading={fieldsLoader?.[contractorType?.ID]?.loading}
+                  />
                 </Form.Label>
                 <ReactSelect
                   value={
@@ -333,35 +362,28 @@ const Contractors = () => {
         </div>
 
         <div className="d-flex justify-content-center pt-5">
-          {isLoading ? (
-            <Spinner animation="border" variant="primary" />
-          ) : (
-            <>
-              <Button
-                variant="link"
-                className="cancel"
-                onClick={() => setShowModal(true)}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="primary-gray-btn next-btn ml-3"
-                onClick={saveChanges}
-              >
-                Next
-              </Button>
-            </>
-          )}
+          <Button
+            className="primary-gray-btn next-btn ml-3"
+            onClick={() => dispatch(setSelectedProjectTab("utilities"))}
+          >
+            Prevs
+          </Button>
+          <Button
+            className="primary-gray-btn next-btn ml-3"
+            onClick={() => dispatch(setSelectedProjectTab("drawings"))}
+          >
+            Next
+          </Button>
         </div>
       </div>
 
       <MarketingBlock />
 
-      <ClearChangesModal
+      {/* <ClearChangesModal
         show={showModal}
         setShow={setShowModal}
         clearChanges={clearChanges}
-      />
+      /> */}
 
       {showContractorModal && (
         <AddContractor
