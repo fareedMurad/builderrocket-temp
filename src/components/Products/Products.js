@@ -965,11 +965,11 @@ const Products = (props) => {
                   Product Name
                 </div>
               </th>
-              {productFilter?.rooms.length > 1 && !showCustomProducts ? (
+              {/* {productFilter?.rooms.length > 1 && !showCustomProducts ? (
                 <th>
                   <div className="d-flex justify-content-center">Room</div>
                 </th>
-              ) : null}
+              ) : null} */}
               <th>Description</th>
               <th>Category</th>
               <th>Manufacture</th>
