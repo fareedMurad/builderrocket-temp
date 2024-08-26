@@ -74,7 +74,7 @@ const AddProductsByCategory = ({
     loading: false,
   });
   const [favoritedProducts, setIsFavoritedProducts] = useState([]);
-  const [showPriceVarientModal, setShowPriceVarientModal] = useState([]);
+  const [showPriceVarientModal, setShowPriceVarientModal] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -706,14 +706,14 @@ const AddProductsByCategory = ({
                               Remove
                             </Button>
                           ) : null}
-                          {/* <Button
+                          <Button
                             className={`action-button ml-2 add-product-btn add-product-btn-2`}
                             onClick={() => {
                               setShowPriceVarientModal(true);
                             }}
                           >
-                            Add with Variant
-                          </Button> */}
+                            Add with varient
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -734,14 +734,16 @@ const AddProductsByCategory = ({
       ) : null}
 
       {/* TODO */}
-      {/* <Modal size="md" centered show={showPriceVarientModal} backdrop>
+      <Modal size="md" centered show={showPriceVarientModal} backdrop>
         <Modal.Body>
           <div className="my-2">
-            Please enter the Varient name and Variant price:
-            <p>
-              <b className="text-primary">Note: </b> the product will be added
-              as dublicate product of the original product, the added variants
-              will be shown everywhere for in the project and for customer.
+            <b>Please enter the Varient name and Variant price:</b>
+            <p className="mt-3">
+              <b className="text-primary">Note: </b>{" "}
+              <i className="text-secondary">
+                the product will be added as dublicate product of the original
+                product.
+              </i>
             </p>
           </div>
           <Form>
@@ -778,7 +780,7 @@ const AddProductsByCategory = ({
             <Button
               variant="link"
               className="cancel"
-              // onClick={() => handleClose()}
+              onClick={() => setShowPriceVarientModal(false)}
             >
               Cancel
             </Button>
@@ -786,11 +788,11 @@ const AddProductsByCategory = ({
               // onClick={() => handleConfirm()}
               className="primary-gray-btn next-btn ml-3"
             >
-              Add with Varient
+              Add with varient
             </Button>
           </div>
         </Modal.Body>
-      </Modal> */}
+      </Modal>
     </div>
   );
 };

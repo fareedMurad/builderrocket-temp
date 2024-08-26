@@ -86,7 +86,7 @@ const ProjectHeader = () => {
         onHide={() => setShowModal(false)}
       >
         <Modal.Body className="modal-container">
-          <div className="page-title">Save As New Project</div>
+          <div className="page-title">Copy To New Project</div>
           <Form>
             <Form.Label className="input-label">Project Name</Form.Label>
             <Form.Control

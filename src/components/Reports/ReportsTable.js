@@ -175,14 +175,14 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                 let rooms = localFilters.roomFilters?.filter(
                   (r) => r.value !== "select_all"
                 );
-                if (rooms.length === reportByCategory.Rooms.length) {
+                if (rooms?.length === reportByRoom?.Groups?.length) {
                   return true;
                 }
                 const items = FilterItems({ localFilters, items: item?.Items });
                 return (
                   items?.length > 0 &&
                   items?.find((i) =>
-                    i.Rooms?.find((r) => rooms.find((pr) => pr.ID === r))
+                    i.Rooms?.find((r) => rooms?.find((pr) => pr.ID === r))
                   )
                 );
               })
@@ -200,7 +200,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                         renderTableBody,
                         item,
                         renderHeader,
-                        allRooms: reportByCategory?.Rooms,
+                        allRooms: reportByRoom?.Groups,
                         localFilters,
                       }}
                     />
@@ -258,7 +258,7 @@ export const TableRow = ({
   const groupRow = (
     <>
       <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
-        <th colSpan={10} className="contractor-type-name bg-dark">
+        <th colSpan={11} className="contractor-type-name bg-dark">
           {item.Name}
         </th>
         <th className="contractor-type-name justify-content-end h-full bg-dark">
@@ -293,6 +293,7 @@ export const TableRow = ({
 };
 
 export const FilterItems = ({ localFilters, items }) => {
+  console.log(items, "items");
   return items?.filter((value) => {
     return (
       (localFilters.isCustomer ? value.RequiresApproval : true) &&

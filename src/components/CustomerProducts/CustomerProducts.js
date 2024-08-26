@@ -12,6 +12,7 @@ import {
 } from "../../actions/customerActions";
 import ConfirmApproveAllModal from "../ConfirmApproveAllModal/ConfirmApproveAllModal";
 import { GET_CUSTOMER_PRODUCTS } from "../../actions/types";
+import CustomLightbox from "../Lightbox";
 
 const CustomerProducts = (props) => {
   const dispatch = useDispatch();
@@ -203,6 +204,7 @@ const CustomerProducts = (props) => {
                 </th>
                 <th>Room</th>
                 <th width="20%">Description</th>
+                <th>Manufacturer</th>
                 <th>Unit Of Sale</th>
                 {/* <th>QTY</th> */}
                 <th>Customer Approval</th>
@@ -257,6 +259,23 @@ const CustomerProducts = (props) => {
                         ? Product?.ShortDescription
                         : "-"}
                     </td>
+                    <td>
+                      <div
+                        className="d-flex align-items-center"
+                        style={{ gap: "10px", objectFit: "contain" }}
+                      >
+                        {Product?.Manufacturer?.LogoUrl && (
+                          <CustomLightbox
+                            singleImageProps={{
+                              width: "50px",
+                              height: "auto",
+                            }}
+                            images={[Product?.Manufacturer?.LogoUrl]}
+                          />
+                        )}
+                        {Product?.Manufacturer?.ManufacturerName}
+                      </div>
+                    </td>
                     <td>{Product?.UnitOfSale}</td>
 
                     {/* <td>{Product.Quantity}</td> */}
@@ -285,9 +304,10 @@ const CustomerProducts = (props) => {
                       <br />
                       <small className="d-block mt-1">
                         {templateItem?.ApprovalStatusID &&
-                          (templateItem?.ApprovalStatusID !== 2 ||
-                            templateItem?.ApprovalStatusID !== 1) &&
-                          moment(Product?.DateApproved).format("MM/DD/Y")}
+                        (templateItem?.ApprovalStatusID !== 2 ||
+                          templateItem?.ApprovalStatusID !== 1)
+                          ? moment(Product?.DateApproved).format("MM/DD/Y")
+                          : null}
                       </small>
                     </td>
                     <td>

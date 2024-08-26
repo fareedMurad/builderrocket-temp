@@ -54,6 +54,7 @@ const Reports = (props) => {
   const reportByCategory = useSelector(
     (state) => state.project.reportByCategory
   );
+  const reportByRoom = useSelector((state) => state.project.reportByRoom);
 
   const [isLoading, setIsLoading] = useState(false);
   const [layout, setLayout] = useState(LayoutOptions[0]);
@@ -105,9 +106,10 @@ const Reports = (props) => {
     // } else if (layout?.value === "category" || layout?.value === "room") {
     dispatch(getCategorizedReportByProjectID(project?.ID))
       .then((response) => {
+        handleSetChildFilters(response);
         dispatch(getRoomReportByProjectID(project?.ID))
-          .then(() => {
-            handleSetChildFilters(response);
+          .then((response) => {
+            handleSetChildFilters(response, "room");
             setIsLoading(false);
           })
           .catch(() => setIsLoading(false));
@@ -141,38 +143,39 @@ const Reports = (props) => {
     dispatch(getCategories());
   }, [dispatch]);
 
-  const handleSetChildFilters = (array) => {
-    dispatch(
-      setReportFilter(
-        array?.Groups?.map((a) => {
-          return {
-            ...a,
-            name: a.Name,
-            value: a.ID,
-          };
-        })?.filter((a) =>
-          selectedSavedFilter
-            ? selectedSavedFilter.CategoryIDs?.find((b) => b === a.value)
-            : a.value
-        )
-      ) || []
-    );
-    dispatch(
-      setRoomFilter(
-        array?.Rooms?.map((a) => {
-          return {
-            ...a,
-            name: a.Name,
-            value: a.BuilderRoomID,
-          };
-        })
-        //   ?.filter((a) =>
-        //     selectedSavedFilter
-        //       ? selectedSavedFilter.RoomIDs?.find((b) => b === a.value)
-        //       : a.value
-        //   )
-      ) || []
-    );
+  const handleSetChildFilters = (array, type) => {
+    if (type === "room") {
+      dispatch(
+        setRoomFilter(
+          array?.Groups?.map((a) => {
+            return {
+              ...a,
+              name: a.Name,
+              value: a.BuilderRoomID,
+            };
+          })?.filter((a) =>
+            selectedSavedFilter
+              ? selectedSavedFilter.RoomIDs?.find((b) => b === a.value)
+              : a.value
+          )
+        ) || []
+      );
+    } else
+      dispatch(
+        setReportFilter(
+          array?.Groups?.map((a) => {
+            return {
+              ...a,
+              name: a.Name,
+              value: a.ID,
+            };
+          })?.filter((a) =>
+            selectedSavedFilter
+              ? selectedSavedFilter.CategoryIDs?.find((b) => b === a.value)
+              : a.value
+          )
+        ) || []
+      );
   };
 
   // const handleSelectedRoom = useCallback(
@@ -319,6 +322,7 @@ const Reports = (props) => {
       );
       // if (layout?.value === selectedSavedFilter.GroupBy) {
       handleSetChildFilters(reportByCategory);
+      handleSetChildFilters(reportByRoom, "room");
       // }
 
       dispatch(setCustomerFilter(selectedSavedFilter.IsBuilderCustomer));
@@ -571,19 +575,19 @@ const Reports = (props) => {
                                   (p) => p.value !== "select_all"
                                 )?.length
                               }{" "}
-                              of {reportByCategory?.Rooms?.length} selected
+                              of {reportByRoom?.Groups?.length} selected
                             </span>
                           ) : null}
                         </span>
                         <Multiselect
                           options={
-                            reportByCategory?.Rooms?.length > 0
+                            reportByRoom?.Groups?.length > 0
                               ? [
                                   {
                                     name: "Select All",
                                     value: "select_all",
                                   },
-                                  ...reportByCategory?.Rooms?.map((a) => {
+                                  ...reportByRoom?.Groups?.map((a) => {
                                     return {
                                       ...a,
                                       name: a.Name,
@@ -599,7 +603,7 @@ const Reports = (props) => {
                             !roomFilter
                               ? []
                               : roomFilter?.length ===
-                                reportByCategory?.Rooms?.length
+                                reportByRoom?.Groups?.length
                               ? [
                                   {
                                     name: "Select All",
@@ -613,13 +617,13 @@ const Reports = (props) => {
                             if (current.value === "select_all") {
                               dispatch(
                                 setRoomFilter(
-                                  reportByCategory?.Rooms?.length > 0
+                                  reportByRoom?.Groups?.length > 0
                                     ? [
                                         {
                                           name: "Select All",
                                           value: "select_all",
                                         },
-                                        ...reportByCategory?.Rooms?.map((a) => {
+                                        ...reportByRoom?.Groups?.map((a) => {
                                           return {
                                             ...a,
                                             name: a.Name,

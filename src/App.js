@@ -10,7 +10,7 @@ import Footer from "./components/Footer";
 import Toaster from "react-hot-toast";
 import ScrollToTop from "react-scroll-to-top";
 import { getUserProfile } from "./actions/userActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useHistory } from "react-router";
 import { logout } from "./actions/authActions";
@@ -19,6 +19,7 @@ function App() {
   const dispatch = useDispatch();
   const history = useHistory();
   const [expandedNav, setExpandedNav] = useState(false);
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const resizeEvent = window.addEventListener("resize", () => {
@@ -27,13 +28,14 @@ function App() {
       }
     });
 
-    dispatch(getUserProfile()).then((response) => {
-      if (!response) {
-        dispatch(logout()).then(() => {
-          history.push("/login");
-        });
-      }
-    });
+    if (token)
+      dispatch(getUserProfile()).then((response) => {
+        if (!response) {
+          dispatch(logout()).then(() => {
+            history.push("/login");
+          });
+        }
+      });
 
     return () => {
       window.removeEventListener("resize", resizeEvent);
