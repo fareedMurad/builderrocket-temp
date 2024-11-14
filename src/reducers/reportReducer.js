@@ -9,6 +9,7 @@ import {
   SET_EMPTY_DATA_FILTER,
   SET_ROUGH_IN_TRIM_OUT_FILTER,
   GET_ROUGH_IN_TRIM_OUT_FILTER,
+  RESET_REPORTS_FILTERS,
 } from "../actions/types";
 
 const initialState = {
@@ -73,6 +74,11 @@ const reportReducer = (state = initialState, action) => {
       return {
         ...state,
         roughInTrimOut: action.payload,
+      };
+    }
+    case RESET_REPORTS_FILTERS: {
+      return {
+        ...initialState,
       };
     }
     case GET_ROUGH_IN_TRIM_OUT_FILTER: {

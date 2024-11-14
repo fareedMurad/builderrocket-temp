@@ -1066,9 +1066,9 @@ const Products = (props) => {
                         </div>
                       </div>
                     </td>
-                    {productFilter?.rooms.length > 1 && !showCustomProducts ? (
+                    {/* {productFilter?.rooms.length > 1 && !showCustomProducts ? (
                       <td>{templateItem?.room?.RoomName}</td>
-                    ) : null}
+                    ) : null} */}
                     <td>{templateItem?.ShortDescription}</td>
                     <td>{templateItem?.CategoryName}</td>
                     <td>

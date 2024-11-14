@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { customerSingleApproval } from "../../actions/projectActions";
-import { Form, Table } from "react-bootstrap";
+import { Form, Spinner, Table } from "react-bootstrap";
 import { setSelectedRoom } from "../../actions/roomActions";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty, isUndefined } from "lodash";
@@ -13,29 +13,74 @@ import {
 import ConfirmApproveAllModal from "../ConfirmApproveAllModal/ConfirmApproveAllModal";
 import { GET_CUSTOMER_PRODUCTS } from "../../actions/types";
 import CustomLightbox from "../Lightbox";
+import Multiselect from "multiselect-react-dropdown";
+import { getCategories } from "../../actions/productActions";
 
 const CustomerProducts = (props) => {
   const dispatch = useDispatch();
 
-  const products = useSelector((state) => state.customer.products);
+  const customerProducts = useSelector((state) => state.customer.products);
   const project = useSelector((state) => state.project.project);
   const selectedRoom = useSelector((state) => state.room.selectedRoom);
   const customerproject = useSelector((state) => state.auth.customerproject);
   const [templateItems, setTemplateItems] = useState({});
   const [confirmApproveModal, setConfirmApproveModal] = useState(false);
   const [confirmRejectModal, setConfirmRejectModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [confirmApproveModalSingle, setconfirmApproveModalSingle] =
     useState(false);
   const [confirmRejectModalSingle, setconfirmRejectModalSingle] =
     useState(false);
   const [selectedProduct, setSelectedProduct] = useState();
   const [showSpinner, setShowSpinner] = useState(false);
+  const categories = useSelector((state) => state.product.productCategories);
+
+  const [filters, setFilters] = useState("");
+  const [products, setProducts] = useState([]);
+
   useEffect(() => {
     // if (isEmpty(selectedRoom))
     //   dispatch(setSelectedRoom(project?.ProjectRooms?.[0]));
 
-    dispatch(getCustomerProducts());
+    dispatch(getCategories());
+    dispatch(getCustomerProducts()).then((res) => {
+      setIsLoading(false);
+    });
   }, [dispatch, project, selectedRoom]);
+
+  console.log(filters, "Filters");
+
+  useEffect(() => {
+    setProducts(customerProducts);
+  }, [customerProducts]);
+
+  useEffect(() => {
+    let filteredList = [];
+    if (filters.manufacturers?.length) {
+      filteredList = [
+        ...filteredList,
+        ...customerProducts.filter((p) =>
+          filters.manufacturers.some(
+            (pp) => p.Product.Manufacturer.ID === pp.ID
+          )
+        ),
+      ];
+    }
+
+    if (filters.categories?.length) {
+      filteredList = [
+        ...filteredList,
+        ...customerProducts.filter((p) =>
+          filters.categories.some((pp) => p.Product.CategoryID === pp.ID)
+        ),
+      ];
+    }
+
+    setProducts(filteredList);
+    if (!filters.categories?.length && !filters.manufacturers?.length) {
+      setProducts(customerProducts);
+    }
+  }, [filters?.manufacturers, filters?.categories]);
 
   //   const handleSelectedRoom = useCallback(
   //     (roomID) => {
@@ -147,6 +192,54 @@ const CustomerProducts = (props) => {
       });
   };
 
+  const manufacturerOptions = useMemo(() => {
+    const list = customerProducts
+      .map((p) => p.Product?.Manufacturer)
+      .filter((p) => p !== null);
+
+    return [...new Map(list.map((item) => [item.ID, item])).values()];
+  }, [customerProducts]);
+
+  function flattenArray(arr) {
+    const result = [];
+
+    arr.forEach((item) => {
+      // Add the current item to the result array without its nested list property
+      const { SubCategories, ...currentItem } = item;
+      result.push(currentItem);
+
+      // Recursively flatten any nested lists and add them to the result
+      if (SubCategories && SubCategories.length > 0) {
+        result.push(...flattenArray(SubCategories));
+      }
+    });
+
+    return result;
+  }
+
+  const categoriesOptions = useMemo(() => {
+    if (categories) {
+      const flatArray = flattenArray(categories);
+      const ids = customerProducts
+        .map((p) => p.Product?.CategoryID)
+        .filter((p) => p !== null);
+
+      const list = flatArray
+        .filter((c) => ids.includes(c.ID))
+        ?.map((b) => {
+          return {
+            ...b,
+            name: b.Name?.replaceAll("&nbsp;", ""),
+            value: b.ID,
+          };
+        })
+        ?.sort((a, b) => a.name?.localeCompare(b.name));
+
+      return list.filter((b) => b.name);
+    }
+    return [];
+  }, [categories]);
+
   return (
     <div className="d-flex products">
       <div className="products-container">
@@ -176,22 +269,109 @@ const CustomerProducts = (props) => {
           </div>
         </div> */}
 
-        <div className="d-flex justify-content-between pt-3">
-          <div></div>
-          <div className="d-flex justify-content-between">
-            <button
-              className="bg-success text-light mr-1 border-0 rounded px-2 py-1 fs-1"
-              onClick={() => setConfirmApproveModal(true)}
-            >
-              <i className="fas fa-check-double"></i> Approve All
-            </button>
+        <div
+          className="d-flex justify-content-between pt-3"
+          style={{ gap: "10px" }}
+        >
+          <div
+            className="d-flex align-items-center flex-wrap"
+            style={{ gap: "10px" }}
+          >
+            <div style={{ minWidth: "300px" }} className="ml-2">
+              <Multiselect
+                disabled={isLoading}
+                onSearch={(value) =>
+                  setFilters({
+                    ...filters,
+                    manufacturerSearchTerm: value,
+                  })
+                }
+                tags
+                showArrow
+                className="tags-dropdown readonly_ms"
+                // disable={true}
+                placeholder="Filter by Manufacturers"
+                showCheckbox={true}
+                keepSearchTerm={false}
+                options={manufacturerOptions} // Options to display in the dropdown
+                selectedValues={filters.manufacturers}
+                displayValue="ManufacturerName" // Property name to display in the dropdown options
+                onSelect={(arr, current) => {
+                  setFilters({
+                    ...filters,
+                    manufacturers: arr.sort((a, b) =>
+                      a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                    ),
+                  });
+                }}
+                onRemove={(arr, target) => {
+                  let list = arr.sort((a, b) =>
+                    a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                  );
+                  setFilters({
+                    ...filters,
+                    manufacturers: list,
+                  });
+                }}
+              />
+            </div>
+            <div style={{ minWidth: "300px" }} className="ml-2">
+              <Multiselect
+                disabled={isLoading}
+                onSearch={(value) =>
+                  setFilters({
+                    ...filters,
+                    categorieSearchTerm: value,
+                  })
+                }
+                tags
+                showArrow
+                className="tags-dropdown readonly_ms"
+                // disable={true}
+                placeholder="Filter by Categories"
+                showCheckbox={true}
+                keepSearchTerm={false}
+                options={categoriesOptions} // Options to display in the dropdown
+                selectedValues={filters.categories}
+                displayValue="name" // Property name to display in the dropdown options
+                onSelect={(arr, current) => {
+                  setFilters({
+                    ...filters,
+                    categories: arr.sort((a, b) =>
+                      a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                    ),
+                  });
+                }}
+                onRemove={(arr, target) => {
+                  let list = arr.sort((a, b) =>
+                    a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                  );
+                  setFilters({
+                    ...filters,
+                    categories: list,
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="d-flex justify-content-between">
+              <button
+                className="bg-success text-light mr-1 border-0 rounded px-2 py-1 fs-1"
+                onClick={() => setConfirmApproveModal(true)}
+                disabled={isLoading}
+              >
+                <i className="fas fa-check-double"></i> Approve All
+              </button>
 
-            <button
-              className="bg-danger text-light border-0 rounded px-2 py-1 fs-1"
-              onClick={() => setConfirmRejectModal(true)}
-            >
-              <i className="fas fa-times"></i> Reject All
-            </button>
+              <button
+                className="bg-danger text-light border-0 rounded px-2 py-1 fs-1"
+                onClick={() => setConfirmRejectModal(true)}
+                disabled={isLoading}
+              >
+                <i className="fas fa-times"></i> Reject All
+              </button>
+            </div>
           </div>
         </div>
 
@@ -211,77 +391,95 @@ const CustomerProducts = (props) => {
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-              {products?.map((templateItem, index) => {
-                // const tempTemplateItem = templateItems?.[templateItem?.ID];
+            {isLoading ? (
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td
+                    className="spinner d-flex w-100 justify-content-center"
+                    style={{ width: "100%", minHeight: "200px" }}
+                  >
+                    <Spinner animation="border" variant="primary" />
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            ) : (
+              <tbody>
+                {products?.map((templateItem, index) => {
+                  // const tempTemplateItem = templateItems?.[templateItem?.ID];
 
-                // let requiresApproval = !!(templateItem?.RequiresApproval);
-                // let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
-                // let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
-                // let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
+                  // let requiresApproval = !!(templateItem?.RequiresApproval);
+                  // let isRoughIn = templateItem?.RoughInTrimOutEnum === 'RoughIn';
+                  // let isTrimOut = templateItem?.RoughInTrimOutEnum === 'TrimOut';
+                  // let quantity = templateItem?.Quantity ? templateItem?.Quantity : 1;
 
-                // if (!isEmpty(tempTemplateItem)) {
-                //     quantity = tempTemplateItem.Quantity;
-                //     requiresApproval = tempTemplateItem.RequiresApproval;
-                //     isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
-                //     isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
+                  // if (!isEmpty(tempTemplateItem)) {
+                  //     quantity = tempTemplateItem.Quantity;
+                  //     requiresApproval = tempTemplateItem.RequiresApproval;
+                  //     isRoughIn = tempTemplateItem.RoughInTrimOutEnum === 'RoughIn';
+                  //     isTrimOut = tempTemplateItem.RoughInTrimOutEnum === 'TrimOut';
 
-                // }
-                // if (templateItem.IsTemplate === false) console.log('template', templateItem, requiresApproval);
+                  // }
+                  // if (templateItem.IsTemplate === false) console.log('template', templateItem, requiresApproval);
 
-                const { Product } = templateItem;
-                return (
-                  <tr key={index}>
-                    <td width="20%">
-                      <div className="d-flex add-btn-templateItem">
-                        {Product?.ThumbnailURL && (
-                          <img
-                            width="50"
-                            height="50"
-                            alt="template item"
-                            src={Product?.ThumbnailURL}
-                            className="mr-2"
-                          />
-                        )}
-                        <div className="pl-1">
-                          {Product?.ProductName}
-                          {!Product?.IsTemplate && (
-                            <div className="model-number">
-                              Model: {Product?.ModelNumber}
-                            </div>
+                  const { Product } = templateItem;
+                  return (
+                    <tr key={index}>
+                      <td width="20%">
+                        <div className="d-flex add-btn-templateItem">
+                          {Product?.ThumbnailURL && (
+                            <img
+                              width="50"
+                              height="50"
+                              alt="template item"
+                              src={Product?.ThumbnailURL}
+                              className="mr-2"
+                            />
                           )}
+                          <div className="pl-1">
+                            {Product?.ProductName}
+                            {!Product?.IsTemplate && (
+                              <div className="model-number">
+                                Model: {Product?.ModelNumber}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>{templateItem.ProjectRoom?.Name}</td>
-                    <td width="20%">
-                      {Product?.ShortDescription
-                        ? Product?.ShortDescription
-                        : "-"}
-                    </td>
-                    <td>
-                      <div
-                        className="d-flex align-items-center"
-                        style={{ gap: "10px", objectFit: "contain" }}
-                      >
-                        {Product?.Manufacturer?.LogoUrl && (
-                          <CustomLightbox
-                            singleImageProps={{
-                              width: "50px",
-                              height: "auto",
-                            }}
-                            images={[Product?.Manufacturer?.LogoUrl]}
-                          />
-                        )}
-                        {Product?.Manufacturer?.ManufacturerName}
-                      </div>
-                    </td>
-                    <td>{Product?.UnitOfSale}</td>
+                      </td>
+                      <td>{templateItem.ProjectRoom?.Name}</td>
+                      <td width="20%">
+                        {Product?.ShortDescription
+                          ? Product?.ShortDescription
+                          : "-"}
+                      </td>
+                      <td>
+                        <div
+                          className="d-flex align-items-center"
+                          style={{ gap: "10px", objectFit: "contain" }}
+                        >
+                          {Product?.Manufacturer?.LogoUrl && (
+                            <CustomLightbox
+                              singleImageProps={{
+                                width: "50px",
+                                height: "auto",
+                              }}
+                              images={[Product?.Manufacturer?.LogoUrl]}
+                            />
+                          )}
+                          {Product?.Manufacturer?.ManufacturerName}
+                        </div>
+                      </td>
+                      <td>{Product?.UnitOfSale}</td>
 
-                    {/* <td>{Product.Quantity}</td> */}
-                    <td>
-                      <small
-                        className={`
+                      {/* <td>{Product.Quantity}</td> */}
+                      <td>
+                        <small
+                          className={`
                         text-center
                         px-2 py-1
                         rounded
@@ -294,50 +492,51 @@ const CustomerProducts = (props) => {
                             : "bg-secondary"
                         }
                       `}
-                      >
-                        {templateItem?.ApprovalStatusID === 1
-                          ? "Approved"
-                          : templateItem?.ApprovalStatusID === 2
-                          ? "Rejected"
-                          : "Pending"}{" "}
-                      </small>
-                      <br />
-                      <small className="d-block mt-1">
-                        {templateItem?.ApprovalStatusID &&
-                        (templateItem?.ApprovalStatusID !== 2 ||
-                          templateItem?.ApprovalStatusID !== 1)
-                          ? moment(Product?.DateApproved).format("MM/DD/Y")
-                          : null}
-                      </small>
-                    </td>
-                    <td>
-                      <div className="d-flex ">
-                        <button
-                          className="bg-success text-light mr-1 border-0 rounded py-2"
-                          onClick={() => {
-                            setSelectedProduct(templateItem);
-                            setconfirmApproveModalSingle(true);
-                          }}
                         >
-                          {/* ID, ProductID, IsCustomProduct, StatusID */}
-                          <i className="fas fa-check-double"></i> Approve
-                        </button>
+                          {templateItem?.ApprovalStatusID === 1
+                            ? "Approved"
+                            : templateItem?.ApprovalStatusID === 2
+                            ? "Rejected"
+                            : "Pending"}{" "}
+                        </small>
+                        <br />
+                        <small className="d-block mt-1">
+                          {templateItem?.ApprovalStatusID &&
+                          (templateItem?.ApprovalStatusID !== 2 ||
+                            templateItem?.ApprovalStatusID !== 1)
+                            ? moment(Product?.DateApproved).format("MM/DD/Y")
+                            : null}
+                        </small>
+                      </td>
+                      <td>
+                        <div className="d-flex ">
+                          <button
+                            className="bg-success text-light mr-1 border-0 rounded py-2"
+                            onClick={() => {
+                              setSelectedProduct(templateItem);
+                              setconfirmApproveModalSingle(true);
+                            }}
+                          >
+                            {/* ID, ProductID, IsCustomProduct, StatusID */}
+                            <i className="fas fa-check-double"></i> Approve
+                          </button>
 
-                        <button
-                          className="bg-danger text-light border-0 rounded py-2"
-                          onClick={() => {
-                            setSelectedProduct(templateItem);
-                            setconfirmRejectModalSingle(true);
-                          }}
-                        >
-                          <i className="fas fa-times"></i> Reject
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+                          <button
+                            className="bg-danger text-light border-0 rounded py-2"
+                            onClick={() => {
+                              setSelectedProduct(templateItem);
+                              setconfirmRejectModalSingle(true);
+                            }}
+                          >
+                            <i className="fas fa-times"></i> Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            )}
           </Table>
         </div>
       </div>

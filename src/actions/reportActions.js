@@ -8,6 +8,7 @@ import {
   GET_CUSTOMER_FILTER,
   SET_EMPTY_DATA_FILTER,
   SET_ROUGH_IN_TRIM_OUT_FILTER,
+  RESET_REPORTS_FILTERS,
   LOGOUT,
 } from "./types";
 
@@ -65,6 +66,18 @@ export const setShowEmptyDataFilter = (filter) => (dispatch) => {
       dispatch({ type: SET_EMPTY_DATA_FILTER, payload: filter });
 
       resolve(filter);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const resetReportsFilters = () => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    try {
+      dispatch({ type: RESET_REPORTS_FILTERS });
+
+      resolve(true);
     } catch (error) {
       reject(error);
     }
