@@ -43,7 +43,7 @@ const Routes = (props) => {
     } else {
       dispatch({ type: SET_CUSTOMER_PROJECT, payload: path_array[2] });
     }
-  });
+  }, []);
 
   const Loading = () => {
     return (

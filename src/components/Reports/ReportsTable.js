@@ -293,7 +293,6 @@ export const TableRow = ({
 };
 
 export const FilterItems = ({ localFilters, items }) => {
-  console.log(items, "items");
   return items?.filter((value) => {
     return (
       (localFilters.isCustomer ? value.RequiresApproval : true) &&

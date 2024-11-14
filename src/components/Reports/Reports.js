@@ -17,6 +17,7 @@ import {
   getReportsFilters,
   updateReportsFilter,
   deleteReportsFilter,
+  resetReportsFilters,
 } from "../../actions/reportActions";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "lodash";
@@ -135,6 +136,7 @@ const Reports = (props) => {
       window.removeEventListener("afterprint", function (event) {
         setHideReportsHeader(true);
       });
+      dispatch(resetReportsFilters());
     };
   }, []);
   // }, [dispatch, layout]);

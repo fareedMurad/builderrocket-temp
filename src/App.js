@@ -20,6 +20,7 @@ function App() {
   const history = useHistory();
   const [expandedNav, setExpandedNav] = useState(false);
   const token = useSelector((state) => state.auth.token);
+  const state = useSelector((state) => state);
 
   useEffect(() => {
     const resizeEvent = window.addEventListener("resize", () => {
@@ -41,6 +42,8 @@ function App() {
       window.removeEventListener("resize", resizeEvent);
     };
   }, []);
+
+  console.log(state, "state");
 
   return (
     <div className="h-screen d-flex flex-column justify-content-between">
