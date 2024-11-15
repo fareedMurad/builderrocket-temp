@@ -30,8 +30,12 @@ const Routes = (props) => {
   const getpath = history.location.pathname;
   const token = useSelector((state) => state.auth.token);
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);
+  const customerToken = useSelector((state) => state.customer?.token);
   const isSignedIn = useSelector((state) => state.auth?.isSignedIn);
   const isVendorSignedIn = useSelector((state) => state.vendor?.isSignedIn);
+  const customerSelectedProjectTab = useSelector(
+    (state) => state.customer?.selectedProjectTab
+  );
   const path_array = getpath.split("/");
   useEffect(() => {
     if (
@@ -39,7 +43,13 @@ const Routes = (props) => {
       path_array[1] !== "vendor" &&
       path_array[1] !== "signup"
     ) {
-      if (!token) history.push("/login");
+      if (!token) {
+        if (isCustomerSignedIn && customerToken) {
+          history.push(
+            `/customer/project/${customerSelectedProjectTab ?? "document"}`
+          );
+        } else history.push("/login");
+      }
     } else {
       dispatch({ type: SET_CUSTOMER_PROJECT, payload: path_array[2] });
     }

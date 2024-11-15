@@ -48,39 +48,31 @@ const CustomerProducts = (props) => {
     });
   }, [dispatch, project, selectedRoom]);
 
-  console.log(filters, "Filters");
-
   useEffect(() => {
     setProducts(customerProducts);
   }, [customerProducts]);
 
   useEffect(() => {
     let filteredList = [];
-    if (filters.manufacturers?.length) {
-      filteredList = [
-        ...filteredList,
-        ...customerProducts.filter((p) =>
-          filters.manufacturers.some(
-            (pp) => p.Product.Manufacturer.ID === pp.ID
-          )
-        ),
-      ];
+    if (filters.rooms?.length) {
+      filteredList = customerProducts?.filter((p) =>
+        filters.rooms.some((pp) => p.ProjectRoom.Name === pp.Name)
+      );
     }
 
     if (filters.categories?.length) {
       filteredList = [
-        ...filteredList,
-        ...customerProducts.filter((p) =>
-          filters.categories.some((pp) => p.Product.CategoryID === pp.ID)
+        ...(filters.rooms?.length ? filteredList : customerProducts)?.filter(
+          (p) => filters.categories.some((pp) => p.Product.CategoryID === pp.ID)
         ),
       ];
     }
 
     setProducts(filteredList);
-    if (!filters.categories?.length && !filters.manufacturers?.length) {
+    if (!filters.categories?.length && !filters.rooms?.length) {
       setProducts(customerProducts);
     }
-  }, [filters?.manufacturers, filters?.categories]);
+  }, [filters?.rooms, filters?.categories]);
 
   //   const handleSelectedRoom = useCallback(
   //     (roomID) => {
@@ -192,12 +184,12 @@ const CustomerProducts = (props) => {
       });
   };
 
-  const manufacturerOptions = useMemo(() => {
+  const roomOptions = useMemo(() => {
     const list = customerProducts
-      .map((p) => p.Product?.Manufacturer)
-      .filter((p) => p !== null);
+      ?.map((p) => ({ Name: p.ProjectRoom?.Name }))
+      ?.filter((p) => p !== null);
 
-    return [...new Map(list.map((item) => [item.ID, item])).values()];
+    return [...new Map(list?.map((item) => [item.Name, item])).values()];
   }, [customerProducts]);
 
   function flattenArray(arr) {
@@ -221,11 +213,11 @@ const CustomerProducts = (props) => {
     if (categories) {
       const flatArray = flattenArray(categories);
       const ids = customerProducts
-        .map((p) => p.Product?.CategoryID)
-        .filter((p) => p !== null);
+        ?.map((p) => p.Product?.CategoryID)
+        ?.filter((p) => p !== null);
 
       const list = flatArray
-        .filter((c) => ids.includes(c.ID))
+        ?.filter((c) => ids?.includes(c.ID))
         ?.map((b) => {
           return {
             ...b,
@@ -235,7 +227,7 @@ const CustomerProducts = (props) => {
         })
         ?.sort((a, b) => a.name?.localeCompare(b.name));
 
-      return list.filter((b) => b.name);
+      return list?.filter((b) => b.name);
     }
     return [];
   }, [categories]);
@@ -283,44 +275,6 @@ const CustomerProducts = (props) => {
                 onSearch={(value) =>
                   setFilters({
                     ...filters,
-                    manufacturerSearchTerm: value,
-                  })
-                }
-                tags
-                showArrow
-                className="tags-dropdown readonly_ms"
-                // disable={true}
-                placeholder="Filter by Manufacturers"
-                showCheckbox={true}
-                keepSearchTerm={false}
-                options={manufacturerOptions} // Options to display in the dropdown
-                selectedValues={filters.manufacturers}
-                displayValue="ManufacturerName" // Property name to display in the dropdown options
-                onSelect={(arr, current) => {
-                  setFilters({
-                    ...filters,
-                    manufacturers: arr.sort((a, b) =>
-                      a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                    ),
-                  });
-                }}
-                onRemove={(arr, target) => {
-                  let list = arr.sort((a, b) =>
-                    a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-                  );
-                  setFilters({
-                    ...filters,
-                    manufacturers: list,
-                  });
-                }}
-              />
-            </div>
-            <div style={{ minWidth: "300px" }} className="ml-2">
-              <Multiselect
-                disabled={isLoading}
-                onSearch={(value) =>
-                  setFilters({
-                    ...filters,
                     categorieSearchTerm: value,
                   })
                 }
@@ -349,6 +303,44 @@ const CustomerProducts = (props) => {
                   setFilters({
                     ...filters,
                     categories: list,
+                  });
+                }}
+              />
+            </div>
+            <div style={{ minWidth: "300px" }} className="ml-2">
+              <Multiselect
+                disabled={isLoading}
+                onSearch={(value) =>
+                  setFilters({
+                    ...filters,
+                    roomsSearchTerm: value,
+                  })
+                }
+                tags
+                showArrow
+                className="tags-dropdown readonly_ms"
+                // disable={true}
+                placeholder="Filter by Rooms"
+                showCheckbox={true}
+                keepSearchTerm={false}
+                options={roomOptions} // Options to display in the dropdown
+                selectedValues={filters.rooms}
+                displayValue="Name" // Property name to display in the dropdown options
+                onSelect={(arr, current) => {
+                  setFilters({
+                    ...filters,
+                    rooms: arr.sort((a, b) =>
+                      a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                    ),
+                  });
+                }}
+                onRemove={(arr, target) => {
+                  let list = arr.sort((a, b) =>
+                    a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+                  );
+                  setFilters({
+                    ...filters,
+                    rooms: list,
                   });
                 }}
               />

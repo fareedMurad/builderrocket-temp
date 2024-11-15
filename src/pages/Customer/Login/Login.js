@@ -33,11 +33,16 @@ const Login = (props) => {
         (response) => {
           setIsLoading(false);
           if (response) {
-            history.push("/customer/project/documents");
+            if (response?.message)
+              setError(
+                response?.message ||
+                  "Something went wrong!, Please Enter valid email or password!"
+              );
+            else history.push("/customer/project/documents");
           } else {
             setError("Please Enter valid email or password!");
           }
-        },
+        }
       );
   };
 
