@@ -1,0 +1,10 @@
+@import '../../assets/styles/variables';
+
+.select {
+    .form-control {
+        background-color: $lightgray;
+        border-radius: 2px;
+        height: 28px;
+        border: none;
+    }
+}

@@ -1,0 +1,91 @@
+@import '../../../assets/styles/variables';
+
+.home {   
+    padding         : 1rem 0;
+    min-height      : 100vh;
+    background-color: $lightgray;
+
+    .container {
+        padding: 0 2rem;
+        @include media-breakpoint-down(md){
+            padding: 0.5rem;
+        }
+    }
+
+    .title-container {
+             
+        #home-title {
+            font-size     : 22px;
+            font-weight   : 600;
+            letter-spacing: -0.5px;
+            line-height   : 30px;
+        }
+
+        .link-btn {
+            color: #2D4DA6;
+            margin-left: 15px;
+            margin-top : 10px;
+        }
+    }
+
+    
+    .project-tabs {
+        margin-bottom : 24px;
+        margin-top    : 16px;
+
+        .btn {
+            box-shadow: none;
+        }
+
+        .active { 
+            color: $activeblue;
+        }
+
+        .closed {
+            color: black;
+        }
+    }
+
+    .cards-container { 
+        @include media-breakpoint-down(lg) {
+            flex-wrap: wrap;
+        }
+    }
+
+    #splitter {
+        margin-top   : .2rem;
+        padding-left : .1rem;
+        padding-right: .1rem;
+    }
+
+    .link-btn {
+        margin-top: 0;
+        @include media-breakpoint-down(md){
+            margin-left: 0;
+            padding-left: 0;
+        }
+    }
+
+    .cards {
+        margin-bottom: 30px;
+    }
+
+    .search-bar {
+        margin-left: auto;
+
+        @include media-breakpoint-down(md){
+            width: 100% !important;
+            margin-left: 0;
+            .form-inline {
+                width: 100% !important;
+            }
+            input {
+                width: 100% !important;
+            }
+        }
+    }
+
+    .spinner {
+        margin-top: 12rem;
+    }
+}

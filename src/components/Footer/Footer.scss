@@ -1,0 +1,21 @@
+@import '../../assets/styles/variables';
+
+.footer {
+    background-color: $gray;
+    height: 55px;
+
+    .footer-item {
+        padding-left: 10px;
+        padding-right: 10px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.32px;
+        text-decoration: none;
+    }
+    
+    .navbar-nav {
+        justify-content: center;
+        text-align: center;
+    }
+}

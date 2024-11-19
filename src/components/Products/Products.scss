@@ -1,0 +1,167 @@
+@import "../../assets/styles/variables";
+
+.products {
+  .products-container {
+    width: 100%;
+    padding-right: 1rem;
+    padding-bottom: 2rem;
+    background-color: white;
+
+    .layout-select {
+      width: 300px;
+      margin: 13px 10px;
+      position: relative;
+      .custom-placeholder {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+      }
+    }
+
+    i {
+      margin-right: 0.5rem;
+    }
+    .subtext {
+      margin-top: 0.5rem;
+      @include media-breakpoint-down(md) {
+        padding-left: 12px;
+        margin-top: 0;
+      }
+    }
+
+    .page-title {
+      @include media-breakpoint-down(md) {
+        padding-top: 1rem;
+        padding-bottom: 5px;
+        padding-left: 12px;
+      }
+    }
+
+    .middle-section {
+      padding-left: 2rem;
+
+      @include media-breakpoint-down(md) {
+        padding-left: 12px;
+      }
+
+      .link-btn {
+        @include media-breakpoint-down(md) {
+          padding-left: 0;
+        }
+      }
+
+      select {
+        height: 25px;
+        width: 175px;
+        font-size: 14px;
+        margin-top: 1rem;
+        padding: 0 0.25rem;
+      }
+
+      .total {
+        font-size: 14px;
+        line-height: 19px;
+        margin-left: 0.15rem;
+        letter-spacing: -0.32px;
+      }
+    }
+
+    .products-table {
+      margin: 1.5rem 0.5rem;
+
+      .table-title {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 19px;
+        padding-left: 0.5rem;
+        letter-spacing: -0.32px;
+      }
+
+      thead {
+        border: hidden;
+      }
+
+      th {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 17px;
+        letter-spacing: -0.27px;
+      }
+      td.sticky-note-red {
+        i {
+          color: red;
+        }
+      }
+
+      td {
+        border: hidden;
+        font-size: 12px;
+        line-height: 17px;
+        letter-spacing: -0.27px;
+      }
+
+      tr {
+        height: 65px;
+      }
+
+      i {
+        cursor: pointer;
+      }
+
+      .distributor-select {
+        select {
+          padding: 0;
+          height: 25px;
+          width: 140px;
+          font-size: 14px;
+        }
+      }
+
+      .approval-checkbox {
+        width: 5%;
+      }
+
+      .qty-input {
+        input {
+          padding: 0 0.35rem;
+          width: 50px;
+          height: 25px;
+          font-size: 14px;
+        }
+      }
+
+      .add-btn-templateItem {
+        .btn {
+          margin-top: 0;
+          padding: 0;
+          text-align: left;
+        }
+      }
+
+      .model-number {
+        padding-left: 0.25rem;
+      }
+
+      .plus-circle {
+        color: $tabblue;
+        margin-top: 0.25rem;
+      }
+
+      .radios {
+        width: 7%;
+      }
+    }
+  }
+}
+
+.replace-btn {
+  height: 20px;
+  font-size: 10px;
+  padding: 2px 5px;
+}
+
+.form-check-input {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  position: unset;
+}

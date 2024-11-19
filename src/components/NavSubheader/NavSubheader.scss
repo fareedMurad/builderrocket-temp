@@ -1,0 +1,51 @@
+@import '../../assets/styles/variables';
+
+.nav-bar-subheader {
+    min-height: 29px;
+    background-color: $gray;
+
+    @include media-breakpoint-down(md) {
+        display: none !important;
+    }
+
+    .header-item {
+        color: #fff;
+        font-size: 14px;
+        margin-right: 3rem;
+        text-decoration: none;
+        letter-spacing: -0.17px;
+        cursor: pointer;
+
+        @include media-breakpoint-down(md) {
+            margin-bottom: .25rem;
+        }
+    }
+    
+    .navbar-nav {
+        margin-left: 2rem;
+
+        @include media-breakpoint-up(xl) {
+            margin-left: 1rem;
+        }
+
+        @include media-breakpoint-down(sm) {
+            margin-top: .5rem;
+            margin-left: .25rem;
+        }
+    }
+    @include media-breakpoint-down(md) {
+        min-height: 30px;
+        margin-bottom: 0;
+
+    }
+
+    #management-dropdown {
+        color: white;
+        font-size: 14px;
+        padding: 0;
+    }
+
+    .tab-icon {
+        margin-right: 8px;
+    }
+}

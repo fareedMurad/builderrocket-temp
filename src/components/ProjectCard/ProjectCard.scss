@@ -1,0 +1,89 @@
+@import '../../assets/styles/variables';
+
+.project-card {
+    :hover {
+        cursor: pointer;
+    }
+
+    height: 215px;
+    width: 305px;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
+    margin-bottom: 30px;
+    margin-right: 2rem;
+
+    @include media-breakpoint-down(md){
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .card-container {
+        padding-left: .75em;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    
+    div {
+        color: white;
+    }
+
+    .top-section {
+        height: 3.85rem;
+    }
+
+    .lot-number {
+        padding-top: 10px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: -0.13px;
+        line-height: 15px;
+    }
+
+    .project-name { 
+        margin-top: 1em;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.82px;
+        line-height: 24px;
+    }
+
+    .address-section { 
+        height: 3.25rem;
+        margin-top: 1.5rem;
+        font-size: 14px;
+        letter-spacing: -0.08px;
+        line-height: 16px;
+    }
+
+    .bottom-title {
+        margin-bottom: -1px;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: -0.15px;
+        line-height: 20px;
+    }
+
+    .bottom-text {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: -0.13px;
+        line-height: 15px;
+    }
+
+    .bottom-section {
+        text-align: center;
+        padding-top: 2em;
+        padding-right: .65rem;
+    }
+
+    .date-col {
+        width: 33.33%;
+        height: 2em;
+    }
+
+}
+@media screen and (min-device-width: 992px) and (max-device-width: 1200px){
+    .home .cards  {
+        width: 80%;
+    }
+}

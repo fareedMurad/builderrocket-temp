@@ -1,0 +1,51 @@
+@import '../../assets/styles/variables';
+
+.project-tabs {  
+    .tab-pane {
+        background-color: $lightgray;
+        padding: 2rem 3rem;
+        min-height: 100vh;
+        @include media-breakpoint-down(md) {
+            padding: 0;
+        }
+    }
+
+
+    .nav {
+        padding: 0 3rem;
+        @include media-breakpoint-down(md) {
+            padding: 0;
+        }
+    }
+
+    .nav-tabs{
+
+        @include media-breakpoint-down(lg) {
+            flex-wrap: nowrap;
+            overflow-x: scroll;
+        }
+    }
+
+    .nav-item button{
+        font-size: 14px;
+        letter-spacing: -0.32px;
+        line-height: 19px;
+        border: none;
+        color: $tabblue;
+        background: transparent;
+
+        @include media-breakpoint-down(lg) {
+            min-width: fit-content;
+            align-items: center;
+            height: fit-content;
+
+        }
+    }
+
+    .nav-item button.active{
+        color: $activegray;
+        font-weight: bold;
+        border-bottom: 5px solid $activegray;
+        border-color: '';
+    }
+}

@@ -1,0 +1,90 @@
+@import '../../assets/styles/variables';
+
+.drawings {
+    @include media-breakpoint-down(md) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .drawings-container {
+        width: 981px;
+        background-color: white;
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+
+        @include media-breakpoint-up(lg) {
+            margin-right: 3rem;
+        }
+    }
+    
+    .drawings-form {
+        min-height: 661px;
+        justify-content: space-evenly;
+        padding: 0 5rem;
+
+        @include media-breakpoint-down(lg) {
+            padding: 0 2rem;
+        }
+    }
+
+    .drawing {
+        font-size: 12px;
+        min-height: 28px;
+        margin-bottom: 1rem;
+
+        i {
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .drawing-image {
+            margin-right: 2rem;
+        }
+
+        .drawing-name { 
+            margin-top: 1rem;
+            // width: 50px;
+        }
+
+        .icon {
+            margin-top: 1rem;
+            margin-left: .5rem;
+            margin-right: .5rem;
+        }
+
+        .drawing-image-icon {
+            width: 50px;
+            text-align: center;
+
+            > i {
+                margin-top: .5rem;
+                font-size: 32px;
+            }
+        }
+    }
+
+    .edit-drawings-container {
+        width: 100%;
+        height: auto;
+        min-height: 28px;
+        border-radius: 2px;
+        margin-top: .5rem;
+        padding-right: .5rem;
+
+        .file-input {
+            width: 75%;
+
+            .form-control {
+                height: 28px;
+            }
+        }
+
+        .spinner-container {
+            margin-top: .25rem;
+        }
+    }
+
+    .name-icons {
+        width: 100%;
+    }
+}

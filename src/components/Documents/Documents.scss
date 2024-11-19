@@ -1,0 +1,46 @@
+@import '../../assets/styles/variables';
+
+.documents {
+    @include media-breakpoint-down(md) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .documents-container {
+        width: 981px;
+
+        @include media-breakpoint-up(lg) {
+            margin-right: 3rem;
+        }
+
+        @include media-breakpoint-down(md) {
+            width: 100%;
+        }
+        
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        background-color: white;
+    }
+
+    .documents-form {
+        justify-content: space-evenly;
+        padding: 0 1.5rem;
+
+        .form-col {
+            width: 45%;
+            
+            .gap-2{
+                gap: 10px;
+            }
+            @include media-breakpoint-down(lg) {
+                width: 100%;
+            }
+
+        @include media-breakpoint-down(md) {
+           padding: 0;
+        }
+
+            padding: 0 1rem;
+        }
+    }
+}

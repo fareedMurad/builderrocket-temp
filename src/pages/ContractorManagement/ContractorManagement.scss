@@ -1,0 +1,85 @@
+@import '../../assets/styles/variables';
+
+.contractor-management {
+    background-color: $lightgray;
+    padding: 2rem;
+    min-height: 100vh;
+
+    .contractor-management-container {
+        background-color: white;
+        width: 100%;
+    }
+
+    .contractor-management-table {
+        padding-left: 2rem;
+        margin-right: 1rem;
+
+        thead {
+            border: hidden;
+        }
+
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: -0.27px;
+            line-height: 17px;
+        }
+
+        td {
+            border: hidden;
+            font-size: 12px;
+            letter-spacing: -0.27px;
+            line-height: 17px;
+
+            .rating-stars{
+                width: 66px;
+            }
+        }
+
+        i {
+            cursor: pointer;
+            padding: 0 .5rem;
+        }
+
+        .sticky-note-red {
+            i {
+                color: red;
+            }
+        }
+        
+        .contractor-type-row{
+            .contractor-type-name{
+                padding-top: 50px;
+            }
+        }
+        .contractor-type-row:first-child{
+            .contractor-type-name{
+                padding-top: 0;
+            }
+        }
+
+
+        .contractor-type-name {
+            width: 100%;
+            font-weight: 600;
+            font-size: 14px;
+        }
+    }
+    
+    .search-bar {
+        justify-content: center;
+        align-items: center;
+        .contractor-type{
+            width: 15rem;
+            > div{
+                width: 100%;
+            }
+        }
+        // margin-left: 50%;
+        gap: 15px;
+        .form-control {
+            height: 28px;
+            font-size: 12px;
+        }
+    }
+}

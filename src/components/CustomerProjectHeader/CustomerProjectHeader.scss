@@ -1,0 +1,124 @@
+@import '../../assets/styles/variables';
+
+.project-header {
+    height: 144px;
+    padding: 0 3rem;
+    box-sizing: border-box;
+    background-color: $lightgray;
+    border: 1px solid $bordergray;
+    font-size: 13px;
+
+    @include media-breakpoint-down(lg) {
+        height: auto;
+    }
+
+    .project-image {
+        width: 167px;
+        height: 119px;
+        box-sizing: border-box;
+        border: 1px solid $bordergray;
+        margin-right: 1.5rem;
+
+        .spinner {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    }
+
+    .bold-text {
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .status-dropdown {
+        select {
+            padding-right: 0;
+            padding-bottom: .15rem;
+        }
+
+        option {
+            font-weight: bold;
+        }
+    }
+
+    .project-name {
+        font-size: 21px;
+        font-weight: 600;
+        letter-spacing: -0.95px;
+        line-height: 28px;
+    }
+
+    .text {
+        font-size: 13px;
+        letter-spacing: -0.32px;
+    }
+
+    .save-icon {
+        font-size: 13px;
+        letter-spacing: -0.32px;
+        padding-bottom: 1rem;
+        color: $tabblue;
+    }
+
+    .share-icon {
+        color: $tabblue;
+        cursor: pointer;
+    }
+
+    .phone {
+        a {
+            color: $tabblue;
+        }
+    }
+
+    .email {
+        a {
+            color: $tabblue;
+        }
+    }
+
+    .link-btn {
+        padding: 0;
+        font-size: 14px;
+    }
+
+    .total {
+        margin-top: 5em;
+    }
+
+    .left { 
+        text-align: left;
+    }
+
+    .snapshot-btn {
+        height: 23px;
+        width: 150px;
+        color: white;
+        font-size: 13px;
+        line-height: 19px;
+        border-radius: 3px;
+        letter-spacing: -0.17px;
+        background-color: $btngraytwo;
+    }
+
+    .middle-section {
+        padding-top: 1.75rem;
+
+        @include media-breakpoint-down(sm) {
+            padding-top: 1rem;
+        }
+    }
+}
+
+.new-project-modal {
+
+    .modal-container {
+        .page-title {
+            padding: 0;
+        }
+
+        form {
+            padding: 1rem 1.5rem;
+        }
+    }
+}

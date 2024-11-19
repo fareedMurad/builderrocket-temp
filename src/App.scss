@@ -1,0 +1,81 @@
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+.blur {
+  filter: blur(2px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.routes-container {
+  min-height: 100vh;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.custom-dropdown .search-wrapper.searchWrapper .chip {
+  display: none;
+}
+.tags-dropdown .search-wrapper.searchWrapper .chip {
+  display: inline-flex !important;
+}
+.readonly_ms.disable_ms {
+  opacity: 1;
+}
+.pointer {
+  cursor: pointer;
+}
+.form-check {
+  padding-left: 0 !important;
+}
+
+.add-category-dropdown__group-heading {
+  display: none !important;
+}
+.add-category-dropdown__group {
+  padding: 0 15px !important;
+  .add-category-dropdown__option::before {
+    content: "-";
+    margin-right: 5px;
+  }
+}
+
+.c-tree-wrapper .modal-dialog {
+  min-width: 90vw !important;
+}
+
+.tree-modal-close-icon {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 20px;
+  color: rgb(240, 76, 76);
+  cursor: pointer;
+}

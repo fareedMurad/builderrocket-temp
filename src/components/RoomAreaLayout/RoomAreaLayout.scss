@@ -1,0 +1,72 @@
+@import '../../assets/styles/variables';
+
+.room-area-layout {
+    @include media-breakpoint-down(md) {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .layout-select {
+        width: 300px;
+        margin: 13px 10px;
+        position: relative;
+        .custom-placeholder{
+            position: absolute;
+            top: 8px;
+            left: 8px;
+        }
+    }
+
+    .container {
+        //width: 981px;
+        background-color: white;
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+
+        @include media-breakpoint-up(lg) {
+            //margin-right: 3rem;
+        }
+    }
+
+    .rooms {
+        padding: 0 2.25rem;
+
+        @include media-breakpoint-down(md) {
+            padding: 0 1rem;
+        }
+    }
+
+    .page-title {
+        padding-bottom: .85rem;
+    }
+
+    .room-type-container {
+        @include media-breakpoint-up(lg) {
+            width: 25%;
+        }
+        margin-bottom: 2rem;
+
+        @include media-breakpoint-down(md) {
+            padding: 0 1rem;
+        }
+    }
+
+    .room-type {
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 14px;
+        letter-spacing: -0.27px;
+        margin-bottom: 1rem;
+    }
+
+    .room-name {
+        font-size: 12px;
+        line-height: 24px;
+        letter-spacing: -0.27px;
+    }
+
+    .room-area-layout-spinner {
+        min-height: 100vh;
+        margin-top: 25%;
+    }
+}
