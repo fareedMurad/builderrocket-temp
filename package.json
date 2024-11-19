@@ -3,15 +3,15 @@
   "version": "1.0.956",
   "private": true,
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
-    "increase-version": "$VERSION=$(node -p \"require('./package.json').version\") && npm version patch --no-git-tag-version && git add package.json package-lock.json && git commit -m \"Bump version to $VERSION\"",
-    "tag-version": "$VERSION=$(node -p \"require('./package.json').version\") && git tag v$VERSION -m \"Version $VERSION\"",
-    "release": "npm run increase-version && npm run tag-version",
-    "build:prod": "env-cmd -f .env.production react-scripts build",
-    "prebuild": "cross-env REACT_APP_VERSION=$(node -p \"require('./package.json').version\")",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    // "increase-version": "$VERSION=$(node -p \"require('./package.json').version\") && npm version patch --no-git-tag-version && git add package.json package-lock.json && git commit -m \"Bump version to $VERSION\"",
+    // "tag-version": "$VERSION=$(node -p \"require('./package.json').version\") && git tag v$VERSION -m \"Version $VERSION\"",
+    // "release": "npm run increase-version && npm run tag-version",
+    // "build:prod": "env-cmd -f .env.production react-scripts build",
+    // "prebuild": "cross-env REACT_APP_VERSION=$(node -p \"require('./package.json').version\")",
+    // "test": "react-scripts test",
+    // "eject": "react-scripts eject"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
