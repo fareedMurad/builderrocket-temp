@@ -131,7 +131,7 @@ const ProjectHeader = () => {
               <CustomLightbox
                 images={[
                   project?.ThumbnailURL
-                    ? project?.ThumbnailURL + `?${new Date().getTime()}`
+                    ? project?.ThumbnailURL
                     : ProjectPlaceholder,
                 ]}
                 singleImageProps={{
