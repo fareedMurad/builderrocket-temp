@@ -38,6 +38,10 @@ const Routes = (props) => {
   );
   const path_array = getpath.split("/");
   useEffect(() => {
+    if (!token && !customerToken) {
+      history.push("/login");
+      return;
+    }
     if (
       path_array[1] !== "customer" &&
       path_array[1] !== "vendor" &&
