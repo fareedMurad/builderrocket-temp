@@ -9,9 +9,13 @@ import "./Project.scss";
 // components
 import ProjectHeader from "../../components/ProjectHeader";
 import ProjectTabs from "../../components/ProjectTabs";
+import { Spinner } from "react-bootstrap";
 
+import { useHistory } from "react-router";
 const Project = () => {
   const dispatch = useDispatch();
+
+  const history = useHistory();
   const project = useSelector((state) => state.project.project);
 
   useEffect(() => {
@@ -23,7 +27,12 @@ const Project = () => {
 
   useEffect(() => {
     if (project?.ID) dispatch(getProjectByProjectID(project.ID));
+    else {
+      history.push("/");
+    }
   }, []);
+
+  if (!project?.ID) return null;
 
   return (
     <>

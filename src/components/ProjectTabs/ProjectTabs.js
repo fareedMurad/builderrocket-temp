@@ -49,13 +49,15 @@ const ProjectTabs = (props) => {
         dispatch(setSelectedProductTab("products"));
       }
     }
-  }, [location]);
+  }, []);
+
   useEffect(() => {
     if (selectedProjectTab && project.ProjectNumber)
       handleSelectedTab(selectedProjectTab);
   }, [selectedProjectTab]);
 
   const handleSelectedTab = (tab) => {
+    dispatch(setSelectedProjectTab(tab));
     history.push(`/project/${project.ProjectNumber}/${tab}`);
   };
 
