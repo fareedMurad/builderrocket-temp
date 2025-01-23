@@ -645,9 +645,9 @@ const RoomGroups = () => {
                                                             product.RoughInTrimOut ===
                                                             "RoughIn"
                                                           }
-                                                          disabled={
-                                                            templateItem?.IsTemplate
-                                                          }
+                                                          // disabled={
+                                                          //   templateItem?.IsTemplate
+                                                          // }
                                                           onChange={() =>
                                                             handleRequiresApproval(
                                                               item,
