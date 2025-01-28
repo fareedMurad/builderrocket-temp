@@ -1,5 +1,11 @@
 import React, { useRef, useState } from "react";
-import { Button, Form, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Form,
+  OverlayTrigger,
+  Spinner,
+  Tooltip,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDocument } from "../../actions/documentActions";
 import {
@@ -24,6 +30,7 @@ const FileUpload = (props) => {
     hideUpload,
     onUpdateDocument,
     multiple = false,
+    hideEdit,
   } = props;
 
   const dispatch = useDispatch();
@@ -102,7 +109,10 @@ const FileUpload = (props) => {
                 type="file"
                 id="actual-btn"
                 ref={inputFile}
-                onChange={onFileChange}
+                onChange={(files) => {
+                  onFileChange?.(files);
+                  inputFile.current.value = null;
+                }}
                 multiple={multiple}
               />
             </div>
@@ -173,20 +183,46 @@ const FileUpload = (props) => {
                   </>
                 ) : (
                   <>
-                    <div
-                      className="icon-container"
-                      onClick={() => handleShowInput(file)}
-                    >
-                      <i className="far fa-pencil-alt"></i>
-                    </div>
+                    {!hideEdit ? (
+                      <>
+                        <div
+                          className="icon-container"
+                          onClick={() => handleShowInput(file)}
+                        >
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="button-tooltip">Edit</Tooltip>
+                            }
+                            delay={{ show: 250, hide: 400 }}
+                          >
+                            <i className="far fa-pencil-alt"></i>
+                          </OverlayTrigger>
+                        </div>
+                        <div className="icon-container">
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="button-tooltip">Share</Tooltip>
+                            }
+                            delay={{ show: 250, hide: 400 }}
+                          >
+                            <i className="fa fa-share-square"></i>
+                          </OverlayTrigger>
+                        </div>
+                      </>
+                    ) : null}
                     <div className="icon-container">
-                      <i className="fa fa-share-square"></i>
-                    </div>
-                    <div className="icon-container">
-                      <i
-                        onClick={() => handleDocumentDelete(file?.ID)}
-                        className="far fa-trash-alt"
-                      ></i>
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id="button-tooltip">Delete</Tooltip>}
+                        delay={{ show: 250, hide: 400 }}
+                      >
+                        <i
+                          onClick={() => handleDocumentDelete(file?.ID)}
+                          className="far fa-trash-alt"
+                        ></i>
+                      </OverlayTrigger>
                     </div>
                   </>
                 )}

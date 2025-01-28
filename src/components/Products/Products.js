@@ -121,8 +121,10 @@ const Products = (props) => {
     (state) => state.myProduct.myProductsByProject
   );
   const handleSelectedRoom = useCallback(
-    (selectedRooms) => {
-      const rooms = [...selectedRooms.map((b) => b.ID)];
+    (selectedRooms, defaultSelectedIds) => {
+      const rooms = defaultSelectedIds?.length
+        ? defaultSelectedIds
+        : [...selectedRooms.map((b) => b.ID)];
 
       setProductFilter({ ...productFilter, rooms: rooms, pageNumber: 1 });
       dispatch({ type: PRODUCT_SELECTED_ROOM, payload: rooms });
@@ -293,7 +295,10 @@ const Products = (props) => {
         };
       }),
     ];
-    handleSelectedRoom(options.filter((p) => p.value !== "select_all"));
+    handleSelectedRoom(
+      options.filter((p) => p.value !== "select_all"),
+      productFilter?.rooms
+    );
     setRoomsOptions(options);
 
     setRoomsDropdownLoading(false);
@@ -405,7 +410,7 @@ const Products = (props) => {
             dispatch(getReplaceOldProductDetails(templateItem.ProductID));
             dispatch(getProductDetails(templateItem.ProductID)).then(() => {
               if (
-                !templateItem?.IsTemplate ||
+                // !templateItem?.IsTemplate ||
                 !showCustomProducts ||
                 !showCustomProducts
               ) {
@@ -469,7 +474,7 @@ const Products = (props) => {
   };
 
   const handleOpenModal = (item) => {
-    if (item.IsTemplate) return;
+    // if (item.IsTemplate) return;
 
     setSelectedProductItem(item);
     setTempProduct(item);
@@ -960,13 +965,14 @@ const Products = (props) => {
                   Product Name
                 </div>
               </th>
-              {productFilter?.rooms.length > 1 && !showCustomProducts ? (
+              {/* {productFilter?.rooms.length > 1 && !showCustomProducts ? (
                 <th>
                   <div className="d-flex justify-content-center">Room</div>
                 </th>
-              ) : null}
+              ) : null} */}
               <th>Description</th>
               <th>Category</th>
+              <th>Manufacture</th>
               <th>UOM</th>
               <th className="radios">Rough In / Trim Out</th>
               <th>Distributor</th>
@@ -1042,92 +1048,106 @@ const Products = (props) => {
                               handleSelectedCategoryID(templateItem)
                             }
                           >
-                            {templateItem?.IsTemplate ? (
+                            {/* {templateItem?.IsTemplate ? (
                               <>
                                 <i className="fas fa-plus-circle plus-circle"></i>
                                 {templateItem?.AddLabel}
                               </>
-                            ) : (
-                              <>{templateItem?.ProductName}</>
-                            )}
+                            ) : ( */}
+                            <>{templateItem?.ProductName}</>
+                            {/* )} */}
                           </Button>
 
-                          {!templateItem?.IsTemplate && (
-                            <div className="model-number">
-                              Model: {templateItem?.ModelNumber}
-                            </div>
-                          )}
+                          {/* {!templateItem?.IsTemplate && ( */}
+                          <div className="model-number">
+                            Model: {templateItem?.ModelNumber}
+                          </div>
+                          {/* )} */}
                         </div>
                       </div>
                     </td>
-                    {productFilter?.rooms.length > 1 && !showCustomProducts ? (
+                    {/* {productFilter?.rooms.length > 1 && !showCustomProducts ? (
                       <td>{templateItem?.room?.RoomName}</td>
-                    ) : null}
+                    ) : null} */}
                     <td>{templateItem?.ShortDescription}</td>
                     <td>{templateItem?.CategoryName}</td>
+                    <td>
+                      <div
+                        className="d-flex align-items-center"
+                        style={{ gap: "10px", objectFit: "contain" }}
+                      >
+                        {templateItem?.Manufacturer?.LogoUrl && (
+                          <CustomLightbox
+                            singleImageProps={{
+                              width: "50px",
+                              height: "auto",
+                            }}
+                            images={[templateItem?.Manufacturer?.LogoUrl]}
+                          />
+                        )}
+                        {templateItem?.Manufacturer?.ManufacturerName}
+                      </div>
+                    </td>
                     <td>{templateItem?.UnitOfMeasure}</td>
                     <td>
-                      {!templateItem?.IsTemplate && (
-                        <Form className="d-flex justify-content-center">
-                          <Form.Check
-                            type="radio"
-                            checked={isRoughIn}
-                            disabled={templateItem?.IsTemplate}
-                            onChange={() =>
-                              handleItems(
-                                templateItem,
-                                "RoughInTrimOutEnum",
-                                "RoughIn"
-                              )
-                            }
-                          />
-                          <Form.Check
-                            type="radio"
-                            checked={isTrimOut}
-                            disabled={templateItem?.IsTemplate}
-                            onChange={() =>
-                              handleItems(
-                                templateItem,
-                                "RoughInTrimOutEnum",
-                                "TrimOut"
-                              )
-                            }
-                          />
-                        </Form>
-                      )}
+                      {/* {!templateItem?.IsTemplate && ( */}
+                      <Form className="d-flex justify-content-center">
+                        <Form.Check
+                          type="radio"
+                          checked={isRoughIn}
+                          // disabled={templateItem?.IsTemplate}
+                          onChange={() =>
+                            handleItems(
+                              templateItem,
+                              "RoughInTrimOutEnum",
+                              "RoughIn"
+                            )
+                          }
+                        />
+                        <Form.Check
+                          type="radio"
+                          checked={isTrimOut}
+                          // disabled={templateItem?.IsTemplate}
+                          onChange={() =>
+                            handleItems(
+                              templateItem,
+                              "RoughInTrimOutEnum",
+                              "TrimOut"
+                            )
+                          }
+                        />
+                      </Form>
+                      {/* )} */}
                     </td>
                     <td>
-                      {!templateItem?.IsTemplate && (
-                        <div className="distributor-select">
-                          <Form.Control as="select"></Form.Control>
-                        </div>
-                      )}
+                      {/* {!templateItem?.IsTemplate && ( */}
+                      <div className="distributor-select">
+                        <Form.Control as="select"></Form.Control>
+                      </div>
+                      {/* )} */}
                     </td>
                     <td>
-                      {!templateItem?.IsTemplate && (
-                        <div className="qty-input">
-                          {Utils.itemLoading(
-                            templateItem,
-                            isQuantityLoading
-                          ) ? (
-                            <Spinner animation="border" variant="primary" />
-                          ) : (
-                            <Form.Control
-                              min="0"
-                              type="text"
-                              id={`quantity-${templateItem?.ID}`}
-                              // disabled={!templateItem?.Quantity}
-                              defaultValue={templateItem?.Quantity}
-                              onBlur={(e) =>
-                                handleQuantity(templateItem, e.target.value)
-                              }
-                              onFocus={() => {
-                                setSelectedProductItem(templateItem);
-                              }}
-                            ></Form.Control>
-                          )}
-                        </div>
-                      )}
+                      {/* {!templateItem?.IsTemplate && ( */}
+                      <div className="qty-input">
+                        {Utils.itemLoading(templateItem, isQuantityLoading) ? (
+                          <Spinner animation="border" variant="primary" />
+                        ) : (
+                          <Form.Control
+                            min="0"
+                            type="text"
+                            id={`quantity-${templateItem?.ID}`}
+                            // disabled={!templateItem?.Quantity}
+                            defaultValue={templateItem?.Quantity}
+                            onBlur={(e) =>
+                              handleQuantity(templateItem, e.target.value)
+                            }
+                            onFocus={() => {
+                              setSelectedProductItem(templateItem);
+                            }}
+                          ></Form.Control>
+                        )}
+                      </div>
+                      {/* )} */}
                     </td>
                     <td>
                       {templateItem?.Price || templateItem?.MSRP
@@ -1135,75 +1155,100 @@ const Products = (props) => {
                         : ""}
                     </td>
                     <td>{renderApproval(templateItem)}</td>
-                    {!templateItem?.IsTemplate ? (
-                      <td
-                        className={`${
-                          templateItem?.Notes && "sticky-note-red"
-                        }`}
-                        onClick={() => handleOpenNotesModal(templateItem)}
+                    {/* {!templateItem?.IsTemplate ? ( */}
+                    <td
+                      className={`${templateItem?.Notes && "sticky-note-red"}`}
+                      onClick={() => handleOpenNotesModal(templateItem)}
+                    >
+                      {templateItem?.Notes ? (
+                        <OverlayTrigger
+                          placement="top"
+                          overlay={
+                            <Tooltip id="button-tooltip">
+                              {templateItem?.Notes}
+                            </Tooltip>
+                          }
+                          delay={{ show: 250, hide: 400 }}
+                        >
+                          <i className="far fa-sticky-note d-flex justify-content-center"></i>
+                        </OverlayTrigger>
+                      ) : (
+                        <OverlayTrigger
+                          placement="top"
+                          overlay={
+                            <Tooltip id="button-tooltip">
+                              Click to Add Note
+                            </Tooltip>
+                          }
+                          delay={{ show: 250, hide: 400 }}
+                        >
+                          <i className="far fa-sticky-note d-flex justify-content-center mr-0"></i>
+                        </OverlayTrigger>
+                      )}
+                    </td>
+                    {/* ) : (
+                      <td />
+                    )} */}
+                    <td>
+                      {/* {!templateItem?.IsTemplate && ( */}
+                      <div
+                        className="d-flex justify-content-between align-items-center"
+                        style={{ gap: "5px" }}
                       >
-                        {templateItem?.Notes ? (
+                        {/* <i
+                          className="fas fa-retweet"
+                          onClick={() => setShowColorModal(true)}
+                        ></i> */}
+                        <Button
+                          size="sm"
+                          className="replace-btn"
+                          variant="secondary"
+                          onClick={() =>
+                            handleSelectedCategoryID(templateItem, true)
+                          }
+                        >
+                          Replace
+                        </Button>
+                        {Utils.itemLoading(templateItem, isFavoriteLoading) ? (
+                          <Spinner
+                            animation="border"
+                            variant="primary"
+                            size="sm"
+                          />
+                        ) : (
                           <OverlayTrigger
                             placement="top"
                             overlay={
                               <Tooltip id="button-tooltip">
-                                {templateItem?.Notes}
+                                {isFav ? "Click to  Unlike" : "Click to Click"}
                               </Tooltip>
                             }
                             delay={{ show: 250, hide: 400 }}
                           >
-                            <i className="far fa-sticky-note d-flex justify-content-center"></i>
-                          </OverlayTrigger>
-                        ) : (
-                          <i className="far fa-sticky-note d-flex justify-content-center mr-0"></i>
-                        )}
-                      </td>
-                    ) : (
-                      <td />
-                    )}
-                    <td>
-                      {!templateItem?.IsTemplate && (
-                        <div
-                          className="d-flex justify-content-between align-items-center"
-                          style={{ gap: "5px" }}
-                        >
-                          {/* <i
-                          className="fas fa-retweet"
-                          onClick={() => setShowColorModal(true)}
-                        ></i> */}
-                          <Button
-                            size="sm"
-                            className="replace-btn"
-                            variant="secondary"
-                            onClick={() =>
-                              handleSelectedCategoryID(templateItem, true)
-                            }
-                          >
-                            Replace
-                          </Button>
-                          {Utils.itemLoading(
-                            templateItem,
-                            isFavoriteLoading
-                          ) ? (
-                            <Spinner
-                              animation="border"
-                              variant="primary"
-                              size="sm"
-                            />
-                          ) : (
                             <i
                               className={`far ${
                                 isFav ? "text-danger fas fa-heart" : "fa-heart"
                               } mr-0`}
                               onClick={() => handleIsFavorite(templateItem)}
                             ></i>
-                          )}
+                          </OverlayTrigger>
+                        )}
+                        <OverlayTrigger
+                          placement="top"
+                          overlay={
+                            <Tooltip id="button-tooltip">
+                              Delete product
+                            </Tooltip>
+                          }
+                          delay={{ show: 250, hide: 400 }}
+                        >
                           <i
                             className="far fa-trash-alt mr-0"
                             onClick={() => handleOpenModal(templateItem)}
                           ></i>
-                        </div>
-                      )}
+                        </OverlayTrigger>
+                      </div>
+                      {/* )} */}
                     </td>
                   </tr>
                 );

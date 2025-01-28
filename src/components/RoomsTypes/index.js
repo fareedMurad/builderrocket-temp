@@ -428,7 +428,9 @@ const RoomsTypes = () => {
                   <Table>
                     <tbody>
                       {item.Rooms?.length ? (
-                        item.Rooms?.map((room, index) => {
+                        item.Rooms?.sort((a, b) =>
+                          a.Name?.localeCompare(b.Name)
+                        )?.map((room, index) => {
                           return (
                             <tr key={index}>
                               <td>

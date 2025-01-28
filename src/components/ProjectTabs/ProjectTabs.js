@@ -30,10 +30,10 @@ const ProjectTabs = (props) => {
   const history = useHistory();
 
   const selectedProjectTab = useSelector(
-    (state) => state.project.selectedProjectTab,
+    (state) => state.project.selectedProjectTab
   );
   const selectedProductTab = useSelector(
-    (state) => state.product.selectedProductTab,
+    (state) => state.product.selectedProductTab
   );
   const project = useSelector((state) => state.project.project);
 
@@ -49,9 +49,15 @@ const ProjectTabs = (props) => {
         dispatch(setSelectedProductTab("products"));
       }
     }
-  }, [location]);
+  }, []);
+
+  useEffect(() => {
+    if (selectedProjectTab && project.ProjectNumber)
+      handleSelectedTab(selectedProjectTab);
+  }, [selectedProjectTab]);
 
   const handleSelectedTab = (tab) => {
+    dispatch(setSelectedProjectTab(tab));
     history.push(`/project/${project.ProjectNumber}/${tab}`);
   };
 

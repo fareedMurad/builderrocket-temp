@@ -6,6 +6,7 @@ import { SET_CUSTOMER_PROJECT } from "./actions/types";
 import ScrollToTop from "./components/ScrollToTop";
 import RoomsManagement from "./pages/RoomsManagemant";
 import Subdivisions from "./pages/Subdivisions/Subdivisions";
+import MyProfile from "./pages/MyProfile/MyProfile";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -29,20 +30,34 @@ const Routes = (props) => {
   const getpath = history.location.pathname;
   const token = useSelector((state) => state.auth.token);
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);
+  const customerToken = useSelector((state) => state.customer?.token);
   const isSignedIn = useSelector((state) => state.auth?.isSignedIn);
   const isVendorSignedIn = useSelector((state) => state.vendor?.isSignedIn);
+  const customerSelectedProjectTab = useSelector(
+    (state) => state.customer?.selectedProjectTab
+  );
   const path_array = getpath.split("/");
   useEffect(() => {
+    if (!token && !customerToken) {
+      history.push("/login");
+      return;
+    }
     if (
       path_array[1] !== "customer" &&
       path_array[1] !== "vendor" &&
       path_array[1] !== "signup"
     ) {
-      if (!token) history.push("/login");
+      if (!token) {
+        if (isCustomerSignedIn && customerToken) {
+          history.push(
+            `/customer/project/${customerSelectedProjectTab ?? "document"}`
+          );
+        } else history.push("/login");
+      }
     } else {
       dispatch({ type: SET_CUSTOMER_PROJECT, payload: path_array[2] });
     }
-  });
+  }, []);
 
   const Loading = () => {
     return (
@@ -83,6 +98,7 @@ const Routes = (props) => {
           {isSignedIn && !isCustomerSignedIn && (
             <>
               <Route exact path="/project" component={Project} />
+              <Route path="/my-profile" component={MyProfile} />
               <Route path="/project/:project/:tab" component={Project} />
               <Route
                 path="/rooms-management/:tab"

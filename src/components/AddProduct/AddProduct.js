@@ -20,17 +20,6 @@ import {
   setSelectedRoom,
 } from "../../actions/roomActions";
 import Select from "react-select";
-const options = [
-  {
-    value: "chocolate",
-    label: "Chocolate",
-    id: "dfd",
-    name: "dsfd",
-    test: "sdf",
-  },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -100,7 +89,7 @@ const AddProduct = () => {
       Notes: "",
     };
     dispatch(
-      // handleAddProductForProject(newProduct)
+      // ßProductForProject(newProduct)
       handleAddMyProductToProject(newProduct)
     ).then((project) => {
       dispatch(setSelectedProject(project));

@@ -52,34 +52,38 @@ const AddContractor = ({ show, handleClose }) => {
   }, [dispatch, contractorTypes]);
 
   const handleSaveContractor = () => {
-    if (!contractor.CompanyName) {
-      return alert("Company Name is Required");
-    } else if (isEmpty(contractor?.ContractorTypes)) {
-      return alert("Contractor Types are Required");
+    try {
+      if (!contractor.CompanyName) {
+        return alert("Company Name is Required");
+      } else if (isEmpty(contractor?.ContractorTypes)) {
+        return alert("Contractor Types are Required");
+      }
+
+      setIsLoading(true);
+
+      // remap contractor types to save properly
+      const contractorFinal = {
+        ...contractor,
+        ContractorTypes: contractor.ContractorTypes?.map((type) => {
+          return {
+            ID: type.value,
+          };
+        }),
+      };
+
+      dispatch(createContractor(contractorFinal))
+        .then(() => {
+          dispatch(setSelectedContractor({}));
+          setIsLoading(false);
+          handleClose();
+        })
+        .catch(() => {
+          setIsLoading(false);
+          alert("Something went wrong creating contractor");
+        });
+    } catch (err) {
+      setIsLoading(false);
     }
-
-    setIsLoading(true);
-
-    // remap contractor types to save properly
-    const contractorFinal = {
-      ...contractor,
-      ContractorTypes: contractor.ContractorTypes?.map((type) => {
-        return {
-          ID: type.value,
-        };
-      }),
-    };
-
-    dispatch(createContractor(contractorFinal))
-      .then(() => {
-        dispatch(setSelectedContractor({}));
-        setIsLoading(false);
-        handleClose();
-      })
-      .catch(() => {
-        setIsLoading(false);
-        alert("Something went wrong creating contractor");
-      });
   };
 
   const title = isEmpty(contractor) ? "Add Contractor" : "Edit Contractor";
@@ -147,6 +151,20 @@ const AddContractor = ({ show, handleClose }) => {
                   setContractor({ ...contractor, PhoneNumber: e.target.value })
                 }
                 defaultValue={contractor?.PhoneNumber}
+              />
+            </Form.Group>
+          </Col>
+          <Col md={12} lg={6}>
+            <Form.Group>
+              <Form.Label className="input-label">Mobile Number</Form.Label>
+              <Form.Control
+                type="text"
+                inputMode="tel"
+                className="input-gray"
+                onChange={(e) =>
+                  setContractor({ ...contractor, MobileNumber: e.target.value })
+                }
+                defaultValue={contractor?.MobileNumber}
               />
             </Form.Group>
           </Col>
@@ -229,23 +247,23 @@ const AddContractor = ({ show, handleClose }) => {
               />
             </Form.Group>
           </Col>
+          {/* {contractor.ID && ( */}
           <Col md={12} lg={6}>
             <Form.Group>
               <Form.Label className="input-label">Rating</Form.Label>
-              {contractor.ID && (
-                <ReactStars
-                  value={contractor?.Rating ? contractor?.Rating : 0}
-                  onChange={(count) =>
-                    setContractor({ ...contractor, Rating: count })
-                  }
-                  size={30}
-                  count={5}
-                  color="#aaa"
-                  activeColor="#ffd700"
-                />
-              )}
+              <ReactStars
+                value={contractor?.Rating ? contractor?.Rating : 0}
+                onChange={(count) =>
+                  setContractor({ ...contractor, Rating: count })
+                }
+                size={30}
+                count={5}
+                color="#aaa"
+                activeColor="#ffd700"
+              />
             </Form.Group>
           </Col>
+          {/* )} */}
           <Col md={12}>
             <Form.Group>
               <Form.Label className="input-label">Notes</Form.Label>

@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Modal, Form, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Modal,
+  Form,
+  Spinner,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import { copyProject } from "../../actions/projectActions";
 import Utils from "../../utils";
 import "./ProjectHeader.scss";
@@ -9,6 +16,7 @@ import InviteCustomerImage from "../../assets/images/invite-icon-20.jpg";
 import { useHistory } from "react-router-dom";
 import { inviteCustomerToProject } from "../../actions/customerActions";
 import { Toaster, toast } from "react-hot-toast";
+import CustomLightbox from "../Lightbox";
 
 const ProjectHeader = () => {
   const dispatch = useDispatch();
@@ -16,7 +24,7 @@ const ProjectHeader = () => {
 
   const project = useSelector((state) => state.project.project);
   const refreshThumbnail = useSelector(
-    (state) => state.project.refreshThumbnail,
+    (state) => state.project.refreshThumbnail
   );
 
   const [showModal, setShowModal] = useState(false);
@@ -78,7 +86,7 @@ const ProjectHeader = () => {
         onHide={() => setShowModal(false)}
       >
         <Modal.Body className="modal-container">
-          <div className="page-title">Save As New Project</div>
+          <div className="page-title">Copy To New Project</div>
           <Form>
             <Form.Label className="input-label">Project Name</Form.Label>
             <Form.Control
@@ -120,15 +128,16 @@ const ProjectHeader = () => {
                 <Spinner animation="border" variant="primary" />
               </div>
             ) : (
-              <img
-                alt="project"
-                height="119"
-                width="167"
-                src={
+              <CustomLightbox
+                images={[
                   project?.ThumbnailURL
-                    ? project?.ThumbnailURL + `?${new Date().getTime()}`
-                    : ProjectPlaceholder
-                }
+                    ? project?.ThumbnailURL
+                    : ProjectPlaceholder,
+                ]}
+                singleImageProps={{
+                  height: "119",
+                  width: "167",
+                }}
               />
             )}
           </div>
@@ -200,15 +209,23 @@ const ProjectHeader = () => {
                 {(project?.Customers?.[0]?.FirstName ||
                   project?.Customers?.[0]?.LastName) && (
                   <div className="">
-                    <button
-                      onClick={() =>
-                        handleInviteCustomer(project?.Customers?.[0]?.ID)
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip id="button-tooltip">Click to copy</Tooltip>
                       }
-                      className="snapshot-btn"
-                      style={{ width: "120px", height: "26px" }}
+                      delay={{ show: 250, hide: 400 }}
                     >
-                      <i className="fa fa-copy tab-icon mr-1"></i> Invite Link
-                    </button>
+                      <button
+                        onClick={() =>
+                          handleInviteCustomer(project?.Customers?.[0]?.ID)
+                        }
+                        className="snapshot-btn"
+                        style={{ width: "120px", height: "26px" }}
+                      >
+                        <i className="fa fa-copy tab-icon mr-1"></i> Invite Link
+                      </button>
+                    </OverlayTrigger>
                   </div>
                 )}
               </div>
@@ -247,15 +264,23 @@ const ProjectHeader = () => {
               {(project?.Customers?.[1]?.FirstName ||
                 project?.Customers?.[1]?.LastName) && (
                 <div className="">
-                  <button
-                    onClick={() =>
-                      handleInviteCustomer(project?.Customers?.[1]?.ID)
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip id="button-tooltip">Click to copy</Tooltip>
                     }
-                    className="snapshot-btn"
-                    style={{ width: "120px", height: "26px" }}
+                    delay={{ show: 250, hide: 400 }}
                   >
-                    <i className="fa fa-copy tab-icon mr-1"></i> Invite Link
-                  </button>
+                    <button
+                      onClick={() =>
+                        handleInviteCustomer(project?.Customers?.[1]?.ID)
+                      }
+                      className="snapshot-btn"
+                      style={{ width: "120px", height: "26px" }}
+                    >
+                      <i className="fa fa-copy tab-icon mr-1"></i> Invite Link
+                    </button>
+                  </OverlayTrigger>
                 </div>
               )}
             </div>

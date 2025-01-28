@@ -55,7 +55,6 @@ export const signupEmailPassword =
         }
       })
       .catch((error) => {
-        console.log("Signup", error.response.data);
         setError(error.response.data);
       });
   };
@@ -82,30 +81,32 @@ export const inviteCustomerToProject = (ID) => (dispatch) => {
     });
 };
 
-export const loginEmailPassword = (email, password) => (dispatch) => {
+export const loginEmailPassword = (email, password) => async (dispatch) => {
   const URL = "/Login";
 
-  return api({
-    method: "POST",
-    url: URL,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      Email: email,
-      Password: password,
-    },
-  })
-    .then((response) => {
-      if (response?.status === 200) {
-        dispatch({ type: SET_CUSTOMER, payload: response.data });
-
-        return response?.data;
-      }
-    })
-    .catch((error) => {
-      console.log("Login", error);
+  try {
+    const response = await api({
+      method: "POST",
+      url: URL,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Email: email,
+        Password: password,
+      },
     });
+    if (response?.status === 200) {
+      dispatch({ type: SET_CUSTOMER, payload: response.data });
+      return response?.data;
+    }
+    return response;
+  } catch (err) {
+    if (err.response) {
+      return { message: err.response.data };
+    }
+    return err;
+  }
 };
 
 export const getCustomerInvites = (ID) => (dispatch) => {
@@ -123,9 +124,7 @@ export const getCustomerInvites = (ID) => (dispatch) => {
         return response?.data;
       }
     })
-    .catch((error) => {
-      console.log("Signup", error);
-    });
+    .catch((error) => {});
 };
 
 /**

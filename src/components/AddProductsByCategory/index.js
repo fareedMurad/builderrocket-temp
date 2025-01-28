@@ -13,7 +13,15 @@ import {
   setProduct,
   setProductDetail,
 } from "../../actions/productActions";
-import { Badge, Button, Form, Spinner } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Form,
+  Modal,
+  OverlayTrigger,
+  Spinner,
+  Tooltip,
+} from "react-bootstrap";
 import CustomLightbox from "../Lightbox";
 import Avatar from "../../assets/images/img-placeholder.png";
 import ProductPagination from "../Pagination/Pagination";
@@ -66,6 +74,7 @@ const AddProductsByCategory = ({
     loading: false,
   });
   const [favoritedProducts, setIsFavoritedProducts] = useState([]);
+  const [showPriceVarientModal, setShowPriceVarientModal] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -480,30 +489,38 @@ const AddProductsByCategory = ({
       {selectedCategory?.id ? (
         <div className="w-100" style={{ minWidth: "60%" }}>
           <h4>Products</h4>
-          <div className="d-flex align-items-center" style={{ gap: "10px" }}>
-            <div
-              className="d-flex"
-              onClick={() => setisExtraFiltersOpen(!isExtraFiltersOpen)}
-              style={{ minWidth: "30px" }}
+          <div className="d-flex align-items-center" style={{ gap: "15px" }}>
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="button-tooltip">
+                  {isExtraFiltersOpen
+                    ? "Hide filters"
+                    : "Show filters e.g: colors, brands, etc"}
+                </Tooltip>
+              }
+              delay={{ show: 250, hide: 400 }}
             >
-              <i
-                className={`pointer pt-4 fa ${
-                  isExtraFiltersOpen
-                    ? "fa-caret-right text-primary"
-                    : " fa-caret-down text-secondary"
-                }`}
-              />
-              <i
-                className={`pointer pt-4 fa fa-filter ${
-                  isExtraFiltersOpen ? "text-primary" : "text-secondary"
-                }`}
-              />
-              {extraFiltersCount ? (
-                <Badge pill bg="primary" className="custom-badge-styles">
-                  {extraFiltersCount}
-                </Badge>
-              ) : null}
-            </div>
+              <div
+                className="d-flex align-items-end pointer"
+                onClick={() => setisExtraFiltersOpen(!isExtraFiltersOpen)}
+                style={{ minWidth: "30px" }}
+              >
+                <small className="text-primary pr-1">Filters</small>
+                <i
+                  className={`pointer pt-4 text-primary fa ${
+                    isExtraFiltersOpen ? "fa-caret-right" : " fa-caret-down"
+                  }`}
+                />
+                <i className={`pointer pt-4 fa fa-filter text-primary`} />
+                {extraFiltersCount ? (
+                  <Badge pill bg="primary" className="custom-badge-styles">
+                    {extraFiltersCount}
+                  </Badge>
+                ) : null}
+              </div>
+            </OverlayTrigger>
+
             <Form.Group className="w-100">
               <Form.Label className="input-label">Search Products</Form.Label>
               <div className="d-flex" style={{ gap: "10px" }}>
@@ -606,10 +623,27 @@ const AddProductsByCategory = ({
                             <div>Color: {product?.ColorFinish}</div>
                           ) : null}
                           <div>Category: {product.CategoryName}</div>
+                          {product?.Manufacturer?.LogoUrl && (
+                            <div
+                              className="d-flex align-items-center"
+                              style={{ gap: "10px", objectFit: "contain" }}
+                            >
+                              Manufacturer:{" "}
+                              <CustomLightbox
+                                singleImageProps={{
+                                  width: "50px",
+                                  height: "auto",
+                                }}
+                                images={[product?.Manufacturer?.LogoUrl]}
+                              />
+                              {product?.Manufacturer?.ManufacturerName}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
                     <div>{product.ShortDescription}</div>
+
                     <div>
                       <div
                         className="position-absolute"
@@ -617,7 +651,8 @@ const AddProductsByCategory = ({
                       >
                         {Utils.itemLoading(product, isFavoriteLoading) ? (
                           <Spinner
-                            animation="border"
+                            an
+                            mation="border"
                             variant="primary"
                             size="sm"
                           />
@@ -671,6 +706,14 @@ const AddProductsByCategory = ({
                               Remove
                             </Button>
                           ) : null}
+                          <Button
+                            className={`action-button ml-2 add-product-btn add-product-btn-2`}
+                            onClick={() => {
+                              setShowPriceVarientModal(true);
+                            }}
+                          >
+                            Add with varient
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -689,6 +732,67 @@ const AddProductsByCategory = ({
           </div>
         </div>
       ) : null}
+
+      {/* TODO */}
+      <Modal size="md" centered show={showPriceVarientModal} backdrop>
+        <Modal.Body>
+          <div className="my-2">
+            <b>Please enter the Varient name and Variant price:</b>
+            <p className="mt-3">
+              <b className="text-primary">Note: </b>{" "}
+              <i className="text-secondary">
+                the product will be added as dublicate product of the original
+                product.
+              </i>
+            </p>
+          </div>
+          <Form>
+            <Form.Group>
+              <Form.Label className="input-label">Variant Name</Form.Label>
+              <Form.Control
+                type="text"
+                className="input-gray"
+                // value={newProduct?.ProductName}
+                // onChange={(event) =>
+                //   setProduct({
+                //     ...newProduct,
+                //     ProductName: event.target.value,
+                //   })
+                // }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label className="input-label">Variant Price</Form.Label>
+              <Form.Control
+                type="text"
+                className="input-gray"
+                // value={newProduct?.ProductName}
+                // onChange={(event) =>
+                //   setProduct({
+                //     ...newProduct,
+                //     ProductName: event.target.value,
+                //   })
+                // }
+              />
+            </Form.Group>
+          </Form>
+          <div className="d-flex justify-content-center pt-5">
+            <Button
+              variant="link"
+              className="cancel"
+              onClick={() => setShowPriceVarientModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              // onClick={() => handleConfirm()}
+              className="primary-gray-btn next-btn ml-3"
+            >
+              Add with varient
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

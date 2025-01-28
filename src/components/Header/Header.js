@@ -8,6 +8,7 @@ import {
   Popover,
   Container,
   Button,
+  Tooltip,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../actions/authActions";
@@ -30,7 +31,7 @@ const Header = ({ expanded, setExpanded }) => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
   const customerPortal = useSelector((state) => state.customer.customerPortal);
   const selectedProjectTab = useSelector(
-    (state) => state.project.selectedProjectTab,
+    (state) => state.project.selectedProjectTab
   );
   const [showTabLinks, setShowTabLinks] = useState(false);
   const isCustomerSignedIn = useSelector((state) => state.customer?.isSignedIn);
@@ -70,7 +71,7 @@ const Header = ({ expanded, setExpanded }) => {
                     )}
                 </Nav.Link> */}
         <Navbar.Text className="item user-name">{title}</Navbar.Text>
-        <Nav.Link className="item">
+        <Nav.Link className="item" onClick={() => history.push("/my-profile")}>
           <i className="far fa-cog"></i>
           <span>Settings</span>
         </Nav.Link>
@@ -126,14 +127,20 @@ const Header = ({ expanded, setExpanded }) => {
                 </div>
                 <div
                   className="header-item"
-                  onClick={() => history.push("/rooms-management/room-types")}
+                  onClick={() => {
+                    setExpanded(!expanded);
+                    history.push("/rooms-management/room-types");
+                  }}
                 >
                   <i className="far fa-border-none fa-sm tab-icon"></i>
                   Rooms Management
                 </div>
                 <div
                   className="header-item"
-                  onClick={() => history.push("/utility-management")}
+                  onClick={() => {
+                    setExpanded(!expanded);
+                    history.push("/utility-management");
+                  }}
                 >
                   <i className="far fa-lightbulb fa-sm tab-icon"></i>
                   Utility Management
@@ -144,21 +151,30 @@ const Header = ({ expanded, setExpanded }) => {
                 </div>
                 <div
                   className="header-item"
-                  onClick={() => history.push("/contractor-management")}
+                  onClick={() => {
+                    setExpanded(!expanded);
+                    history.push("/contractor-management");
+                  }}
                 >
                   <i className="far fa-user-hard-hat fa-sm tab-icon"></i>
                   Contractor Management
                 </div>
                 <div
                   className="header-item"
-                  onClick={() => history.push("/subdivision-management")}
+                  onClick={() => {
+                    setExpanded(!expanded);
+                    history.push("/subdivision-management");
+                  }}
                 >
                   <i className="far fa-house-day fa-sm tab-icon"></i>
                   Subdivision Management
                 </div>
                 <div
                   className="header-item"
-                  onClick={() => history.push("/my-products-management")}
+                  onClick={() => {
+                    setExpanded(!expanded);
+                    history.push("/my-products-management");
+                  }}
                 >
                   <i className="fa fa-product-hunt fa-sm tab-icon"></i>
                   My Products
@@ -227,7 +243,12 @@ const Header = ({ expanded, setExpanded }) => {
                     <i className="far fa-user-circle"></i>
                   )}
                 </Nav.Link>
-                <Nav.Link className="item">
+                <Nav.Link
+                  className="item"
+                  onClick={() => {
+                    history.push("/my-profile");
+                  }}
+                >
                   <i className="far fa-cog"></i>
                 </Nav.Link>
                 <Nav.Link className="item">
@@ -245,13 +266,25 @@ const Header = ({ expanded, setExpanded }) => {
                 )}
 
                 <Nav.Link className="item" onClick={handleLogout}>
-                  <i className="far fa-sign-out-alt"></i>
+                  <OverlayTrigger
+                    placement="auto"
+                    overlay={<Tooltip id="button-tooltip">Logout</Tooltip>}
+                    delay={{ show: 250, hide: 400 }}
+                  >
+                    <i className="far fa-sign-out-alt"></i>
+                  </OverlayTrigger>
                 </Nav.Link>
               </>
             )}
             {!isSignedIn && (isCustomerSignedIn || isVendorSignedIn) && (
               <Nav.Link className="item" onClick={handleLogout}>
-                <i className="far fa-sign-out-alt"></i>
+                <OverlayTrigger
+                  placement="auto"
+                  overlay={<Tooltip id="button-tooltip">Logout</Tooltip>}
+                  delay={{ show: 250, hide: 400 }}
+                >
+                  <i className="far fa-sign-out-alt"></i>
+                </OverlayTrigger>
               </Nav.Link>
             )}
             {!isSignedIn &&

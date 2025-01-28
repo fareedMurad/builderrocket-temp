@@ -10,15 +10,17 @@ import "./CustomerProjectTabs.scss";
 // components
 import CustomerProducts from "../CustomerProducts";
 import CustomerDocuments from "../CustomerDocuments/CustomerDocuments";
+import { useHistory } from "react-router-dom";
 // import AddProduct from "../AddProduct";
 // import ProductDetail from "../ProductDetail";
 // import CustomerProjectInformation from "../CustomerProjectInformation";
 
 const CustomerProjectTabs = (props) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const selectedProjectTab = useSelector(
-    (state) => state.customer?.selectedProjectTab,
+    (state) => state.customer?.selectedProjectTab
   );
   //   const selectedProductTab = useSelector(
   //     (state) => state.product.selectedProductTab
@@ -30,6 +32,7 @@ const CustomerProjectTabs = (props) => {
 
   const handleSelectedTab = (tab) => {
     dispatch(setSelectedProjectTab(tab));
+    history.push(`/customer/project/${tab}`);
   };
 
   //   const handleProductsTabs = () => {

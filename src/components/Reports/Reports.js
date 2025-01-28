@@ -5,7 +5,7 @@ import {
   getRoomReportByProjectID,
   getVendorReportByProjectID,
 } from "../../actions/projectActions";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner, Input } from "react-bootstrap";
 import { setSelectedRoom } from "../../actions/roomActions";
 import {
   setRoomFilter,
@@ -17,6 +17,7 @@ import {
   getReportsFilters,
   updateReportsFilter,
   deleteReportsFilter,
+  resetReportsFilters,
 } from "../../actions/reportActions";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "lodash";
@@ -29,6 +30,7 @@ import { CustomPrinter } from "../../components/PDF";
 import "./Reports.scss";
 import SaveReportsFilterModal from "../SaveReportsFilterModal/SaveReportsFilterModal";
 import { getCategories } from "../../actions/productActions";
+import ReactSwitch from "react-switch";
 
 const LayoutOptions = [
   { value: "list", label: "List" },
@@ -53,6 +55,7 @@ const Reports = (props) => {
   const reportByCategory = useSelector(
     (state) => state.project.reportByCategory
   );
+  const reportByRoom = useSelector((state) => state.project.reportByRoom);
 
   const [isLoading, setIsLoading] = useState(false);
   const [layout, setLayout] = useState(LayoutOptions[0]);
@@ -95,68 +98,86 @@ const Reports = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (layout?.value === "list") {
-      dispatch(getReportByProjectID(project?.ID))
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    } else if (layout?.value === "category" || layout?.value === "room") {
-      dispatch(getCategorizedReportByProjectID(project?.ID))
-        .then((response) => {
-          handleSetChildFilters(response);
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-      dispatch(getRoomReportByProjectID(project?.ID))
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    } else if (layout?.value === "vendor") {
-      dispatch(getVendorReportByProjectID(project?.ID))
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    }
-  }, [dispatch, layout]);
+    // if (layout?.value === "list") {
+    dispatch(getReportByProjectID(project?.ID))
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+    // } else if (layout?.value === "category" || layout?.value === "room") {
+    dispatch(getCategorizedReportByProjectID(project?.ID))
+      .then((response) => {
+        handleSetChildFilters(response);
+        dispatch(getRoomReportByProjectID(project?.ID))
+          .then((response) => {
+            handleSetChildFilters(response, "room");
+            setIsLoading(false);
+          })
+          .catch(() => setIsLoading(false));
+      })
+      .catch(() => setIsLoading(false));
+    // } else if (layout?.value === "vendor") {
+    dispatch(getVendorReportByProjectID(project?.ID))
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+    // }
+    window.addEventListener("beforeprint", function (event) {
+      setHideReportsHeader(false);
+    });
+    window.addEventListener("afterprint", function (event) {
+      setHideReportsHeader(true);
+    });
+    return () => {
+      window.removeEventListener("beforeprint", function (event) {
+        setHideReportsHeader(false);
+      });
+      window.removeEventListener("afterprint", function (event) {
+        setHideReportsHeader(true);
+      });
+      dispatch(resetReportsFilters());
+    };
+  }, []);
+  // }, [dispatch, layout]);
 
   useEffect(() => {
     dispatch(getCategories());
   }, [dispatch]);
 
-  const handleSetChildFilters = (array) => {
-    dispatch(
-      setReportFilter(
-        array?.Groups?.map((a) => {
-          return {
-            ...a,
-            name: a.Name,
-            value: a.ID,
-          };
-        })?.filter((a) =>
-          selectedSavedFilter
-            ? selectedSavedFilter.CategoryIDs?.find((b) => b === a.value)
-            : a.value
-        )
-      ) || []
-    );
-    dispatch(
-      setRoomFilter(
-        array?.Rooms?.map((a) => {
-          return {
-            ...a,
-            name: a.Name,
-            value: a.BuilderRoomID,
-          };
-        })?.filter((a) =>
-          selectedSavedFilter
-            ? selectedSavedFilter.RoomIDs?.find((b) => b === a.value)
-            : a.value
-        )
-      ) || []
-    );
+  const handleSetChildFilters = (array, type) => {
+    if (type === "room") {
+      dispatch(
+        setRoomFilter(
+          array?.Groups?.map((a) => {
+            return {
+              ...a,
+              name: a.Name,
+              value: a.BuilderRoomID,
+            };
+          })?.filter((a) =>
+            selectedSavedFilter
+              ? selectedSavedFilter.RoomIDs?.find((b) => b === a.value)
+              : a.value
+          )
+        ) || []
+      );
+    } else
+      dispatch(
+        setReportFilter(
+          array?.Groups?.map((a) => {
+            return {
+              ...a,
+              name: a.Name,
+              value: a.ID,
+            };
+          })?.filter((a) =>
+            selectedSavedFilter
+              ? selectedSavedFilter.CategoryIDs?.find((b) => b === a.value)
+              : a.value
+          )
+        ) || []
+      );
   };
 
   // const handleSelectedRoom = useCallback(
@@ -229,14 +250,13 @@ const Reports = (props) => {
       const payload = {
         Name: filtersForm?.Name,
         GroupBy: layout.value,
-        CategoryIDs: reportFilter?.map((r) => r.ID),
+        CategoryIDs: reportFilter?.map((r) => r.ID)?.filter((r) => r),
         RoomIDs: roomFilter?.map((r) => r.BuilderRoomID)?.filter((r) => r),
         RoughInTrimOut: roughInTrimOut,
         IsBuilderCustomer: localFilters.isCustomer,
         IsShowEmptyCategoriesRooms: showEmptyData,
       };
 
-      console.log(payload, "payload");
       dispatch(saveReportsFilter(payload)).then((res) => {
         handleFetchSavedReports();
       });
@@ -299,12 +319,13 @@ const Reports = (props) => {
 
   useEffect(() => {
     if (selectedSavedFilter) {
-      if (layout?.value === selectedSavedFilter.GroupBy) {
-        handleSetChildFilters(reportByCategory);
-      }
       setLayout(
         LayoutOptions.find((lo) => selectedSavedFilter.GroupBy === lo.value)
       );
+      // if (layout?.value === selectedSavedFilter.GroupBy) {
+      handleSetChildFilters(reportByCategory);
+      handleSetChildFilters(reportByRoom, "room");
+      // }
 
       dispatch(setCustomerFilter(selectedSavedFilter.IsBuilderCustomer));
       dispatch(setRoughInTrimOutFilter(selectedSavedFilter.RoughInTrimOut));
@@ -322,16 +343,23 @@ const Reports = (props) => {
           <>
             <div className="d-flex justify-content-between align-items-center mt-2 mb-3">
               <div className=" d-flex align-items-center mx-3  mt-3">
-                <Form>
-                  <Form.Check
-                    value={true}
+                <div className="d-flex align-items-center">
+                  <span>Builder</span>
+                  <ReactSwitch
                     checked={localFilters.isCustomer}
                     onChange={onChangeIsCustomer}
-                    type="switch"
-                    id="custom-switch"
-                    label="Builder/Customer"
+                    checkedIcon={false}
+                    uncheckedIcon={false}
+                    offColor={"#007bff"}
+                    onColor={"#007bff"}
+                    height={20}
+                    width={35}
+                    boxShadow="0 0 1px 2px #3bf"
+                    className="mx-2"
                   />
-                </Form>
+                  <span>Customer</span>
+                </div>
+
                 <div className="ml-3">
                   {["category", "room"].indexOf(layout?.value) > -1 ? (
                     <div className={"d-inline-block"}>
@@ -549,19 +577,19 @@ const Reports = (props) => {
                                   (p) => p.value !== "select_all"
                                 )?.length
                               }{" "}
-                              of {reportByCategory?.Rooms?.length} selected
+                              of {reportByRoom?.Groups?.length} selected
                             </span>
                           ) : null}
                         </span>
                         <Multiselect
                           options={
-                            reportByCategory?.Rooms?.length > 0
+                            reportByRoom?.Groups?.length > 0
                               ? [
                                   {
                                     name: "Select All",
                                     value: "select_all",
                                   },
-                                  ...reportByCategory?.Rooms?.map((a) => {
+                                  ...reportByRoom?.Groups?.map((a) => {
                                     return {
                                       ...a,
                                       name: a.Name,
@@ -577,7 +605,7 @@ const Reports = (props) => {
                             !roomFilter
                               ? []
                               : roomFilter?.length ===
-                                reportByCategory?.Rooms?.length
+                                reportByRoom?.Groups?.length
                               ? [
                                   {
                                     name: "Select All",
@@ -591,13 +619,13 @@ const Reports = (props) => {
                             if (current.value === "select_all") {
                               dispatch(
                                 setRoomFilter(
-                                  reportByCategory?.Rooms?.length > 0
+                                  reportByRoom?.Groups?.length > 0
                                     ? [
                                         {
                                           name: "Select All",
                                           value: "select_all",
                                         },
-                                        ...reportByCategory?.Rooms?.map((a) => {
+                                        ...reportByRoom?.Groups?.map((a) => {
                                           return {
                                             ...a,
                                             name: a.Name,

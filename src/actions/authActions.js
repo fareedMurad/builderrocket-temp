@@ -49,30 +49,31 @@ export const signupEmailPassword =
     });
   };
 
-export const loginEmailPassword = (email, password) => (dispatch) => {
+export const loginEmailPassword = (email, password) => async (dispatch) => {
   const URL = "/Login";
-
-  return api({
-    method: "POST",
-    url: URL,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      Email: email,
-      Password: password,
-    },
-  })
-    .then((response) => {
-      if (response?.status === 200) {
-        dispatch({ type: SET_USER, payload: response.data });
-
-        return response?.data;
-      }
-    })
-    .catch((error) => {
-      console.log("Login", error);
+  try {
+    const response = await api({
+      method: "POST",
+      url: URL,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        Email: email,
+        Password: password,
+      },
     });
+    if (response?.status === 200) {
+      dispatch({ type: SET_USER, payload: response.data });
+      return response?.data;
+    }
+    return response;
+  } catch (err) {
+    if (err.response) {
+      return { message: err.response.data };
+    }
+    return err;
+  }
 };
 
 export const logout = (data) => (dispatch) => {
@@ -82,7 +83,6 @@ export const logout = (data) => (dispatch) => {
 
       resolve();
     } catch (error) {
-      console.log("Logging User Out", error);
       reject(error);
     }
   });

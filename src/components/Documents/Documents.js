@@ -23,6 +23,8 @@ import ClearChangesModal from "../ClearChangesModal";
 import MarketingBlock from "../MarketingBlock";
 import FileUpload from "../FileUpload";
 import { getBuilderSubdivision } from "../../actions/builderSubdivisionActions";
+import FieldLoader from "../ProjectFieldLoader";
+import InputField from "../ProjectInput/TextInput";
 
 const Documents = () => {
   const dispatch = useDispatch();
@@ -40,6 +42,7 @@ const Documents = () => {
     PermitDate: Utils.formatShortDateUS(project?.PermitDate),
   });
   const [subdivisionDocuments, setSubdivisionDocuments] = useState([]);
+  const [fieldsLoader, setFieldsLoader] = useState({});
 
   // Ref to access changes on unmount
   const documentsRef = useRef();
@@ -50,7 +53,7 @@ const Documents = () => {
       dispatch(getBuilderSubdivision(parseInt(project?.Subdivision))).then(
         (res) => {
           setSubdivisionDocuments(res?.[0] || {});
-        },
+        }
       );
   }, [dispatch]);
 
@@ -70,19 +73,18 @@ const Documents = () => {
           loading: true,
         };
         setProgress({ ...progress });
-        console.log(progress);
-      }),
+      })
     ).then((response) => {
       progress[documentTypeID] = { progress: 0, loading: false };
       setProgress({ ...progress });
       if (response) {
         let documents = project?.Documents?.filter(
-          (d) => d?.DocumentTypeID !== documentTypeID,
+          (d) => d?.DocumentTypeID !== documentTypeID
         );
         documents = documents.concat(
           response.Documents?.filter(
-            (d) => d?.DocumentTypeID === documentTypeID,
-          ),
+            (d) => d?.DocumentTypeID === documentTypeID
+          )
         );
         project.Documents = documents;
         dispatch(setSelectedProject({ ...project }));
@@ -111,7 +113,7 @@ const Documents = () => {
       .then((response) => {
         if (response) {
           project.Documents = project?.Documents?.filter(
-            (d) => d?.ID !== documentID,
+            (d) => d?.ID !== documentID
           );
           dispatch(setSelectedProject({ ...project }));
         }
@@ -126,8 +128,15 @@ const Documents = () => {
     setShowModal(false);
   };
 
-  const saveChanges = (goToNext = true) => {
+  const saveChanges = (goToNext = true, field) => {
     setIsLoading(true);
+
+    setFieldsLoader({
+      ...fieldsLoader,
+      [field]: {
+        loading: true,
+      },
+    });
 
     const documentsInfoFinal = {
       ...documentsInfo,
@@ -135,14 +144,25 @@ const Documents = () => {
       OccupencyDate: Utils.formatDate(documentsInfo.OccupencyDate),
     };
 
-    console.log(documentsInfoFinal, "documentsData");
     // Save Project then navigate to utilities tab
     dispatch(saveProject(documentsInfoFinal))
       .then(() => {
         setIsLoading(false);
+        setFieldsLoader({
+          ...fieldsLoader,
+          [field]: {
+            loading: false,
+          },
+        });
         if (goToNext) dispatch(setSelectedProjectTab("utilities"));
       })
       .catch(() => {
+        setFieldsLoader({
+          ...fieldsLoader,
+          [field]: {
+            loading: false,
+          },
+        });
         setIsLoading(false);
       });
   };
@@ -155,17 +175,23 @@ const Documents = () => {
   useEffect(() => {
     if (
       documentsInfo?.PolicyExpirationDate !==
-        originalProject?.PolicyExpirationDate ||
-      documentsInfo?.PermitDate !==
-        Utils.formatShortDateUS(originalProject?.PermitDate) ||
-      documentsInfo?.OccupencyDate !== originalProject?.OccupencyDate
+      originalProject?.PolicyExpirationDate
     )
-      saveChanges(false);
-  }, [
-    documentsInfo?.PolicyExpirationDate,
-    documentsInfo?.PermitDate,
-    documentsInfo?.OccupencyDate,
-  ]);
+      saveChanges(false, "PolicyExpirationDate");
+  }, [documentsInfo?.PolicyExpirationDate]);
+
+  useEffect(() => {
+    if (
+      documentsInfo?.PermitDate !==
+      Utils.formatShortDateUS(originalProject?.PermitDate)
+    )
+      saveChanges(false, "PermitDate");
+  }, [documentsInfo?.PermitDate]);
+
+  useEffect(() => {
+    if (documentsInfo?.OccupencyDate !== originalProject?.OccupencyDate)
+      saveChanges(false, "OccupencyDate");
+  }, [documentsInfo?.OccupencyDate]);
 
   const handleDownloadFile = (url) => {
     const a = document.createElement("a");
@@ -208,7 +234,10 @@ const Documents = () => {
               />
             </div>
             <div className="form-col pb-2">
-              <Form.Label className="input-label">Permit Date</Form.Label>
+              <Form.Label className="input-label">
+                Permit Date
+                <FieldLoader loading={fieldsLoader?.["PermitDate"]?.loading} />
+              </Form.Label>
               <DatePicker
                 className="input-gray date-picker"
                 selected={
@@ -222,7 +251,12 @@ const Documents = () => {
               />
             </div>
             <div className="form-col pb-2">
-              <Form.Label className="input-label">C.O. Date</Form.Label>
+              <Form.Label className="input-label">
+                C.O. Date
+                <FieldLoader
+                  loading={fieldsLoader?.["OccupencyDate"]?.loading}
+                />
+              </Form.Label>
               <DatePicker
                 className="input-gray date-picker"
                 selected={
@@ -249,9 +283,9 @@ const Documents = () => {
             </div>
 
             <div className="form-col pb-2">
-              <Form.Label className="input-label">Building Permit #</Form.Label>
-              <Form.Control
-                className="input-gray"
+              <InputField
+                label="Building Permit #"
+                loading={fieldsLoader?.["BuildingPermitNumber"]?.loading}
                 value={documentsInfo?.BuildingPermitNumber}
                 onChange={(event) =>
                   setDocumentsInfo({
@@ -259,7 +293,7 @@ const Documents = () => {
                     BuildingPermitNumber: event.target.value,
                   })
                 }
-                onBlur={() => saveChanges(false)}
+                onBlur={() => saveChanges(false, "BuildingPermitNumber")}
               />
             </div>
             <div className="form-col pb-2">
@@ -276,10 +310,9 @@ const Documents = () => {
             </div>
 
             <div className="form-col pb-2">
-              <Form.Label className="input-label">Septic Permit #</Form.Label>
-              <Form.Control
-                type="text"
-                className="input-gray"
+              <InputField
+                label="Septic Permit #"
+                loading={fieldsLoader?.["SepticPermitNumber"]?.loading}
                 value={documentsInfo?.SepticPermitNumber}
                 onChange={(event) =>
                   setDocumentsInfo({
@@ -287,7 +320,7 @@ const Documents = () => {
                     SepticPermitNumber: event.target.value,
                   })
                 }
-                onBlur={() => saveChanges(false)}
+                onBlur={() => saveChanges(false, "SepticPermitNumber")}
               />
             </div>
             <div className="form-col pb-2">
@@ -315,9 +348,9 @@ const Documents = () => {
               />
             </div>
             <div className="form-col pb-2">
-              <Form.Label className="input-label">Tax Map #</Form.Label>
-              <Form.Control
-                className="input-gray"
+              <InputField
+                label="Tax Map #"
+                loading={fieldsLoader?.["TaxMapNumber"]?.loading}
                 value={documentsInfo?.TaxMapNumber}
                 onChange={(event) =>
                   setDocumentsInfo({
@@ -325,15 +358,13 @@ const Documents = () => {
                     TaxMapNumber: event.target.value,
                   })
                 }
-                onBlur={() => saveChanges(false)}
+                onBlur={() => saveChanges(false, "TaxMapNumber")}
               />
             </div>
             <div className="form-col pb-2">
-              <Form.Label className="input-label">
-                Building Risk Policy
-              </Form.Label>
-              <Form.Control
-                className="input-gray"
+              <InputField
+                label="Building Risk Policy"
+                loading={fieldsLoader?.["BuildingRiskPolicy"]?.loading}
                 value={documentsInfo?.BuildingRiskPolicy}
                 onChange={(event) =>
                   setDocumentsInfo({
@@ -341,15 +372,15 @@ const Documents = () => {
                     BuildingRiskPolicy: event.target.value,
                   })
                 }
-                onBlur={() => saveChanges(false)}
+                onBlur={() => saveChanges(false, "BuildingRiskPolicy")}
               />
             </div>
             <div className="form-col pb-2">
               <div className="d-flex gap-2">
                 <div className="w-50">
-                  <Form.Label className="input-label">Policy#</Form.Label>
-                  <Form.Control
-                    className="input-gray"
+                  <InputField
+                    label="Policy#"
+                    loading={fieldsLoader?.["Policy"]?.loading}
                     value={documentsInfo?.Policy}
                     onChange={(event) =>
                       setDocumentsInfo({
@@ -357,12 +388,15 @@ const Documents = () => {
                         Policy: event.target.value,
                       })
                     }
-                    onBlur={() => saveChanges(false)}
+                    onBlur={() => saveChanges(false, "Policy")}
                   />
                 </div>
                 <div className="w-50">
                   <Form.Label className="input-label">
                     Policy Expiration Date
+                    <FieldLoader
+                      loading={fieldsLoader?.["PolicyExpirationDate"]?.loading}
+                    />
                   </Form.Label>
                   <DatePicker
                     className="input-gray date-picker"
@@ -382,12 +416,9 @@ const Documents = () => {
               </div>
             </div>
             <div className="form-col pb-2">
-              <Form.Label className="input-label">
-                Purchase Policy Button
-              </Form.Label>
-              <Form.Control
-                type="url"
-                className="input-gray"
+              <InputField
+                label="Purchase Policy Button"
+                loading={fieldsLoader?.["PurchasePolicyButton"]?.loading}
                 value={documentsInfo?.PurchasePolicyButton}
                 onChange={(event) =>
                   setDocumentsInfo({
@@ -395,7 +426,7 @@ const Documents = () => {
                     PurchasePolicyButton: event.target.value,
                   })
                 }
-                onBlur={() => saveChanges(false)}
+                onBlur={() => saveChanges(false, "PurchasePolicyButton")}
               />
             </div>
             <div className="form-col pb-2"></div>
@@ -422,11 +453,11 @@ const Documents = () => {
           </div>
         </Form>
 
-        <ClearChangesModal
+        {/* <ClearChangesModal
           show={showModal}
           setShow={setShowModal}
           clearChanges={clearChanges}
-        />
+        /> */}
 
         <div className="d-flex justify-content-center pt-5">
           {isLoading ? (
@@ -434,15 +465,16 @@ const Documents = () => {
           ) : (
             <>
               <Button
-                variant="link"
-                className="cancel"
-                onClick={() => setShowModal(true)}
+                className="primary-gray-btn next-btn ml-3"
+                onClick={() =>
+                  dispatch(setSelectedProjectTab("projectInformation"))
+                }
               >
-                Cancel
+                Prevs
               </Button>
               <Button
                 className="primary-gray-btn next-btn ml-3"
-                onClick={saveChanges}
+                onClick={() => dispatch(setSelectedProjectTab("utilities"))}
               >
                 Next
               </Button>

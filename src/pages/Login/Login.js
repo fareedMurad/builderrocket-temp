@@ -28,12 +28,15 @@ const Login = (props) => {
       dispatch(loginEmailPassword(login.email, login.password)).then(
         (response) => {
           setIsLoading(false);
-          if (response) {
-            history.push("/");
+          if (response?.message) {
+            setError(
+              response?.message ||
+                "Something went wrong!, Please Enter valid email or password!"
+            );
           } else {
-            setError("Please Enter valid email or password!");
+            history.push("/");
           }
-        },
+        }
       );
   };
 

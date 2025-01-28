@@ -47,6 +47,7 @@ const intialState = {
     UserID: "",
     Zip: "",
     Rooms: [],
+    Customers: [],
   },
   projects: [],
   selectedProjectTab: "projectInformation",
@@ -110,7 +111,7 @@ const projectReducer = (state = intialState, action) => {
       return {
         ...state,
         project: intialState.project,
-        originalProject: action.payload,
+        originalProject: intialState.project,
       };
     }
     case SET_SELECTED_PROJECT_TAB: {

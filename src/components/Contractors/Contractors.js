@@ -18,6 +18,9 @@ import "./Contractors.scss";
 import ClearChangesModal from "../ClearChangesModal";
 import MarketingBlock from "../MarketingBlock";
 import AddContractor from "../AddContractor";
+import StarRatings from "react-star-ratings";
+import ReactSelect, { components } from "react-select";
+import FieldLoader from "../ProjectFieldLoader";
 // import { addDocument, deleteDocument } from '../../actions/documentActions';
 // import FileUpload from '../FileUpload';
 
@@ -35,6 +38,7 @@ const Contractors = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showContractorModal, setShowContractorModal] = useState(false);
   const [contractorsInfo, setContractorsInfo] = useState(project.Contractors);
+  const [fieldsLoader, setFieldsLoader] = useState({});
 
   // Ref to access changes on unmount
   const contractorsRef = useRef();
@@ -112,14 +116,26 @@ const Contractors = () => {
   //         .catch(() => { });
   // }
 
-  const handleContractor = (contractorID, contractorTypeID) => {
+  const handleContractor = (option, contractorTypeID) => {
+    const contractorID = option.value;
     if (!contractorTypeID) return;
+
+    setFieldsLoader({
+      ...fieldsLoader,
+      [contractorTypeID]: {
+        loading: true,
+      },
+    });
 
     dispatch(
       saveProjectContractor(project.ID, contractorTypeID, contractorID)
     ).then((data) => {
-      console.log(data);
-
+      setFieldsLoader({
+        ...fieldsLoader,
+        [contractorTypeID]: {
+          loading: false,
+        },
+      });
       // dispatch(getProductDetails(projectRef.current?.ID))
       //     .then(() => setIsLoading(false))
       //     .catch(() => setIsLoading(false));
@@ -129,9 +145,7 @@ const Contractors = () => {
     let selectedContractor;
 
     if (contractorID) {
-      selectedContractor = contractors.find(
-        (contractor) => contractor.ID === contractorID
-      );
+      selectedContractor = option;
 
       // update the selected contractor TYPE with selected contractor
       newContractorsMap = {
@@ -141,6 +155,7 @@ const Contractors = () => {
           ContractorTypeID: contractorTypeID,
           CompanyName: selectedContractor?.CompanyName,
           PhoneNumber: selectedContractor?.PhoneNumber,
+          MobileNumber: selectedContractor?.MobileNumber,
           EmailAddress: selectedContractor?.EmailAddress,
         },
       };
@@ -164,14 +179,25 @@ const Contractors = () => {
     setShowModal(false);
   };
 
-  const saveChanges = () => {
+  const saveChanges = (field) => {
     // Save changes and navigate to Drawings tab
     setIsLoading(true);
+    setFieldsLoader({
+      ...fieldsLoader,
+      [field]: {
+        loading: true,
+      },
+    });
 
     dispatch(saveProject({ ...project, Contractors: contractorsInfo })).then(
       () => {
         setIsLoading(false);
-        dispatch(setSelectedProjectTab("drawings"));
+        setFieldsLoader({
+          ...fieldsLoader,
+          [field]: {
+            loading: false,
+          },
+        });
       }
     );
   };
@@ -191,6 +217,37 @@ const Contractors = () => {
   //         }));
   //     }
   // }, [dispatch]);
+
+  const CustomOption = ({ children, ...props }) => {
+    return (
+      <components.Option {...props}>
+        <div className="d-flex align-items-center justify-content-between">
+          {children}
+          <div className="star-ratings">
+            <StarRatings
+              rating={props?.data?.Rating ? props?.data?.Rating : 0}
+              starRatedColor="#ffd700"
+              starSpacing="0"
+              numberOfStars={5}
+              starDimension="12px"
+              name="rating"
+              starEmptyColor="#aaa"
+            />
+          </div>
+        </div>
+      </components.Option>
+    );
+  };
+
+  const getContractorName = (contractor) => `${contractor.CompanyName || ""} 
+  ${
+    (((contractor.FirstName || contractor.LastName) &&
+      "-" + contractor.FirstName) ||
+      "") +
+    " " +
+    (contractor.LastName || "")
+  }
+ `;
 
   return (
     <div className="d-flex contractors">
@@ -214,29 +271,37 @@ const Contractors = () => {
             {contractorTypes?.map((contractorType, index) => (
               <div key={index} className="select contractor">
                 <Form.Label className="input-label">
-                  {contractorType.Name && contractorType.Name}
+                  {contractorType.Name && contractorType.Name}{" "}
+                  <FieldLoader
+                    loading={fieldsLoader?.[contractorType?.ID]?.loading}
+                  />
                 </Form.Label>
-
-                <Form.Control
-                  as="select"
+                <ReactSelect
                   value={
-                    contractorsInfo?.[contractorType?.ID]?.ContractorID ?? ""
+                    contractorsInfo?.[contractorType?.ID]?.ContractorID
+                      ? {
+                          ...contractorsInfo?.[contractorType?.ID],
+                          value:
+                            contractorsInfo?.[contractorType?.ID]
+                              ?.ContractorID ?? "",
+                          label: getContractorName(
+                            contractorsInfo?.[contractorType?.ID]
+                          ),
+                        }
+                      : ""
                   }
-                  onChange={(event) =>
-                    handleContractor(event.target.value, contractorType.ID)
+                  onChange={(option) =>
+                    handleContractor(option, contractorType.ID)
                   }
-                >
-                  <option value="">SELECT</option>
-                  {filterContractorsByType(contractorType.ID)?.map(
-                    (contractor, index) => (
-                      <option key={index} value={contractor.ID}>
-                        {contractor.CompanyName}
-                        {contractor.FirstName && ` - ${contractor.FirstName}`}
-                        {contractor.LastName && ` ${contractor.LastName}`}
-                      </option>
-                    )
+                  options={filterContractorsByType(contractorType.ID)?.map(
+                    (contractor) => ({
+                      value: contractor.ID,
+                      label: getContractorName(contractor),
+                      ...contractor,
+                    })
                   )}
-                </Form.Control>
+                  components={{ Option: CustomOption }}
+                />
 
                 {contractorsInfo?.[contractorType?.ID]?.ContractorID && (
                   <div className="pt-1 pl-1">
@@ -249,6 +314,18 @@ const Contractors = () => {
                           }`}
                         >
                           {contractorsInfo?.[contractorType?.ID]?.PhoneNumber}
+                        </a>
+                      </div>
+                    )}
+                    {contractorsInfo?.[contractorType?.ID]?.MobileNumber && (
+                      <div className="pr-3">
+                        <i className="fas fa-mobile mr-2"></i>
+                        <a
+                          href={`tel:+1${
+                            contractorsInfo?.[contractorType?.ID]?.MobileNumber
+                          }`}
+                        >
+                          {contractorsInfo?.[contractorType?.ID]?.MobileNumber}
                         </a>
                       </div>
                     )}
@@ -285,35 +362,28 @@ const Contractors = () => {
         </div>
 
         <div className="d-flex justify-content-center pt-5">
-          {isLoading ? (
-            <Spinner animation="border" variant="primary" />
-          ) : (
-            <>
-              <Button
-                variant="link"
-                className="cancel"
-                onClick={() => setShowModal(true)}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="primary-gray-btn next-btn ml-3"
-                onClick={saveChanges}
-              >
-                Next
-              </Button>
-            </>
-          )}
+          <Button
+            className="primary-gray-btn next-btn ml-3"
+            onClick={() => dispatch(setSelectedProjectTab("utilities"))}
+          >
+            Prevs
+          </Button>
+          <Button
+            className="primary-gray-btn next-btn ml-3"
+            onClick={() => dispatch(setSelectedProjectTab("drawings"))}
+          >
+            Next
+          </Button>
         </div>
       </div>
 
       <MarketingBlock />
 
-      <ClearChangesModal
+      {/* <ClearChangesModal
         show={showModal}
         setShow={setShowModal}
         clearChanges={clearChanges}
-      />
+      /> */}
 
       {showContractorModal && (
         <AddContractor

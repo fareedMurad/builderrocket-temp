@@ -8,9 +8,19 @@ import "react-image-lightbox/style.css"; // This only needs to be imported once 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Toaster from "react-hot-toast";
+import ScrollToTop from "react-scroll-to-top";
+import { getUserProfile } from "./actions/userActions";
+import { useDispatch, useSelector } from "react-redux";
+
+import { useHistory } from "react-router";
+import { logout } from "./actions/authActions";
 
 function App() {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [expandedNav, setExpandedNav] = useState(false);
+  const token = useSelector((state) => state.auth.token);
+  const state = useSelector((state) => state);
 
   useEffect(() => {
     const resizeEvent = window.addEventListener("resize", () => {
@@ -19,10 +29,21 @@ function App() {
       }
     });
 
+    if (token)
+      dispatch(getUserProfile()).then((response) => {
+        if (!response) {
+          dispatch(logout()).then(() => {
+            history.push("/login");
+          });
+        }
+      });
+
     return () => {
       window.removeEventListener("resize", resizeEvent);
     };
   }, []);
+
+  console.log(state, "state");
 
   return (
     <div className="h-screen d-flex flex-column justify-content-between">
@@ -31,6 +52,8 @@ function App() {
         <Routes />
       </Container>
       <Footer />
+
+      <ScrollToTop smooth color="#282c34" />
     </div>
   );
 }

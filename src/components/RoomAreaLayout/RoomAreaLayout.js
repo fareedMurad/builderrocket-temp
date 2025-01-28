@@ -25,11 +25,11 @@ const RoomAreaLayout = () => {
   const project = useSelector((state) => state.project.project);
   const roomTypes = useSelector((state) => state.room.roomTypes);
 
-  const [roomList, setRoomList] = useState([]);
+  // const [roomList, setRoomList] = useState([]);
   const [builderRoomList, setBuilderRoomList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [deleteRoomList, setDeleteRoomList] = useState([]);
+  // const [deleteRoomList, setDeleteRoomList] = useState([]);
   const [deleteBuilerRoomList, setDeleteBuilerRoomList] = useState([]);
   const [isLoadingRoomTypes, setIsLoadingRoomTypes] = useState(false);
   const [roomTypeOptions, setRoomTypeOptions] = useState([]);
@@ -82,15 +82,17 @@ const RoomAreaLayout = () => {
 
   useEffect(() => {
     if (
-      roomList.length ||
+      // roomList.length ||
       builderRoomList?.length ||
-      deleteRoomList.length ||
+      // deleteRoomList.length ||
       deleteBuilerRoomList.length
     )
       save(false);
-  }, [roomList, builderRoomList, deleteRoomList, deleteBuilerRoomList]);
+  }, [builderRoomList, deleteBuilerRoomList]);
 
+  const [loadingRoomsIds, setLoadingRoomsIds] = useState([]);
   const handleCheckBox = (roomID, e) => {
+    setLoadingRoomsIds([...loadingRoomsIds, roomID]);
     if (isRoomInProject(roomID)) {
       const selectedRoomID = isRoomInProject(roomID)?.ID;
       if (showCustomRooms) {
@@ -108,20 +110,20 @@ const RoomAreaLayout = () => {
           setDeleteBuilerRoomList([...deleteBuilerRoomList, selectedRoomID]);
         }
       }
-      if (!showCustomRooms) {
-        if (deleteRoomList?.includes(selectedRoomID)) {
-          let tempDeleteRoomList = deleteRoomList;
-          const deleteRoomIndex = tempDeleteRoomList.indexOf(selectedRoomID);
+      // if (!showCustomRooms) {
+      //   if (deleteRoomList?.includes(selectedRoomID)) {
+      //     let tempDeleteRoomList = deleteRoomList;
+      //     const deleteRoomIndex = tempDeleteRoomList.indexOf(selectedRoomID);
 
-          if (deleteRoomIndex > -1) {
-            tempDeleteRoomList.splice(deleteRoomIndex, 1);
-          }
+      //     if (deleteRoomIndex > -1) {
+      //       tempDeleteRoomList.splice(deleteRoomIndex, 1);
+      //     }
 
-          setDeleteRoomList(tempDeleteRoomList);
-        } else {
-          setDeleteRoomList([...deleteRoomList, selectedRoomID]);
-        }
-      }
+      //     setDeleteRoomList(tempDeleteRoomList);
+      //   } else {
+      //     setDeleteRoomList([...deleteRoomList, selectedRoomID]);
+      //   }
+      // }
     } else {
       if (showCustomRooms) {
         if (builderRoomList.includes(roomID)) {
@@ -137,41 +139,41 @@ const RoomAreaLayout = () => {
           setBuilderRoomList([...builderRoomList, roomID]);
         }
       }
-      if (!showCustomRooms) {
-        if (roomList.includes(roomID)) {
-          let tempRoomList = roomList;
-          const roomIndex = tempRoomList.indexOf(roomID);
+      // if (!showCustomRooms) {
+      //   if (roomList.includes(roomID)) {
+      //     let tempRoomList = roomList;
+      //     const roomIndex = tempRoomList.indexOf(roomID);
 
-          if (roomIndex > -1) {
-            tempRoomList.splice(roomIndex, 1);
-          }
+      //     if (roomIndex > -1) {
+      //       tempRoomList.splice(roomIndex, 1);
+      //     }
 
-          setRoomList(tempRoomList);
-        } else {
-          setRoomList([...roomList, roomID]);
-        }
-      }
+      //     setRoomList(tempRoomList);
+      //   } else {
+      //     setRoomList([...roomList, roomID]);
+      //   }
+      // }
     }
   };
 
   const handleAddRoomsToProject = async () => {
-    if (!isEmpty(roomList)) {
-      setIsLoading(true);
-      const roomsObj = {
-        RoomIDs: roomList,
-      };
+    // if (!isEmpty(roomList)) {
+    //   setIsLoading(true);
+    //   const roomsObj = {
+    //     RoomIDs: roomList,
+    //   };
 
-      await dispatch(addRoomsToProject(project?.ID, roomsObj))
-        .then(() => {
-          setRoomList([]);
-          setIsLoading(false);
-          return;
-        })
-        .catch(() => {
-          setIsLoading(false);
-          alert("Something went wrong adding rooms to project.");
-        });
-    }
+    //   await dispatch(addRoomsToProject(project?.ID, roomsObj))
+    //     .then(() => {
+    //       setRoomList([]);
+    //       setIsLoading(false);
+    //       return;
+    //     })
+    //     .catch(() => {
+    //       setIsLoading(false);
+    //       alert("Something went wrong adding rooms to project.");
+    //     });
+    // }
 
     if (!isEmpty(builderRoomList)) {
       setIsLoading(true);
@@ -193,24 +195,24 @@ const RoomAreaLayout = () => {
   };
 
   const handleRemoveProjectRooms = async () => {
-    if (!isEmpty(deleteRoomList)) {
-      setIsLoading(true);
+    // if (!isEmpty(deleteRoomList)) {
+    //   setIsLoading(true);
 
-      const deleteRoomsObj = {
-        IDs: deleteRoomList,
-      };
+    //   const deleteRoomsObj = {
+    //     IDs: deleteRoomList,
+    //   };
 
-      await dispatch(deleteRoomsFromProject(project?.ID, deleteRoomsObj))
-        .then(() => {
-          setDeleteRoomList([]);
-          setIsLoading(false);
-          return;
-        })
-        .catch(() => {
-          setIsLoading(false);
-          alert("Something went wrong deleting rooms from project.");
-        });
-    }
+    //   await dispatch(deleteRoomsFromProject(project?.ID, deleteRoomsObj))
+    //     .then(() => {
+    //       setDeleteRoomList([]);
+    //       setIsLoading(false);
+    //       return;
+    //     })
+    //     .catch(() => {
+    //       setIsLoading(false);
+    //       alert("Something went wrong deleting rooms from project.");
+    //     });
+    // }
 
     if (!isEmpty(deleteBuilerRoomList)) {
       setIsLoading(true);
@@ -252,8 +254,8 @@ const RoomAreaLayout = () => {
     setShowModal(false);
 
     setTimeout(() => {
-      setRoomList([]);
-      setDeleteRoomList([]);
+      // setRoomList([]);
+      // setDeleteRoomList([]);
       setIsLoadingRoomTypes(false);
     }, 250);
   };
@@ -358,7 +360,7 @@ const RoomAreaLayout = () => {
                         getRoomTypesConditionally()?.filter(
                           (p) => typesFilter.indexOf(p.ID) > -1
                         )?.length
-                      }{" "}
+                      }
                       of {getRoomTypesConditionally()?.length} selected
                     </span>
                   ) : null}

@@ -7,6 +7,7 @@ import ProjectPlaceholder from "../../assets/images/img-placeholder.png";
 import Utils from "../../utils";
 
 import "./Reports.scss";
+import CustomLightbox from "../Lightbox";
 
 const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
             <th>ProductName</th>
             <th>Color/Finish</th>
             <th className={"desc-col"}>Description</th>
+            <th>Manufacture</th>
             <th>Vendor</th>
             <th>UOM</th>
             <th style={{ width: "80px" }}>Total Qty</th>
@@ -68,6 +70,24 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         <td>{item?.ProductName}</td>
         <td>{item?.ColorFinish}</td>
         <td>{Utils.textEllipsis(item?.ShortDescription, 150)}</td>
+        <td>
+          {" "}
+          <div
+            className="d-flex align-items-center"
+            style={{ gap: "10px", objectFit: "contain" }}
+          >
+            {item?.Manufacturer?.LogoUrl && (
+              <CustomLightbox
+                singleImageProps={{
+                  width: "50px",
+                  height: "auto",
+                }}
+                images={[item?.Manufacturer?.LogoUrl]}
+              />
+            )}
+            {item?.Manufacturer?.ManufacturerName}
+          </div>
+        </td>
         <td>{item?.VendorName}</td>
         <td>{item?.UnitOfMeasure}</td>
         <td>{item?.Quantity}</td>
@@ -85,7 +105,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         localFilters?.roomFilters?.find((r) => r.ID === g.ID)
       );
 
-      return rooms.map((room) => {
+      return rooms?.map((room) => {
         return {
           ...room,
           Items: room.Items?.filter((product) => {
@@ -111,13 +131,20 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
         {renderHeader()}
         <tbody>
           {filteredRooms()?.length
-            ? filteredRooms()?.map((item, index) => {
-                return item ? (
-                  <TableRow
-                    {...{ renderTableBody, item, allRooms: null, localFilters }}
-                  />
-                ) : null;
-              })
+            ? filteredRooms()
+                ?.sort((a, b) => a.Name?.localeCompare(b.Name))
+                ?.map((item, index) => {
+                  return item ? (
+                    <TableRow
+                      {...{
+                        renderTableBody,
+                        item,
+                        allRooms: null,
+                        localFilters,
+                      }}
+                    />
+                  ) : null;
+                })
             : null}
         </tbody>
       </>
@@ -148,14 +175,14 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                 let rooms = localFilters.roomFilters?.filter(
                   (r) => r.value !== "select_all"
                 );
-                if (rooms.length === reportByCategory.Rooms.length) {
+                if (rooms?.length === reportByRoom?.Groups?.length) {
                   return true;
                 }
                 const items = FilterItems({ localFilters, items: item?.Items });
                 return (
                   items?.length > 0 &&
                   items?.find((i) =>
-                    i.Rooms?.find((r) => rooms.find((pr) => pr.ID === r))
+                    i.Rooms?.find((r) => rooms?.find((pr) => pr.ID === r))
                   )
                 );
               })
@@ -173,7 +200,7 @@ const ReportsTable = React.forwardRef(({ layout, hideTotals }, ref) => {
                         renderTableBody,
                         item,
                         renderHeader,
-                        allRooms: reportByCategory?.Rooms,
+                        allRooms: reportByRoom?.Groups,
                         localFilters,
                       }}
                     />
@@ -231,7 +258,7 @@ export const TableRow = ({
   const groupRow = (
     <>
       <tr onClick={() => setExpend(!expend)} className="contractor-type-name">
-        <th colSpan={10} className="contractor-type-name bg-dark">
+        <th colSpan={11} className="contractor-type-name bg-dark">
           {item.Name}
         </th>
         <th className="contractor-type-name justify-content-end h-full bg-dark">

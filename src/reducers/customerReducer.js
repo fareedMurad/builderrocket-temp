@@ -9,6 +9,7 @@ import {
 const intialState = {
   token: null,
   isSignedIn: false,
+  products: [],
 };
 
 const customerReducer = (state = intialState, action) => {

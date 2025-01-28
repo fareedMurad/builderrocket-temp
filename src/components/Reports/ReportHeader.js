@@ -10,7 +10,7 @@ const ReportHeader = ({ hideTotals }) => {
 
   const report = useSelector((state) => state.project?.report);
   const refreshThumbnail = useSelector(
-    (state) => state.project.refreshThumbnail,
+    (state) => state.project.refreshThumbnail
   );
 
   const projectStatusMap = {
@@ -52,23 +52,69 @@ const ReportHeader = ({ hideTotals }) => {
         </div>
 
         <div className="middle-section">
-          <div className="bold-text">
-            {report?.Customers?.[0]?.FirstName}
-            {report?.Customers?.[0]?.LastName}
-          </div>
-          <div className="d-flex">
-            <div className="pr-3 text phone">
-              <i className="fas fa-phone mr-2"></i>
-              <a href={`tel:+1${report?.Customers?.[0]?.Phone}`}>
-                {report?.Customers?.[0]?.Phone}
-              </a>
-            </div>
+          <div className="d-flex gap-2">
+            <div>
+              {(report?.Customers?.[0]?.FirstName ||
+                report?.Customers?.[0]?.LastName) && (
+                <>
+                  <div className="">
+                    <i className="far fa-user-hard-hat fa-sm tab-icon mr-2"></i>{" "}
+                    {report?.Customers?.[0]?.FirstName}{" "}
+                    {report?.Customers?.[0]?.LastName}
+                  </div>
+                </>
+              )}
+              <div className="">
+                {report?.Customers?.[0]?.Phone && (
+                  <div className="pr-3 text phone">
+                    <i className="fas fa-phone mr-2"></i>
+                    <a href={`tel:+1${report?.Customers?.[0]?.Phone}`}>
+                      {report?.Customers?.[0]?.Phone}
+                    </a>
+                  </div>
+                )}
 
-            <div className="text email">
-              <i className="fas fa-envelope mr-2"></i>
-              <a href={`mailto:${report?.Customers?.[0]?.Email}`}>
-                {report?.Customers?.[0]?.Email}
-              </a>
+                {report?.Customers?.[0]?.Email && (
+                  <div className="text email">
+                    <i className="fas fa-envelope mr-2"></i>
+                    <a href={`mailto:${report?.Customers?.[0]?.Email}`}>
+                      {report?.Customers?.[0]?.Email}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="">
+              {(report?.Customers?.[1]?.FirstName ||
+                report?.Customers?.[1]?.LastName) && (
+                <>
+                  <div className="">
+                    <i
+                      className="far fa-user-hard-hat fa-sm tab-icon mr-2"
+                      aria-hidden="true"
+                    ></i>{" "}
+                    {report?.Customers?.[1]?.FirstName}{" "}
+                    {report?.Customers?.[1]?.LastName}
+                  </div>
+                </>
+              )}
+              {report?.Customers?.[1]?.Phone && (
+                <div className="pr-3 text phone">
+                  <i className="fas fa-phone mr-2"></i>
+                  <a href={`tel:+1${report?.Customers?.[1]?.Phone}`}>
+                    {report?.Customers?.[1]?.Phone}
+                  </a>
+                </div>
+              )}
+
+              {report?.Customers?.[1]?.Email && (
+                <div className="text email">
+                  <i className="fas fa-envelope mr-2"></i>
+                  <a href={`mailto:${report?.Customers?.[1]?.Email}`}>
+                    {report?.Customers?.[1]?.Email}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
           <div className="d-flex pt-3">

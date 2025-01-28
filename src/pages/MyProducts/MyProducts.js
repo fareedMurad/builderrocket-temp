@@ -24,10 +24,10 @@ const MyProducts = () => {
   const dispatch = useDispatch();
 
   const myProducts = useSelector(
-    (state) => state.myProduct.myProducts?.Products,
+    (state) => state.myProduct.myProducts?.Products
   );
   const selectedMyProduct = useSelector(
-    (state) => state.myProduct.selectedMyProduct,
+    (state) => state.myProduct.selectedMyProduct
   );
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,7 +43,7 @@ const MyProducts = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       const filter = myProducts?.filter?.((product) =>
-        product?.ProductName?.toLowerCase().includes(searchTerm?.toLowerCase()),
+        product?.ProductName?.toLowerCase().includes(searchTerm?.toLowerCase())
       );
 
       setFilteredMyProducts(filter);
@@ -145,8 +145,8 @@ const MyProducts = () => {
   return (
     <div className="d-flex my-products">
       <div className="my-products-container">
-        <div className="d-flex">
-          <div className="page-title">My Products Management</div>
+        <div className="d-flex align-items-center mb-4">
+          <div className="page-title pb-0">My Products Management</div>
           <div className="ml-2">
             <Button
               variant="link"

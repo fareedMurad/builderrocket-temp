@@ -55,7 +55,6 @@ export const signupEmailPassword =
         }
       })
       .catch((error) => {
-        console.log("Signup", error.response.data);
         setError(error.response.data);
       });
   };
@@ -81,9 +80,7 @@ export const loginEmailPassword = (email, password) => (dispatch) => {
         return response?.data;
       }
     })
-    .catch((error) => {
-      console.log("Login", error);
-    });
+    .catch((error) => {});
 };
 
 export const getProductsByCategoryAndBrandID =
